@@ -6,7 +6,7 @@ void main() {
   String timeStr = "Zeit";
   int seven = 7;
   int twelve = 12;
-  String d = "!";
+  String dd = "!";
   int a = 24;
   String c = "Schöne";
   String morning = "Morgen";
