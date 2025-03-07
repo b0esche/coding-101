@@ -12,7 +12,7 @@ List<Map<int, int>> times = [
 void main() {
   print("Wie dick ist dein Steak? (in cm)");
   String? steakdimension = stdin.readLineSync();
-  int? dim = int.tryParse(steakdimension ?? "");
+  double? dim = double.tryParse(steakdimension ?? "");
   if (dim == null || dim > 5) {
     print("Dein Steak ist viel zu dick!");
     return;
