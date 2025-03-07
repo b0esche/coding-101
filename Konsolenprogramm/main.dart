@@ -60,7 +60,7 @@ void main() {
         case 4:
           time = times[2][4]!;
       }
-    case > 3 && < 5:
+    case > 3 && <= 5:
       switch (grade) {
         case 1:
           time = times[3][1]!;
