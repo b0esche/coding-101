@@ -17,6 +17,10 @@ void main() {
     print("Dein Steak ist viel zu dick!");
     return;
   }
+  if (dim < 1) {
+    print("Aufschnitt!");
+    return;
+  }
   print("Sehr schön!");
   print("Wähle deine Garstufe! (1-4)");
   String? gradeInput = stdin.readLineSync();
