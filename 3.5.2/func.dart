@@ -7,3 +7,7 @@ void triplePrint(String txt) {
     print(txt);
   }
 }
+
+void reverseInitials(String? vor, String? nach) {
+  print("${vor![vor.length - 1]}." + "${nach![nach.length - 1]}.");
+}
