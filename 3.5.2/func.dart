@@ -9,5 +9,6 @@ void triplePrint(String txt) {
 }
 
 void reverseInitials(String? vor, String? nach) {
-  print("${vor![vor.length - 1]}." + "${nach![nach.length - 1]}.");
+  print("${vor![vor.length - 1].toUpperCase()}."
+      "${nach![nach.length - 1].toUpperCase()}.");
 }
