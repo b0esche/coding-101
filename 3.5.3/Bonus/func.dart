@@ -17,4 +17,14 @@ int listSum(List<int> numbers) {
   }
   return result;
 }
+
+//------------------------------------------
+double listAvg(List<int> numbers) {
+  double result = 0;
+  for (int num in numbers) {
+    result += num;
+  }
+  return result / numbers.length;
+}
+
 //------------------------------------------
