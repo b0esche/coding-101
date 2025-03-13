@@ -19,13 +19,14 @@ void main() {
   print(l1);
 
   int l2 = inputLength("Macintosh");
-
   print(l2);
 
   //-------------------------------------------
 
-  int v = vowelCount("Baumkuchen");
-  print(v);
+  // int v = vowelCount("Baumkuchen");
+  // print(v);
+
+  print(vowelCount("Baumkuchen"));
 
   int v1 = vowelCount("Autobahn");
   print(v1);
