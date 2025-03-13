@@ -2,12 +2,12 @@
 int tripleSum(int a, int b, int c) {
   int sum = a + b + c;
   return sum;
+  // oder besser -> return a + b + c;
 }
 
 // Aufgabe 2
 int inputLength(String text) {
-  int length = text.length;
-  return length;
+  return text.length;
 }
 
 // Aufgabe 3
