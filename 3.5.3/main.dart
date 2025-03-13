@@ -7,8 +7,9 @@ void main() {
   int sum1 = tripleSum(5, 10, 15);
   print(sum1);
 
-  int sum2 = tripleSum(10, 11, 12);
-  print(sum2);
+  //int sum2 = tripleSum(10, 11, 12);
+  //print(sum2);
+  print(tripleSum(10, 11, 12));
 
 //-------------------------------------------
 
@@ -18,8 +19,9 @@ void main() {
   int l1 = inputLength("Rosenmontag");
   print(l1);
 
-  int l2 = inputLength("Macintosh");
-  print(l2);
+  //int l2 = inputLength("Macintosh");
+  //print(l2);
+  print(inputLength("Macintosh"));
 
   //-------------------------------------------
 
