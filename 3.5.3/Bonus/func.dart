@@ -29,3 +29,19 @@ double listAvg(List<int> numbers) {
 }
 
 //------------------------------------------
+
+int letterCount(String text, String letter) {
+  int count = 0;
+  for (int i = 0; i < text.length; i++) {
+    if (text[i].toLowerCase() == letter.toLowerCase()) {
+      count++;
+    }
+  }
+  return count;
+}
+
+//------------------------------------------
+int negativizer(int z) {
+  return -z;
+}
+//------------------------------------------

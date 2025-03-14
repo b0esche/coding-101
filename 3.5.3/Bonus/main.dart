@@ -18,4 +18,10 @@ void main() {
   print(listAvg([10, 10, 11]));
   print(listAvg([11, 22, 33]));
 //-----------------------------------
+
+  print(letterCount("Affe", "F"));
+//-----------------------------------
+  print(negativizer(5));
+  print(negativizer(-5));
+//-----------------------------------
 }
