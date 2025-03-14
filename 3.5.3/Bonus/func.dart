@@ -41,7 +41,50 @@ int letterCount(String text, String letter) {
 }
 
 //------------------------------------------
-int negativizer(int z) {
+bool letterUsed(String word, String letter) {
+  return word.toLowerCase().contains(letter.toLowerCase());
+}
+
+//------------------------------------------
+String sigCheck(int x) {
+  String sig = "";
+  switch (x) {
+    case < 0:
+      sig = "-";
+    case == 0:
+      sig = "0";
+    case > 0:
+      sig = "+";
+  }
+  return sig;
+//------------------------------------------
+}
+
+List<String> spellOut(String word) {
+  List<String> letters = [];
+  for (int i = 0; i < word.length; i++) {
+    letters.add(word[i]);
+  }
+  return letters;
+}
+
+//------------------------------------------
+List<String> multiLetterCount(List<String> words) {
+  List<String> letters = [];
+  for (String word in words) {
+    letters.add("$word: ${word.length}");
+  }
+  return letters;
+}
+
+//-------------------------------------------
+int multiply(int x, int y) {
+  return x * y;
+}
+//-------------------------------------------
+
+int negativeOf(int z) {
   return -z;
 }
-//------------------------------------------
+
+//-------------------------------------------
