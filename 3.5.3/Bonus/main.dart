@@ -46,7 +46,7 @@ void main() {
   print(multiply(3, 4));
 //-----------------------------------
   print(negativeOf(5));
-  print(negativeOf(-5));
+  print(negativeOf(0));
   print(negativeOf(-120));
 //-----------------------------------
 }
