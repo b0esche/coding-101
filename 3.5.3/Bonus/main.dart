@@ -54,12 +54,13 @@ void main() {
     27,
     33,
     72,
+    11,
     98,
     45,
     23,
     76,
   ]));
-  print(smallestNumber([500, 600, 700, 800, 900, 350]));
+  print(smallestNumber([500, 600, 700, 100, 800, 900, 350]));
 //------------------------------------
   print(mapLetterCount(["Baum", "Computer", "Wasserfall"]));
   print(mapLetterCount(["Affen", "Gehege"]));

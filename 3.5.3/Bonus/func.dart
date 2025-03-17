@@ -2,13 +2,13 @@ int largerNum(int num1, int num2) {
   return num1 > num2 ? num1 : num2;
 }
 
-//------------------------------------------
+//##########################################################
 bool evenNum(int num) {
   bool result = num % 2 == 0;
   return result;
 }
 
-//------------------------------------------
+//##########################################################
 int listSum(List<int> numbers) {
   int result = 0;
   for (int num in numbers) {
@@ -17,7 +17,7 @@ int listSum(List<int> numbers) {
   return result;
 }
 
-//------------------------------------------
+//##########################################################
 double listAvg(List<int> numbers) {
   double result = 0;
   for (int num in numbers) {
@@ -26,7 +26,7 @@ double listAvg(List<int> numbers) {
   return result / numbers.length;
 }
 
-//------------------------------------------
+//##########################################################
 
 int letterCount(String text, String letter) {
   int count = 0;
@@ -38,12 +38,12 @@ int letterCount(String text, String letter) {
   return count;
 }
 
-//------------------------------------------
+//##########################################################
 bool letterUsed(String word, String letter) {
   return word.toLowerCase().contains(letter.toLowerCase());
 }
 
-//------------------------------------------
+//##########################################################
 String sigCheck(int x) {
   String sig = "";
   switch (x) {
@@ -55,8 +55,8 @@ String sigCheck(int x) {
       sig = "+";
   }
   return sig;
-//------------------------------------------
 }
+//##########################################################
 
 List<String> spellOut(String word) {
   List<String> letters = [];
@@ -66,7 +66,7 @@ List<String> spellOut(String word) {
   return letters;
 }
 
-//------------------------------------------
+//##########################################################
 List<String> multiLetterCount(List<String> words) {
   List<String> letters = [];
   for (String word in words) {
@@ -75,17 +75,17 @@ List<String> multiLetterCount(List<String> words) {
   return letters;
 }
 
-//-------------------------------------------
+//##########################################################
 int multiply(int x, int y) {
   return x * y;
 }
-//-------------------------------------------
+//##########################################################
 
 int negativeOf(int z) {
   return -z;
 }
 
-//-------------------------------------------
+//##########################################################
 int smallestNumber(List<int> numbers) {
   int result = numbers.first;
   for (int i = 0; i < numbers.length; i++) {
@@ -95,7 +95,18 @@ int smallestNumber(List<int> numbers) {
   }
   return result;
 }
-//-------------------------------------------
+
+// hier reicht auch eine for-in-Schleife
+int smallestNumber2(List<int> numbers) {
+  int result = numbers.first;
+  for (int num in numbers) {
+    if (num < result) {
+      result = num;
+    }
+  }
+  return result;
+}
+//##########################################################
 
 Map<String, int> mapLetterCount(List<String> words) {
   Map<String, int> output = {};
@@ -104,4 +115,4 @@ Map<String, int> mapLetterCount(List<String> words) {
   }
   return output;
 }
-//-------------------------------------------
+//##########################################################
