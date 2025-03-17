@@ -96,3 +96,12 @@ int smallestNumber(List<int> numbers) {
   return result;
 }
 //-------------------------------------------
+
+Map<String, int> mapLetterCount(List<String> words) {
+  Map<String, int> output = {};
+  for (String word in words) {
+    output[word] = word.length;
+  }
+  return output;
+}
+//-------------------------------------------

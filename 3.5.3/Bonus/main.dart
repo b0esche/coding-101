@@ -61,4 +61,9 @@ void main() {
   ]));
   print(smallestNumber([500, 600, 700, 800, 900, 350]));
 //------------------------------------
+  print(mapLetterCount(["Baum", "Computer", "Wasserfall"]));
+  print(mapLetterCount(["Affen", "Gehege"]));
+  print(mapLetterCount(
+      ["Fahrstuhl", "Fachhandel", "Milchbauer", "Loveparade", "AppAkademie"]));
+  //------------------------------------
 }
