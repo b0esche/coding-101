@@ -49,4 +49,16 @@ void main() {
   print(negativeOf(0));
   print(negativeOf(-120));
 //-----------------------------------
+  print(smallestNumber([7, 3, 7, 12, 5, 23]));
+  print(smallestNumber([
+    27,
+    33,
+    72,
+    98,
+    45,
+    23,
+    76,
+  ]));
+  print(smallestNumber([500, 600, 700, 800, 900, 350]));
+//------------------------------------
 }

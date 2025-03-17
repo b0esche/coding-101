@@ -86,3 +86,13 @@ int negativeOf(int z) {
 }
 
 //-------------------------------------------
+int smallestNumber(List<int> numbers) {
+  int result = numbers.first;
+  for (int i = 0; i < numbers.length; i++) {
+    if (numbers[i] < result) {
+      result = numbers[i];
+    }
+  }
+  return result;
+}
+//-------------------------------------------
