@@ -5,7 +5,7 @@ import "main.dart";
 
 // Menü anzeigen und Option wählen
 void showMenu() {
-  print("\x1B[34mPersönlicher Passwort Manager\x1B[0m");
+  print("\x1B[34mPersönlicher Passwort Manager\x1B[0m\n");
   print("\x1B[33m1.\x1B[0m Neues Passwort speichern");
   print("\x1B[33m2.\x1B[0m Passwort anzeigen");
   print("\x1B[33m3.\x1B[0m Accounts anzeigen");
