@@ -1,8 +1,8 @@
 class SearchListItem {
   String name;
+  String avatarUrl;
   double rating;
   List<String> genres;
-  String avatarUrl;
 
-  SearchListItem(this.name, this.rating, this.genres, this.avatarUrl);
+  SearchListItem(this.name, this.avatarUrl, this.rating, this.genres);
 }
