@@ -1,7 +1,7 @@
 class ChatListItem {
   String name;
-  String message;
+  String recentMessage;
   String avatarUrl;
 
-  ChatListItem(this.name, this.message, this.avatarUrl);
+  ChatListItem(this.name, this.recentMessage, this.avatarUrl);
 }
