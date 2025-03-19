@@ -1,12 +1,18 @@
 class SearchListItemExtended {
-  String name;
-  String avatarUrl;
-  String about;
-  String city;
-  String bpm;
-  double rating;
-  List<String> genres;
+  final String name;
+  final String avatarUrl;
+  final String about;
+  final String city;
+  final String bpm;
+  final double? rating;
+  final List<String> genres;
 
-  SearchListItemExtended(this.name, this.avatarUrl, this.about, this.city,
-      this.bpm, this.rating, this.genres);
+  SearchListItemExtended(
+      {required this.name,
+      required this.avatarUrl,
+      required this.about,
+      required this.city,
+      required this.bpm,
+      this.rating,
+      required this.genres});
 }

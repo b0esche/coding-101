@@ -1,15 +1,24 @@
 class UserProfileDj {
-  String name;
-  String headUrl;
-  String city;
-  String bpm;
-  String about;
-  String set1Url;
-  String set2Url;
-  String info;
-  double rating;
-  List<String> genres;
+  final String name;
+  final String headUrl;
+  final String city;
+  final String bpm;
+  final String about;
+  final String set1Url;
+  final String set2Url;
+  final String info;
+  final double? rating;
+  final List<String> genres;
 
-  UserProfileDj(this.name, this.headUrl, this.city, this.bpm, this.about,
-      this.set1Url, this.set2Url, this.info, this.rating, this.genres);
+  UserProfileDj(
+      {required this.name,
+      required this.headUrl,
+      required this.city,
+      required this.bpm,
+      required this.about,
+      required this.set1Url,
+      required this.set2Url,
+      required this.info,
+      this.rating,
+      required this.genres});
 }
