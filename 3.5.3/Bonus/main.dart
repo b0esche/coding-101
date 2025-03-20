@@ -73,4 +73,8 @@ void main() {
   print(compile(["Coding", "Macht", "Spaß"]));
   print(compile(["Morgen", "Ist", "Freitag"]));
 //##########################################################
+  print(isPrime(35));
+  print(isPrime(3));
+  print(isPrime(67));
+//##########################################################
 }
