@@ -69,4 +69,8 @@ void main() {
   temp(2, 89.2);
   temp(3, 33);
 //##########################################################
+  print(compile(["Du", "Magst", "Bifi"]));
+  print(compile(["Coding", "Macht", "Spaß"]));
+  print(compile(["Morgen", "Ist", "Freitag"]));
+//##########################################################
 }

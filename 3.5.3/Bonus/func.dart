@@ -131,4 +131,14 @@ void temp(int mode, double inputTemp) {
     print("Bitte gültigen Umrechnungsmodus wählen!");
   }
 }
+
+//##########################################################
+String compile(List<String> words) {
+  String result = "";
+  for (String word in words) {
+    result += word;
+  }
+  return result;
+}
+
 //##########################################################
