@@ -115,4 +115,20 @@ Map<String, int> mapLetterCount(List<String> words) {
   }
   return output;
 }
+
+//##########################################################
+// hier ohne boolschen Wert
+void temp(int mode, double inputTemp) {
+  if (mode == 1) {
+    double newTemp = (inputTemp * 1.8 + 32);
+    print(
+        "$inputTemp Grad Celsius sind ${newTemp.toStringAsFixed(2)} Grad Fahrenheit");
+  } else if (mode == 2) {
+    double newTemp = (inputTemp - 32) / 1.8;
+    print(
+        "$inputTemp Grad Fahrenheit sind ${newTemp.toStringAsFixed(2)} Grad Celsius");
+  } else {
+    print("Bitte gültigen Umrechnungsmodus wählen!");
+  }
+}
 //##########################################################

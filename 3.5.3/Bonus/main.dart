@@ -65,4 +65,8 @@ void main() {
   print(mapLetterCount(
       ["Fahrstuhl", "Fachhandel", "Milchbauer", "Loveparade", "AppAkademie"]));
 //##########################################################
+  temp(1, 36.3);
+  temp(2, 89.2);
+  temp(3, 33);
+//##########################################################
 }
