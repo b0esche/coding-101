@@ -65,9 +65,9 @@ void main() {
   print(mapLetterCount(
       ["Fahrstuhl", "Fachhandel", "Milchbauer", "Loveparade", "AppAkademie"]));
 //##########################################################
-  temp(1, 36.3);
-  temp(2, 89.2);
-  temp(3, 33);
+  tempConvert(2, 89.2);
+  tempConvert(1, 36.3);
+  tempConvert(3, 33);
 //##########################################################
   print(compile(["Du", "Magst", "Bifi"]));
   print(compile(["Coding", "Macht", "Spaß"]));
@@ -76,5 +76,9 @@ void main() {
   print(isPrime(35));
   print(isPrime(3));
   print(isPrime(67));
+//##########################################################
+  print(digitReverse(345));
+  print(digitReverse(987654321));
+  print(digitReverse(1010101010));
 //##########################################################
 }

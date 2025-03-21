@@ -118,15 +118,15 @@ Map<String, int> mapLetterCount(List<String> words) {
 
 //##########################################################
 // hier ohne boolschen Wert
-void temp(int mode, double inputTemp) {
+void tempConvert(int mode, double inputTemp) {
   if (mode == 1) {
     double newTemp = (inputTemp * 1.8 + 32);
     print(
-        "$inputTemp Grad Celsius sind ${newTemp.toStringAsFixed(2)} Grad Fahrenheit");
+        "$inputTemp Grad Celsius sind ${newTemp.toStringAsFixed(1)} Grad Fahrenheit");
   } else if (mode == 2) {
     double newTemp = (inputTemp - 32) / 1.8;
     print(
-        "$inputTemp Grad Fahrenheit sind ${newTemp.toStringAsFixed(2)} Grad Celsius");
+        "$inputTemp Grad Fahrenheit sind ${newTemp.toStringAsFixed(1)} Grad Celsius");
   } else {
     print("Bitte gültigen Umrechnungsmodus wählen!");
   }
@@ -153,5 +153,16 @@ bool isPrime(int input) {
     }
   }
   return true;
+}
+
+//##########################################################
+int digitReverse(int number) {
+  int rev = 0;
+  while (number > 0) {
+    int digit = number % 10;
+    rev = rev * 10 + digit;
+    number ~/= 10;
+  }
+  return rev;
 }
 //##########################################################
