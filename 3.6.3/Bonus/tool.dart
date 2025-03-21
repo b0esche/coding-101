@@ -1,5 +1,3 @@
-import "main.dart";
-
 class Tool {
   final String brand;
   final double weight;
