@@ -2,7 +2,7 @@ import "tool.dart";
 import "grocery.dart";
 
 void main() {
-  Tool stihl = Saw(
+  Saw stihl = Saw(
       brand: "Stihl",
       weight: 12,
       price: 109.99,
@@ -17,6 +17,7 @@ void main() {
       isUsed: false,
       isHardened: true);
 
+  stihl.countTeeth();
   x.nailedIt();
 
 //######################################################################
