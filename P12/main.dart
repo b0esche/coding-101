@@ -1,4 +1,5 @@
 import "user.dart";
+
 // import "chat.dart";
 
 void main() {
@@ -13,8 +14,8 @@ void main() {
       city: "Berlin",
       bpm: "120-130",
       about: "Ich will der allerbeste sein!",
-      set1Url: "",
-      set2Url: "",
+      set1Url: "qertqrtre",
+      set2Url: "zzrtzwrtt",
       info: "Ich habe kein Auto...",
       rating: 4.0);
 
@@ -23,7 +24,8 @@ void main() {
       name: "BitBat Club",
       email: "bitbatclub@email.com",
       userType: "Booker",
-      headUrl: "",
+      headUrl:
+          "https://www.club-stereo.net/wp-content/uploads/2025/02/verifiziert-150225-sarahwhoeverphoto-12.jpg",
       city: "Berlin",
       type: "Club",
       about: "Bei uns gehts anders ab!",
