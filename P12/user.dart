@@ -41,7 +41,18 @@ class DJ extends User {
       required super.userType});
 
   @override
-  void showProfile() {}
+  void showProfile() {
+    print("$headUrl");
+    print("${rating ?? ""}");
+    print("$name");
+    print("$city");
+    print("BPM: $bpm");
+    print("${genres.join(", ")}");
+    print("About: $about");
+    print("Set 1: $set1Url");
+    print("Set 2: $set2Url");
+    print("Info: $info");
+  }
 
   @override
   void editProfile() {}
@@ -70,7 +81,16 @@ class Booker extends User {
       required super.userType});
 
   @override
-  void showProfile() {}
+  void showProfile() {
+    print("$headUrl");
+    print("${rating ?? ""}");
+    print("$name");
+    print("$city");
+    print("$type");
+    print("About: $about");
+    print("${mediaUrl[0]}");
+    print("Info: $info");
+  }
 
   @override
   void editProfile() {}

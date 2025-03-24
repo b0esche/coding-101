@@ -9,6 +9,7 @@ void main() {
     fontSize: 14,
     padding: 8,
   );
+  print(b);
 }
 
 class Button {

@@ -1,4 +1,4 @@
-import 'classes/chat_list_item.dart';
+// import 'classes/chat_list_item.dart';
 
 void main() {
   // Neue Instanz IN Variable erzeugen
