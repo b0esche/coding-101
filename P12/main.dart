@@ -3,7 +3,7 @@ import "user.dart";
 // import "chat.dart";
 
 void main() {
-  DJ dj = DJ(
+  User dj = DJ(
       userId: "dj_001",
       name: "DJ Lorem Ipsum",
       email: "djloremipsum@email.com",
@@ -19,7 +19,7 @@ void main() {
       info: "Ich habe kein Auto...",
       rating: 4.0);
 
-  Booker booker = Booker(
+  User booker = Booker(
       userId: "booker_001",
       name: "BitBat Club",
       email: "bitbatclub@email.com",
