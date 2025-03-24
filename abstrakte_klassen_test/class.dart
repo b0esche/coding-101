@@ -18,7 +18,7 @@ class Rectangle extends Shape {
   @override // das Überschreiben der toString Methode
   String toString() {
     // ändert automatisch den print-output der Instanz
-    return "Rectangle(Länge: $length, Weite: $width)"; // siehe Zeile 53, 58
+    return "Rectangle $id ($length x $width)"; // siehe Zeile 53, 58
   }
 }
 
@@ -35,7 +35,7 @@ class Circle extends Shape {
 
   @override
   String toString() {
-    return "Circle(Länge: $length, Weite: $width)";
+    return "Circle $id ($length x $width)";
   }
 }
 
