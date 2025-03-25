@@ -1,3 +1,5 @@
+import 'database_repository.dart';
+
 enum UserType { dj, booker }
 
 abstract class User {
@@ -10,7 +12,10 @@ abstract class User {
       {required this.userId,
       required this.name,
       required this.email,
-      required this.userType});
+      required this.userType,
+      required MockDatabaseRepository repo}) {
+    repo.addUser(this);
+  }
 
   void showProfile();
   void editProfile();
@@ -42,7 +47,8 @@ class DJ extends User {
       required super.userId,
       required super.name,
       required super.email,
-      required super.userType});
+      required super.userType,
+      required super.repo});
 
   @override
   String toString() {
@@ -87,7 +93,8 @@ class Booker extends User {
       required super.userId,
       required super.name,
       required super.email,
-      required super.userType});
+      required super.userType,
+      required super.repo});
 
   @override
   String toString() {
