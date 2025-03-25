@@ -1,8 +1,10 @@
+enum UserType { dj, booker }
+
 abstract class User {
   final String userId;
   final String name;
   final String email;
-  final String userType;
+  final UserType userType;
 
   User(
       {required this.userId,

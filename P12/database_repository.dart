@@ -43,9 +43,12 @@ class MockDatabaseRepository implements DatabaseRepository {
   List<SearchListItem> searchDJs(
       List<String>? genres, String? city, int? bpmMin, int? bpmMax) {
     return _users
-        .whereType<DJ>()
+        .where((user) => user.userType == UserType.dj)
+        .cast<DJ>()
         .where((dj) =>
-            (genres == null || genres.any((g) => dj.genres.contains(g))) &&
+            (genres == null ||
+                genres.isEmpty ||
+                genres.any((g) => dj.genres.contains(g))) &&
             (city == null || dj.city == city) &&
             (bpmMin == null ||
                 bpmMax == null ||
