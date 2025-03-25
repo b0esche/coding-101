@@ -46,7 +46,7 @@ class DJ extends User {
 
   @override
   String toString() {
-    return "User_DJ: $userId, $name, $city";
+    return "User_DJ: $userId, $name, $city, $email";
   }
 
   @override
@@ -91,7 +91,7 @@ class Booker extends User {
 
   @override
   String toString() {
-    return "User_Booker: $userId, $name, $city";
+    return "User_Booker: $userId, $name, $city, $email";
   }
 
   @override
