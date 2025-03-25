@@ -44,4 +44,5 @@ void main() {
   repo.addUser(dj);
   repo.addUser(booker);
   print(repo.getUsers());
+  print(repo.searchDJs(["House"], "Berlin", null, null));
 }
