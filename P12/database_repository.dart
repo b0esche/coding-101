@@ -7,15 +7,13 @@ abstract class DatabaseRepository {
   List<User> getUsers();
   void SendMessage(ChatMessage message);
   List<ChatMessage> getMessages(String userId1, String userId2);
-  void addSearchItem(DJ dj);
   List<SearchListItem> searchDJs(
-      List<String>? genre, String? city, String? bpm);
+      List<String>? genres, String? city, int? bpmMin, int? bpmMax);
 }
 
 class MockDatabaseRepository implements DatabaseRepository {
   final List<User> _users = [];
   final List<ChatMessage> _messages = [];
-  final List<DJ> _djs = [];
 
   @override
   void addUser(User user) {
@@ -42,18 +40,16 @@ class MockDatabaseRepository implements DatabaseRepository {
   }
 
   @override
-  void addSearchItem(DJ dj) {
-    _djs.add(dj);
-  }
-
-  @override
   List<SearchListItem> searchDJs(
-      List<String>? genre, String? city, String? bpm) {
-    return _djs
+      List<String>? genres, String? city, int? bpmMin, int? bpmMax) {
+    return _users
+        .whereType<DJ>()
         .where((dj) =>
-            (genre == null || dj.genres.contains(genre)) &&
+            (genres == null || genres.any((g) => dj.genres.contains(g))) &&
             (city == null || dj.city == city) &&
-            (bpm == null || dj.bpm == bpm))
+            (bpmMin == null ||
+                bpmMax == null ||
+                (dj.bpmMax >= bpmMin && dj.bpmMin <= bpmMax)))
         .map((dj) => SearchListItem(dj: dj))
         .toList();
   }

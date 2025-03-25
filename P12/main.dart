@@ -1,8 +1,11 @@
+import "database_repository.dart";
 import "user.dart";
 
 // import "chat.dart";
 
 void main() {
+  MockDatabaseRepository repo = MockDatabaseRepository();
+
   User dj = DJ(
       userId: "dj_001",
       name: "DJ Lorem Ipsum",
@@ -12,7 +15,8 @@ void main() {
       headUrl:
           "https://www.leadersnet.de/resources/images/2024/4/24/141616/bootshaus-koeln-mit-dj-diesel_748_486_crop_939ea044d44337fae475b812f4e61f4e.jpg",
       city: "Berlin",
-      bpm: "120-130",
+      bpmMin: 120,
+      bpmMax: 130,
       about: "Ich will der allerbeste sein!",
       set1Url: "qertqrtre",
       set2Url: "zzrtzwrtt",
@@ -37,4 +41,7 @@ void main() {
 
   dj.showProfile();
   booker.showProfile();
+  repo.addUser(dj);
+  repo.addUser(booker);
+  print(repo.getUsers());
 }

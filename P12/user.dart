@@ -18,7 +18,8 @@ class DJ extends User {
   final List<String> genres;
   final String headUrl;
   final String city;
-  final String bpm;
+  final int bpmMin;
+  final int bpmMax;
   final String about;
   final String set1Url;
   final String set2Url;
@@ -29,7 +30,8 @@ class DJ extends User {
       {required this.genres,
       required this.headUrl,
       required this.city,
-      required this.bpm,
+      required this.bpmMin,
+      required this.bpmMax,
       required this.about,
       required this.set1Url,
       required this.set2Url,
@@ -41,12 +43,17 @@ class DJ extends User {
       required super.userType});
 
   @override
+  String toString() {
+    return "User_DJ: $userId, $name, $city";
+  }
+
+  @override
   void showProfile() {
     print("$headUrl");
     print("${rating ?? ""}");
     print("$name");
     print("$city");
-    print("BPM: $bpm");
+    print("BPM: $bpmMin - $bpmMax");
     print("${genres.join(", ")}");
     print("About: $about");
     print("Set 1: $set1Url");
@@ -79,6 +86,11 @@ class Booker extends User {
       required super.name,
       required super.email,
       required super.userType});
+
+  @override
+  String toString() {
+    return "User_Booker: $userId, $name, $city";
+  }
 
   @override
   void showProfile() {
