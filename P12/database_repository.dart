@@ -42,6 +42,9 @@ class MockDatabaseRepository implements DatabaseRepository {
   @override
   List<SearchListItem> searchDJs(
       List<String>? genres, String? city, int? bpmMin, int? bpmMax) {
+    if (bpmMin != null && bpmMax != null && bpmMin > bpmMax) {
+      return [];
+    }
     return _users
         .where((user) => user.userType == UserType.dj)
         .cast<DJ>()
@@ -50,9 +53,8 @@ class MockDatabaseRepository implements DatabaseRepository {
                 genres.isEmpty ||
                 genres.any((g) => dj.genres.contains(g))) &&
             (city == null || dj.city == city) &&
-            (bpmMin == null ||
-                bpmMax == null ||
-                (dj.bpmMax >= bpmMin && dj.bpmMin <= bpmMax)))
+            (bpmMin == null || dj.bpmMax >= bpmMin) &&
+            (bpmMax == null || dj.bpmMin <= bpmMax))
         .map((dj) => SearchListItem(dj: dj))
         .toList();
   }
