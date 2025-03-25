@@ -2,8 +2,6 @@ import "chat.dart";
 import "database_repository.dart";
 import "user.dart";
 
-// import "chat.dart";
-
 void main() {
   MockDatabaseRepository repo = MockDatabaseRepository();
 
@@ -44,7 +42,7 @@ void main() {
 
   User dj2 = DJ(
       userId: "dj_002",
-      name: "DJ Claudio Fahihi Montana",
+      name: "Claudio Fahihi Montana",
       email: "claudiofahihimontana@email.com",
       userType: UserType.dj,
       genres: ["Gabber", "Hardtekk"],
@@ -103,16 +101,22 @@ void main() {
   //print(repo.getUsers());
   repo.SendMessage(ChatMessage(
       id: "987",
-      senderId: "booker_000",
-      receiverId: "dj_002",
+      senderId: booker.userId,
+      receiverId: dj2.userId,
       message: "Moin!",
       timestamp: DateTime.timestamp()));
   repo.SendMessage(ChatMessage(
       id: "988",
-      senderId: "dj_002",
-      receiverId: "booker_000",
+      senderId: dj2.userId,
+      receiverId: booker.userId,
       message: "Selber Moin!",
       timestamp: DateTime.timestamp()));
-  print(repo.searchDJs(["House", "Gabber"], null, null, null));
-  print(repo.getMessages("booker_000", "dj_002"));
+  repo.SendMessage(ChatMessage(
+      id: "988",
+      senderId: dj3.userId,
+      receiverId: booker.userId,
+      message: "Diese Nachricht ist nicht zu sehen.",
+      timestamp: DateTime.timestamp()));
+  print(repo.searchDJs(["House", "Gabber"], null, 100, null));
+  print(repo.getMessages(booker.userId, dj2.userId));
 }
