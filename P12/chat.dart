@@ -1,3 +1,6 @@
+// import "database_repository.dart";
+// import "user.dart";
+
 class ChatMessage {
   final String id;
   final String senderId;
@@ -11,4 +14,17 @@ class ChatMessage {
       required this.receiverId,
       required this.message,
       required this.timestamp});
+
+  @override
+  String toString() {
+    return "$message - $timestamp\n";
+  }
+
+  // String toStringWithUser(MockDatabaseRepository repo) {
+  //   User? sender = repo.getUsers().firstWhere(
+  //         (user) => user.userId == senderId,
+  //       );
+
+  //   return "${sender.name}: $message ($timestamp)\n".toString();
+  // }
 }

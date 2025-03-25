@@ -1,3 +1,4 @@
+import "chat.dart";
 import "database_repository.dart";
 import "user.dart";
 
@@ -76,7 +77,7 @@ void main() {
       repo: repo);
 
   User booker = Booker(
-      userId: "booker_001",
+      userId: "booker_000",
       name: "BitBat Club",
       email: "bitbatclub@email.com",
       userType: UserType.booker,
@@ -100,5 +101,18 @@ void main() {
   // repo.addUser(dj3);
   // repo.addUser(booker);
   //print(repo.getUsers());
+  repo.SendMessage(ChatMessage(
+      id: "987",
+      senderId: "booker_000",
+      receiverId: "dj_002",
+      message: "Moin!",
+      timestamp: DateTime.timestamp()));
+  repo.SendMessage(ChatMessage(
+      id: "988",
+      senderId: "dj_002",
+      receiverId: "booker_000",
+      message: "Selber Moin!",
+      timestamp: DateTime.timestamp()));
   print(repo.searchDJs(["House", "Gabber"], null, null, null));
+  print(repo.getMessages("booker_000", "dj_002"));
 }
