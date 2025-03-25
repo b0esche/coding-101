@@ -15,27 +15,27 @@ abstract class User {
 }
 
 class DJ extends User {
-  final List<String> genres;
   final String headUrl;
   final String city;
-  final int bpmMin;
-  final int bpmMax;
   final String about;
   final String set1Url;
   final String set2Url;
   final String info;
+  final List<String> genres;
+  final int bpmMin;
+  final int bpmMax;
   final double? rating;
 
   DJ(
-      {required this.genres,
-      required this.headUrl,
+      {required this.headUrl,
       required this.city,
-      required this.bpmMin,
-      required this.bpmMax,
       required this.about,
       required this.set1Url,
       required this.set2Url,
       required this.info,
+      required this.genres,
+      required this.bpmMin,
+      required this.bpmMax,
       this.rating,
       required super.userId,
       required super.name,
@@ -71,8 +71,8 @@ class Booker extends User {
   final String type;
   final String about;
   final String info;
-  final double? rating;
   final List<String> mediaUrl;
+  final double? rating;
 
   Booker(
       {required this.headUrl,
@@ -80,8 +80,8 @@ class Booker extends User {
       required this.type,
       required this.about,
       required this.info,
-      this.rating,
       required this.mediaUrl,
+      this.rating,
       required super.userId,
       required super.name,
       required super.email,
