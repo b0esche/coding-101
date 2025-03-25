@@ -1,3 +1,4 @@
+import 'search_list_item.dart';
 import 'chat.dart';
 import 'user.dart';
 
@@ -7,6 +8,8 @@ abstract class DatabaseRepository {
   void SendMessage(ChatMessage message);
   List<ChatMessage> getMessages(String userId1, String userId2);
   void addSearchItem(DJ dj);
+  List<SearchListItem> searchDJs(
+      List<String>? genre, String? city, String? bpm);
 }
 
 class MockDatabaseRepository implements DatabaseRepository {
@@ -41,5 +44,17 @@ class MockDatabaseRepository implements DatabaseRepository {
   @override
   void addSearchItem(DJ dj) {
     _djs.add(dj);
+  }
+
+  @override
+  List<SearchListItem> searchDJs(
+      List<String>? genre, String? city, String? bpm) {
+    return _djs
+        .where((dj) =>
+            (genre == null || dj.genres.contains(genre)) &&
+            (city == null || dj.city == city) &&
+            (bpm == null || dj.bpm == bpm))
+        .map((dj) => SearchListItem(dj: dj))
+        .toList();
   }
 }
