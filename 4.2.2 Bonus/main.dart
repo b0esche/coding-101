@@ -4,22 +4,22 @@ class Text extends Widget {
 }
 
 class Column extends Widget {
-  final List<Text> children;
+  final List<Widget> children;
   Column({required this.children});
 }
 
 class Center extends Widget {
-  final Column child;
+  final Widget child;
   Center({required this.child});
 }
 
 class Scaffold extends Widget {
-  final Center body;
+  final Widget body;
   Scaffold({required this.body});
 }
 
 class MaterialApp extends Widget {
-  final Scaffold home;
+  final Widget home;
   MaterialApp({required this.home});
 }
 
