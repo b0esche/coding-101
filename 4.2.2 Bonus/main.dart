@@ -4,7 +4,7 @@ class Text extends Widget {
 }
 
 class Column extends Widget {
-  final Text children;
+  final List<Text> children;
   Column({required this.children});
 }
 
@@ -24,3 +24,11 @@ class MaterialApp extends Widget {
 }
 
 class Widget {}
+
+void main() {
+  var myApp = MaterialApp(
+    home: Scaffold(
+      body: Center(child: Column(children: [Text("Hallo"), Text("Welt!")])),
+    ),
+  );
+}
