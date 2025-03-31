@@ -91,7 +91,6 @@ class MyHomePage extends StatelessWidget {
                   image: AssetImage("assets/images/hqdefault.jpg"),
                   fit: BoxFit.cover,
                 ),
-
                 border: Border.all(
                   color: const Color.fromARGB(155, 40, 187, 255),
                   width: 2,
@@ -175,8 +174,6 @@ class MyHomePage extends StatelessWidget {
             ),
             Divider(thickness: 2),
             SizedBox(height: 16),
-
-            // Placeholder(fallbackHeight: 150),
           ],
         ),
       ),
@@ -240,7 +237,6 @@ class MyHomePage extends StatelessWidget {
             },
           );
         }, // Schließt das
-
         backgroundColor: Colors.blue,
         child: Icon(Icons.add),
       ),
