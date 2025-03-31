@@ -176,7 +176,11 @@ class MyHomePage extends StatelessWidget {
               ],
             ),
             Divider(thickness: 2),
-            SizedBox(height: 16),
+            SizedBox(height: 2),
+            Text(
+              "Hier noch eine Beschreibung",
+              style: TextStyle(fontStyle: FontStyle.italic),
+            ),
           ],
         ),
       ),
