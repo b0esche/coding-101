@@ -100,7 +100,10 @@ class MyHomePage extends StatelessWidget {
               child: Text(""),
             ),
             SizedBox(height: 16),
-            Text("Hier steht der Artikel...", style: TextStyle(fontSize: 16)),
+            Text(
+              "Hier steht der Artikel, Hier steht der Artikel,\nHier steht der Artikel, Hier steht der Artikel,\nHier steht der Artikel...",
+              style: TextStyle(fontSize: 16),
+            ),
             Divider(thickness: 2),
             SizedBox(height: 16),
             Row(
