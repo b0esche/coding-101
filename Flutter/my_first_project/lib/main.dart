@@ -24,6 +24,7 @@ class MainApp extends StatelessWidget {
               SizedBox(height: 8),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
+                spacing: 8,
                 children: [Text("Autor"), Text("Datum")],
               ),
               Divider(thickness: 2),
