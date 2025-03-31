@@ -66,6 +66,11 @@ class MainApp extends StatelessWidget {
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
                           color: Colors.amber,
+                          border: Border(
+                            top: BorderSide(color: Colors.black, width: 1),
+                            left: BorderSide(color: Colors.black, width: 1),
+                            right: BorderSide(color: Colors.black, width: 1),
+                          ),
                           borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(16),
                             topRight: Radius.circular(16),
