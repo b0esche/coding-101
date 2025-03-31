@@ -22,7 +22,7 @@ class MyHomePage extends StatelessWidget {
       backgroundColor: const Color.fromARGB(255, 255, 228, 228),
       appBar: AppBar(
         title: Text(
-          "Titel",
+          "App Titel",
           style: TextStyle(
             color: const Color.fromARGB(255, 194, 194, 194),
             letterSpacing: 2.0,
