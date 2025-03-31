@@ -46,8 +46,14 @@ class MainApp extends StatelessWidget {
               Divider(thickness: 2),
               Container(
                 height: 200,
-                color: Colors.grey.shade300,
+
                 alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  border: Border.all(color: Colors.black, width: 1),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+
                 child: Text("Bild"),
               ),
               SizedBox(height: 16),
