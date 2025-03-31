@@ -12,6 +12,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
+        backgroundColor: const Color.fromARGB(255, 255, 228, 228),
         appBar: AppBar(
           title: Text(
             "Titel",
@@ -25,6 +26,7 @@ class MainApp extends StatelessWidget {
           ),
           centerTitle: true,
           backgroundColor: const Color.fromARGB(255, 88, 78, 226),
+          shape: Border(bottom: BorderSide(color: Colors.black, width: 1.5)),
         ),
         body: Padding(
           padding: EdgeInsets.all(16.0),
