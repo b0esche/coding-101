@@ -168,9 +168,19 @@ class MainApp extends StatelessWidget {
               ),
               Divider(thickness: 2),
               SizedBox(height: 16),
-              Placeholder(fallbackHeight: 150),
+              // Placeholder(fallbackHeight: 150),
             ],
           ),
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: Color.fromARGB(187, 106, 98, 208),
+          items: [
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profil"),
+            BottomNavigationBarItem(icon: Icon(Icons.search), label: "Chats"),
+          ],
+          selectedFontSize: 14,
+          unselectedFontSize: 10,
+          iconSize: 20,
         ),
       ),
     );
