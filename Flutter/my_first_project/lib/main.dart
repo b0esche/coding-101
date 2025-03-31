@@ -167,7 +167,9 @@ class MyHomePage extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: const Color.fromARGB(255, 255, 100, 29),
                         border: Border.all(color: Colors.black, width: 2),
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(16),
+                        ),
                       ),
                       child: Text("C"),
                     ),
