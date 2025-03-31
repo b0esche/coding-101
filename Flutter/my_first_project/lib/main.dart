@@ -224,7 +224,7 @@ class MyHomePage extends StatelessWidget {
                       leading: Icon(Icons.settings),
                       title: Text('Einstellungen'),
                       onTap: () {
-                        Navigator.pop(context); // Schließt das BottomSheet
+                        Navigator.pop(context);
                       },
                     ),
                     ListTile(
@@ -239,7 +239,7 @@ class MyHomePage extends StatelessWidget {
               );
             },
           );
-        }, // Schließt das
+        },
         backgroundColor: Colors.blue,
         child: Icon(Icons.add),
       ),
