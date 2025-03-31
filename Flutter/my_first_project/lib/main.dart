@@ -56,7 +56,6 @@ class MainApp extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 spacing: 24,
-
                 children: [
                   Stack(
                     alignment: Alignment.topCenter,
@@ -65,7 +64,13 @@ class MainApp extends StatelessWidget {
                         height: 200,
                         width: 100,
                         alignment: Alignment.center,
-                        color: Colors.amber,
+                        decoration: BoxDecoration(
+                          color: Colors.amber,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(16),
+                            topRight: Radius.circular(16),
+                          ),
+                        ),
                         child: Text("A"),
                       ),
                       Positioned(top: 0, child: Text("Text A")),
@@ -79,7 +84,10 @@ class MainApp extends StatelessWidget {
                         height: 144,
                         width: 100,
                         alignment: Alignment.center,
-                        color: const Color.fromARGB(255, 235, 129, 47),
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 235, 129, 47),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
                         child: Text("B"),
                       ),
                     ],
@@ -97,7 +105,11 @@ class MainApp extends StatelessWidget {
                         height: 108,
                         width: 100,
                         alignment: Alignment.center,
-                        color: const Color.fromARGB(255, 255, 100, 29),
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 255, 100, 29),
+                          border: Border.all(color: Colors.black, width: 2),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
                         child: Text("C"),
                       ),
                     ],
@@ -105,6 +117,8 @@ class MainApp extends StatelessWidget {
                 ],
               ),
               Divider(thickness: 2),
+              SizedBox(height: 16),
+              Placeholder(fallbackHeight: 150),
             ],
           ),
         ),
