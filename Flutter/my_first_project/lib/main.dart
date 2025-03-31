@@ -28,6 +28,20 @@ class MainApp extends StatelessWidget {
           backgroundColor: const Color.fromARGB(255, 88, 78, 226),
           shape: Border(bottom: BorderSide(color: Colors.black, width: 1.5)),
         ),
+        drawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              DrawerHeader(
+                decoration: BoxDecoration(color: Colors.grey),
+                child: Text(
+                  "Menü",
+                  style: TextStyle(color: Colors.white, fontSize: 24),
+                ),
+              ),
+            ],
+          ),
+        ),
         body: Padding(
           padding: EdgeInsets.all(16.0),
           child: Column(
@@ -46,15 +60,20 @@ class MainApp extends StatelessWidget {
               Divider(thickness: 2),
               Container(
                 height: 200,
-
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
-                  border: Border.all(color: Colors.black, width: 1),
+                  image: DecorationImage(
+                    image: AssetImage("assets/images/hqdefault.jpg"),
+                    fit: BoxFit.cover,
+                  ),
+
+                  border: Border.all(
+                    color: const Color.fromARGB(155, 40, 187, 255),
+                    width: 2,
+                  ),
                   borderRadius: BorderRadius.circular(16),
                 ),
-
-                child: Text("Bild"),
+                child: Text(""),
               ),
               SizedBox(height: 16),
               Text("Hier steht der Artikel...", style: TextStyle(fontSize: 16)),
