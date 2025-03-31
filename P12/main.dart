@@ -30,7 +30,7 @@ void main() {
       userType: UserType.dj,
       genres: ["House", "Schranz"],
       headUrl: "https://www.leadersnet.de/resources/images/",
-      city: "Berlin",
+      city: "Ischgl",
       bpmMin: 120,
       bpmMax: 140,
       about: "I bin so schööö!",
@@ -112,11 +112,12 @@ void main() {
       message: "Selber Moin!",
       timestamp: DateTime.timestamp()));
   repo.SendMessage(ChatMessage(
-      id: "988",
+      id: "989",
       senderId: dj3.userId,
       receiverId: booker.userId,
       message: "Diese Nachricht ist nicht zu sehen.",
       timestamp: DateTime.timestamp()));
   print(repo.searchDJs(["House", "Gabber"], null, 100, null));
   print(repo.getMessages(booker.userId, dj2.userId));
+  dj2.showProfile();
 }

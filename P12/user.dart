@@ -61,7 +61,7 @@ class DJ extends User {
     print("${rating ?? ""}");
     print("$name");
     print("$city");
-    print("BPM: $bpmMin - $bpmMax");
+    print("$bpmMin - $bpmMax BPM");
     print("${genres.join(", ")}");
     print("About: $about");
     print("Set 1: $set1Url");

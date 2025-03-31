@@ -8,6 +8,6 @@ class SearchListItem {
 
   @override
   String toString() {
-    return "${dj.rating}, ${dj.name}, ${dj.genres}\n";
+    return "${dj.name}, ${dj.genres}, ${dj.rating}\n";
   }
 }
