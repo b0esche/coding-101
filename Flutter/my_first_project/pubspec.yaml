@@ -20,4 +20,5 @@ flutter:
 
   assets:
      - assets/images/hqdefault.jpg
+     - assets/images/testbild.jpg
 

@@ -47,15 +47,33 @@ class MainApp extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "Überschrift",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              Row(
+                children: [
+                  Text(
+                    "Überschrift",
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  Spacer(),
+                  Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage("assets/images/testbild.jpg"),
+                      ),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ],
               ),
               SizedBox(height: 8),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 spacing: 8,
-                children: [Text("Autor"), Text("Datum")],
+                children: [
+                  Text("Autor"),
+                  Text(DateTime.timestamp().toString()),
+                ],
               ),
               Divider(thickness: 2),
               Container(
