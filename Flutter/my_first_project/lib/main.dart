@@ -49,141 +49,143 @@ class MyHomePage extends StatelessWidget {
           ],
         ),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Text(
-                  "Überschrift",
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-                Spacer(),
-                Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage("assets/images/testbild.jpg"),
-                    ),
-                    shape: BoxShape.circle,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    "Überschrift",
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              spacing: 8,
-              children: [
-                Text("Autor"),
-                Text(DateFormat('dd.MM.yyyy').format(DateTime.now())),
-              ],
-            ),
-            Divider(thickness: 2),
-            Container(
-              height: 200,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage("assets/images/hqdefault.jpg"),
-                  fit: BoxFit.cover,
-                ),
-                border: Border.all(
-                  color: const Color.fromARGB(155, 40, 187, 255),
-                  width: 2,
-                ),
-                borderRadius: BorderRadius.circular(16),
+                  Spacer(),
+                  Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage("assets/images/testbild.jpg"),
+                      ),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ],
               ),
-              child: Text(""),
-            ),
-            SizedBox(height: 16),
-            Text(
-              "Hier steht der Artikel, Hier steht der Artikel,\nHier steht der Artikel, Hier steht der Artikel,\nHier steht der Artikel...",
-              style: TextStyle(fontSize: 16),
-            ),
-            Divider(thickness: 2),
-            SizedBox(height: 16),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              spacing: 24,
-              children: [
-                Stack(
-                  alignment: Alignment.topCenter,
-                  children: [
-                    Container(
-                      height: 200,
-                      width: 100,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: Colors.amber,
-                        border: Border(
-                          top: BorderSide(color: Colors.black, width: 1),
-                          left: BorderSide(color: Colors.black, width: 1),
-                          right: BorderSide(color: Colors.black, width: 1),
-                        ),
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(16),
-                          topRight: Radius.circular(16),
-                        ),
-                      ),
-                      child: Text("A"),
-                    ),
-                    Positioned(top: 0, child: Text("Text A")),
-                  ],
+              SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                spacing: 8,
+                children: [
+                  Text("Autor"),
+                  Text(DateFormat('dd.MM.yyyy').format(DateTime.now())),
+                ],
+              ),
+              Divider(thickness: 2),
+              Container(
+                height: 200,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage("assets/images/hqdefault.jpg"),
+                    fit: BoxFit.cover,
+                  ),
+                  border: Border.all(
+                    color: const Color.fromARGB(155, 40, 187, 255),
+                    width: 2,
+                  ),
+                  borderRadius: BorderRadius.circular(16),
                 ),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text("Text B"),
-                    Container(
-                      height: 144,
-                      width: 100,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 235, 129, 47),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Text("B"),
-                    ),
-                  ],
-                ),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Container(
-                      width: 100,
-                      alignment: Alignment.centerRight,
-                      child: Text("Text C"),
-                    ),
-                    Container(
-                      height: 108,
-                      width: 100,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 255, 100, 29),
-                        border: Border.all(color: Colors.black, width: 2),
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(16),
+                child: Text(""),
+              ),
+              SizedBox(height: 16),
+              Text(
+                "Hier steht der Artikel, Hier steht der Artikel,\nHier steht der Artikel, Hier steht der Artikel,\nHier steht der Artikel...",
+                style: TextStyle(fontSize: 16),
+              ),
+              Divider(thickness: 2),
+              SizedBox(height: 16),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                spacing: 24,
+                children: [
+                  Stack(
+                    alignment: Alignment.topCenter,
+                    children: [
+                      Container(
+                        height: 200,
+                        width: 100,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: Colors.amber,
+                          border: Border(
+                            top: BorderSide(color: Colors.black, width: 1),
+                            left: BorderSide(color: Colors.black, width: 1),
+                            right: BorderSide(color: Colors.black, width: 1),
+                          ),
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(16),
+                            topRight: Radius.circular(16),
+                          ),
                         ),
+                        child: Text("A"),
                       ),
-                      child: Text("C"),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            Divider(thickness: 2),
-            SizedBox(height: 2),
-            Text(
-              "Hier noch eine Beschreibung",
-              style: TextStyle(fontStyle: FontStyle.italic),
-            ),
-          ],
+                      Positioned(top: 0, child: Text("Text A")),
+                    ],
+                  ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text("Text B"),
+                      Container(
+                        height: 144,
+                        width: 100,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 235, 129, 47),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Text("B"),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Container(
+                        width: 100,
+                        alignment: Alignment.centerRight,
+                        child: Text("Text C"),
+                      ),
+                      Container(
+                        height: 108,
+                        width: 100,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 255, 100, 29),
+                          border: Border.all(color: Colors.black, width: 2),
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(16),
+                          ),
+                        ),
+                        child: Text("C"),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              Divider(thickness: 2),
+              SizedBox(height: 2),
+              Text(
+                "Hier noch eine Beschreibung\nHier noch eine Beschreibung\nHier noch eine Beschreibung\nHier mpcj eine Beschreibung\nBier noch eine Beschreibung",
+                style: TextStyle(fontStyle: FontStyle.italic),
+              ),
+            ],
+          ),
         ),
       ),
 
