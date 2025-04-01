@@ -53,7 +53,7 @@ class MainApp extends StatelessWidget {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.grey,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(32),
                             ),
                           ),
                           child: Text(
@@ -77,7 +77,7 @@ class MainApp extends StatelessWidget {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.grey,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(32),
                             ),
                           ),
                           child: Text(
@@ -101,7 +101,7 @@ class MainApp extends StatelessWidget {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.grey,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(32),
                             ),
                           ),
                           child: Text(
