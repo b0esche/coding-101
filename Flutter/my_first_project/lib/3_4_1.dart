@@ -41,88 +41,72 @@ class MainApp extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  // Red Container with Button
                   Padding(
                     padding: EdgeInsets.only(right: 8.0),
                     child: Container(
                       color: Colors.red,
                       height: 80,
                       width: 80,
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey[300], // Grauer Button
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              6,
-                            ), // Abgerundete Ecken
+                      child: Center(
+                        child: ElevatedButton(
+                          onPressed: () {},
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                           ),
-                          padding: EdgeInsets.zero, // Kein extra Padding
-                        ),
-                        child: Text(
-                          "A",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                          child: Text(
+                            "A",
+                            style: TextStyle(color: Colors.black),
                           ),
                         ),
                       ),
                     ),
                   ),
-                  // Green Container with Button
+
                   Padding(
                     padding: EdgeInsets.only(right: 8.0),
                     child: Container(
                       color: Colors.green,
                       height: 80,
                       width: 80,
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey[300], // Grauer Button
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              6,
-                            ), // Abgerundete Ecken
+                      child: Center(
+                        child: ElevatedButton(
+                          onPressed: () {},
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                           ),
-                          padding: EdgeInsets.zero, // Kein extra Padding
-                        ),
-                        child: Text(
-                          "B",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                          child: Text(
+                            "B",
+                            style: TextStyle(color: Colors.black),
                           ),
                         ),
                       ),
                     ),
                   ),
-                  // Blue Container with Button
+
                   Padding(
                     padding: EdgeInsets.only(right: 8.0),
                     child: Container(
                       color: Colors.blue,
                       height: 80,
                       width: 80,
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey[300], // Grauer Button
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              6,
-                            ), // Abgerundete Ecken
+                      child: Center(
+                        child: ElevatedButton(
+                          onPressed: () {},
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                           ),
-                          padding: EdgeInsets.zero, // Kein extra Padding
-                        ),
-                        child: Text(
-                          "C",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                          child: Text(
+                            "C",
+                            style: TextStyle(color: Colors.black),
                           ),
                         ),
                       ),
