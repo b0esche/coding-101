@@ -180,10 +180,29 @@ class MyHomePage extends StatelessWidget {
               ),
               Divider(thickness: 2),
               SizedBox(height: 2),
-              Text(
-                "Hier noch eine Beschreibung\nHier noch eine Beschreibung\nHier noch eine Beschreibung\nHier mpcj eine Beschreibung\nBier noch eine Beschreibung",
-                style: TextStyle(fontStyle: FontStyle.italic),
+              Row(
+                children: [
+                  Text(
+                    "Hier noch eine Beschreibung\nHier noch eine Beschreibung\nHier noch eine Beschreibung\nHier mpcj eine Beschreibung\nBier noch eine Beschreibung",
+                    style: TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                  Spacer(),
+                  Container(
+                    height: 40,
+                    width: 140,
+                    alignment: Alignment.center,
+                    color: Colors.blue,
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey,
+                      ),
+                      child: Text("Button"),
+                    ),
+                  ),
+                ],
               ),
+              SizedBox(height: 60),
             ],
           ),
         ),
