@@ -58,7 +58,9 @@ class MainApp extends StatelessWidget {
                           ),
                           child: Text(
                             "A",
-                            style: TextStyle(color: Colors.black),
+                            style: TextStyle(
+                              color: const Color.fromARGB(255, 255, 255, 255),
+                            ),
                           ),
                         ),
                       ),
@@ -82,7 +84,9 @@ class MainApp extends StatelessWidget {
                           ),
                           child: Text(
                             "B",
-                            style: TextStyle(color: Colors.black),
+                            style: TextStyle(
+                              color: const Color.fromARGB(255, 255, 255, 255),
+                            ),
                           ),
                         ),
                       ),
@@ -106,7 +110,9 @@ class MainApp extends StatelessWidget {
                           ),
                           child: Text(
                             "C",
-                            style: TextStyle(color: Colors.black),
+                            style: TextStyle(
+                              color: const Color.fromARGB(255, 255, 255, 255),
+                            ),
                           ),
                         ),
                       ),

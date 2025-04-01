@@ -196,6 +196,7 @@ class MyHomePage extends StatelessWidget {
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.grey,
+                        fixedSize: Size(120, 0),
                       ),
                       child: Text("Button"),
                     ),
