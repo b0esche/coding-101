@@ -29,7 +29,6 @@ class MainApp extends StatelessWidget {
                       height: 120,
                       width: 120,
                       child: Image(
-                        // Hier Image Button zu Account Settings impl.
                         image: AssetImage('assets/images/gighub_logo.png'),
                         fit: BoxFit.fill,
                       ),
@@ -42,8 +41,10 @@ class MainApp extends StatelessWidget {
                         height: 50,
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: NetworkImage("https://picsum.photos/100"),
-                          ),
+                            image: NetworkImage(
+                              "https://picsum.photos/100",
+                            ), // Hier Image Button zu Account Settings impl.
+                          ), // mit Rand :)
                           shape: BoxShape.circle,
                         ),
                       ),
