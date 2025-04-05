@@ -29,7 +29,7 @@ class MainApp extends StatelessWidget {
                       height: 120,
                       width: 120,
                       child: Image(
-                        // Hier Image Button zu Account Settings implementieren
+                        // Hier Image Button zu Account Settings impl.
                         image: AssetImage('assets/images/gighub_logo.png'),
                         fit: BoxFit.fill,
                       ),
@@ -58,7 +58,7 @@ class MainApp extends StatelessWidget {
                     TextButton(
                       onPressed: () {},
                       child: Text(
-                        "sort v",
+                        "sort v", // TextButton mit rotierendem Chevron impl.
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
@@ -66,7 +66,7 @@ class MainApp extends StatelessWidget {
                 ),
                 // SingleChildScrollView(
                 //   child: ListView(children: []),
-                // ), // upNext: ListTiles implementieren
+                // ), // upNext: ListTiles impl.
               ],
             ),
           ),
