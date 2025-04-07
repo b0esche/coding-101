@@ -20,40 +20,52 @@ class MainApp extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                SizedBox(height: 32),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 50,
-                    ), // AB HIER NICHT MEHR SCALABLE... Stack vielleicht
-                    SizedBox(
-                      height: 120,
-                      width: 120,
-                      child: Image(
-                        image: AssetImage('assets/images/gighub_logo.png'),
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
-                      child: Container(
-                        width: 50,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.white, width: 2),
-                          image: DecorationImage(
-                            image: NetworkImage(
-                              "https://picsum.photos/100",
-                            ), // Hier (User-)Image Button zu Account Settings impl.
+                SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  child: SizedBox(
+                    height: 130,
+                    child: Stack(
+                      children: [
+                        Positioned(
+                          top: 8,
+                          right: 0,
+                          child: Container(
+                            //(User)-ImageButton impl.
+                            width: 54,
+                            height: 54,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.white, width: 2),
+                              image: DecorationImage(
+                                image: NetworkImage(
+                                  "https://picsum.photos/100",
+                                ),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
                           ),
-                          shape: BoxShape.circle,
                         ),
-                      ),
+
+                        Align(
+                          alignment: Alignment(0, 0),
+                          child: SizedBox(
+                            height: 130,
+                            width: 130,
+                            child: Image.asset(
+                              'assets/images/gighub_logo.png',
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
+
                 SearchFunctionCard(),
                 SizedBox(height: 8),
                 Row(
@@ -63,7 +75,7 @@ class MainApp extends StatelessWidget {
                     TextButton(
                       onPressed: () {},
                       style: TextButton.styleFrom(
-                        padding: EdgeInsets.only(right: 4),
+                        padding: EdgeInsets.only(right: 2),
                         minimumSize: Size(0, 0),
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
@@ -75,35 +87,60 @@ class MainApp extends StatelessWidget {
                     Icon(Icons.arrow_drop_down, color: Colors.white),
                   ],
                 ),
-                SizedBox(height: 8),
+
                 Expanded(
-                  child: ListView(
-                    shrinkWrap: true,
+                  child: Stack(
                     children: [
-                      SearchListTile(
-                        name: "DJ Lorem Ipsum",
-                        genres: [Text("Genre A"), Text("Genre B")],
-                        image: NetworkImage("https://picsum.photos/100"),
+                      ListView(
+                        padding: EdgeInsets.only(top: 24),
+                        shrinkWrap: true,
+                        children: [
+                          SearchListTile(
+                            name: "DJ Lorem Ipsum",
+                            genres: [Text("Genre A"), Text("Genre B")],
+                            image: NetworkImage("https://picsum.photos/105"),
+                          ),
+                          SearchListTile(
+                            name: "DJ Lorem Ipsum",
+                            genres: [Text("Genre C"), Text("Genre B")],
+                            image: NetworkImage("https://picsum.photos/101"),
+                          ),
+                          SearchListTile(
+                            name: "DJ Lorem Ipsum",
+                            genres: [Text("Genre B"), Text("Genre A")],
+                            image: NetworkImage("https://picsum.photos/102"),
+                          ),
+                          SearchListTile(
+                            name: "DJ Lorem Ipsum",
+                            genres: [Text("Genre C"), Text("Genre A")],
+                            image: NetworkImage("https://picsum.photos/103"),
+                          ),
+                          SearchListTile(
+                            name: "DJ Lorem Ipsum",
+                            genres: [Text("Genre C"), Text("Genre A")],
+                            image: NetworkImage("https://picsum.photos/104"),
+                          ),
+                        ],
                       ),
-                      SearchListTile(
-                        name: "DJ Lorem Ipsum",
-                        genres: [Text("Genre C"), Text("Genre B")],
-                        image: NetworkImage("https://picsum.photos/100"),
-                      ),
-                      SearchListTile(
-                        name: "DJ Lorem Ipsum",
-                        genres: [Text("Genre B"), Text("Genre A")],
-                        image: NetworkImage("https://picsum.photos/100"),
-                      ),
-                      SearchListTile(
-                        name: "DJ Lorem Ipsum",
-                        genres: [Text("Genre C"), Text("Genre A")],
-                        image: NetworkImage("https://picsum.photos/100"),
-                      ),
-                      SearchListTile(
-                        name: "DJ Lorem Ipsum",
-                        genres: [Text("Genre C"), Text("Genre A")],
-                        image: NetworkImage("https://picsum.photos/100"),
+                      Positioned(
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        height: 20,
+                        child: IgnorePointer(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.black,
+                                  Colors.black.withAlpha(0),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),
