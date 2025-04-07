@@ -62,6 +62,11 @@ class MainApp extends StatelessWidget {
                     Spacer(),
                     TextButton(
                       onPressed: () {},
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.only(right: 4),
+                        minimumSize: Size(0, 0),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
                       child: Text(
                         "sort", // TextButton mit rotierendem Chevron impl.
                         style: TextStyle(color: Colors.white),

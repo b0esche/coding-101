@@ -24,6 +24,7 @@ class SearchListTile extends StatelessWidget {
         ),
 
         child: ListTile(
+          isThreeLine: true,
           subtitle: Row(
             spacing: 8,
             children: genres, // Genre Bubbles impl.
