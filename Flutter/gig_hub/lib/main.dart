@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gig_hub/search_function_card.dart';
+import 'package:gig_hub/search_list_tile.dart';
 
 void main() {
   runApp(const MainApp());
@@ -24,7 +25,9 @@ class MainApp extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(width: 50), // AB HIER NICHT MEHR SCALABLE...
+                    SizedBox(
+                      width: 50,
+                    ), // AB HIER NICHT MEHR SCALABLE... Stack vielleicht
                     SizedBox(
                       height: 120,
                       width: 120,
@@ -33,18 +36,18 @@ class MainApp extends StatelessWidget {
                         fit: BoxFit.fill,
                       ),
                     ),
-
                     Padding(
                       padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
                       child: Container(
                         width: 50,
                         height: 50,
                         decoration: BoxDecoration(
+                          border: Border.all(color: Colors.white, width: 2),
                           image: DecorationImage(
                             image: NetworkImage(
                               "https://picsum.photos/100",
-                            ), // Hier Image Button zu Account Settings impl.
-                          ), // mit Rand :)
+                            ), // Hier (User-)Image Button zu Account Settings impl.
+                          ),
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -56,18 +59,49 @@ class MainApp extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
+                    Spacer(),
                     TextButton(
                       onPressed: () {},
                       child: Text(
-                        "sort v", // TextButton mit rotierendem Chevron impl.
+                        "sort", // TextButton mit rotierendem Chevron impl.
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
+                    Icon(Icons.arrow_drop_down, color: Colors.white),
                   ],
                 ),
-                // SingleChildScrollView(
-                //   child: ListView(children: []),
-                // ), // upNext: ListTiles impl.
+                Expanded(
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: [
+                      SearchListTile(
+                        name: "DJ Lorem Ipsum",
+                        genres: [Text("Genre A"), Text("Genre B")],
+                        image: NetworkImage("https://picsum.photos/100"),
+                      ),
+                      SearchListTile(
+                        name: "DJ Lorem Ipsum",
+                        genres: [Text("Genre C"), Text("Genre B")],
+                        image: NetworkImage("https://picsum.photos/100"),
+                      ),
+                      SearchListTile(
+                        name: "DJ Lorem Ipsum",
+                        genres: [Text("Genre B"), Text("Genre A")],
+                        image: NetworkImage("https://picsum.photos/100"),
+                      ),
+                      SearchListTile(
+                        name: "DJ Lorem Ipsum",
+                        genres: [Text("Genre C"), Text("Genre A")],
+                        image: NetworkImage("https://picsum.photos/100"),
+                      ),
+                      SearchListTile(
+                        name: "DJ Lorem Ipsum",
+                        genres: [Text("Genre C"), Text("Genre A")],
+                        image: NetworkImage("https://picsum.photos/100"),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
