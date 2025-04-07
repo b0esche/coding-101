@@ -77,13 +77,19 @@ class MainApp extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        print("Hier wird sortiert!");
+                      },
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text("sort", style: TextStyle(color: Colors.white)),
                           SizedBox(width: 4),
-                          Icon(Icons.arrow_drop_down, color: Colors.white),
+                          Icon(
+                            Icons.arrow_drop_down,
+                            color: Colors.white,
+                            size: 24,
+                          ),
                         ],
                       ),
                     ),

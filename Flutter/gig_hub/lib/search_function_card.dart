@@ -28,8 +28,11 @@ class SearchFunctionCard extends StatelessWidget {
                 children: [
                   SizedBox(width: 85),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      print("Suche läuft...");
+                    },
                     style: ElevatedButton.styleFrom(
+                      splashFactory: NoSplash.splashFactory,
                       maximumSize: Size(150, 24),
                       minimumSize: Size(88, 22),
                       padding: EdgeInsets.zero,
@@ -46,12 +49,22 @@ class SearchFunctionCard extends StatelessWidget {
                   ),
                   Spacer(),
                   TextButton(
-                    style: ButtonStyle(alignment: Alignment.bottomCenter),
-                    onPressed: () {},
-                    child: Text(
-                      "clear",
-                      style: TextStyle(color: Colors.black87),
+                    style: ButtonStyle(
+                      foregroundColor: WidgetStateProperty.resolveWith<Color>((
+                        states,
+                      ) {
+                        if (states.contains(WidgetState.pressed)) {
+                          return Color.fromARGB(255, 181, 165, 76);
+                        }
+                        return Colors.black;
+                      }),
+                      alignment: Alignment.bottomCenter,
+                      splashFactory: NoSplash.splashFactory,
                     ),
+                    onPressed: () {
+                      print("weg damit...");
+                    },
+                    child: Text("clear"),
                   ),
                 ],
               ),
