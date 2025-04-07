@@ -67,24 +67,21 @@ class MainApp extends StatelessWidget {
                 ),
 
                 SearchFunctionCard(),
-                SizedBox(height: 8),
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Spacer(),
                     TextButton(
                       onPressed: () {},
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.only(right: 2),
-                        minimumSize: Size(0, 0),
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      ),
-                      child: Text(
-                        "sort", // Text(Icon)Button mit rotierendem Chevron impl.
-                        style: TextStyle(color: Colors.white),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text("sort", style: TextStyle(color: Colors.white)),
+                          SizedBox(width: 4),
+                          Icon(Icons.arrow_drop_down, color: Colors.white),
+                        ],
                       ),
                     ),
-                    Icon(Icons.arrow_drop_down, color: Colors.white),
                   ],
                 ),
 
@@ -107,7 +104,12 @@ class MainApp extends StatelessWidget {
                           ),
                           SearchListTile(
                             name: "DJ Lorem Ipsum",
-                            genres: [Text("Genre B"), Text("Genre A")],
+                            genres: [
+                              Text("Genre B"),
+                              Text("Genre A"),
+                              Text("Genre D"),
+                              Text("Genre E"),
+                            ],
                             image: NetworkImage("https://picsum.photos/102"),
                           ),
                           SearchListTile(
@@ -119,6 +121,25 @@ class MainApp extends StatelessWidget {
                             name: "DJ Lorem Ipsum",
                             genres: [Text("Genre C"), Text("Genre A")],
                             image: NetworkImage("https://picsum.photos/104"),
+                          ),
+                          SearchListTile(
+                            name: "DJ Lorem Ipsum",
+                            genres: [
+                              Text("Genre C"),
+                              Text("Genre A"),
+                              Text("Genre D"),
+                            ],
+                            image: NetworkImage("https://picsum.photos/105"),
+                          ),
+                          SearchListTile(
+                            name: "DJ Lorem Ipsum",
+                            genres: [Text("Genre C"), Text("Genre A")],
+                            image: NetworkImage("https://picsum.photos/106"),
+                          ),
+                          SearchListTile(
+                            name: "DJ Lorem Ipsum",
+                            genres: [Text("Genre C"), Text("Genre A")],
+                            image: NetworkImage("https://picsum.photos/107"),
                           ),
                         ],
                       ),
@@ -158,7 +179,7 @@ class MainApp extends StatelessWidget {
             BottomNavigationBarItem(icon: Icon(Icons.search), label: "chats"),
           ],
           selectedFontSize: 14,
-          unselectedFontSize: 10,
+          unselectedFontSize: 12,
           iconSize: 22,
         ),
       ),

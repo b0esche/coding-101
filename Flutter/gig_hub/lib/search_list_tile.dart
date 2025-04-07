@@ -24,14 +24,15 @@ class SearchListTile extends StatelessWidget {
         ),
 
         child: ListTile(
+          contentPadding: EdgeInsets.symmetric(horizontal: 8),
+          visualDensity: VisualDensity(vertical: 1),
           minLeadingWidth: 64,
           isThreeLine: true,
           subtitle: Row(
             spacing: 8,
             children: genres, // Genre Bubbles impl.
           ),
-          contentPadding: EdgeInsets.all(8),
-          leading: CircleAvatar(backgroundImage: image, radius: 28),
+          leading: CircleAvatar(backgroundImage: image, radius: 40),
           title: Text(name, style: TextStyle(fontWeight: FontWeight.bold)),
         ),
       ),
