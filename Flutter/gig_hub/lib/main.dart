@@ -33,18 +33,25 @@ class MainApp extends StatelessWidget {
                         Positioned(
                           top: 8,
                           right: 0,
-                          child: Container(
-                            //(User)-ImageButton impl.
-                            width: 54,
-                            height: 54,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(color: Colors.white, width: 2),
-                              image: DecorationImage(
-                                image: NetworkImage(
-                                  "https://picsum.photos/100",
+                          child: GestureDetector(
+                            onTap: () {
+                              print("dit läuft");
+                            },
+                            child: Container(
+                              width: 54,
+                              height: 54,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Colors.white,
+                                  width: 2,
                                 ),
-                                fit: BoxFit.cover,
+                                image: DecorationImage(
+                                  image: NetworkImage(
+                                    "https://picsum.photos/100",
+                                  ),
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
                           ),
@@ -65,9 +72,7 @@ class MainApp extends StatelessWidget {
                     ),
                   ),
                 ),
-
                 SearchFunctionCard(),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -84,7 +89,6 @@ class MainApp extends StatelessWidget {
                     ),
                   ],
                 ),
-
                 Expanded(
                   child: Stack(
                     children: [

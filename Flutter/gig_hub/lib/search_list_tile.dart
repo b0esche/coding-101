@@ -20,7 +20,7 @@ class SearchListTile extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border.all(color: Colors.white, width: 2),
           borderRadius: BorderRadius.circular(16),
-          color: Colors.white,
+          color: Color.fromARGB(255, 247, 247, 247),
         ),
 
         child: ListTile(

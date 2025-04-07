@@ -12,7 +12,7 @@ class SearchFunctionCard extends StatelessWidget {
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         elevation: 3,
-        color: const Color.fromARGB(241, 255, 255, 255),
+        color: const Color.fromARGB(255, 247, 247, 247),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 0, 0),
           child: Column(
