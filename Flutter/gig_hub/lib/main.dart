@@ -68,13 +68,14 @@ class MainApp extends StatelessWidget {
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
                       child: Text(
-                        "sort", // TextButton mit rotierendem Chevron impl.
+                        "sort", // Text(Icon)Button mit rotierendem Chevron impl.
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
                     Icon(Icons.arrow_drop_down, color: Colors.white),
                   ],
                 ),
+                SizedBox(height: 8),
                 Expanded(
                   child: ListView(
                     shrinkWrap: true,
