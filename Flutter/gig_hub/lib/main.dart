@@ -11,7 +11,7 @@ void main() {
 
 class MainApp extends StatelessWidget {
   final MockDatabaseRepository repo;
-  MainApp({super.key, required this.repo});
+  const MainApp({super.key, required this.repo});
 
   @override
   Widget build(BuildContext context) {
