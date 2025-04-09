@@ -1,16 +1,102 @@
 import 'package:flutter/material.dart';
+import 'package:gig_hub/database_repository.dart';
 import 'package:gig_hub/search_function_card.dart';
 import 'package:gig_hub/search_list_tile.dart';
+import 'user.dart';
 
 void main() {
-  runApp(const MainApp());
+  final repo = MockDatabaseRepository();
+  runApp(MainApp(repo: repo));
 }
 
 class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+  final MockDatabaseRepository repo;
+  MainApp({super.key, required this.repo});
 
   @override
   Widget build(BuildContext context) {
+    final List<DJ> _usersDJ = [
+      DJ(
+        headUrl: "https://picsum.photos/101",
+        city: "Berlin",
+        about: "Moin",
+        set1Url: "set1Url",
+        set2Url: "set2Url",
+        info: "info",
+        genres: ["Genre A", "Genre B", "Genre C"],
+        bpmMin: 130,
+        bpmMax: 150,
+        userId: "abcd",
+        name: "DJ Lorem Ipsum",
+        email: "loremipsum@email.com",
+        userType: UserType.dj,
+        repo: repo,
+      ),
+      DJ(
+        headUrl: "https://picsum.photos/102",
+        city: "Berlin",
+        about: "Moin",
+        set1Url: "set1Url",
+        set2Url: "set2Url",
+        info: "info",
+        genres: ["Genre A", "Genre B", "Genre C"],
+        bpmMin: 130,
+        bpmMax: 150,
+        userId: "abcd",
+        name: "DJ Lorem Ipsum",
+        email: "loremipsum@email.com",
+        userType: UserType.dj,
+        repo: repo,
+      ),
+      DJ(
+        headUrl: "https://picsum.photos/103",
+        city: "Berlin",
+        about: "Moin",
+        set1Url: "set1Url",
+        set2Url: "set2Url",
+        info: "info",
+        genres: ["Genre A", "Genre B", "Genre C"],
+        bpmMin: 130,
+        bpmMax: 150,
+        userId: "abcd",
+        name: "DJ Lorem Ipsum",
+        email: "loremipsum@email.com",
+        userType: UserType.dj,
+        repo: repo,
+      ),
+      DJ(
+        headUrl: "https://picsum.photos/104",
+        city: "Berlin",
+        about: "Moin",
+        set1Url: "set1Url",
+        set2Url: "set2Url",
+        info: "info",
+        genres: ["Genre A", "Genre B", "Genre C"],
+        bpmMin: 130,
+        bpmMax: 150,
+        userId: "abcd",
+        name: "DJ Lorem Ipsum",
+        email: "loremipsum@email.com",
+        userType: UserType.dj,
+        repo: repo,
+      ),
+      DJ(
+        headUrl: "https://picsum.photos/105",
+        city: "Berlin",
+        about: "Moin",
+        set1Url: "set1Url",
+        set2Url: "set2Url",
+        info: "info",
+        genres: ["Genre A", "Genre B", "Genre C"],
+        bpmMin: 130,
+        bpmMax: 150,
+        userId: "abcd",
+        name: "DJ Lorem Ipsum",
+        email: "loremipsum@email.com",
+        userType: UserType.dj,
+        repo: repo,
+      ),
+    ];
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: SafeArea(
@@ -103,60 +189,21 @@ class MainApp extends StatelessWidget {
                   Expanded(
                     child: Stack(
                       children: [
-                        ListView(
+                        ListView.builder(
                           padding: EdgeInsets.only(top: 24),
                           shrinkWrap: true,
-                          children: [
-                            SearchListTile(
-                              name: "DJ Lorem Ipsum",
-                              genres: [Text("Genre A"), Text("Genre B")],
-                              image: NetworkImage("https://picsum.photos/105"),
-                            ),
-                            SearchListTile(
-                              name: "DJ Lorem Ipsum",
-                              genres: [Text("Genre C"), Text("Genre B")],
-                              image: NetworkImage("https://picsum.photos/101"),
-                            ),
-                            SearchListTile(
-                              name: "DJ Lorem Ipsum",
-                              genres: [
-                                Text("Genre B"),
-                                Text("Genre A"),
-                                Text("Genre D"),
-                                Text("Genre E"),
-                              ],
-                              image: NetworkImage("https://picsum.photos/102"),
-                            ),
-                            SearchListTile(
-                              name: "DJ Lorem Ipsum",
-                              genres: [Text("Genre C"), Text("Genre A")],
-                              image: NetworkImage("https://picsum.photos/103"),
-                            ),
-                            SearchListTile(
-                              name: "DJ Lorem Ipsum",
-                              genres: [Text("Genre C"), Text("Genre A")],
-                              image: NetworkImage("https://picsum.photos/104"),
-                            ),
-                            SearchListTile(
-                              name: "DJ Lorem Ipsum",
-                              genres: [
-                                Text("Genre C"),
-                                Text("Genre A"),
-                                Text("Genre D"),
-                              ],
-                              image: NetworkImage("https://picsum.photos/105"),
-                            ),
-                            SearchListTile(
-                              name: "DJ Lorem Ipsum",
-                              genres: [Text("Genre C"), Text("Genre A")],
-                              image: NetworkImage("https://picsum.photos/106"),
-                            ),
-                            SearchListTile(
-                              name: "DJ Lorem Ipsum",
-                              genres: [Text("Genre C"), Text("Genre A")],
-                              image: NetworkImage("https://picsum.photos/107"),
-                            ),
-                          ],
+                          itemCount: _usersDJ.length,
+                          itemBuilder: (context, index) {
+                            DJ currentUser = _usersDJ[index];
+                            return SearchListTile(
+                              name: currentUser.name,
+                              genres:
+                                  currentUser.genres
+                                      .map((genre) => Text(genre))
+                                      .toList(),
+                              image: NetworkImage(currentUser.headUrl),
+                            );
+                          },
                         ),
                         Positioned(
                           top: 0,
