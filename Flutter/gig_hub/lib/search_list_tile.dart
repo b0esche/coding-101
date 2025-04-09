@@ -65,7 +65,7 @@ class _SearchListTileState extends State<SearchListTile> {
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 4),
-                      Wrap(spacing: 8, runSpacing: 4, children: widget.genres),
+                      Wrap(spacing: 10, runSpacing: 4, children: widget.genres),
                     ],
                   ),
                 ),
@@ -163,7 +163,7 @@ class _SearchListTileState extends State<SearchListTile> {
                                                     0,
                                                   ),
                                               child: Text(
-                                                "${widget.bpmMin.toString()}-${widget.bpmMax.toString()} bpm",
+                                                "${widget.bpmMin}-${widget.bpmMax} bpm",
                                               ),
                                             ),
                                           ],
