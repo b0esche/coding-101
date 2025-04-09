@@ -19,11 +19,20 @@ class MainApp extends StatelessWidget {
       DJ(
         headUrl: "https://picsum.photos/101",
         city: "Berlin",
-        about: "Moin",
+        about:
+            "Ich mache sehr tolle Musik und Ich mache sehr tolle Musik und Ich mache sehr tolle Musik und Ich mache sehr tolle Musik",
         set1Url: "set1Url",
         set2Url: "set2Url",
         info: "info",
-        genres: ["Genre A", "Genre B", "Genre C"],
+        genres: [
+          "Genre A",
+          "Genre B",
+          "Genre C",
+          "Genre D",
+          "Genre E",
+          "Genre F",
+          "Genre G",
+        ],
         bpmMin: 130,
         bpmMax: 150,
         userId: "abcd",
@@ -202,6 +211,10 @@ class MainApp extends StatelessWidget {
                                       .map((genre) => Text(genre))
                                       .toList(),
                               image: NetworkImage(currentUser.headUrl),
+                              about: currentUser.about,
+                              location: currentUser.city,
+                              bpmMin: currentUser.bpmMin,
+                              bpmMax: currentUser.bpmMax,
                             );
                           },
                         ),
