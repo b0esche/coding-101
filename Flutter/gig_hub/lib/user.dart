@@ -1,3 +1,5 @@
+import 'package:gig_hub/genre_bubble.dart';
+
 import 'database_repository.dart';
 
 enum UserType { dj, booker }
@@ -30,7 +32,7 @@ class DJ extends User {
   final String set1Url;
   final String set2Url;
   final String info;
-  final List<String> genres;
+  final List<GenreBubble> genres;
   final int bpmMin;
   final int bpmMax;
   final double? rating;

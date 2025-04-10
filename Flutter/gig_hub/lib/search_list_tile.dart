@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:gig_hub/genre_bubble.dart';
 
 class SearchListTile extends StatefulWidget {
   final String name;
-  final List<Text> genres;
+  final List<GenreBubble> genres;
   final NetworkImage image;
   final String about;
   final String location;
@@ -50,7 +51,16 @@ class _SearchListTileState extends State<SearchListTile> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CircleAvatar(backgroundImage: widget.image, radius: 32),
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.black, width: 1.5),
+                  ),
+                  child: CircleAvatar(
+                    backgroundImage: widget.image,
+                    radius: 32,
+                  ),
+                ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -59,11 +69,12 @@ class _SearchListTileState extends State<SearchListTile> {
                       Text(
                         widget.name,
                         style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 18,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
+
                       const SizedBox(height: 4),
                       Wrap(spacing: 10, runSpacing: 4, children: widget.genres),
                     ],
