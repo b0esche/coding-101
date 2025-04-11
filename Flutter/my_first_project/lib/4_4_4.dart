@@ -5,7 +5,7 @@ void main() {
 }
 
 class MainApp444 extends StatefulWidget {
-  MainApp444({super.key});
+  const MainApp444({super.key});
 
   @override
   State<MainApp444> createState() => _MainApp444State();
@@ -19,6 +19,7 @@ class _MainApp444State extends State<MainApp444> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             pageIndex == 0
                 ? Column(
