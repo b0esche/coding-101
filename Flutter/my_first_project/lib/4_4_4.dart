@@ -22,6 +22,7 @@ class _MainApp444State extends State<MainApp444> {
           children: [
             pageIndex == 0
                 ? Column(
+                  // ternary weil nur 2 pages, bei mehreren natürlich switch oder ifelse
                   children: [
                     Center(
                       child: Image.network(
