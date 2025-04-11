@@ -30,6 +30,7 @@ class _MainApp444State extends State<MainApp444> {
                         "https://img.freepik.com/freie-psd/koestliche-vegetarische-pizza-frisch-gebackene-toppings-kaese-pilze-pfeffer-oliven_84443-37364.jpg?semt=ais_hybrid&w=740",
                       ),
                     ),
+                    Text("Leckere Pizza"),
                   ],
                 )
                 : Column(
@@ -39,6 +40,7 @@ class _MainApp444State extends State<MainApp444> {
                         "https://img.freepik.com/psd-premium/leckerer-doener-mit-fleisch-und-gemuese-isoliert-auf-transparentem-hintergrund_812337-375.jpg",
                       ),
                     ),
+                    Text("Köstlicher Döner"),
                   ],
                 ),
           ],
