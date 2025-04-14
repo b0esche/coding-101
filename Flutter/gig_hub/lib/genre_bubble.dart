@@ -25,7 +25,7 @@ List<String> genres = [
   "Hardcore",
   "Frenchcore",
   "House",
-  "Hardhouse",
+  "Hard House",
   "Tech House",
   "Deep House",
   "G-House",
@@ -53,6 +53,7 @@ List<String> genres = [
   "Detroit",
   "Raggatek",
   "Downtempo",
+  "EDM",
 ];
 
 class GenreBubble extends StatelessWidget {

@@ -48,9 +48,9 @@ class MainApp extends StatelessWidget {
         info: "info",
         genres: [
           GenreBubble(genre: genres[12]),
-          GenreBubble(genre: genres[21]),
+          GenreBubble(genre: genres[10]),
           GenreBubble(genre: genres[29]),
-          GenreBubble(genre: genres[41]),
+          GenreBubble(genre: genres[14]),
         ],
         bpmMin: 120,
         bpmMax: 135,
@@ -62,7 +62,7 @@ class MainApp extends StatelessWidget {
       ),
       DJ(
         headUrl: "https://picsum.photos/103",
-        city: "Hamburg",
+        city: "Saint-Tropez",
         about: "Diese Worte widme ich Ibrahim",
         set1Url: "set1Url",
         set2Url: "set2Url",
@@ -97,7 +97,7 @@ class MainApp extends StatelessWidget {
         bpmMin: 140,
         bpmMax: 170,
         userId: "abcd",
-        name: "DJ Kanonenkugel",
+        name: "DJ JanE Ri Knirsch",
         email: "loremipsum@email.com",
         userType: UserType.dj,
         repo: repo,
@@ -224,8 +224,8 @@ class MainApp extends StatelessWidget {
                             return SearchListTile(
                               name: currentUser.name,
                               genres: currentUser.genres,
-                              // .map((genre) => GenreBubble(genre)),
-                              // .toList(),
+
+                              // .map((genre) => Text(genre)).toList(),
                               image: NetworkImage(currentUser.headUrl),
                               about: currentUser.about,
                               location: currentUser.city,
