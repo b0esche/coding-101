@@ -21,7 +21,7 @@ class _MainScreenState extends State<MainScreen> {
         backgroundColor: Colors.grey[300],
         appBar: AppBar(
           centerTitle: true,
-          title: Text("Gallery"),
+          title: pageIndex == 0 ? Text("Gallery") : Text("About me"),
           backgroundColor: Colors.blueGrey,
         ),
         body: Padding(
