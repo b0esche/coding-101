@@ -6,6 +6,6 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: MainScreen()); // pages[index]
+    return MaterialApp(home: MainScreen());
   }
 }
