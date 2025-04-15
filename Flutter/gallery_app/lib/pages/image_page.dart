@@ -24,7 +24,7 @@ class ImagePage extends StatelessWidget {
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(8),
-                    color: Colors.black.withOpacity(0.5),
+                    color: Color.fromARGB(125, 0, 0, 0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

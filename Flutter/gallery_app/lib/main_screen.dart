@@ -29,6 +29,7 @@ class _MainScreenState extends State<MainScreen> {
           child: Center(child: pages[pageIndex]),
         ),
         bottomNavigationBar: NavigationBar(
+          indicatorColor: Colors.indigoAccent.shade200,
           backgroundColor: Colors.blueGrey,
           selectedIndex: pageIndex,
           onDestinationSelected: (value) {

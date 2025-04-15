@@ -14,20 +14,18 @@ class AboutPage extends StatelessWidget {
             padding: EdgeInsets.all(4),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: Colors.indigo.shade300, width: 4),
+              border: Border.all(color: Colors.indigoAccent.shade200, width: 4),
             ),
             child: CircleAvatar(
-              radius: 80,
-              backgroundImage: NetworkImage(
-                "https://www.essenchecker.de/wp-content/uploads/go-x/u/b3211dd6-1430-4600-8de8-2d93d8490970/l1,t1,w1498,h1998/image-768x1024.jpg",
-              ),
+              radius: 96,
+              backgroundImage: AssetImage("assets/images/IMG_1475 Kopie.jpg"),
             ),
           ),
 
           SizedBox(
             width: 260,
             child: Text(
-              "Mein Name ist Kaya Müller, ein Fotograf im Alter von 32 Jahren, der die Welt durch die Linse entdeckt. Mit einem Hintergrund in der visuellen Kunst und jahrelanger Erfahrung in der Fotografie habe ich einen Blick für die Schönheit im Alltäglichen entwickelt. Meine Spezialität liegt in der Sport- und Naturfotografie, wo ich das Spiel von Licht und Schatten einfange, um emotionale und aussagekräftige Bilder zu schaffen.\n\nIch glaube daran, dass jeder Moment einzigartig ist und seine eigene Geschichte erzählt. In meinen Arbeiten strebe ich danach, diese Geschichten visuell zu interpretieren und sie durch kreative Kompositionen und Nuancen zum Leben zu erwecken. Meine fotografische Reise hat mich durch verschiedene Länder geführt, wo ich die Vielfalt der Kulturen und Landschaften festhalte, immer auf der Suche nach neuen Perspektiven und Herausforderungen.\n\nMein Anspruch ist es, mit meinen Bildern nicht nur zu dokumentieren, sondern auch zu inspirieren und zu berühren. Jeder Auftrag und jedes Projekt ist für mich eine Möglichkeit, meine Leidenschaft und mein Können zu zeigen und eine Verbindung zwischen dem Betrachter und dem Bild herzustellen.",
+              "Hi, ich bin Leon Bösche (geb. 11.02.1999) und auf dem Weg, als Junior App-Entwickler durchzustarten – mit Fokus auf Flutter. Nach meinem Abitur 2018 an einem Wirtschaftsgymnasium, bei dem ich Informatik als Prüfungsfach hatte, war für mich klar: Technik und kreatives Problemlösen sind genau mein Ding. Aktuell mache ich eine Umschulung zum App-Entwickler und vertiefe mein Wissen rund um Flutter, Dart und moderne App-Architekturen. Ich bringe eine Mischung aus wirtschaftlichem Verständnis, technischem Know-how und viel Motivation mit. Sauberer Code, gutes UI/UX und der Wille, stetig besser zu werden, stehen bei mir ganz oben. Mein Ziel: mobile Apps entwickeln, die nicht nur funktionieren, sondern begeistern.",
             ),
           ),
           SizedBox(height: 32),
