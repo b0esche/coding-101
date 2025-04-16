@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:gallery_app/gallery_data.dart';
+import 'package:gallery_app/src/data/gallery_data.dart';
 
-class ImagePage extends StatelessWidget {
-  const ImagePage({super.key});
+class ImageListPage extends StatelessWidget {
+  const ImageListPage({super.key});
 
   @override
   Widget build(BuildContext context) {

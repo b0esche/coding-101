@@ -48,6 +48,20 @@ List<GalleryItem> galleryData = [
         'Eine beeindruckende Drohnenaufnahme zeigt ein Tennisfeld, das idyllisch mitten im Grünen liegt. Das leuchtend grüne Spielfeld kontrastiert wunderschön mit den umgebenden Bäumen und Wiesen. An einem sonnigen Sommertag vor einigen Jahren wurde hier ein Turnier ausgetragen, bei dem Spieler und Zuschauer gleichermaßen die atemberaubende Naturkulisse genossen.',
     imagePath: 'assets/images/tennis_2.jpeg',
   ),
+  GalleryItem(
+    imageTitle: 'Fußball',
+    imageDate: '11.11.2020',
+    imageDescription:
+        'Die Farben auf diesem Foto sind ebenso atemberaubend wie der unvergleiche Moment wenn du deinem Kollegen den Ball genau durch die Beine flankst.',
+    imagePath: 'assets/images/soccer.jpeg',
+  ),
+  GalleryItem(
+    imageTitle: 'Kaya',
+    imageDate: '27.06.2021',
+    imageDescription:
+        'Diese zwei Hobbyfotografen haben im Sommer 2021 als erste Menschen weltweit einen nicht zu verachtenden Teil des Amazonas in Brasilien überquert, und das nicht mit einem Boot, sondern mit einem Floss, angetrieben von einem Windrad, ähnlich wie man sie aus den überall beliebten Niederlanden kennt.',
+    imagePath: 'assets/images/kaya.jpeg',
+  ),
 ];
 
 class GalleryItem {
