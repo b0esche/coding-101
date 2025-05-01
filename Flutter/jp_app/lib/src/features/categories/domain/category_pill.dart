@@ -39,7 +39,10 @@ class CategoryPill extends StatelessWidget {
               style: TextStyle(
                 fontWeight: FontWeight.w500,
                 fontSize: 14.0,
-                color: isSelected ? Colors.black : Palette.jpWhite,
+                color:
+                    isSelected
+                        ? const Color.fromARGB(255, 30, 30, 30)
+                        : Palette.jpWhite,
               ),
             ),
           ),
