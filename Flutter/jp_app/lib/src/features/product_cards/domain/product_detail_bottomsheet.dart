@@ -518,7 +518,7 @@ class _ProductDetailBottomSheetState extends State<ProductDetailBottomSheet> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  tapTargetSize: MaterialTapTargetSize.padded,
                 ),
                 child: Text(
                   size,
