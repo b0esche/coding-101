@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="jp_app"
+        android:label="Snackfish"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
