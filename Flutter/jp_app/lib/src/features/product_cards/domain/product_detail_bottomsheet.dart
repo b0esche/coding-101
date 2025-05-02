@@ -413,12 +413,31 @@ class _ProductDetailBottomSheetState extends State<ProductDetailBottomSheet> {
                               ),
                             ),
                           ),
+
                           ElevatedButton(
                             onPressed: () {
-                              print(
-                                'Added to order: ${product["title"]} x $_quantity, Size: $_selectedSize',
-                              );
                               Navigator.of(context).pop();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  behavior: SnackBarBehavior.floating,
+                                  backgroundColor: Palette.bgGrey.o(0.8),
+                                  elevation: 2,
+                                  showCloseIcon: true,
+                                  closeIconColor: Palette.jpWhite,
+                                  margin: EdgeInsets.all(8),
+                                  shape: BeveledRectangleBorder(
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  content: Text(
+                                    "Added to order: ${product["title"]} x $_quantity, Size: $_selectedSize",
+                                    style: TextStyle(
+                                      color: Palette.jpWhite,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  duration: Duration(seconds: 3),
+                                ),
+                              );
                             },
 
                             style: ElevatedButton.styleFrom(

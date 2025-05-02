@@ -116,25 +116,28 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          if (splash_state.shouldKeepSplashScreenElements)
-            ..._buildSplashScreenBackground(context),
-          TitleWidget(titleAnimation: _titleAnimation),
-          CategorySelector(
-            categoriesAnimation: _categoriesAnimation,
-            selectedCategory: _selectedCategory,
-            onCategorySelected: (String category) {
-              setState(() {
-                _selectedCategory = category;
-              });
-            },
-          ),
-          ItemCardWidget(itemCardAnimation: _itemCardAnimation),
-          WeRecommendWidget(weRecommendAnimation: _weRecommendAnimation),
-          ProductListWidget(productListAnimation: _productListAnimation),
-        ],
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        body: Stack(
+          children: [
+            if (splash_state.shouldKeepSplashScreenElements)
+              ..._buildSplashScreenBackground(context),
+            TitleWidget(titleAnimation: _titleAnimation),
+            CategorySelector(
+              categoriesAnimation: _categoriesAnimation,
+              selectedCategory: _selectedCategory,
+              onCategorySelected: (String category) {
+                setState(() {
+                  _selectedCategory = category;
+                });
+              },
+            ),
+            ItemCardWidget(itemCardAnimation: _itemCardAnimation),
+            WeRecommendWidget(weRecommendAnimation: _weRecommendAnimation),
+            ProductListWidget(productListAnimation: _productListAnimation),
+          ],
+        ),
       ),
     );
   }
