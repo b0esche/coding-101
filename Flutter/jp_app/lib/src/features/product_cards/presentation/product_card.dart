@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:jp_app/src/data/product_data.dart';
-import 'package:jp_app/src/features/product_cards/domain/product_detail_bottomsheet.dart';
+import 'package:jp_app/src/features/product_cards/presentation/product_detail_bottomsheet.dart';
 import 'package:jp_app/src/theme/palette.dart';
 
 class ProductCard extends StatelessWidget {
