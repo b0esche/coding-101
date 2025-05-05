@@ -424,7 +424,7 @@ class _ProductDetailBottomSheetState extends State<ProductDetailBottomSheet> {
                                   elevation: 2,
                                   showCloseIcon: true,
                                   closeIconColor: Palette.jpWhite,
-                                  margin: EdgeInsets.all(8),
+                                  margin: EdgeInsets.all(4),
                                   shape: BeveledRectangleBorder(
                                     borderRadius: BorderRadius.circular(4),
                                   ),
@@ -435,7 +435,7 @@ class _ProductDetailBottomSheetState extends State<ProductDetailBottomSheet> {
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
-                                  duration: Duration(seconds: 3),
+                                  duration: Duration(seconds: 4),
                                 ),
                               );
                             },
