@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jp_app/src/features/categories/domain/category_pill.dart';
+import 'package:jp_app/src/features/categories/presentation/category_pill.dart';
 
 class CategorySelector extends StatelessWidget {
   final Animation<Offset> categoriesAnimation;

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jp_app/src/features/item_card/domain/item_card.dart';
+import 'package:jp_app/src/features/item_card/presentation/item_card.dart';
 
 class ItemCardWidget extends StatelessWidget {
   final Animation<double> itemCardAnimation;
