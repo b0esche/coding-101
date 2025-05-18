@@ -1,0 +1,270 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_rating_stars/flutter_rating_stars.dart';
+import 'package:gig_hub/src/Data/user.dart';
+import 'package:gig_hub/src/Common/genre_bubble.dart';
+import 'package:gig_hub/src/Theme/palette.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+class SearchListTile extends StatefulWidget {
+  final DJ user;
+  final String name;
+  final List<GenreBubble> genres;
+  final NetworkImage image;
+  final String about;
+  final String location;
+  final int bpmMin;
+  final int bpmMax;
+  final double? rating;
+  final dynamic repo;
+
+  const SearchListTile({
+    required this.user,
+    required this.name,
+    required this.genres,
+    required this.image,
+    required this.about,
+    required this.location,
+    required this.bpmMin,
+    required this.bpmMax,
+    super.key,
+    required this.rating,
+    required this.repo,
+  });
+
+  @override
+  State<SearchListTile> createState() => _SearchListTileState();
+}
+
+class _SearchListTileState extends State<SearchListTile> {
+  bool isExpanded = false;
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+      padding: const EdgeInsets.all(8),
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.white, width: 2),
+        borderRadius: BorderRadius.circular(16),
+        color: const Color.fromARGB(255, 247, 247, 247),
+      ),
+      child: InkWell(
+        onTap: () {
+          setState(() {
+            isExpanded = !isExpanded;
+          });
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.black, width: 1.5),
+                  ),
+                  child: CircleAvatar(
+                    backgroundImage: widget.image,
+                    radius: 32,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            width: 182,
+                            child: Text(
+                              widget.name,
+                              style: GoogleFonts.sometypeMono(
+                                textStyle: TextStyle(
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 18,
+
+                                  overflow:
+                                      isExpanded
+                                          ? TextOverflow.fade
+                                          : TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          RatingStars(
+                            value: widget.rating ?? 0,
+                            starBuilder:
+                                (index, color) => Icon(
+                                  Icons.star_outlined,
+                                  color: color,
+                                  size: 20,
+                                ),
+                            starCount: 5,
+                            maxValue: 5,
+                            axis: Axis.horizontal,
+                            angle: 0,
+                            starSpacing: 0,
+                            valueLabelVisibility: false,
+                            animationDuration: Duration(milliseconds: 1000),
+                            starOffColor: Palette.shadowGrey,
+                            starColor: Palette.forgedGold,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Wrap(spacing: 8, runSpacing: 4, children: widget.genres),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            AnimatedOpacity(
+              opacity: isExpanded ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 250),
+              child:
+                  isExpanded
+                      ? Padding(
+                        padding: const EdgeInsets.only(top: 12),
+                        child: Column(
+                          children: [
+                            const Divider(),
+                            Column(
+                              spacing: 16,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  spacing: 32,
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          width: 1,
+                                          color: const Color.fromARGB(
+                                            220,
+                                            181,
+                                            165,
+                                            76,
+                                          ),
+                                        ),
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: const Color.fromARGB(
+                                          120,
+                                          181,
+                                          165,
+                                          76,
+                                        ),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: Row(
+                                          spacing: 4,
+                                          children: [
+                                            const Icon(
+                                              Icons.location_pin,
+                                              size: 18,
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                    0,
+                                                    0,
+                                                    4,
+                                                    0,
+                                                  ),
+                                              child: Text(widget.location),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          width: 1,
+                                          color: const Color.fromARGB(
+                                            220,
+                                            181,
+                                            165,
+                                            76,
+                                          ),
+                                        ),
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: const Color.fromARGB(
+                                          120,
+                                          181,
+                                          165,
+                                          76,
+                                        ),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: Row(
+                                          spacing: 4,
+                                          children: [
+                                            const Icon(Icons.speed, size: 22),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                    0,
+                                                    0,
+                                                    4,
+                                                    0,
+                                                  ),
+                                              child: Text(
+                                                "${widget.bpmMin}-${widget.bpmMax} bpm",
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: Text(
+                                          widget.about,
+                                          maxLines: 4,
+                                          softWrap: true,
+                                          overflow: TextOverflow.visible,
+                                        ),
+                                      ),
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        widget.user.showProfile(
+                                          context,
+                                          widget.repo,
+                                        ); // Pass repo here
+                                      },
+                                      child: const Icon(
+                                        Icons.chevron_right_rounded,
+                                        size: 28,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      )
+                      : const SizedBox.shrink(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

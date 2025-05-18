@@ -1,5 +1,5 @@
 name: gig_hub
-description: "A new Flutter project."
+description: "this is gighub"
 publish_to: 'none'
 version: 0.1.0
 
@@ -9,6 +9,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_launcher_icons: ^0.14.3
+  flutter_native_splash: ^2.4.6
+  flutter_rating_stars: ^1.1.0
+  google_fonts: ^6.2.1
+  shimmer: ^3.0.0
 
 dev_dependencies:
   flutter_test:
@@ -20,3 +25,22 @@ flutter:
   assets:
 
     - assets/images/gighub_logo.png
+    - assets/images/default_avatar.jpg
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/app_icon.png"
+  remove_alpha_ios: true
+  adaptive_icon_foreground: "assets/images/app_icon.png"
+  adaptive_icon_background: '#000000'
+
+flutter_native_splash:
+  background_image: "assets/images/blackscreen_splash.png"
+  image: "assets/images/splash_logo.png" 
+  android: true
+  ios: true
+  android_12:
+    image: "assets/images/splash_logo.png"
+    icon_background_color: '#000000'
+    color: '#000000'
