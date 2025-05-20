@@ -5,7 +5,7 @@ import 'package:gig_hub/src/Features/profile/dj/presentation/profile_screen_dj.d
 abstract class AppUser {
   final String userId;
   final String name;
-  final String email;
+  String email;
   final String headUrl;
   final String avatarUrl;
   final String city;
@@ -26,6 +26,14 @@ abstract class AppUser {
   });
 
   void showProfile(BuildContext context, dynamic repo, {AppUser? currentUser});
+
+  String getEmail(AppUser? currentUser) {
+    return email;
+  }
+
+  void updateEmail(AppUser? currentUser, String newEmail) {
+    email = newEmail;
+  }
 }
 
 class DJ extends AppUser {

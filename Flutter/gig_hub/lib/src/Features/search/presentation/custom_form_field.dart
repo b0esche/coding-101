@@ -13,6 +13,17 @@ class CustomFormField extends StatelessWidget {
       width: 260,
       height: 32,
       child: TextFormField(
+        onTap: () {
+          debugPrint("Moin"); // TODO: brauche jeweils den dialog mit dem picker
+          // die ihre werte dann an den TextController
+          // (und die Suchfunktion) übergeben.. Future??
+          switch (label) {
+            case "genre": //ListView mit Radio max. 5
+            case "bpm": // range bzw min und max
+            case "location": // Package?? Autocomplete??
+          }
+        },
+        readOnly: true,
         style: TextStyle(color: Colors.white),
         decoration: InputDecoration(
           focusedBorder: OutlineInputBorder(

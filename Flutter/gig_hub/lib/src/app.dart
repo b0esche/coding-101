@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gig_hub/5.1.3.dart';
 import 'package:gig_hub/src/Theme/app_theme.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
 import 'package:gig_hub/src/Common/main_screen.dart';

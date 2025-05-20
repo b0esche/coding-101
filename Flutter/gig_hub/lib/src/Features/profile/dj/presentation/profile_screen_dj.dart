@@ -76,7 +76,7 @@ class ProfileScreenDJ extends StatelessWidget {
                         BoxShadow(blurRadius: 4, color: Palette.primalBlack),
                       ],
                     ),
-                    iconSize: 32,
+                    iconSize: 36,
                     color: Palette.shadowGrey,
                     style: ButtonStyle(
                       tapTargetSize: MaterialTapTargetSize.padded,

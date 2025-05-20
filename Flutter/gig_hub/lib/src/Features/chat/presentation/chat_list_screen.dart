@@ -79,6 +79,11 @@ class _ChatListScreenState extends State<ChatListScreen> {
     return Scaffold(
       backgroundColor: Palette.primalBlack,
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: Navigator.of(context).pop,
+          icon: const Icon(Icons.chevron_left_rounded, size: 36),
+          color: Palette.glazedWhite,
+        ),
         title: Text('chats'),
         backgroundColor: Palette.primalBlack,
         iconTheme: IconThemeData(color: Palette.glazedWhite),
