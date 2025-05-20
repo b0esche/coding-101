@@ -188,20 +188,10 @@ class _SearchListTileState extends State<SearchListTile> {
                                       decoration: BoxDecoration(
                                         border: Border.all(
                                           width: 1,
-                                          color: const Color.fromARGB(
-                                            220,
-                                            181,
-                                            165,
-                                            76,
-                                          ),
+                                          color: Palette.forgedGold,
                                         ),
                                         borderRadius: BorderRadius.circular(10),
-                                        color: const Color.fromARGB(
-                                          120,
-                                          181,
-                                          165,
-                                          76,
-                                        ),
+                                        color: Palette.forgedGold,
                                       ),
                                       child: Padding(
                                         padding: const EdgeInsets.all(4.0),
@@ -246,7 +236,7 @@ class _SearchListTileState extends State<SearchListTile> {
                                         widget.user.showProfile(
                                           context,
                                           widget.repo,
-                                        ); // Pass repo here
+                                        );
                                       },
                                       child: const Icon(
                                         Icons.chevron_right_rounded,

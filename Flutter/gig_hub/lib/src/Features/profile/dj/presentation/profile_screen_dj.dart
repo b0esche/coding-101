@@ -53,12 +53,23 @@ class ProfileScreenDJ extends StatelessWidget {
                 child: Image.network(dj.headUrl, fit: BoxFit.cover),
               ),
               Positioned(
-                top: 32,
-                child: IconButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  icon: const Icon(Icons.chevron_left),
-                  iconSize: 32,
-                  color: Palette.concreteGrey,
+                top: 40,
+                child: Padding(
+                  padding: const EdgeInsets.all(2.0),
+                  child: IconButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: Icon(
+                      Icons.chevron_left,
+                      shadows: [
+                        BoxShadow(blurRadius: 4, color: Palette.primalBlack),
+                      ],
+                    ),
+                    iconSize: 32,
+                    color: Palette.shadowGrey,
+                    style: ButtonStyle(
+                      tapTargetSize: MaterialTapTargetSize.padded,
+                    ),
+                  ),
                 ),
               ),
               Positioned.fill(

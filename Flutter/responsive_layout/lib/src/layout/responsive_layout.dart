@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:responsive_layout/src/data/consts/screen_dimensions.dart';
 
 class ResponsiveLayout extends StatelessWidget {
   const ResponsiveLayout({
@@ -18,11 +19,11 @@ class ResponsiveLayout extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         switch (constraints.maxWidth) {
-          case > 400:
+          case > mobilePortraitWidth:
             return mobileLandscapeBody;
-          case > 800:
+          case > mobileLandscapeWidth:
             return tabletBody;
-          case > 1200:
+          case > tabletWidth:
             return desktopBody;
           default:
             return mobilePortraitBody;

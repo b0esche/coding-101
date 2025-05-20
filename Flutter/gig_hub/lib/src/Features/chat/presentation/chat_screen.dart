@@ -77,6 +77,13 @@ class ChatScreenState extends State<ChatScreen> {
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final partnerAvatarUrl = getPartnerAvatarUrl();
 
@@ -95,13 +102,22 @@ class ChatScreenState extends State<ChatScreen> {
                 shape: BoxShape.circle,
                 border: Border.all(color: Palette.primalBlack, width: 1.5),
               ),
-              child: CircleAvatar(
-                backgroundImage:
-                    partnerAvatarUrl.isNotEmpty
-                        ? NetworkImage(partnerAvatarUrl)
-                        : const AssetImage('assets/images/default_avatar.jpg')
-                            as ImageProvider<Object>,
-                radius: 38,
+              child: GestureDetector(
+                onTap: () {
+                  widget.chatPartner.showProfile(
+                    context,
+                    widget.repo,
+                    currentUser: widget.currentUser,
+                  );
+                },
+                child: CircleAvatar(
+                  backgroundImage:
+                      partnerAvatarUrl.isNotEmpty
+                          ? NetworkImage(partnerAvatarUrl)
+                          : const AssetImage('assets/images/default_avatar.jpg')
+                              as ImageProvider<Object>,
+                  radius: 38,
+                ),
               ),
             ),
             const SizedBox(width: 8),
