@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
 import 'package:gig_hub/src/Data/user.dart';
 import 'package:gig_hub/src/Features/chat/domain/chat_message.dart';
+import 'package:gig_hub/src/Features/profile/booker/presentation/profile_screen_booker.dart';
+import 'package:gig_hub/src/Features/profile/dj/presentation/profile_screen_dj.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -104,11 +106,31 @@ class ChatScreenState extends State<ChatScreen> {
               ),
               child: GestureDetector(
                 onTap: () {
-                  widget.chatPartner.showProfile(
-                    context,
-                    widget.repo,
-                    currentUser: widget.currentUser,
-                  );
+                  if (widget.chatPartner is DJ) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) => ProfileScreenDJ(
+                              dj: widget.chatPartner as DJ,
+                              repo: widget.repo,
+                              showChatButton: false,
+                            ),
+                      ),
+                    );
+                  } else if (widget.chatPartner is Booker) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) => UserProfileBooker(
+                              booker: widget.chatPartner as Booker,
+                              repo: widget.repo,
+                              showChatButton: false,
+                            ),
+                      ),
+                    );
+                  }
                 },
                 child: CircleAvatar(
                   backgroundImage:

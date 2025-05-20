@@ -9,40 +9,52 @@ import 'package:google_fonts/google_fonts.dart';
 class ProfileScreenDJ extends StatelessWidget {
   final DJ dj;
   final dynamic repo;
-  const ProfileScreenDJ({super.key, required this.dj, required this.repo});
+  final bool showChatButton;
+  const ProfileScreenDJ({
+    super.key,
+    required this.dj,
+    required this.repo,
+    this.showChatButton = true,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Palette.primalBlack,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder:
-                  (context) =>
-                      ChatScreen(chatPartner: dj, repo: repo, currentUser: dj),
-            ),
-          );
-          debugPrint("Jetzt wird getalkt!");
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Palette.glazedWhite, Palette.gigGrey],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              stops: [0, 0.8],
-            ),
-            shape: BoxShape.circle,
-          ),
-          child: const Padding(
-            padding: EdgeInsets.all(14.0),
-            child: Icon(Icons.chat_outlined),
-          ),
-        ),
-      ),
+      floatingActionButton:
+          showChatButton
+              ? FloatingActionButton(
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) => ChatScreen(
+                            chatPartner: dj,
+                            repo: repo,
+                            currentUser: dj,
+                          ),
+                    ),
+                  );
+                  debugPrint("Jetzt wird getalkt!");
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Palette.glazedWhite, Palette.gigGrey],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      stops: [0, 0.8],
+                    ),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.all(14.0),
+                    child: Icon(Icons.chat_outlined),
+                  ),
+                ),
+              )
+              : null,
       body: Column(
         children: [
           Stack(

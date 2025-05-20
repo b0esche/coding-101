@@ -60,11 +60,12 @@ class SettingsScreen extends StatelessWidget {
 
             SizedBox(
               width: MediaQuery.of(context).size.width / 1.5,
-              child: TextField(
+              child: TextFormField(
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
+
                   labelText: "change e-mail",
                   labelStyle: TextStyle(color: Palette.primalBlack),
                   alignLabelWithHint: true,

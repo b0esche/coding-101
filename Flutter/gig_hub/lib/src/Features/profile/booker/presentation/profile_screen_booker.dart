@@ -9,10 +9,12 @@ import 'package:google_fonts/google_fonts.dart';
 class UserProfileBooker extends StatelessWidget {
   final Booker booker;
   final dynamic repo;
+  final bool showChatButton;
   const UserProfileBooker({
     super.key,
     required this.booker,
     required this.repo,
+    this.showChatButton = true,
   });
 
   @override
@@ -21,7 +23,7 @@ class UserProfileBooker extends StatelessWidget {
       backgroundColor: Palette.primalBlack,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
+          Navigator.pushReplacement(
             context,
             MaterialPageRoute(
               builder:
