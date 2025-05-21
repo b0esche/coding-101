@@ -27,10 +27,6 @@ abstract class AppUser {
 
   void showProfile(BuildContext context, dynamic repo, {AppUser? currentUser});
 
-  String getEmail(AppUser? currentUser) {
-    return email;
-  }
-
   void updateEmail(AppUser? currentUser, String newEmail) {
     email = newEmail;
   }

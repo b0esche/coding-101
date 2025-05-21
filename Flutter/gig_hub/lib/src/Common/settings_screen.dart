@@ -15,6 +15,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final DatabaseRepository _databaseRepository = MockDatabaseRepository();
 
   repo.AppUser? _currentUser;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -29,11 +30,84 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
+  String? validateEmail(String? input) {
+    if (input == null || input.isEmpty) {
+      return "E-Mail darf nicht leer sein";
+    }
+
+    if (input.length < 5) {
+      return "E-Mail ist zu kurz";
+    }
+
+    if (!input.contains('@') || !input.contains('.')) {
+      return "Ungültige E-Mail-Adresse";
+    }
+
+    if (input.startsWith('@') || input.endsWith('@')) {
+      return "Ungültige Position von '@'";
+    }
+
+    if (input.contains(' ')) {
+      return "Keine Leerzeichen erlaubt";
+    }
+
+    final parts = input.split('@');
+    if (parts.length != 2) {
+      return "Nur ein '@' erlaubt";
+    }
+
+    final local = parts[0];
+    final domain = parts[1];
+
+    if (local.isEmpty) {
+      return "Teil vor '@' fehlt";
+    }
+
+    if (!domain.contains('.')) {
+      return "Domain muss Punkt enthalten";
+    }
+
+    final domainParts = domain.split('.');
+    if (domainParts.any((part) => part.isEmpty)) {
+      return "Ungültiger Domain-Teil";
+    }
+
+    return null;
+  }
+
+  String? validateUsername(String? userInput) {
+    String abc = "abcdefghijklmnopqrstuvwxyz";
+    String abcUpper = abc.toUpperCase();
+    String abcLowerUpper = abc + abcUpper;
+    String umlauts = "äöüÄÖÜß";
+
+    if (userInput == null || userInput.length < 3) {
+      return "Mindestens 3 Buchstaben";
+    }
+    if (userInput.length > 20) {
+      return "Maximal 20 Zeichen!";
+    }
+    if (userInput.contains(" ")) {
+      return "Keine Leerzeichen!";
+    }
+    if (!abcLowerUpper.contains(userInput[0])) {
+      return "Muss mit Buchstaben beginnen!";
+    }
+    for (int i = 0; i < userInput.length; i++) {
+      final String letter = userInput[i];
+      if (umlauts.contains(letter)) {
+        return "Keine Umlaute!";
+      }
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final TextEditingController emailController = TextEditingController(
       text: _currentUser?.email ?? "",
     );
+
     return Scaffold(
       backgroundColor: Palette.primalBlack,
       body: Center(
@@ -89,7 +163,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  " change e-Mail",
+                  " change e-mail",
                   style: GoogleFonts.sometypeMono(
                     textStyle: TextStyle(
                       color: Palette.glazedWhite,
@@ -99,50 +173,54 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 SizedBox(
                   width: MediaQuery.of(context).size.width / 1.3,
-                  child: TextFormField(
-                    keyboardType: TextInputType.emailAddress,
-                    onFieldSubmitted: (newValue) {
-                      if (_currentUser != null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            backgroundColor: Palette.forgedGold,
-                            content: Center(
-                              child: Text(
-                                "email updated! please verify.",
-                                style: TextStyle(fontSize: 16),
+                  child: Form(
+                    key: _formKey,
+                    child: TextFormField(
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: validateEmail,
+                      keyboardType: TextInputType.emailAddress,
+                      onFieldSubmitted: (newValue) {
+                        if (_formKey.currentState!.validate() &&
+                            _currentUser != null) {
+                          _currentUser?.updateEmail(_currentUser, newValue);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              backgroundColor: Palette.forgedGold,
+                              content: Center(
+                                child: Text(
+                                  "email updated! please verify.",
+                                  style: TextStyle(fontSize: 16),
+                                ),
                               ),
                             ),
-                          ),
-                        );
-                      }
-                    },
+                          );
+                        }
+                      },
+                      onChanged: (value) {
+                        //_currentUser?.updateEmail(_currentUser, newValue);
+                      },
+                      controller: emailController,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
 
-                    onChanged: (value) {
-                      if (_currentUser != null) {
-                        _currentUser?.updateEmail(_currentUser, value);
-                      }
-                    },
-                    controller: emailController,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        helperText: "press enter when finished",
+                        labelStyle: TextStyle(color: Palette.primalBlack),
+
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            emailController.clear();
+                          },
+                          icon: Icon(Icons.delete),
+                        ),
+                        fillColor: Palette.glazedWhite,
+                        filled: true,
+                        alignLabelWithHint: true,
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                        hintText: "press enter when finished",
+                        hintStyle: TextStyle(color: Palette.forgedGold),
                       ),
-
-                      helperText: "press enter when finished",
-                      labelStyle: TextStyle(color: Palette.primalBlack),
-
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          emailController.clear();
-                        },
-                        icon: Icon(Icons.delete),
-                      ),
-                      fillColor: Palette.glazedWhite,
-                      filled: true,
-                      alignLabelWithHint: true,
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      hintText: "press enter when finished",
-                      hintStyle: TextStyle(color: Palette.forgedGold),
                     ),
                   ),
                 ),
@@ -156,15 +234,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             FilledButton(
               onPressed: () {
-                debugPrint("hier account löschen");
-              },
-              child: const Text("delete account"),
-            ),
-            FilledButton(
-              onPressed: () {
                 debugPrint("hier blockliste öffnen und bearbeiten");
               },
               child: const Text("blocked users"),
+            ),
+            FilledButton(
+              onPressed: () {
+                debugPrint("hier account löschen");
+              },
+              child: const Text("delete account"),
             ),
             Align(
               alignment: Alignment.bottomRight,
