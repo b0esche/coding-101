@@ -32,44 +32,44 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   String? validateEmail(String? input) {
     if (input == null || input.isEmpty) {
-      return "E-Mail darf nicht leer sein";
+      return "can't be empty";
     }
 
     if (input.length < 5) {
-      return "E-Mail ist zu kurz";
+      return "enter full adress";
     }
 
     if (!input.contains('@') || !input.contains('.')) {
-      return "Ungültige E-Mail-Adresse";
+      return "invalid input";
     }
 
     if (input.startsWith('@') || input.endsWith('@')) {
-      return "Ungültige Position von '@'";
+      return "invalid input";
     }
 
     if (input.contains(' ')) {
-      return "Keine Leerzeichen erlaubt";
+      return "can't contain space";
     }
 
     final parts = input.split('@');
     if (parts.length != 2) {
-      return "Nur ein '@' erlaubt";
+      return "invalid input";
     }
 
     final local = parts[0];
     final domain = parts[1];
 
     if (local.isEmpty) {
-      return "Teil vor '@' fehlt";
+      return "invalid input";
     }
 
     if (!domain.contains('.')) {
-      return "Domain muss Punkt enthalten";
+      return "invalid domain";
     }
 
     final domainParts = domain.split('.');
-    if (domainParts.any((part) => part.isEmpty)) {
-      return "Ungültiger Domain-Teil";
+    if (domainParts.any((part) => part.length < 2)) {
+      return "invalid domain";
     }
 
     return null;
@@ -176,7 +176,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   child: Form(
                     key: _formKey,
                     child: TextFormField(
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      autovalidateMode: AutovalidateMode.always,
                       validator: validateEmail,
                       keyboardType: TextInputType.emailAddress,
                       onFieldSubmitted: (newValue) {
@@ -218,7 +218,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         filled: true,
                         alignLabelWithHint: true,
                         floatingLabelBehavior: FloatingLabelBehavior.always,
-                        hintText: "press enter when finished",
+                        hintText: "press enter when done",
                         hintStyle: TextStyle(color: Palette.forgedGold),
                       ),
                     ),
@@ -259,4 +259,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
     );
   }
+}
+
+String? validateSimpleEmail(String? value) {
+  if (value == null || value.trim().isEmpty) {
+    return 'E-Mail darf nicht leer sein';
+  }
+
+  final trimmed = value.trim();
+
+  if (trimmed.contains(' ')) {
+    return 'Keine Leerzeichen erlaubt';
+  }
+
+  final atCount = '@'.allMatches(trimmed).length;
+  if (atCount != 1) {
+    return 'E-Mail braucht genau ein "@"';
+  }
+
+  if (!trimmed.contains('.')) {
+    return 'E-Mail braucht mindestens einen Punkt';
+  }
+
+  return null;
 }

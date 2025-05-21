@@ -266,7 +266,10 @@ class ProfileScreenDJ extends StatelessWidget {
                         runSpacing: 8,
                         children:
                             dj.genres
-                                .map((genre) => GenreBubble(genre: genre.genre))
+                                .map(
+                                  (genreString) =>
+                                      GenreBubble(genre: genreString),
+                                )
                                 .toList(),
                       ),
                     ),

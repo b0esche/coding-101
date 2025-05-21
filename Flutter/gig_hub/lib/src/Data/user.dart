@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gig_hub/src/Common/genre_bubble.dart';
 import 'package:gig_hub/src/Features/profile/dj/presentation/profile_screen_dj.dart';
 
 abstract class AppUser {
@@ -33,7 +32,7 @@ abstract class AppUser {
 }
 
 class DJ extends AppUser {
-  final List<GenreBubble> genres;
+  final List<String> genres;
   final int bpmMin;
   final int bpmMax;
   final String set1Url;

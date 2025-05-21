@@ -8,7 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 class SearchListTile extends StatefulWidget {
   final DJ user;
   final String name;
-  final List<GenreBubble> genres;
+  final List<String> genres;
   final NetworkImage image;
   final String about;
   final String location;
@@ -45,9 +45,9 @@ class _SearchListTileState extends State<SearchListTile> {
       padding: const EdgeInsets.all(8),
       margin: const EdgeInsets.symmetric(vertical: 8),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.white, width: 2),
+        border: Border.all(color: Palette.glazedWhite, width: 2),
         borderRadius: BorderRadius.circular(16),
-        color: const Color.fromARGB(255, 247, 247, 247),
+        color: Palette.glazedWhite,
       ),
       child: InkWell(
         onTap: () {
@@ -64,7 +64,7 @@ class _SearchListTileState extends State<SearchListTile> {
                 Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(color: Colors.black, width: 1.5),
+                    border: Border.all(color: Palette.primalBlack, width: 1.5),
                   ),
                   child: CircleAvatar(
                     backgroundImage: widget.image,
@@ -118,7 +118,18 @@ class _SearchListTileState extends State<SearchListTile> {
                         ],
                       ),
                       const SizedBox(height: 4),
-                      Wrap(spacing: 8, runSpacing: 4, children: widget.genres),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 4,
+                        children:
+                            widget.genres
+                                .map(
+                                  (genreString) => GenreBubble(
+                                    genre: genreString.toString(),
+                                  ),
+                                )
+                                .toList(),
+                      ),
                     ],
                   ),
                 ),

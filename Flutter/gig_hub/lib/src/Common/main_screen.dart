@@ -67,8 +67,9 @@ class _MainScreenState extends State<MainScreen> {
       switch (option) {
         case 'genre':
           sortedList.sort(
-            (a, b) => (a.genres.isNotEmpty ? a.genres.first.genre : '')
-                .compareTo(b.genres.isNotEmpty ? b.genres.first.genre : ''),
+            (a, b) => (a.genres.isNotEmpty ? a.genres.first : '').compareTo(
+              b.genres.isNotEmpty ? b.genres.first : '',
+            ),
           );
           break;
         case 'bpm':
