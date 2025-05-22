@@ -86,7 +86,7 @@ class _SearchListTileState extends State<SearchListTile> {
                               style: GoogleFonts.sometypeMono(
                                 textStyle: TextStyle(
                                   fontWeight: FontWeight.w800,
-                                  fontSize: 18,
+                                  fontSize: 19,
 
                                   overflow:
                                       isExpanded

@@ -75,6 +75,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return null;
   }
 
+  /* aus der Vorlesung
   String? validateUsername(String? userInput) {
     String abc = "abcdefghijklmnopqrstuvwxyz";
     String abcUpper = abc.toUpperCase();
@@ -101,7 +102,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
     return null;
   }
-
+*/
   @override
   Widget build(BuildContext context) {
     final TextEditingController emailController = TextEditingController(
@@ -259,27 +260,4 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
     );
   }
-}
-
-String? validateSimpleEmail(String? value) {
-  if (value == null || value.trim().isEmpty) {
-    return 'E-Mail darf nicht leer sein';
-  }
-
-  final trimmed = value.trim();
-
-  if (trimmed.contains(' ')) {
-    return 'Keine Leerzeichen erlaubt';
-  }
-
-  final atCount = '@'.allMatches(trimmed).length;
-  if (atCount != 1) {
-    return 'E-Mail braucht genau ein "@"';
-  }
-
-  if (!trimmed.contains('.')) {
-    return 'E-Mail braucht mindestens einen Punkt';
-  }
-
-  return null;
 }

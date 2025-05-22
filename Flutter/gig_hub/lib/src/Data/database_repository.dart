@@ -81,7 +81,7 @@ class MockDatabaseRepository implements DatabaseRepository {
       bpmMin: 140,
       bpmMax: 170,
       userId: "dj_jan",
-      name: "DJ JanE Ri Knirsch",
+      name: "JanE Ri Knirsch",
       email: "loremipsum@email.com",
     ),
     DJ(
