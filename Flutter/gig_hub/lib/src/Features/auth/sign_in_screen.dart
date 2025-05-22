@@ -14,7 +14,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _loginEmailController = TextEditingController(
-    text: "your@mail.com",
+    text: "loremipsum@email.com",
   );
   final TextEditingController _loginPasswordController = TextEditingController(
     text: "password",
@@ -31,7 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             spacing: 8,
             children: [
-              SizedBox(height: 64),
+              SizedBox(height: 72),
               SizedBox(
                 height: 110,
                 width: 110,
@@ -295,6 +295,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Divider(color: Palette.glazedWhite.o(0.5)),
               SizedBox(height: 24),
               Shimmer.fromColors(
+                period: Duration(seconds: 2),
                 baseColor: Palette.glazedWhite,
                 highlightColor: Palette.forgedGold,
                 child: Container(
