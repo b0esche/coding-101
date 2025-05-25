@@ -21,9 +21,9 @@ class SearchFunctionCard extends StatelessWidget {
             spacing: 8,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CustomFormField(label: "genre..."),
-              CustomFormField(label: "bpm..."),
-              CustomFormField(label: "location..."),
+              CustomFormField(label: "genre...", onPressed: () {}),
+              CustomFormField(label: "bpm...", onPressed: () {}),
+              CustomFormField(label: "location...", onPressed: () {}),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.end,

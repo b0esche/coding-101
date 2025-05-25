@@ -4,8 +4,13 @@ import 'package:google_fonts/google_fonts.dart';
 
 class CustomFormField extends StatelessWidget {
   final String label;
+  final void Function() onPressed;
 
-  const CustomFormField({required this.label, super.key});
+  const CustomFormField({
+    required this.label,
+    required this.onPressed,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -13,24 +18,22 @@ class CustomFormField extends StatelessWidget {
       width: 260,
       height: 32,
       child: TextFormField(
-        onTap: () {
-          debugPrint("Moin"); // TODO: brauche jeweils den dialog mit dem picker
-          // die ihre werte dann an den TextController
-          // (und die Suchfunktion) übergeben.. Future??
-          switch (label) {
-            case "genre": //ListView mit Radio max. 5
-            case "bpm": // range bzw min und max
-            case "location": // Package?? Autocomplete??
-          }
-        },
+        onTap: onPressed,
+        // () {
+        //   debugPrint("Moin"); // TODO: brauche jeweils den dialog mit dem picker
+        //   // die ihre werte dann an den TextController
+        //   // (und die Suchfunktion) übergeben.. Future??
+        //   switch (label) {
+        //     case "genre": //ListView mit Radio max. 5
+        //     case "bpm": // range bzw min und max
+        //     case "location": // Package?? Autocomplete??
+        //   }
+        // },
         readOnly: true,
-        style: TextStyle(color: Colors.white),
+        style: TextStyle(color: Palette.glazedWhite),
         decoration: InputDecoration(
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Color.fromARGB(255, 181, 165, 76),
-              width: 2,
-            ),
+            borderSide: BorderSide(color: Palette.forgedGold, width: 2),
             borderRadius: BorderRadius.circular(12),
           ),
           enabledBorder: OutlineInputBorder(
@@ -41,7 +44,7 @@ class CustomFormField extends StatelessWidget {
           labelText: label,
           labelStyle: GoogleFonts.sometypeMono(
             textStyle: TextStyle(
-              color: Colors.white,
+              color: Palette.glazedWhite,
               fontSize: 16,
               fontWeight: FontWeight.w600,
             ),

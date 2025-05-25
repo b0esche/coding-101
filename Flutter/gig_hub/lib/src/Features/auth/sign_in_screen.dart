@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gig_hub/src/Common/main_screen.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
+import 'package:gig_hub/src/Features/auth/sign_up_sheet.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -42,9 +43,10 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               SizedBox(height: 8),
               SizedBox(
-                height: 46,
+                height: 48,
                 width: 270,
                 child: SegmentedButton<String>(
+                  expandedInsets: EdgeInsets.all(2),
                   showSelectedIcon: false,
                   segments: const [
                     ButtonSegment<String>(
@@ -112,7 +114,17 @@ class _LoginScreenState extends State<LoginScreen> {
                           style: ButtonStyle(
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            showModalBottomSheet(
+                              showDragHandle: true,
+                              backgroundColor: Colors.transparent,
+                              context: context,
+                              isScrollControlled: true,
+                              builder: (BuildContext context) {
+                                return SignUpSheet();
+                              },
+                            );
+                          },
                           child: Text(
                             "Sign Up",
                             style: TextStyle(
@@ -207,7 +219,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
                             side: BorderSide(
-                              color: Palette.shadowGrey.o(0.7),
+                              color: Palette.concreteGrey.o(0.7),
                               width: 2,
                             ),
                           ),
@@ -295,7 +307,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Divider(color: Palette.glazedWhite.o(0.5)),
               SizedBox(height: 24),
               Shimmer.fromColors(
-                period: Duration(seconds: 2),
+                period: Duration(milliseconds: 2500),
                 baseColor: Palette.glazedWhite,
                 highlightColor: Palette.forgedGold,
                 child: Container(
