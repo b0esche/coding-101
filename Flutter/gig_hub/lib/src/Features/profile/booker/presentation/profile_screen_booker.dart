@@ -90,14 +90,24 @@ class UserProfileBooker extends StatelessWidget {
                       vertical: 2,
                     ),
                     decoration: BoxDecoration(
-                      color: Palette.primalBlack.o(0.5),
+                      color: Palette.primalBlack.o(0.6),
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(12),
                         topRight: Radius.circular(12),
                       ),
-                      border: Border.all(
-                        color: Palette.gigGrey.o(0.6),
-                        width: 2,
+                      border: BoxBorder.fromLTRB(
+                        left: BorderSide(
+                          color: Palette.gigGrey.o(0.6),
+                          width: 2,
+                        ),
+                        right: BorderSide(
+                          color: Palette.gigGrey.o(0.6),
+                          width: 2,
+                        ),
+                        top: BorderSide(
+                          color: Palette.gigGrey.o(0.6),
+                          width: 2,
+                        ),
                       ),
                     ),
                     child: Text(

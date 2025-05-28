@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gig_hub/src/Common/main_screen.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
-import 'package:gig_hub/src/Features/auth/sign_up_sheet.dart';
+import 'package:gig_hub/src/Features/auth/sign_up_bottomsheet.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -129,7 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             "Sign Up",
                             style: TextStyle(
                               color: Palette.forgedGold,
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
                         ),
@@ -195,7 +195,30 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     SizedBox(height: 8),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            dismissDirection: DismissDirection.horizontal,
+                            behavior: SnackBarBehavior.floating,
+                            backgroundColor: Palette.gigGrey.o(0.8),
+                            elevation: 2,
+                            showCloseIcon: true,
+                            closeIconColor: Palette.glazedWhite.o(0.3),
+                            margin: EdgeInsets.fromLTRB(24, 0, 24, 0),
+                            shape: BeveledRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            content: Text(
+                              "Pech",
+                              style: TextStyle(
+                                color: Palette.glazedWhite,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            duration: Duration(seconds: 4),
+                          ),
+                        );
+                      },
                       child: Text(
                         "forgot your password?",
                         style: TextStyle(
@@ -236,7 +259,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         "log in",
                         style: TextStyle(
                           color: Palette.glazedWhite,
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.w800,
                         ),
                       ),
                     ),
@@ -307,7 +330,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Divider(color: Palette.glazedWhite.o(0.5)),
               SizedBox(height: 24),
               Shimmer.fromColors(
-                period: Duration(milliseconds: 2500),
+                period: Duration(milliseconds: 2300),
                 baseColor: Palette.glazedWhite,
                 highlightColor: Palette.forgedGold,
                 child: Container(

@@ -146,6 +146,7 @@ class _MainScreenState extends State<MainScreen> {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (context) => SettingsScreen(),
+                                  fullscreenDialog: true,
                                 ),
                               );
 
@@ -233,7 +234,7 @@ class _MainScreenState extends State<MainScreen> {
                         itemBuilder: (context, index) {
                           final DJ currentUserDJ = _sortedUsersDJ[index];
                           return SearchListTile(
-                            repo: _repo, // Pass the repository here
+                            repo: _repo,
                             user: currentUserDJ,
                             name: currentUserDJ.name,
                             genres: currentUserDJ.genres,

@@ -196,7 +196,7 @@ class _SignUpSheetState extends State<SignUpSheet> {
                   }
                 },
                 child: Text(
-                  "create profile",
+                  "next",
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -217,7 +217,7 @@ class _SignUpSheetState extends State<SignUpSheet> {
 
 String? validateName(String? value) {
   if (value == null || value.trim().isEmpty) {
-    return 'please enter your artist / company name';
+    return 'please enter your artist or club/event name';
   }
   if (value.trim().length > 24) {
     return 'name is too long';
