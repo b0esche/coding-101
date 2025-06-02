@@ -4,15 +4,15 @@ import 'user.dart';
 
 abstract class DatabaseRepository {
   // userdata
-  void createDJ(DJ dj);
-  void createBooker(Booker booker);
-  List<DJ> getDJs();
-  AppUser? getUserById(String userId);
+  Future<void> createDJ(DJ dj);
+  Future<void> createBooker(Booker booker);
+  Future<List<DJ>> getDJs();
+  Future<AppUser?> getUserById(String userId);
 
   // chatdata
-  void sendMessage(ChatMessage message);
-  List<ChatMessage> getMessages(String userId1, String userId2);
-  List<ChatMessage> getAllMessagesForUser(String userId);
+  Future<void> sendMessage(ChatMessage message);
+  Future<List<ChatMessage>> getMessages(String userId1, String userId2);
+  Future<List<ChatMessage>> getAllMessagesForUser(String userId);
 }
 
 class MockDatabaseRepository implements DatabaseRepository {
@@ -149,22 +149,26 @@ class MockDatabaseRepository implements DatabaseRepository {
   ];
 
   @override
-  void createDJ(DJ dj) {
+  Future<void> createDJ(DJ dj) async {
+    await Future.delayed(const Duration(seconds: 1));
     _djs.add(dj);
   }
 
   @override
-  void createBooker(Booker booker) {
+  Future<void> createBooker(Booker booker) async {
+    await Future.delayed(const Duration(seconds: 1));
     bookers.add(booker);
   }
 
   @override
-  List<DJ> getDJs() {
+  Future<List<DJ>> getDJs() async {
+    await Future.delayed(const Duration(seconds: 1));
     return _djs;
   }
 
   @override
-  AppUser? getUserById(String userId) {
+  Future<AppUser?> getUserById(String userId) async {
+    await Future.delayed(const Duration(seconds: 1));
     try {
       return _djs.firstWhere((dj) => dj.userId == userId);
     } catch (e) {
@@ -179,12 +183,14 @@ class MockDatabaseRepository implements DatabaseRepository {
   }
 
   @override
-  void sendMessage(ChatMessage message) {
+  Future<void> sendMessage(ChatMessage message) async {
+    await Future.delayed(const Duration(seconds: 1));
     _messages.add(message);
   }
 
   @override
-  List<ChatMessage> getMessages(String userId1, String userId2) {
+  Future<List<ChatMessage>> getMessages(String userId1, String userId2) async {
+    await Future.delayed(const Duration(seconds: 1));
     return _messages
         .where(
           (message) =>
@@ -196,7 +202,8 @@ class MockDatabaseRepository implements DatabaseRepository {
   }
 
   @override
-  List<ChatMessage> getAllMessagesForUser(String userId) {
+  Future<List<ChatMessage>> getAllMessagesForUser(String userId) async {
+    await Future.delayed(const Duration(seconds: 1));
     return _messages
         .where(
           (message) =>

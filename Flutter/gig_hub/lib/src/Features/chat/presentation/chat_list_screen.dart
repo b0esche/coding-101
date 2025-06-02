@@ -12,6 +12,7 @@ class ChatListScreen extends StatefulWidget {
     required this.repo,
     required this.currentUser,
   });
+
   final DatabaseRepository repo;
   final AppUser currentUser;
 
@@ -21,6 +22,8 @@ class ChatListScreen extends StatefulWidget {
 
 class _ChatListScreenState extends State<ChatListScreen> {
   List<ChatListItem> _chatListItems = [];
+  bool _isLoading = true;
+  bool _hasError = false;
 
   @override
   void initState() {
@@ -28,49 +31,60 @@ class _ChatListScreenState extends State<ChatListScreen> {
     _loadChatListItems();
   }
 
-  void _loadChatListItems() {
-    final allMessages = widget.repo.getAllMessagesForUser(
-      widget.currentUser.userId,
-    );
-    final Map<String, ChatMessage> latestMessagesByPartner = {};
-    final Set<String> chatPartnerIds = {};
+  Future<void> _loadChatListItems() async {
+    try {
+      final allMessages = await widget.repo.getAllMessagesForUser(
+        widget.currentUser.userId,
+      );
 
-    for (var message in allMessages) {
-      String partnerId =
-          message.senderId == widget.currentUser.userId
-              ? message.receiverId
-              : message.senderId;
-      chatPartnerIds.add(partnerId);
+      final Map<String, ChatMessage> latestMessagesByPartner = {};
+      final Set<String> chatPartnerIds = {};
 
-      if (!latestMessagesByPartner.containsKey(partnerId) ||
-          message.timestamp.isAfter(
-            latestMessagesByPartner[partnerId]!.timestamp,
-          )) {
-        latestMessagesByPartner[partnerId] = message;
+      for (var message in allMessages) {
+        final partnerId =
+            message.senderId == widget.currentUser.userId
+                ? message.receiverId
+                : message.senderId;
+        chatPartnerIds.add(partnerId);
+
+        if (!latestMessagesByPartner.containsKey(partnerId) ||
+            message.timestamp.isAfter(
+              latestMessagesByPartner[partnerId]!.timestamp,
+            )) {
+          latestMessagesByPartner[partnerId] = message;
+        }
       }
-    }
 
-    final List<ChatListItem> items = [];
-    for (String partnerId in chatPartnerIds) {
-      AppUser? partnerUser = widget.repo.getUserById(partnerId);
-      if (partnerUser != null &&
-          latestMessagesByPartner.containsKey(partnerId)) {
-        items.add(
-          ChatListItem(
-            user: partnerUser,
-            recent: latestMessagesByPartner[partnerId]!,
-          ),
-        );
+      final List<ChatListItem> items = [];
+
+      for (final partnerId in chatPartnerIds) {
+        final partnerUser = await widget.repo.getUserById(partnerId);
+        if (partnerUser != null &&
+            latestMessagesByPartner.containsKey(partnerId)) {
+          items.add(
+            ChatListItem(
+              user: partnerUser,
+              recent: latestMessagesByPartner[partnerId]!,
+            ),
+          );
+        }
       }
-    }
 
-    // Sortiere die Chat-Liste, sodass die neuesten Chats oben sind
-    items.sort((a, b) => b.recent.timestamp.compareTo(a.recent.timestamp));
+      items.sort((a, b) => b.recent.timestamp.compareTo(a.recent.timestamp));
 
-    if (mounted) {
-      setState(() {
-        _chatListItems = items;
-      });
+      if (mounted) {
+        setState(() {
+          _chatListItems = items;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _hasError = true;
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -84,13 +98,24 @@ class _ChatListScreenState extends State<ChatListScreen> {
           icon: const Icon(Icons.chevron_left_rounded, size: 36),
           color: Palette.glazedWhite,
         ),
-        title: Text('chats'),
+        title: const Text('chats'),
         backgroundColor: Palette.primalBlack,
         iconTheme: IconThemeData(color: Palette.glazedWhite),
         titleTextStyle: TextStyle(color: Palette.glazedWhite, fontSize: 20),
       ),
       body:
-          _chatListItems.isEmpty
+          _isLoading
+              ? Center(
+                child: CircularProgressIndicator(color: Palette.forgedGold),
+              )
+              : _hasError
+              ? Center(
+                child: Text(
+                  'Fehler beim Laden der Chats.',
+                  style: TextStyle(color: Palette.glazedWhite),
+                ),
+              )
+              : _chatListItems.isEmpty
               ? Center(
                 child: Text(
                   'Keine Chats vorhanden.',

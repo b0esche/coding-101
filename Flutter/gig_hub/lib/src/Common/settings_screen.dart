@@ -13,9 +13,9 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   final DatabaseRepository _databaseRepository = MockDatabaseRepository();
-
   repo.AppUser? _currentUser;
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
 
   @override
   void initState() {
@@ -23,92 +23,35 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _loadCurrentUser();
   }
 
-  void _loadCurrentUser() async {
-    _currentUser = _databaseRepository.getUserById("dj_lorem");
+  Future<void> _loadCurrentUser() async {
+    final user = await _databaseRepository.getUserById("dj_lorem");
     if (mounted) {
-      setState(() {});
+      setState(() {
+        _currentUser = user;
+        _emailController.text = _currentUser?.email ?? "";
+      });
     }
   }
 
   String? validateEmail(String? input) {
-    if (input == null || input.isEmpty) {
-      return "can't be empty";
-    }
-
-    if (input.length < 5) {
-      return "enter full adress";
-    }
-
-    if (!input.contains('@') || !input.contains('.')) {
-      return "invalid input";
-    }
-
-    if (input.startsWith('@') || input.endsWith('@')) {
-      return "invalid input";
-    }
-
-    if (input.contains(' ')) {
-      return "can't contain space";
-    }
-
+    if (input == null || input.isEmpty) return "can't be empty";
+    if (input.length < 5) return "enter full adress";
+    if (!input.contains('@') || !input.contains('.')) return "invalid input";
+    if (input.startsWith('@') || input.endsWith('@')) return "invalid input";
+    if (input.contains(' ')) return "can't contain space";
     final parts = input.split('@');
-    if (parts.length != 2) {
-      return "invalid input";
-    }
-
+    if (parts.length != 2) return "invalid input";
     final local = parts[0];
     final domain = parts[1];
-
-    if (local.isEmpty) {
-      return "invalid input";
-    }
-
-    if (!domain.contains('.')) {
-      return "invalid domain";
-    }
-
+    if (local.isEmpty) return "invalid input";
+    if (!domain.contains('.')) return "invalid domain";
     final domainParts = domain.split('.');
-    if (domainParts.any((part) => part.length < 2)) {
-      return "invalid domain";
-    }
-
+    if (domainParts.any((part) => part.length < 2)) return "invalid domain";
     return null;
   }
 
-  /* aus der Vorlesung
-  String? validateUsername(String? userInput) {
-    String abc = "abcdefghijklmnopqrstuvwxyz";
-    String abcUpper = abc.toUpperCase();
-    String abcLowerUpper = abc + abcUpper;
-    String umlauts = "äöüÄÖÜß";
-
-    if (userInput == null || userInput.length < 3) {
-      return "Mindestens 3 Buchstaben";
-    }
-    if (userInput.length > 20) {
-      return "Maximal 20 Zeichen!";
-    }
-    if (userInput.contains(" ")) {
-      return "Keine Leerzeichen!";
-    }
-    if (!abcLowerUpper.contains(userInput[0])) {
-      return "Muss mit Buchstaben beginnen!";
-    }
-    for (int i = 0; i < userInput.length; i++) {
-      final String letter = userInput[i];
-      if (umlauts.contains(letter)) {
-        return "Keine Umlaute!";
-      }
-    }
-    return null;
-  }
-*/
   @override
   Widget build(BuildContext context) {
-    final TextEditingController emailController = TextEditingController(
-      text: _currentUser?.email ?? "",
-    );
-
     return Scaffold(
       backgroundColor: Palette.primalBlack,
       body: Center(
@@ -119,17 +62,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
             Align(
               alignment: Alignment.topLeft,
               child: IconButton(
-                onPressed: Navigator.of(context).pop,
+                onPressed: () => Navigator.of(context).pop(),
                 icon: const Icon(Icons.chevron_left_rounded, size: 36),
                 color: Palette.glazedWhite,
               ),
             ),
-
             Hero(
               tag: context,
               child: Image.asset("assets/images/gighub_logo.png"),
             ),
-
             Stack(
               children: [
                 Container(
@@ -148,9 +89,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   bottom: 0,
                   right: 0,
                   child: IconButton(
-                    onPressed: () {
-                      debugPrint("hier avatar ändern");
-                    },
+                    onPressed: () {},
                     icon: Icon(
                       Icons.upload_file_rounded,
                       color: Palette.gigGrey,
@@ -183,7 +122,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       onFieldSubmitted: (newValue) {
                         if (_formKey.currentState!.validate() &&
                             _currentUser != null) {
-                          _currentUser?.updateEmail(_currentUser, newValue);
+                          _currentUser!.updateEmail(_currentUser!, newValue);
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               backgroundColor: Palette.forgedGold,
@@ -197,21 +136,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           );
                         }
                       },
-                      onChanged: (value) {
-                        //_currentUser?.updateEmail(_currentUser, newValue);
-                      },
-                      controller: emailController,
+                      controller: _emailController,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
-
                         helperText: "press enter when finished",
                         labelStyle: TextStyle(color: Palette.primalBlack),
-
                         suffixIcon: IconButton(
                           onPressed: () {
-                            emailController.clear();
+                            _emailController.clear();
                           },
                           icon: Icon(Icons.delete),
                         ),
@@ -228,23 +162,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ],
             ),
             FilledButton(
-              onPressed: () {
-                debugPrint("hier passwort ändern");
-              },
+              onPressed: () {},
               child: const Text("change password"),
             ),
-            FilledButton(
-              onPressed: () {
-                debugPrint("hier blockliste öffnen und bearbeiten");
-              },
-              child: const Text("blocked users"),
-            ),
-            FilledButton(
-              onPressed: () {
-                debugPrint("hier account löschen");
-              },
-              child: const Text("delete account"),
-            ),
+            FilledButton(onPressed: () {}, child: const Text("blocked users")),
+            FilledButton(onPressed: () {}, child: const Text("delete account")),
             Align(
               alignment: Alignment.bottomRight,
               child: Padding(

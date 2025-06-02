@@ -29,17 +29,18 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     _repo = widget.repo;
-    _usersDJ = _repo.getDJs();
-    _sortedUsersDJ = List.from(_usersDJ);
-    _loadLoggedInUser();
+    _fetchDJs();
   }
 
-  Future<void> _loadLoggedInUser() async {
-    if (_usersDJ.isNotEmpty) {
-      setState(() {
+  Future<void> _fetchDJs() async {
+    final users = await _repo.getDJs();
+    setState(() {
+      _usersDJ = users;
+      _sortedUsersDJ = List.from(_usersDJ);
+      if (_usersDJ.isNotEmpty) {
         _loggedInUser = _usersDJ.first;
-      });
-    }
+      }
+    });
   }
 
   void _toggleExpanded() {
@@ -149,8 +150,6 @@ class _MainScreenState extends State<MainScreen> {
                                   fullscreenDialog: true,
                                 ),
                               );
-
-                              debugPrint("hier gehts zu account settings");
                             },
                             child: Container(
                               decoration: BoxDecoration(
@@ -170,7 +169,7 @@ class _MainScreenState extends State<MainScreen> {
                           ),
                         ),
                         Align(
-                          alignment: Alignment.center, // Korrigiert
+                          alignment: Alignment.center,
                           child: SizedBox(
                             height: 130,
                             width: 130,
@@ -260,7 +259,7 @@ class _MainScreenState extends State<MainScreen> {
                                 end: Alignment.bottomCenter,
                                 colors: [
                                   Palette.primalBlack,
-                                  Palette.primalBlack.o(0),
+                                  Palette.primalBlack.withOpacity(0),
                                 ],
                               ),
                             ),

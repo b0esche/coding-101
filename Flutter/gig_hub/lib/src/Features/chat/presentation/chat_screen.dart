@@ -38,32 +38,38 @@ class ChatScreenState extends State<ChatScreen> {
     _loadMessages();
   }
 
-  void _loadMessages() {
+  Future<void> _loadMessages() async {
+    final messages = await widget.repo.getMessages(
+      widget.currentUser.userId,
+      widget.chatPartner.userId,
+    );
+    if (!mounted) return;
     setState(() {
-      _messages = widget.repo.getMessages(
-        widget.currentUser.userId,
-        widget.chatPartner.userId,
-      );
+      _messages = messages;
     });
     _scrollToBottom();
   }
 
-  void _sendMessage() {
-    if (_controller.text.trim().isNotEmpty) {
-      final newMessage = ChatMessage(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        senderId: widget.currentUser.userId,
-        receiverId: widget.chatPartner.userId,
-        message: _controller.text.trim(),
-        timestamp: DateTime.now(),
-      );
-      widget.repo.sendMessage(newMessage);
-      setState(() {
-        _messages.add(newMessage);
-      });
-      _controller.clear();
-      _scrollToBottom();
-    }
+  Future<void> _sendMessage() async {
+    final text = _controller.text.trim();
+    if (text.isEmpty) return;
+
+    final newMessage = ChatMessage(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      senderId: widget.currentUser.userId,
+      receiverId: widget.chatPartner.userId,
+      message: text,
+      timestamp: DateTime.now(),
+    );
+
+    await widget.repo.sendMessage(newMessage);
+
+    setState(() {
+      _messages.add(newMessage);
+    });
+
+    _controller.clear();
+    _scrollToBottom();
   }
 
   void _scrollToBottom() {
@@ -96,8 +102,6 @@ class ChatScreenState extends State<ChatScreen> {
         elevation: 1,
         iconTheme: IconThemeData(color: Palette.primalBlack),
         title: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-
           children: [
             Container(
               decoration: BoxDecoration(
@@ -111,7 +115,7 @@ class ChatScreenState extends State<ChatScreen> {
                       context,
                       MaterialPageRoute(
                         builder:
-                            (context) => ProfileScreenDJ(
+                            (_) => ProfileScreenDJ(
                               dj: widget.chatPartner as DJ,
                               repo: widget.repo,
                               showChatButton: false,
@@ -123,7 +127,7 @@ class ChatScreenState extends State<ChatScreen> {
                       context,
                       MaterialPageRoute(
                         builder:
-                            (context) => UserProfileBooker(
+                            (_) => UserProfileBooker(
                               booker: widget.chatPartner as Booker,
                               repo: widget.repo,
                               showChatButton: false,
@@ -199,7 +203,7 @@ class ChatScreenState extends State<ChatScreen> {
                             BoxShadow(
                               color: Palette.primalBlack.o(0.1),
                               blurRadius: 3,
-                              offset: Offset(0, 1),
+                              offset: const Offset(0, 1),
                             ),
                           ],
                         ),
@@ -254,9 +258,7 @@ class ChatScreenState extends State<ChatScreen> {
                         textCapitalization: TextCapitalization.sentences,
                         decoration: InputDecoration(
                           hintText: "message...",
-                          hintStyle: TextStyle(
-                            color: Palette.primalBlack,
-                          ), // Fixed color
+                          hintStyle: TextStyle(color: Palette.primalBlack),
                           border: InputBorder.none,
                           contentPadding: const EdgeInsets.symmetric(
                             vertical: 10,

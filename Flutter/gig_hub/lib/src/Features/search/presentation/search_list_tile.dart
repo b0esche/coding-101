@@ -85,8 +85,11 @@ class _SearchListTileState extends State<SearchListTile> {
                               widget.name,
                               style: GoogleFonts.sometypeMono(
                                 textStyle: TextStyle(
-                                  fontWeight: FontWeight.w800,
-                                  fontSize: 19,
+                                  decoration: TextDecoration.underline,
+                                  decorationColor: Palette.primalBlack.o(0.2),
+                                  wordSpacing: -4,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
 
                                   overflow:
                                       isExpanded
