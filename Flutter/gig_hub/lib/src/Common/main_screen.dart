@@ -26,6 +26,9 @@ class _MainScreenState extends State<MainScreen> {
   AppUser? _loggedInUser;
   late DatabaseRepository _repo;
 
+  List<int>? _currentSearchBpmRange;
+  List<String>? _currentSearchGenres;
+
   @override
   void initState() {
     super.initState();
@@ -68,17 +71,83 @@ class _MainScreenState extends State<MainScreen> {
 
       switch (option) {
         case 'genre':
-          sortedList.sort(
-            (a, b) => (a.genres.isNotEmpty ? a.genres.first : '').compareTo(
-              b.genres.isNotEmpty ? b.genres.first : '',
-            ),
-          );
+          if (_currentSearchGenres != null &&
+              _currentSearchGenres!.isNotEmpty) {
+            sortedList.sort((a, b) {
+              // Count how many selected genres DJ 'a' has
+              int matchesA =
+                  a.genres
+                      .where((genre) => _currentSearchGenres!.contains(genre))
+                      .length;
+              // Count how many selected genres DJ 'b' has
+              int matchesB =
+                  b.genres
+                      .where((genre) => _currentSearchGenres!.contains(genre))
+                      .length;
+
+              // Sort descending by number of matches (more matches come first)
+              if (matchesA != matchesB) {
+                return matchesB.compareTo(matchesA);
+              }
+
+              // If match counts are equal, use a secondary sort criterion.
+              // For example, sort alphabetically by DJ name as a tie-breaker.
+              return a.name.compareTo(b.name);
+            });
+          } else {
+            // If no search genres are active, fall back to standard alphabetical by first genre,
+            // or by name if preferred. Let's stick to name for consistency when no search filter is active.
+            sortedList.sort((a, b) => a.name.compareTo(b.name));
+          }
           break;
         case 'bpm':
-          sortedList.sort((a, b) {
-            int compareMin = a.bpmMin.compareTo(b.bpmMin);
-            return compareMin == 0 ? a.bpmMax.compareTo(b.bpmMax) : compareMin;
-          });
+          if (_currentSearchBpmRange != null) {
+            final int searchMin = _currentSearchBpmRange![0];
+            final int searchMax = _currentSearchBpmRange![1];
+
+            sortedList.sort((a, b) {
+              // Calculate overlap for DJ A
+              int overlapA = 0;
+              if (a.bpmMax >= searchMin && a.bpmMin <= searchMax) {
+                overlapA =
+                    (a.bpmMax < searchMax ? a.bpmMax : searchMax) -
+                    (a.bpmMin > searchMin ? a.bpmMin : searchMin);
+              }
+
+              // Calculate overlap for DJ B
+              int overlapB = 0;
+              if (b.bpmMax >= searchMin && b.bpmMin <= searchMax) {
+                overlapB =
+                    (b.bpmMax < searchMax ? b.bpmMax : searchMax) -
+                    (b.bpmMin > searchMin ? b.bpmMin : searchMin);
+              }
+
+              // Prioritize higher overlap
+              if (overlapA != overlapB) {
+                return overlapB.compareTo(overlapA); // Descending by overlap
+              }
+
+              // If overlaps are equal, prioritize exact match of min/max
+              if (a.bpmMin == searchMin && a.bpmMax == searchMax) return -1;
+              if (b.bpmMin == searchMin && b.bpmMax == searchMax) return 1;
+
+              // Fallback: sort by how "centered" their range is to the search range,
+              // or simply by min BPM, then max BPM for tie-breaking.
+              // For a simple tie-breaker, let's use min BPM then max BPM.
+              int compareMin = a.bpmMin.compareTo(b.bpmMin);
+              return compareMin == 0
+                  ? a.bpmMax.compareTo(b.bpmMax)
+                  : compareMin;
+            });
+          } else {
+            // If no search BPM range is active, fall back to standard min/max sort
+            sortedList.sort((a, b) {
+              int compareMin = a.bpmMin.compareTo(b.bpmMin);
+              return compareMin == 0
+                  ? a.bpmMax.compareTo(b.bpmMax)
+                  : compareMin;
+            });
+          }
           break;
         case 'location':
           sortedList.sort((a, b) => a.city.compareTo(b.city));
@@ -196,11 +265,22 @@ class _MainScreenState extends State<MainScreen> {
                     setState(() {
                       _usersDJ = results;
                       _sortedUsersDJ = List.from(results);
+                      _selectedSortOption = '';
                     });
                   },
                   onSearchLoading: (bool isLoading) {
                     setState(() {
                       _isLoading = isLoading;
+                    });
+                  },
+                  onBpmRangeChanged: (List<int>? bpmRange) {
+                    setState(() {
+                      _currentSearchBpmRange = bpmRange;
+                    });
+                  },
+                  onGenresChanged: (List<String>? genres) {
+                    setState(() {
+                      _currentSearchGenres = genres;
                     });
                   },
                 ),

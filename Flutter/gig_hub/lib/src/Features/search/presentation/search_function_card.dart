@@ -11,10 +11,14 @@ import 'package:google_fonts/google_fonts.dart';
 class SearchFunctionCard extends StatefulWidget {
   final void Function(List<DJ>) onSearchResults;
   final void Function(bool) onSearchLoading;
+  final void Function(List<int>?) onBpmRangeChanged;
+  final void Function(List<String>?) onGenresChanged;
 
   const SearchFunctionCard({
     required this.onSearchResults,
     required this.onSearchLoading,
+    required this.onBpmRangeChanged,
+    required this.onGenresChanged,
     super.key,
   });
 
@@ -43,6 +47,7 @@ class _SearchFunctionCardState extends State<SearchFunctionCard> {
         selectedGenres = result;
         genreController.text = selectedGenres.join(', ');
       });
+      widget.onGenresChanged(selectedGenres);
     }
   }
 
@@ -61,6 +66,7 @@ class _SearchFunctionCardState extends State<SearchFunctionCard> {
                 ? "${bpmValues[0]}"
                 : "${bpmValues[0]} - ${bpmValues[1]}";
       });
+      widget.onBpmRangeChanged(selectedBpm);
     }
   }
 
@@ -141,7 +147,10 @@ class _SearchFunctionCardState extends State<SearchFunctionCard> {
                       padding: EdgeInsets.zero,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
-                        side: BorderSide(color: Palette.concreteGrey),
+                        side: BorderSide(
+                          color: Palette.concreteGrey.o(0.7),
+                          width: 1.5,
+                        ),
                       ),
                       elevation: 3,
                     ),
@@ -178,6 +187,9 @@ class _SearchFunctionCardState extends State<SearchFunctionCard> {
                         bpmController.clear();
                         locationController.clear();
                       });
+                      widget.onBpmRangeChanged(null);
+                      widget.onGenresChanged(null);
+                      _search();
                     },
                     child: Container(
                       decoration: BoxDecoration(

@@ -3,6 +3,7 @@ import 'package:gig_hub/src/Common/main_screen.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
 import 'package:gig_hub/src/Features/auth/sign_up_bottomsheet.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shimmer/shimmer.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -233,7 +234,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ElevatedButton(
                       style: ButtonStyle(
                         padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
-                          EdgeInsets.only(left: 124, right: 124),
+                          EdgeInsets.only(left: 120, right: 120),
                         ),
                         backgroundColor: WidgetStateProperty.all<Color>(
                           Palette.forgedGold,
@@ -257,9 +258,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                       child: Text(
                         "log in",
-                        style: TextStyle(
-                          color: Palette.glazedWhite,
-                          fontWeight: FontWeight.w800,
+                        style: GoogleFonts.sometypeMono(
+                          textStyle: TextStyle(
+                            color: Palette.glazedWhite,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            wordSpacing: -6,
+                          ),
                         ),
                       ),
                     ),
@@ -342,7 +347,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.transparent,
                       foregroundColor: Colors.transparent,
-                      padding: EdgeInsets.only(left: 96, right: 96),
+                      padding: EdgeInsets.only(left: 78, right: 78),
 
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
@@ -361,10 +366,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                     child: Text(
                       "continue as guest",
-                      style: TextStyle(
-                        color: Palette.primalBlack,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
+                      style: GoogleFonts.sometypeMono(
+                        textStyle: TextStyle(
+                          color: Palette.primalBlack,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),

@@ -113,7 +113,10 @@ class _GenreSelectionDialogState extends State<GenreSelectionDialog> {
               height: 36,
               width: 36,
               decoration: BoxDecoration(
-                border: BoxBorder.all(color: Palette.shadowGrey),
+                border: BoxBorder.all(
+                  color: Palette.shadowGrey.o(0.7),
+                  width: 1.5,
+                ),
                 borderRadius: BorderRadius.circular(24),
               ),
               child: Center(
@@ -121,7 +124,11 @@ class _GenreSelectionDialogState extends State<GenreSelectionDialog> {
                   onPressed: () {
                     Navigator.of(context).pop(selectedGenres);
                   },
-                  icon: Icon(Icons.check, color: Palette.shadowGrey, size: 19),
+                  icon: Icon(
+                    Icons.check_rounded,
+                    color: Palette.primalBlack,
+                    size: 19,
+                  ),
                 ),
               ),
             ),

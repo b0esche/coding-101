@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:gig_hub/src/Data/user.dart';
-import 'package:gig_hub/src/Features/chat/presentation/chat_screen.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
 
 import 'package:google_fonts/google_fonts.dart';
@@ -9,49 +8,18 @@ import 'package:google_fonts/google_fonts.dart';
 class UserProfileBooker extends StatelessWidget {
   final Booker booker;
   final dynamic repo;
-  final bool showChatButton;
+
   const UserProfileBooker({
     super.key,
     required this.booker,
     required this.repo,
-    this.showChatButton = true,
   });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Palette.primalBlack,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder:
-                  (context) => ChatScreen(
-                    chatPartner: booker,
-                    repo: repo,
-                    currentUser: booker,
-                  ),
-            ),
-          );
-          debugPrint("Jetzt wird gechattet!");
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Palette.glazedWhite, Palette.gigGrey],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              stops: [0, 0.8],
-            ),
-            shape: BoxShape.circle,
-          ),
-          child: const Padding(
-            padding: EdgeInsets.all(14.0),
-            child: Icon(Icons.chat_outlined),
-          ),
-        ),
-      ),
+
       body: Column(
         children: [
           Stack(

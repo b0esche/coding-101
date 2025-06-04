@@ -45,7 +45,7 @@ class _LocationAutocompleteFieldState extends State<LocationAutocompleteField> {
     final url = Uri.parse(
       'https://maps.googleapis.com/maps/api/place/autocomplete/json'
       '?input=$input'
-      '&types=geocode'
+      '&types=(cities)'
       '&components=country:de'
       '&language=de'
       '&key=$apiKey',
@@ -57,18 +57,19 @@ class _LocationAutocompleteFieldState extends State<LocationAutocompleteField> {
     if (data['status'] == 'OK') {
       final predictions = data['predictions'] as List;
 
-      final onlyCities =
-          predictions.where((p) {
-            final types = List<String>.from(p['types']);
-            return types.contains('locality') ||
-                types.contains('administrative_area_level_1');
-          }).toList();
-
-      if (onlyCities.isNotEmpty) {
+      if (predictions.isNotEmpty) {
         setState(() {
-          _bestSuggestion = onlyCities.first['description'];
+          _bestSuggestion = predictions.first['description'];
+        });
+      } else {
+        setState(() {
+          _bestSuggestion = null;
         });
       }
+    } else {
+      setState(() {
+        _bestSuggestion = null;
+      });
     }
   }
 
@@ -101,6 +102,7 @@ class _LocationAutocompleteFieldState extends State<LocationAutocompleteField> {
                       _bestSuggestion != _internalController.text
                   ? IconButton(
                     icon: Icon(
+                      // Added const
                       Icons.arrow_circle_down,
                       color: Palette.forgedGold,
                     ),

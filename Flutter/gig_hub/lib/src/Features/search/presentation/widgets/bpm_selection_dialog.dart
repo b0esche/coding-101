@@ -99,7 +99,10 @@ class _BpmSelectionDialogState extends State<BpmSelectionDialog> {
               height: 36,
               width: 36,
               decoration: BoxDecoration(
-                border: BoxBorder.all(color: Palette.shadowGrey),
+                border: BoxBorder.all(
+                  color: Palette.shadowGrey.o(0.7),
+                  width: 1.5,
+                ),
                 borderRadius: BorderRadius.circular(24),
               ),
               child: Center(
@@ -109,7 +112,7 @@ class _BpmSelectionDialogState extends State<BpmSelectionDialog> {
                       context,
                     ).pop([bpmRange.start.round(), bpmRange.end.round()]);
                   },
-                  icon: Icon(Icons.check, color: Palette.shadowGrey, size: 19),
+                  icon: Icon(Icons.check, color: Palette.primalBlack, size: 19),
                 ),
               ),
             ),

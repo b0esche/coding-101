@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SignUpSheet extends StatefulWidget {
   const SignUpSheet({super.key});
@@ -197,10 +198,12 @@ class _SignUpSheetState extends State<SignUpSheet> {
                 },
                 child: Text(
                   "next",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Palette.glazedWhite,
+                  style: GoogleFonts.sometypeMono(
+                    textStyle: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Palette.glazedWhite,
+                    ),
                   ),
                 ),
               ),

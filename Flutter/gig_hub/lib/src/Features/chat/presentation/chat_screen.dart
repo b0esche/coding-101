@@ -130,7 +130,6 @@ class ChatScreenState extends State<ChatScreen> {
                             (_) => UserProfileBooker(
                               booker: widget.chatPartner as Booker,
                               repo: widget.repo,
-                              showChatButton: false,
                             ),
                       ),
                     );
