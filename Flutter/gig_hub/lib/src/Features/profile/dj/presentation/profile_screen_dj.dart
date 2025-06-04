@@ -6,7 +6,7 @@ import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:gig_hub/src/Common/genre_bubble.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class ProfileScreenDJ extends StatelessWidget {
+class ProfileScreenDJ extends StatefulWidget {
   final DJ dj;
   final dynamic repo;
   final bool showChatButton;
@@ -14,15 +14,20 @@ class ProfileScreenDJ extends StatelessWidget {
     super.key,
     required this.dj,
     required this.repo,
-    this.showChatButton = true,
+    required this.showChatButton,
   });
 
+  @override
+  State<ProfileScreenDJ> createState() => _ProfileScreenDJState();
+}
+
+class _ProfileScreenDJState extends State<ProfileScreenDJ> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Palette.primalBlack,
       floatingActionButton:
-          showChatButton
+          widget.showChatButton
               ? FloatingActionButton(
                 onPressed: () {
                   Navigator.pushReplacement(
@@ -30,9 +35,9 @@ class ProfileScreenDJ extends StatelessWidget {
                     MaterialPageRoute(
                       builder:
                           (context) => ChatScreen(
-                            chatPartner: dj,
-                            repo: repo,
-                            currentUser: dj,
+                            chatPartner: widget.dj,
+                            repo: widget.repo,
+                            currentUser: widget.dj,
                           ),
                     ),
                   );
@@ -62,7 +67,7 @@ class ProfileScreenDJ extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 height: 256,
-                child: Image.network(dj.headUrl, fit: BoxFit.cover),
+                child: Image.network(widget.dj.headUrl, fit: BoxFit.cover),
               ),
               Positioned(
                 top: 40,
@@ -114,7 +119,7 @@ class ProfileScreenDJ extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      dj.name,
+                      widget.dj.name,
                       style: GoogleFonts.sometypeMono(
                         textStyle: TextStyle(
                           color: Palette.glazedWhite,
@@ -148,7 +153,7 @@ class ProfileScreenDJ extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 2, top: 2, bottom: 2),
                     child: RatingStars(
-                      value: dj.rating ?? 0,
+                      value: widget.dj.rating ?? 0,
                       starBuilder:
                           (index, color) =>
                               Icon(Icons.star, color: color, size: 18),
@@ -202,7 +207,7 @@ class ProfileScreenDJ extends StatelessWidget {
                                 const Icon(Icons.place, size: 20),
                                 const SizedBox(width: 4),
                                 Text(
-                                  dj.city,
+                                  widget.dj.city,
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: Palette.primalBlack,
@@ -225,7 +230,7 @@ class ProfileScreenDJ extends StatelessWidget {
                                 const Icon(Icons.speed, size: 22),
                                 const SizedBox(width: 4),
                                 Text(
-                                  '${dj.bpmMin}-${dj.bpmMax} bpm',
+                                  '${widget.dj.bpmMin}-${widget.dj.bpmMax} bpm',
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: Palette.primalBlack,
@@ -259,7 +264,7 @@ class ProfileScreenDJ extends StatelessWidget {
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: Text(
-                              dj.about,
+                              widget.dj.about,
                               style: TextStyle(
                                 color: Palette.primalBlack,
                                 fontSize: 14,
@@ -275,7 +280,7 @@ class ProfileScreenDJ extends StatelessWidget {
                         spacing: 16,
                         runSpacing: 8,
                         children:
-                            dj.genres
+                            widget.dj.genres
                                 .map(
                                   (genreString) =>
                                       GenreBubble(genre: genreString),
@@ -318,7 +323,7 @@ class ProfileScreenDJ extends StatelessWidget {
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: Text(
-                              dj.info,
+                              widget.dj.info,
                               style: TextStyle(
                                 color: Palette.primalBlack,
                                 fontSize: 14,

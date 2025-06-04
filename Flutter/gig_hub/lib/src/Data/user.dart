@@ -24,7 +24,12 @@ abstract class AppUser {
     this.rating,
   });
 
-  void showProfile(BuildContext context, dynamic repo, {AppUser? currentUser});
+  void showProfile(
+    BuildContext context,
+    dynamic repo,
+    bool showChatButton, {
+    AppUser? currentUser,
+  });
 
   void updateEmail(AppUser? currentUser, String newEmail) {
     email = newEmail;
@@ -56,10 +61,20 @@ class DJ extends AppUser {
   });
 
   @override
-  void showProfile(BuildContext context, dynamic repo, {AppUser? currentUser}) {
+  void showProfile(
+    BuildContext context,
+    dynamic repo,
+    showChatButton, {
+    AppUser? currentUser,
+  }) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => ProfileScreenDJ(dj: this, repo: repo),
+        builder:
+            (context) => ProfileScreenDJ(
+              dj: this,
+              repo: repo,
+              showChatButton: showChatButton,
+            ),
       ),
     );
   }
@@ -84,7 +99,12 @@ class Booker extends AppUser {
   });
 
   @override
-  void showProfile(BuildContext context, dynamic repo, {AppUser? currentUser}) {
+  void showProfile(
+    BuildContext context,
+    dynamic repo,
+    showChatButton, {
+    AppUser? currentUser,
+  }) {
     debugPrint('Profil für Booker $name anzeigen (noch nicht implementiert)');
   }
 }

@@ -4,11 +4,19 @@ import 'package:google_fonts/google_fonts.dart';
 
 class CustomFormField extends StatelessWidget {
   final String label;
-  final void Function() onPressed;
+  final void Function()? onPressed;
+  final bool readOnly;
+  final TextEditingController? controller;
+  final void Function(String)? onChanged;
+  final Widget? suffixIcon;
 
   const CustomFormField({
     required this.label,
     required this.onPressed,
+    required this.readOnly,
+    this.controller,
+    this.onChanged,
+    this.suffixIcon,
     super.key,
   });
 
@@ -18,19 +26,18 @@ class CustomFormField extends StatelessWidget {
       width: 260,
       height: 32,
       child: TextFormField(
+        controller: controller,
+        onChanged: onChanged,
         onTap: onPressed,
-        // () {
-        //   debugPrint("Moin"); // TODO: brauche jeweils den dialog mit dem picker
-        //   // die ihre werte dann an den TextController
-        //   // (und die Suchfunktion) übergeben.. Future??
-        //   switch (label) {
-        //     case "genre": //ListView mit Radio max. 5
-        //     case "bpm": // range bzw min und max
-        //     case "location": // Package?? Autocomplete??
-        //   }
-        // },
-        readOnly: true,
-        style: TextStyle(color: Palette.glazedWhite),
+        readOnly: readOnly,
+        style: GoogleFonts.sometypeMono(
+          textStyle: TextStyle(
+            color: Palette.glazedWhite,
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
         decoration: InputDecoration(
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Palette.forgedGold, width: 2),
@@ -40,18 +47,24 @@ class CustomFormField extends StatelessWidget {
             borderSide: BorderSide(color: Palette.gigGrey, width: 2),
             borderRadius: BorderRadius.circular(12),
           ),
-          suffixIcon: Icon(Icons.chevron_right, color: Palette.glazedWhite),
+          suffixIcon:
+              suffixIcon ??
+              Icon(Icons.chevron_right, color: Palette.glazedWhite),
           labelText: label,
           labelStyle: GoogleFonts.sometypeMono(
             textStyle: TextStyle(
               color: Palette.glazedWhite,
               fontSize: 16,
               fontWeight: FontWeight.w600,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
-          contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 0,
+            horizontal: 10,
+          ),
           floatingLabelBehavior: FloatingLabelBehavior.never,
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
           filled: true,
           fillColor: Palette.primalBlack,
         ),

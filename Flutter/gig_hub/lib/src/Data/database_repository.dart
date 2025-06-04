@@ -3,13 +3,16 @@ import '../Features/chat/domain/chat_message.dart';
 import 'user.dart';
 
 abstract class DatabaseRepository {
-  // userdata
   Future<void> createDJ(DJ dj);
   Future<void> createBooker(Booker booker);
   Future<List<DJ>> getDJs();
   Future<AppUser?> getUserById(String userId);
+  Future<List<DJ>> searchDJs({
+    String? city,
+    List<String>? genres,
+    List<int>? bpmRange,
+  });
 
-  // chatdata
   Future<void> sendMessage(ChatMessage message);
   Future<List<ChatMessage>> getMessages(String userId1, String userId2);
   Future<List<ChatMessage>> getAllMessagesForUser(String userId);
@@ -149,6 +152,35 @@ class MockDatabaseRepository implements DatabaseRepository {
   ];
 
   @override
+  Future<List<DJ>> searchDJs({
+    String? city,
+    List<String>? genres,
+    List<int>? bpmRange,
+  }) async {
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    String normalize(String input) => input.trim().toLowerCase();
+    return _djs.where((dj) {
+      final matchesCity =
+          city == null || city.trim().isEmpty
+              ? true
+              : normalize(dj.city).contains(normalize(city));
+
+      final matchesGenres =
+          genres == null || genres.isEmpty
+              ? true
+              : genres.any((genre) => dj.genres.contains(genre));
+
+      final matchesBpm =
+          bpmRange == null || bpmRange.length != 2
+              ? true
+              : (dj.bpmMax >= bpmRange[0] && dj.bpmMin <= bpmRange[1]);
+
+      return matchesCity && matchesGenres && matchesBpm;
+    }).toList();
+  }
+
+  @override
   Future<void> createDJ(DJ dj) async {
     await Future.delayed(const Duration(seconds: 1));
     _djs.add(dj);
@@ -171,14 +203,10 @@ class MockDatabaseRepository implements DatabaseRepository {
     await Future.delayed(const Duration(seconds: 1));
     try {
       return _djs.firstWhere((dj) => dj.userId == userId);
-    } catch (e) {
-      // User ist kein DJ, versuche Booker
-    }
+    } catch (e) {}
     try {
       return bookers.firstWhere((booker) => booker.userId == userId);
-    } catch (e) {
-      // User nicht gefunden
-    }
+    } catch (e) {}
     return null;
   }
 

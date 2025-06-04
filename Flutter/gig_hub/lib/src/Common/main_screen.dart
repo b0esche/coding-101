@@ -18,6 +18,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   bool _isExpanded = false;
+  bool _isLoading = false;
   String _selectedSortOption = '';
   List<DJ> _usersDJ = [];
   List<DJ> _sortedUsersDJ = [];
@@ -96,7 +97,12 @@ class _MainScreenState extends State<MainScreen> {
       _selectedIndex = index;
     });
     if (index == 0 && _loggedInUser != null) {
-      _loggedInUser!.showProfile(context, _repo);
+      _loggedInUser!.showProfile(
+        context,
+        _repo,
+        false,
+        currentUser: _loggedInUser,
+      );
     } else if (index == 1) {
       if (_loggedInUser != null) {
         Navigator.push(
@@ -146,7 +152,7 @@ class _MainScreenState extends State<MainScreen> {
                             onTap: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (context) => SettingsScreen(),
+                                  builder: (context) => const SettingsScreen(),
                                   fullscreenDialog: true,
                                 ),
                               );
@@ -185,7 +191,19 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                   ),
                 ),
-                const SearchFunctionCard(),
+                SearchFunctionCard(
+                  onSearchResults: (List<DJ> results) {
+                    setState(() {
+                      _usersDJ = results;
+                      _sortedUsersDJ = List.from(results);
+                    });
+                  },
+                  onSearchLoading: (bool isLoading) {
+                    setState(() {
+                      _isLoading = isLoading;
+                    });
+                  },
+                ),
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -221,53 +239,63 @@ class _MainScreenState extends State<MainScreen> {
                   ],
                 ),
                 Expanded(
-                  child: Stack(
-                    children: [
-                      ListView.builder(
-                        padding: const EdgeInsets.only(
-                          top: 8,
-                          left: 2,
-                          right: 2,
-                        ),
-                        itemCount: _sortedUsersDJ.length,
-                        itemBuilder: (context, index) {
-                          final DJ currentUserDJ = _sortedUsersDJ[index];
-                          return SearchListTile(
-                            repo: _repo,
-                            user: currentUserDJ,
-                            name: currentUserDJ.name,
-                            genres: currentUserDJ.genres,
-                            image: NetworkImage(currentUserDJ.avatarUrl),
-                            about: currentUserDJ.about,
-                            location: currentUserDJ.city,
-                            bpmMin: currentUserDJ.bpmMin,
-                            bpmMax: currentUserDJ.bpmMax,
-                            rating: currentUserDJ.rating ?? 0.0,
-                          );
-                        },
-                      ),
-                      Positioned(
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        height: 20,
-                        child: IgnorePointer(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  Palette.primalBlack,
-                                  Palette.primalBlack.withOpacity(0),
-                                ],
-                              ),
+                  child:
+                      _isLoading
+                          ? Center(
+                            child: CircularProgressIndicator(
+                              color: Palette.forgedGold,
                             ),
+                          )
+                          : Stack(
+                            children: [
+                              ListView.builder(
+                                padding: const EdgeInsets.only(
+                                  top: 8,
+                                  left: 2,
+                                  right: 2,
+                                ),
+                                itemCount: _sortedUsersDJ.length,
+                                itemBuilder: (context, index) {
+                                  final DJ currentUserDJ =
+                                      _sortedUsersDJ[index];
+                                  return SearchListTile(
+                                    repo: _repo,
+                                    user: currentUserDJ,
+                                    name: currentUserDJ.name,
+                                    genres: currentUserDJ.genres,
+                                    image: NetworkImage(
+                                      currentUserDJ.avatarUrl,
+                                    ),
+                                    about: currentUserDJ.about,
+                                    location: currentUserDJ.city,
+                                    bpmMin: currentUserDJ.bpmMin,
+                                    bpmMax: currentUserDJ.bpmMax,
+                                    rating: currentUserDJ.rating ?? 0.0,
+                                  );
+                                },
+                              ),
+                              Positioned(
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                height: 20,
+                                child: IgnorePointer(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                        colors: [
+                                          Palette.primalBlack,
+                                          Palette.primalBlack.o(0),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ),
-                    ],
-                  ),
                 ),
               ],
             ),

@@ -1,10 +1,93 @@
 import 'package:flutter/material.dart';
+import 'package:gig_hub/src/Data/database_repository.dart';
+import 'package:gig_hub/src/Data/user.dart';
 import 'package:gig_hub/src/Features/search/presentation/custom_form_field.dart';
+import 'package:gig_hub/src/Features/search/presentation/widgets/bpm_selection_dialog.dart';
+import 'package:gig_hub/src/Features/search/presentation/widgets/genre_selection_dialog.dart';
+import 'package:gig_hub/src/Features/search/presentation/widgets/location_picker.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class SearchFunctionCard extends StatelessWidget {
-  const SearchFunctionCard({super.key});
+class SearchFunctionCard extends StatefulWidget {
+  final void Function(List<DJ>) onSearchResults;
+  final void Function(bool) onSearchLoading;
+
+  const SearchFunctionCard({
+    required this.onSearchResults,
+    required this.onSearchLoading,
+    super.key,
+  });
+
+  @override
+  State<SearchFunctionCard> createState() => _SearchFunctionCardState();
+}
+
+class _SearchFunctionCardState extends State<SearchFunctionCard> {
+  List<String> selectedGenres = [];
+  List<int>? selectedBpm;
+  String? selectedCity;
+  final TextEditingController genreController = TextEditingController();
+  final TextEditingController bpmController = TextEditingController();
+  final TextEditingController locationController = TextEditingController();
+
+  void _showGenreDialog() async {
+    final List<String>? result = await showDialog<List<String>>(
+      context: context,
+      builder: (BuildContext context) {
+        return GenreSelectionDialog(initialSelectedGenres: selectedGenres);
+      },
+    );
+
+    if (result != null && mounted) {
+      setState(() {
+        selectedGenres = result;
+        genreController.text = selectedGenres.join(', ');
+      });
+    }
+  }
+
+  void _showBpmDialog() async {
+    final List<int>? bpmValues = await showDialog<List<int>>(
+      context: context,
+      builder: (BuildContext context) {
+        return BpmSelectionDialog(intialSelectedBpm: selectedBpm);
+      },
+    );
+    if (bpmValues != null && mounted) {
+      setState(() {
+        selectedBpm = bpmValues;
+        bpmController.text =
+            bpmValues[0] == bpmValues[1]
+                ? "${bpmValues[0]}"
+                : "${bpmValues[0]} - ${bpmValues[1]}";
+      });
+    }
+  }
+
+  Future<void> _search() async {
+    widget.onSearchLoading(true);
+
+    final repo = MockDatabaseRepository();
+    final results = await repo.searchDJs(
+      city: selectedCity,
+      genres: selectedGenres,
+      bpmRange: selectedBpm,
+    );
+
+    widget.onSearchResults(results);
+
+    if (mounted) {
+      widget.onSearchLoading(false);
+    }
+  }
+
+  @override
+  void dispose() {
+    genreController.dispose();
+    bpmController.dispose();
+    locationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,26 +101,43 @@ class SearchFunctionCard extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 0, 0),
           child: Column(
-            spacing: 8,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CustomFormField(label: "genre...", onPressed: () {}),
-              CustomFormField(label: "bpm...", onPressed: () {}),
-              CustomFormField(label: "location...", onPressed: () {}),
+              CustomFormField(
+                readOnly: true,
+                label: "genre...",
+                onPressed: _showGenreDialog,
+                controller: genreController,
+              ),
+              const SizedBox(height: 8),
+              CustomFormField(
+                readOnly: true,
+                label: "bpm...",
+                onPressed: _showBpmDialog,
+                controller: bpmController,
+              ),
+              const SizedBox(height: 8),
+              LocationAutocompleteField(
+                controller: locationController,
+                onCitySelected: (city) {
+                  setState(() {
+                    selectedCity = city;
+                  });
+                },
+              ),
+              const SizedBox(height: 8),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  SizedBox(width: 85),
+                  const SizedBox(width: 85),
                   ElevatedButton(
-                    onPressed: () {
-                      debugPrint("Suche läuft...");
-                    },
+                    onPressed: _search,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Palette.shadowGrey,
                       splashFactory: NoSplash.splashFactory,
-                      maximumSize: Size(150, 24),
-                      minimumSize: Size(88, 22),
+                      maximumSize: const Size(150, 24),
+                      minimumSize: const Size(88, 22),
                       padding: EdgeInsets.zero,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -55,7 +155,7 @@ class SearchFunctionCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   TextButton(
                     style: ButtonStyle(
                       foregroundColor: WidgetStateProperty.resolveWith<Color>((
@@ -70,18 +170,27 @@ class SearchFunctionCard extends StatelessWidget {
                       splashFactory: NoSplash.splashFactory,
                     ),
                     onPressed: () {
-                      debugPrint("weg damit...");
+                      setState(() {
+                        selectedGenres.clear();
+                        selectedBpm = null;
+                        selectedCity = null;
+                        genreController.clear();
+                        bpmController.clear();
+                        locationController.clear();
+                      });
                     },
                     child: Container(
                       decoration: BoxDecoration(
                         color: Palette.shadowGrey,
                         border: Border.all(color: Palette.concreteGrey),
-                        borderRadius: BorderRadius.all(Radius.circular(6)),
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(6),
+                        ),
                         boxShadow: [
                           BoxShadow(
                             color: Palette.gigGrey,
                             blurRadius: 4,
-                            offset: Offset(0.5, 2),
+                            offset: const Offset(0.5, 2),
                           ),
                         ],
                       ),
@@ -90,7 +199,7 @@ class SearchFunctionCard extends StatelessWidget {
                         child: Text(
                           "clear",
                           style: GoogleFonts.sometypeMono(
-                            textStyle: TextStyle(fontSize: 11),
+                            textStyle: const TextStyle(fontSize: 11),
                           ),
                         ),
                       ),

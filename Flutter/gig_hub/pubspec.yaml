@@ -14,6 +14,9 @@ dependencies:
   flutter_rating_stars: ^1.1.0
   google_fonts: ^6.2.1
   shimmer: ^3.0.0
+  http: ^1.4.0
+  flutter_dotenv: ^5.2.0
+  flutter_typeahead: ^4.8.0
 
 dev_dependencies:
   flutter_test:
@@ -26,6 +29,7 @@ flutter:
 
     - assets/images/gighub_logo.png
     - assets/images/default_avatar.jpg
+    - .env
 
 flutter_launcher_icons:
   android: "launcher_icon"

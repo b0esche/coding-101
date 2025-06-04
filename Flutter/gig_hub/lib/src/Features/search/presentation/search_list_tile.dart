@@ -42,7 +42,7 @@ class _SearchListTileState extends State<SearchListTile> {
     return AnimatedContainer(
       duration: Duration(milliseconds: 300),
       curve: Curves.easeInOut,
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8, right: 6),
       margin: const EdgeInsets.symmetric(vertical: 8),
       decoration: BoxDecoration(
         border: Border.all(color: Palette.glazedWhite, width: 2),
@@ -80,7 +80,7 @@ class _SearchListTileState extends State<SearchListTile> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(
-                            width: 182,
+                            width: 190,
                             child: Text(
                               widget.name,
                               style: GoogleFonts.sometypeMono(
@@ -99,7 +99,7 @@ class _SearchListTileState extends State<SearchListTile> {
                               ),
                             ),
                           ),
-
+                          Spacer(),
                           RatingStars(
                             value: widget.rating ?? 0,
                             starBuilder:
@@ -114,7 +114,7 @@ class _SearchListTileState extends State<SearchListTile> {
                             angle: 0,
                             starSpacing: 0,
                             valueLabelVisibility: false,
-                            animationDuration: Duration(milliseconds: 1000),
+                            animationDuration: Duration(milliseconds: 350),
                             starOffColor: Palette.shadowGrey,
                             starColor: Palette.forgedGold,
                           ),
@@ -240,6 +240,8 @@ class _SearchListTileState extends State<SearchListTile> {
                                         widget.user.showProfile(
                                           context,
                                           widget.repo,
+                                          true,
+                                          currentUser: widget.user,
                                         );
                                       },
                                       child: const Icon(
