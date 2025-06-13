@@ -7,8 +7,23 @@ import 'package:gig_hub/src/Features/profile/dj/presentation/audio_player.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:gig_hub/src/Common/genre_bubble.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gig_hub/src/Data/database_repository.dart';
+
+class ProfileScreenDJArgs {
+  final DJ dj;
+  final DatabaseRepository repo;
+  final bool showChatButton;
+
+  ProfileScreenDJArgs({
+    required this.dj,
+    required this.repo,
+    this.showChatButton = true,
+  });
+}
 
 class ProfileScreenDJ extends StatefulWidget {
+  static const routeName = '/profileDj';
+
   final DJ dj;
   final dynamic repo;
   final bool showChatButton;
@@ -32,15 +47,13 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
           widget.showChatButton
               ? FloatingActionButton(
                 onPressed: () {
-                  Navigator.push(
+                  Navigator.pushNamed(
                     context,
-                    MaterialPageRoute(
-                      builder:
-                          (context) => ChatScreen(
-                            chatPartner: widget.dj,
-                            repo: widget.repo,
-                            currentUser: widget.dj,
-                          ),
+                    ChatScreen.routeName,
+                    arguments: ChatScreenArgs(
+                      chatPartner: widget.dj,
+                      repo: widget.repo,
+                      currentUser: widget.dj,
                     ),
                   );
                   debugPrint("Jetzt wird getalkt!");
@@ -51,7 +64,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                       colors: [Palette.glazedWhite, Palette.gigGrey],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
-                      stops: [0, 0.8],
+                      stops: const [0, 0.8],
                     ),
                     shape: BoxShape.circle,
                   ),
@@ -85,7 +98,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                     ),
                     iconSize: 36,
                     color: Palette.shadowGrey,
-                    style: ButtonStyle(
+                    style: const ButtonStyle(
                       tapTargetSize: MaterialTapTargetSize.padded,
                     ),
                   ),
@@ -105,7 +118,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                         topLeft: Radius.circular(12),
                         topRight: Radius.circular(12),
                       ),
-                      border: BoxBorder.fromLTRB(
+                      border: Border(
                         left: BorderSide(
                           color: Palette.gigGrey.o(0.6),
                           width: 2,
@@ -138,7 +151,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                 right: 0,
                 child: Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                       bottomLeft: Radius.circular(12),
                       topLeft: Radius.circular(12),
                     ),
@@ -166,7 +179,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                       starSpacing: 0,
                       starSize: 18,
                       valueLabelVisibility: false,
-                      animationDuration: Duration(milliseconds: 350),
+                      animationDuration: const Duration(milliseconds: 350),
                       starOffColor: Palette.shadowGrey,
                       starColor: Palette.forgedGold,
                     ),
@@ -276,7 +289,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 24),
+                    const SizedBox(height: 24),
                     Center(
                       child: Wrap(
                         spacing: 16,
@@ -290,7 +303,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                 .toList(),
                       ),
                     ),
-                    SizedBox(height: 28),
+                    const SizedBox(height: 28),
                     Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -313,9 +326,9 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                             AudioPlayerWidget(
                               audioUrl:
                                   // widget.dj.set1Url TODO: über die eingegebene URL die Audiodaten von Soundcloud API fetchen
-                                  'https://samplelib.com/lib/preview/mp3/sample-15s.mp3',
+                                  'https://samplelib.com/lib/preview/mp3/sample-9s.mp3',
                             ),
-                            SizedBox(width: 2),
+                            const SizedBox(width: 2),
                             IconButton(
                               onPressed: () {
                                 debugPrint(
@@ -330,7 +343,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -353,9 +366,9 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                             AudioPlayerWidget(
                               audioUrl:
                                   // widget.dj.set2URl TODO: über die eingegebene URL die Audiodaten von Soundcloud API fetchen
-                                  'https://samplelib.com/lib/preview/mp3/sample-15s.mp3',
+                                  'https://samplelib.com/lib/preview/mp3/sample-12s.mp3',
                             ),
-                            SizedBox(width: 2),
+                            const SizedBox(width: 2),
                             IconButton(
                               onPressed: () {
                                 debugPrint(
@@ -370,7 +383,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 24),
+                    const SizedBox(height: 24),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -402,7 +415,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 90),
+                    const SizedBox(height: 90),
                   ],
                 ),
               ),

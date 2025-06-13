@@ -5,8 +5,18 @@ import 'package:gig_hub/src/Features/chat/domain/chat_message.dart';
 import 'package:gig_hub/src/Features/chat/domain/chat_list_item.dart';
 import 'package:gig_hub/src/Features/chat/presentation/chat_list_item_widget.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
+import 'package:gig_hub/src/Features/chat/presentation/chat_screen.dart';
+
+class ChatListScreenArgs {
+  final DatabaseRepository repo;
+  final AppUser currentUser;
+
+  ChatListScreenArgs({required this.repo, required this.currentUser});
+}
 
 class ChatListScreen extends StatefulWidget {
+  static const routeName = '/chatList';
+
   const ChatListScreen({
     super.key,
     required this.repo,
@@ -131,6 +141,17 @@ class _ChatListScreenState extends State<ChatListScreen> {
                     chatListItem: chatListItem,
                     repo: widget.repo,
                     currentUser: widget.currentUser,
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        ChatScreen.routeName,
+                        arguments: ChatScreenArgs(
+                          chatPartner: chatListItem.user,
+                          repo: widget.repo,
+                          currentUser: widget.currentUser,
+                        ),
+                      );
+                    },
                   );
                 },
               ),

@@ -7,7 +7,21 @@ import 'package:gig_hub/src/Features/profile/dj/presentation/profile_screen_dj.d
 import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+class ChatScreenArgs {
+  final AppUser chatPartner;
+  final DatabaseRepository repo;
+  final AppUser currentUser;
+
+  ChatScreenArgs({
+    required this.chatPartner,
+    required this.repo,
+    required this.currentUser,
+  });
+}
+
 class ChatScreen extends StatefulWidget {
+  static const routeName = '/chat';
+
   final AppUser chatPartner;
   final DatabaseRepository repo;
   final AppUser currentUser;

@@ -1,21 +1,23 @@
+// gig_hub/src/Features/chat/presentation/chat_list_item_widget.dart
 import 'package:flutter/material.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
 import 'package:gig_hub/src/Data/user.dart';
 import 'package:gig_hub/src/Features/chat/domain/chat_list_item.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
-import 'package:gig_hub/src/Features/chat/presentation/chat_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ChatListItemWidget extends StatelessWidget {
   final ChatListItem chatListItem;
   final DatabaseRepository repo;
   final AppUser currentUser;
+  final VoidCallback? onTap;
 
   const ChatListItemWidget({
     super.key,
     required this.chatListItem,
     required this.repo,
     required this.currentUser,
+    this.onTap,
   });
 
   @override
@@ -71,20 +73,7 @@ class ChatListItemWidget extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             style: TextStyle(color: Palette.primalBlack.o(0.7)),
           ),
-
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder:
-                    (context) => ChatScreen(
-                      chatPartner: chatListItem.user,
-                      repo: repo,
-                      currentUser: currentUser,
-                    ),
-              ),
-            );
-          },
+          onTap: onTap,
         ),
       ),
     );

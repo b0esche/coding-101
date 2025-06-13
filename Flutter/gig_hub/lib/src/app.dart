@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:gig_hub/src/Common/main_screen.dart';
+import 'package:gig_hub/src/Common/settings_screen.dart';
 import 'package:gig_hub/src/Features/auth/sign_in_screen.dart';
+import 'package:gig_hub/src/Features/profile/dj/presentation/profile_screen_dj.dart';
 import 'package:gig_hub/src/Theme/app_theme.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
+import 'package:gig_hub/src/Features/chat/presentation/chat_screen.dart';
+import 'package:gig_hub/src/Features/chat/presentation/chat_list_screen.dart';
 
 class App extends StatelessWidget {
   final DatabaseRepository repo;
@@ -15,7 +20,75 @@ class App extends StatelessWidget {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       home: LoginScreen(repo: repo),
-      // routes:, TODO: named routes für bessere navigation
+      onGenerateRoute: (settings) {
+        switch (settings.name) {
+          case ProfileScreenDJ.routeName:
+            final args = settings.arguments;
+            if (args is ProfileScreenDJArgs) {
+              return MaterialPageRoute(
+                builder: (context) {
+                  return ProfileScreenDJ(
+                    dj: args.dj,
+                    repo: args.repo,
+                    showChatButton: args.showChatButton,
+                  );
+                },
+              );
+            }
+            return MaterialPageRoute(
+              builder:
+                  (context) => const Text(
+                    'Fehler: DJ Profil Argumente fehlen oder sind ungültig',
+                  ),
+            );
+
+          case ChatScreen.routeName:
+            final args = settings.arguments;
+            if (args is ChatScreenArgs) {
+              return MaterialPageRoute(
+                builder: (context) {
+                  return ChatScreen(
+                    chatPartner: args.chatPartner,
+                    repo: args.repo,
+                    currentUser: args.currentUser,
+                  );
+                },
+              );
+            }
+            return MaterialPageRoute(
+              builder:
+                  (context) => const Text(
+                    'Fehler: Chat Bildschirm Argumente fehlen oder sind ungültig',
+                  ),
+            );
+
+          case ChatListScreen.routeName:
+            final args = settings.arguments;
+            if (args is ChatListScreenArgs) {
+              return MaterialPageRoute(
+                builder: (context) {
+                  return ChatListScreen(
+                    repo: args.repo,
+                    currentUser: args.currentUser,
+                  );
+                },
+              );
+            }
+            return MaterialPageRoute(
+              builder:
+                  (context) => const Text(
+                    'Fehler: Chat Listen Bildschirm Argumente fehlen oder sind ungültig',
+                  ),
+            );
+
+          default:
+            return null;
+        }
+      },
+      routes: {
+        '/main': (context) => MainScreen(repo: repo),
+        '/settings': (context) => const SettingsScreen(),
+      },
     );
   }
 }
