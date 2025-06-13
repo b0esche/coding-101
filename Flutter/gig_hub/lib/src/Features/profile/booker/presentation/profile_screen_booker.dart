@@ -5,6 +5,7 @@ import 'package:gig_hub/src/Data/user.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
+import 'package:pinch_zoom/pinch_zoom.dart';
 
 class ProfileScreenBookerArgs {
   final Booker booker;
@@ -253,37 +254,27 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                       ],
                     ),
                     const SizedBox(height: 36),
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      width: double.infinity,
-                      height: 220,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: ImageSlideshow(
-                          width: double.infinity,
-                          height: 220,
-                          isLoop: true,
-                          initialPage: index,
-                          indicatorColor: Palette.shadowGrey,
-                          indicatorBackgroundColor: Palette.gigGrey,
-                          autoPlayInterval: 12000,
-                          onPageChanged: (value) {
-                            setState(() => index = value);
-                          },
-                          children: [
-                            for (String url in widget.booker.mediaUrl)
-                              GestureDetector(
-                                onLongPress: () {
-                                  debugPrint(
-                                    "Bild in vergrößerter ansicht anzeigen",
-                                  ); // TODO: Bild in vergrößerter Ansicht anzeigen
-                                },
-                                child: Image.network(url, fit: BoxFit.cover),
-                              ),
-                          ],
-                        ),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: ImageSlideshow(
+                        width: double.infinity,
+                        height: 220,
+                        isLoop: true,
+                        initialPage: index,
+                        indicatorColor: Palette.shadowGrey,
+                        indicatorBackgroundColor: Palette.gigGrey,
+                        autoPlayInterval: 12000,
+                        onPageChanged: (value) {
+                          setState(() => index = value);
+                        },
+                        children: [
+                          for (String url in widget.booker.mediaUrl)
+                            PinchZoom(
+                              zoomEnabled: true,
+                              maxScale: 2.5,
+                              child: Image.network(url, fit: BoxFit.cover),
+                            ),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 36),
