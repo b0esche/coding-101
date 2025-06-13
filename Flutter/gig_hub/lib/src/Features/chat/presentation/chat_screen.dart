@@ -141,7 +141,7 @@ class ChatScreenState extends State<ChatScreen> {
                       context,
                       MaterialPageRoute(
                         builder:
-                            (_) => UserProfileBooker(
+                            (_) => ProfileScreenBooker(
                               booker: widget.chatPartner as Booker,
                               repo: widget.repo,
                             ),

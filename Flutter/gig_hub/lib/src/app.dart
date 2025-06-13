@@ -3,6 +3,7 @@ import 'package:gig_hub/src/Common/main_screen.dart';
 import 'package:gig_hub/src/Common/settings_screen.dart';
 import 'package:gig_hub/src/Features/auth/sign_in_screen.dart';
 import 'package:gig_hub/src/Features/profile/dj/presentation/profile_screen_dj.dart';
+import 'package:gig_hub/src/Features/profile/booker/presentation/profile_screen_booker.dart';
 import 'package:gig_hub/src/Theme/app_theme.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
 import 'package:gig_hub/src/Features/chat/presentation/chat_screen.dart';
@@ -37,9 +38,23 @@ class App extends StatelessWidget {
             }
             return MaterialPageRoute(
               builder:
-                  (context) => const Text(
-                    'Fehler: DJ Profil Argumente fehlen oder sind ungültig',
-                  ),
+                  (context) => const Text('Error: Couldn\'t find profile!'),
+            );
+          case ProfileScreenBooker.routeName:
+            final args = settings.arguments;
+            if (args is ProfileScreenBookerArgs) {
+              return MaterialPageRoute(
+                builder: (context) {
+                  return ProfileScreenBooker(
+                    booker: args.booker,
+                    repo: args.repo,
+                  );
+                },
+              );
+            }
+            return MaterialPageRoute(
+              builder:
+                  (context) => const Text('Error: Couldn\'t find profile!'),
             );
 
           case ChatScreen.routeName:
@@ -56,10 +71,7 @@ class App extends StatelessWidget {
               );
             }
             return MaterialPageRoute(
-              builder:
-                  (context) => const Text(
-                    'Fehler: Chat Bildschirm Argumente fehlen oder sind ungültig',
-                  ),
+              builder: (context) => const Text('Error: Couldn\'t load chat!'),
             );
 
           case ChatListScreen.routeName:
@@ -75,10 +87,7 @@ class App extends StatelessWidget {
               );
             }
             return MaterialPageRoute(
-              builder:
-                  (context) => const Text(
-                    'Fehler: Chat Listen Bildschirm Argumente fehlen oder sind ungültig',
-                  ),
+              builder: (context) => const Text('Error: Couldn\'t load chats!'),
             );
 
           default:

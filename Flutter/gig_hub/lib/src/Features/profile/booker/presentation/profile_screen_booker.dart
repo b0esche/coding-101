@@ -1,25 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:gig_hub/src/Data/user.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
-
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gig_hub/src/Data/database_repository.dart';
 
-class UserProfileBooker extends StatelessWidget {
+class ProfileScreenBookerArgs {
+  final Booker booker;
+  final DatabaseRepository repo;
+
+  ProfileScreenBookerArgs({required this.booker, required this.repo});
+}
+
+class ProfileScreenBooker extends StatefulWidget {
+  static const routeName = '/profileBooker';
+
   final Booker booker;
   final dynamic repo;
 
-  const UserProfileBooker({
+  const ProfileScreenBooker({
     super.key,
     required this.booker,
     required this.repo,
   });
 
   @override
+  State<ProfileScreenBooker> createState() => _ProfileScreenBookerState();
+}
+
+class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
+  int index = 0;
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Palette.primalBlack,
-
       body: Column(
         children: [
           Stack(
@@ -27,14 +42,14 @@ class UserProfileBooker extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 height: 256,
-                child: Image.network(booker.headUrl, fit: BoxFit.cover),
+                child: Image.network(widget.booker.headUrl, fit: BoxFit.cover),
               ),
               Positioned(
                 top: 40,
                 child: Padding(
                   padding: const EdgeInsets.all(2.0),
                   child: IconButton(
-                    style: ButtonStyle(
+                    style: const ButtonStyle(
                       tapTargetSize: MaterialTapTargetSize.padded,
                     ),
                     onPressed: () => Navigator.of(context).pop(),
@@ -63,7 +78,7 @@ class UserProfileBooker extends StatelessWidget {
                         topLeft: Radius.circular(12),
                         topRight: Radius.circular(12),
                       ),
-                      border: BoxBorder.fromLTRB(
+                      border: Border(
                         left: BorderSide(
                           color: Palette.gigGrey.o(0.6),
                           width: 2,
@@ -79,7 +94,7 @@ class UserProfileBooker extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      booker.name,
+                      widget.booker.name,
                       style: GoogleFonts.sometypeMono(
                         textStyle: TextStyle(
                           color: Palette.glazedWhite,
@@ -96,7 +111,7 @@ class UserProfileBooker extends StatelessWidget {
                 right: 0,
                 child: Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                       bottomLeft: Radius.circular(12),
                       topLeft: Radius.circular(12),
                     ),
@@ -113,7 +128,7 @@ class UserProfileBooker extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 2, top: 2, bottom: 2),
                     child: RatingStars(
-                      value: booker.rating ?? 0,
+                      value: widget.booker.rating ?? 0,
                       starBuilder:
                           (index, color) =>
                               Icon(Icons.star, color: color, size: 18),
@@ -167,7 +182,7 @@ class UserProfileBooker extends StatelessWidget {
                                 const Icon(Icons.place, size: 20),
                                 const SizedBox(width: 4),
                                 Text(
-                                  booker.city,
+                                  widget.booker.city,
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: Palette.primalBlack,
@@ -193,7 +208,7 @@ class UserProfileBooker extends StatelessWidget {
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
-                                  booker.type,
+                                  widget.booker.type,
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: Palette.primalBlack,
@@ -227,7 +242,7 @@ class UserProfileBooker extends StatelessWidget {
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: Text(
-                              booker.about,
+                              widget.booker.about,
                               style: TextStyle(
                                 color: Palette.primalBlack,
                                 fontSize: 14,
@@ -237,20 +252,41 @@ class UserProfileBooker extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 24),
-                    SizedBox(
+                    const SizedBox(height: 36),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                       width: double.infinity,
-                      height: 160,
-                      child: Placeholder(
-                        child: Center(
-                          child: Text(
-                            "Media URLs",
-                            style: TextStyle(color: Palette.glazedWhite),
-                          ),
+                      height: 220,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: ImageSlideshow(
+                          width: double.infinity,
+                          height: 220,
+                          isLoop: true,
+                          initialPage: index,
+                          indicatorColor: Palette.shadowGrey,
+                          indicatorBackgroundColor: Palette.gigGrey,
+                          autoPlayInterval: 12000,
+                          onPageChanged: (value) {
+                            setState(() => index = value);
+                          },
+                          children: [
+                            for (String url in widget.booker.mediaUrl)
+                              GestureDetector(
+                                onLongPress: () {
+                                  debugPrint(
+                                    "Bild in vergrößerter ansicht anzeigen",
+                                  ); // TODO: Bild in vergrößerter Ansicht anzeigen
+                                },
+                                child: Image.network(url, fit: BoxFit.cover),
+                              ),
+                          ],
                         ),
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 36),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -272,7 +308,7 @@ class UserProfileBooker extends StatelessWidget {
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: Text(
-                              booker.info,
+                              widget.booker.info,
                               style: TextStyle(
                                 color: Palette.primalBlack,
                                 fontSize: 14,

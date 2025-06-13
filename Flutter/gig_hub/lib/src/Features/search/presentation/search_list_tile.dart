@@ -235,9 +235,8 @@ class _SearchListTileState extends State<SearchListTile> {
                                         ),
                                       ),
                                     ),
-                                    InkWell(
-                                      radius: 36,
-                                      onTap: () {
+                                    IconButton(
+                                      onPressed: () {
                                         widget.user.showProfile(
                                           context,
                                           widget.repo,
@@ -245,9 +244,13 @@ class _SearchListTileState extends State<SearchListTile> {
                                           currentUser: widget.user,
                                         );
                                       },
-                                      child: const Icon(
+                                      icon: Icon(
                                         Icons.chevron_right_rounded,
                                         size: 28,
+                                      ),
+                                      style: const ButtonStyle(
+                                        tapTargetSize:
+                                            MaterialTapTargetSize.padded,
                                       ),
                                     ),
                                   ],

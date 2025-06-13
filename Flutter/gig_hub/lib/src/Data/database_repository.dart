@@ -146,7 +146,7 @@ class MockDatabaseRepository implements DatabaseRepository {
       type: 'Club',
       about: 'Trau dich',
       info: 'Wie sind um die Ecke links',
-      mediaUrl: ["https://picsum.photos/150"],
+      mediaUrl: ["https://picsum.photos/150", "https://picsum.photos/151"],
       userId: 'booker_bitbat',
       name: 'BitBat Club',
       email: 'abc@mail.de',
