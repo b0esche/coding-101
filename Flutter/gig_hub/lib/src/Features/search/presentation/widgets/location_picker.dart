@@ -55,7 +55,7 @@ class _LocationAutocompleteFieldState extends State<LocationAutocompleteField> {
     }
 
     _debounceTimer?.cancel();
-    _debounceTimer = Timer(const Duration(milliseconds: 500), () {
+    _debounceTimer = Timer(const Duration(milliseconds: 350), () {
       if (input != _bestSuggestion) {
         _fetchBestSuggestion(input);
       }

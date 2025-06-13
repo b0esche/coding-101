@@ -6,7 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
 
 class AudioPlayerWidget extends StatefulWidget {
-  final String audioUrl; // can be local path or remote URL
+  final String audioUrl;
 
   const AudioPlayerWidget({super.key, required this.audioUrl});
 
