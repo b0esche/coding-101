@@ -24,9 +24,9 @@ class CocktailApp extends StatelessWidget {
     final name = drink['strDrink'];
     final category = drink['strCategory'];
     final id = drink['idDrink'];
-    print('Name: $name');
-    print('Kategorie: $category');
-    print('ID: $id');
+    debugPrint('Name: $name');
+    debugPrint('Kategorie: $category');
+    debugPrint('ID: $id');
   }
 
   @override
