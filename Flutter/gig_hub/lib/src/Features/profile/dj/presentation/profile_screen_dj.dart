@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:gig_hub/src/Data/user.dart';
 import 'package:gig_hub/src/Features/chat/presentation/chat_screen.dart';
+import 'package:gig_hub/src/Features/profile/dj/presentation/audio_player.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:gig_hub/src/Common/genre_bubble.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -30,7 +32,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
           widget.showChatButton
               ? FloatingActionButton(
                 onPressed: () {
-                  Navigator.pushReplacement(
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder:
@@ -288,18 +290,85 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                 .toList(),
                       ),
                     ),
-                    SizedBox(height: 24),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 160,
-                      child: Placeholder(
-                        child: Center(
-                          child: Text(
-                            "Soundcloud API",
-                            style: TextStyle(color: Palette.glazedWhite),
+                    SizedBox(height: 28),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "set 1 name", // TODO: artist info von soundcloud api fetchen
+                          style: GoogleFonts.sometypeMono(
+                            textStyle: TextStyle(
+                              color: Palette.glazedWhite,
+                              fontWeight: FontWeight.w600,
+                              decoration: TextDecoration.underline,
+                              decorationColor: Palette.glazedWhite,
+                              decorationStyle: TextDecorationStyle.dotted,
+                              decorationThickness: 2,
+                            ),
                           ),
                         ),
-                      ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            AudioPlayerWidget(
+                              audioUrl:
+                                  // widget.dj.set1Url TODO: über die eingegebene URL die Audiodaten von Soundcloud API fetchen
+                                  'https://samplelib.com/lib/preview/mp3/sample-15s.mp3',
+                            ),
+                            SizedBox(width: 2),
+                            IconButton(
+                              onPressed: () {
+                                debugPrint(
+                                  "soundcloud öffnen",
+                                ); // TODO: soundcloud link über browser oder app öffnen
+                              },
+                              icon: SvgPicture.asset(
+                                'assets/icons/soundcloud.svg',
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 4),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          "set 2 name", // TODO: artist info von soundcloud api fetchen
+                          style: GoogleFonts.sometypeMono(
+                            textStyle: TextStyle(
+                              color: Palette.glazedWhite,
+                              fontWeight: FontWeight.w600,
+                              decoration: TextDecoration.underline,
+                              decorationColor: Palette.glazedWhite,
+                              decorationStyle: TextDecorationStyle.dotted,
+                              decorationThickness: 2,
+                            ),
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            AudioPlayerWidget(
+                              audioUrl:
+                                  // widget.dj.set2URl TODO: über die eingegebene URL die Audiodaten von Soundcloud API fetchen
+                                  'https://samplelib.com/lib/preview/mp3/sample-15s.mp3',
+                            ),
+                            SizedBox(width: 2),
+                            IconButton(
+                              onPressed: () {
+                                debugPrint(
+                                  "soundcloud öffnen", // TODO: soundcloud link über browser oder app öffnen
+                                );
+                              },
+                              icon: SvgPicture.asset(
+                                'assets/icons/soundcloud.svg',
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                     SizedBox(height: 24),
                     Column(

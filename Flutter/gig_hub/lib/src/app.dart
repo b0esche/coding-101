@@ -14,7 +14,8 @@ class App extends StatelessWidget {
       themeMode: ThemeMode.system,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      home: LoginScreen(repo: repo), //MainScreen(repo: repo),
+      home: LoginScreen(repo: repo),
+      // routes:, TODO: named routes für bessere navigation
     );
   }
 }

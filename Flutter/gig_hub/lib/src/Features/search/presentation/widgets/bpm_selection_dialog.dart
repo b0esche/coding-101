@@ -94,7 +94,7 @@ class _BpmSelectionDialogState extends State<BpmSelectionDialog> {
         Align(
           alignment: Alignment.bottomRight,
           child: Padding(
-            padding: const EdgeInsets.only(right: 12, top: 8),
+            padding: const EdgeInsets.only(right: 12, top: 12),
             child: Container(
               height: 36,
               width: 36,

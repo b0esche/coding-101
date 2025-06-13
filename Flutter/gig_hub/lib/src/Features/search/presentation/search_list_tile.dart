@@ -236,6 +236,7 @@ class _SearchListTileState extends State<SearchListTile> {
                                       ),
                                     ),
                                     InkWell(
+                                      radius: 36,
                                       onTap: () {
                                         widget.user.showProfile(
                                           context,
