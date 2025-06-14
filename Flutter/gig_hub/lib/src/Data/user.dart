@@ -42,6 +42,7 @@ class DJ extends AppUser {
   final int bpmMax;
   final String set1Url;
   final String set2Url;
+  final List<String>? mediaUrl;
 
   DJ({
     required this.genres,
@@ -52,6 +53,7 @@ class DJ extends AppUser {
     required super.about,
     required this.set1Url,
     required this.set2Url,
+    required this.mediaUrl,
     required super.info,
     super.rating,
     required super.userId,
@@ -81,7 +83,7 @@ class DJ extends AppUser {
 }
 
 class Booker extends AppUser {
-  final List<String> mediaUrl;
+  final List<String>? mediaUrl;
   final String type;
 
   Booker({

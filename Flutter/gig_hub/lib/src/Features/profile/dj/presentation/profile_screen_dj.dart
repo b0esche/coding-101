@@ -1,4 +1,6 @@
+import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gig_hub/src/Data/user.dart';
@@ -8,6 +10,7 @@ import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:gig_hub/src/Common/genre_bubble.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
+import 'package:pinch_zoom/pinch_zoom.dart';
 
 class ProfileScreenDJArgs {
   final DJ dj;
@@ -39,6 +42,24 @@ class ProfileScreenDJ extends StatefulWidget {
 }
 
 class _ProfileScreenDJState extends State<ProfileScreenDJ> {
+  late final PlayerController _playerControllerOne;
+  late final PlayerController _playerControllerTwo;
+  int index = 0;
+
+  @override
+  void initState() {
+    _playerControllerOne = PlayerController();
+    _playerControllerTwo = PlayerController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _playerControllerOne.dispose();
+    _playerControllerTwo.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -327,6 +348,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                               audioUrl:
                                   // widget.dj.set1Url TODO: über die eingegebene URL die Audiodaten von Soundcloud API fetchen
                                   'https://samplelib.com/lib/preview/mp3/sample-9s.mp3',
+                              playerController: _playerControllerOne,
                             ),
                             const SizedBox(width: 2),
                             IconButton(
@@ -367,6 +389,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                               audioUrl:
                                   // widget.dj.set2URl TODO: über die eingegebene URL die Audiodaten von Soundcloud API fetchen
                                   'https://samplelib.com/lib/preview/mp3/sample-12s.mp3',
+                              playerController: _playerControllerTwo,
                             ),
                             const SizedBox(width: 2),
                             IconButton(
@@ -383,7 +406,33 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 24),
+                    SizedBox(height: widget.dj.mediaUrl == null ? 24 : 36),
+                    widget.dj.mediaUrl == null
+                        ? SizedBox.shrink()
+                        : ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: ImageSlideshow(
+                            width: double.infinity,
+                            height: 240,
+                            isLoop: true,
+                            autoPlayInterval: 12000,
+                            indicatorColor: Palette.shadowGrey,
+                            indicatorBackgroundColor: Palette.gigGrey,
+                            initialPage: index,
+                            onPageChanged: (value) {
+                              setState(() => index = value);
+                            },
+                            children: [
+                              for (String url in widget.dj.mediaUrl!)
+                                PinchZoom(
+                                  zoomEnabled: true,
+                                  maxScale: 2.5,
+                                  child: Image.network(url, fit: BoxFit.cover),
+                                ),
+                            ],
+                          ),
+                        ),
+                    SizedBox(height: widget.dj.mediaUrl == null ? 24 : 36),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

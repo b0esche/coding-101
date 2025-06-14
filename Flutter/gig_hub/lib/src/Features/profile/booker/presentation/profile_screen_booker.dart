@@ -254,29 +254,31 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                       ],
                     ),
                     const SizedBox(height: 36),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: ImageSlideshow(
-                        width: double.infinity,
-                        height: 220,
-                        isLoop: true,
-                        initialPage: index,
-                        indicatorColor: Palette.shadowGrey,
-                        indicatorBackgroundColor: Palette.gigGrey,
-                        autoPlayInterval: 12000,
-                        onPageChanged: (value) {
-                          setState(() => index = value);
-                        },
-                        children: [
-                          for (String url in widget.booker.mediaUrl)
-                            PinchZoom(
-                              zoomEnabled: true,
-                              maxScale: 2.5,
-                              child: Image.network(url, fit: BoxFit.cover),
-                            ),
-                        ],
-                      ),
-                    ),
+                    widget.booker.mediaUrl == null
+                        ? SizedBox.shrink()
+                        : ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: ImageSlideshow(
+                            width: double.infinity,
+                            height: 220,
+                            isLoop: true,
+                            autoPlayInterval: 12000,
+                            indicatorColor: Palette.shadowGrey,
+                            indicatorBackgroundColor: Palette.gigGrey,
+                            initialPage: index,
+                            onPageChanged: (value) {
+                              setState(() => index = value);
+                            },
+                            children: [
+                              for (String url in widget.booker.mediaUrl!)
+                                PinchZoom(
+                                  zoomEnabled: true,
+                                  maxScale: 2.5,
+                                  child: Image.network(url, fit: BoxFit.cover),
+                                ),
+                            ],
+                          ),
+                        ),
                     const SizedBox(height: 36),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

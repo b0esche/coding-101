@@ -9,14 +9,19 @@ import 'package:gig_hub/src/Theme/palette.dart';
 
 class AudioPlayerWidget extends StatefulWidget {
   final String audioUrl;
-  const AudioPlayerWidget({super.key, required this.audioUrl});
+  final PlayerController playerController;
+  const AudioPlayerWidget({
+    super.key,
+    required this.audioUrl,
+    required this.playerController,
+  });
 
   @override
   State<AudioPlayerWidget> createState() => _AudioPlayerWidgetState();
 }
 
 class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
-  late final PlayerController _playerController;
+  late PlayerController _playerController;
   bool _isLoading = true;
   bool _isPlaying = false;
   bool _hasFinished = false;
@@ -26,14 +31,14 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
   @override
   void initState() {
     super.initState();
-    _playerController = PlayerController();
-    _init();
+    _playerController = widget.playerController;
     _stateSub = _playerController.onPlayerStateChanged.listen((state) {
       setState(() => _isPlaying = state.isPlaying);
     });
     _completeSub = _playerController.onCompletion.listen((_) {
-      _hasFinished = true;
+      setState(() => _hasFinished = true);
     });
+    _init();
   }
 
   Future<void> _init() async {
@@ -86,7 +91,6 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
                 child: CircularProgressIndicator(
                   color: Palette.forgedGold,
                   strokeWidth: 2,
-                  constraints: BoxConstraints.tight(Size(24, 24)),
                 ),
               )
               : Row(
