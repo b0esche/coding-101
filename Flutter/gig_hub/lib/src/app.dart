@@ -32,6 +32,7 @@ class App extends StatelessWidget {
                     dj: args.dj,
                     repo: args.repo,
                     showChatButton: args.showChatButton,
+                    showEditButton: args.showEditButton,
                   );
                 },
               );

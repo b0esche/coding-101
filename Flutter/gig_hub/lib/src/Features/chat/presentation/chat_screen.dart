@@ -133,6 +133,7 @@ class ChatScreenState extends State<ChatScreen> {
                               dj: widget.chatPartner as DJ,
                               repo: widget.repo,
                               showChatButton: false,
+                              showEditButton: false,
                             ),
                       ),
                     );

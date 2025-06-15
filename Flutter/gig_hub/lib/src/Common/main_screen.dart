@@ -170,6 +170,7 @@ class _MainScreenState extends State<MainScreen> {
         context,
         _repo,
         false,
+        true,
         currentUser: _loggedInUser,
       );
     } else if (index == 1) {

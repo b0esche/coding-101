@@ -16,11 +16,13 @@ class ProfileScreenDJArgs {
   final DJ dj;
   final DatabaseRepository repo;
   final bool showChatButton;
+  final bool showEditButton;
 
   ProfileScreenDJArgs({
     required this.dj,
     required this.repo,
     this.showChatButton = true,
+    this.showEditButton = false,
   });
 }
 
@@ -30,11 +32,13 @@ class ProfileScreenDJ extends StatefulWidget {
   final DJ dj;
   final dynamic repo;
   final bool showChatButton;
+  final bool showEditButton;
   const ProfileScreenDJ({
     super.key,
     required this.dj,
     required this.repo,
     required this.showChatButton,
+    required this.showEditButton,
   });
 
   @override
@@ -44,7 +48,10 @@ class ProfileScreenDJ extends StatefulWidget {
 class _ProfileScreenDJState extends State<ProfileScreenDJ> {
   late final PlayerController _playerControllerOne;
   late final PlayerController _playerControllerTwo;
+
   int index = 0;
+
+  bool editMode = false;
 
   @override
   void initState() {
@@ -105,6 +112,21 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                 height: 256,
                 child: Image.network(widget.dj.headUrl, fit: BoxFit.cover),
               ),
+
+              editMode
+                  ? Positioned(
+                    top: 120,
+                    left: 180,
+                    child: IconButton(
+                      onPressed: () {}, // TODO: image picker fit machen
+                      icon: Icon(
+                        Icons.file_upload_rounded,
+                        color: Palette.concreteGrey,
+                        size: 48,
+                      ),
+                    ),
+                  )
+                  : Positioned(child: SizedBox.shrink()),
               Positioned(
                 top: 40,
                 child: Padding(
@@ -154,16 +176,51 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                         ),
                       ),
                     ),
-                    child: Text(
-                      widget.dj.name,
-                      style: GoogleFonts.sometypeMono(
-                        textStyle: TextStyle(
-                          color: Palette.glazedWhite,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
+                    child:
+                        !editMode
+                            ? Text(
+                              widget.dj.name,
+                              style: GoogleFonts.sometypeMono(
+                                textStyle: TextStyle(
+                                  color: Palette.glazedWhite,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            )
+                            : Container(
+                              width: 160,
+                              height: 28,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Palette.glazedWhite,
+                                  width: 1,
+                                ),
+                                borderRadius: BorderRadius.circular(8),
+                                color: Palette.glazedWhite.o(0.2),
+                              ),
+                              child: TextField(
+                                style: TextStyle(
+                                  color: Palette.glazedWhite,
+                                  fontSize: 10,
+                                ),
+                                controller: null,
+                                decoration: InputDecoration(
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Palette.forgedGold,
+                                      width: 3,
+                                    ),
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    borderSide: BorderSide(
+                                      color: Palette.forgedGold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
                   ),
                 ),
               ),
@@ -242,13 +299,49 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                               children: [
                                 const Icon(Icons.place, size: 20),
                                 const SizedBox(width: 4),
-                                Text(
-                                  widget.dj.city,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Palette.primalBlack,
-                                  ),
-                                ),
+                                !editMode
+                                    ? Text(
+                                      widget.dj.city,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Palette.primalBlack,
+                                      ),
+                                    )
+                                    : Container(
+                                      width: 60,
+                                      height: 24,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color: Palette.glazedWhite,
+                                          width: 1,
+                                        ),
+                                        borderRadius: BorderRadius.circular(8),
+                                        color: Palette.glazedWhite.o(0.2),
+                                      ),
+                                      child: TextField(
+                                        style: TextStyle(
+                                          color: Palette.glazedWhite,
+                                          fontSize: 10,
+                                        ),
+                                        controller: null,
+                                        decoration: InputDecoration(
+                                          focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color: Palette.forgedGold,
+                                              width: 3,
+                                            ),
+                                          ),
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
+                                            borderSide: BorderSide(
+                                              color: Palette.forgedGold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                               ],
                             ),
                           ),
@@ -265,13 +358,49 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                               children: [
                                 const Icon(Icons.speed, size: 22),
                                 const SizedBox(width: 4),
-                                Text(
-                                  '${widget.dj.bpmMin}-${widget.dj.bpmMax} bpm',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Palette.primalBlack,
-                                  ),
-                                ),
+                                !editMode
+                                    ? Text(
+                                      '${widget.dj.bpmMin}-${widget.dj.bpmMax} bpm',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Palette.primalBlack,
+                                      ),
+                                    )
+                                    : Container(
+                                      width: 60,
+                                      height: 24,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color: Palette.glazedWhite,
+                                          width: 1,
+                                        ),
+                                        borderRadius: BorderRadius.circular(8),
+                                        color: Palette.glazedWhite.o(0.2),
+                                      ),
+                                      child: TextField(
+                                        style: TextStyle(
+                                          color: Palette.glazedWhite,
+                                          fontSize: 10,
+                                        ),
+                                        controller: null,
+                                        decoration: InputDecoration(
+                                          focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color: Palette.forgedGold,
+                                              width: 3,
+                                            ),
+                                          ),
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
+                                            borderSide: BorderSide(
+                                              color: Palette.forgedGold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                               ],
                             ),
                           ),
@@ -291,23 +420,55 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                             ),
                           ),
                         ),
-                        Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            color: Palette.shadowGrey,
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Text(
-                              widget.dj.about,
-                              style: TextStyle(
-                                color: Palette.primalBlack,
-                                fontSize: 14,
+                        !editMode
+                            ? Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: Palette.shadowGrey,
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Text(
+                                  widget.dj.about,
+                                  style: TextStyle(
+                                    color: Palette.primalBlack,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                            )
+                            : Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Palette.glazedWhite,
+                                  width: 1,
+                                ),
+                                borderRadius: BorderRadius.circular(8),
+                                color: Palette.glazedWhite.o(0.2),
+                              ),
+                              child: TextField(
+                                style: TextStyle(
+                                  color: Palette.glazedWhite,
+                                  fontSize: 14,
+                                ),
+                                controller: null,
+                                decoration: InputDecoration(
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Palette.forgedGold,
+                                      width: 3,
+                                    ),
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    borderSide: BorderSide(
+                                      color: Palette.forgedGold,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
                       ],
                     ),
                     const SizedBox(height: 24),
@@ -316,20 +477,43 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                         spacing: 16,
                         runSpacing: 8,
                         children:
-                            widget.dj.genres
-                                .map(
-                                  (genreString) =>
-                                      GenreBubble(genre: genreString),
-                                )
-                                .toList(),
+                            !editMode
+                                ? widget.dj.genres
+                                    .map(
+                                      (genreString) =>
+                                          GenreBubble(genre: genreString),
+                                    )
+                                    .toList()
+                                : [
+                                  ...widget.dj.genres.map(
+                                    (genreString) =>
+                                        GenreBubble(genre: genreString),
+                                  ),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Palette.forgedGold,
+                                        width: 2,
+                                      ),
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    child: GestureDetector(
+                                      onTap: () {}, // TODO: genre dialog openen
+                                      child: const GenreBubble(
+                                        genre: "   edit   ",
+                                      ),
+                                    ),
+                                  ),
+                                ],
                       ),
                     ),
                     const SizedBox(height: 28),
                     Column(
+                      spacing: !editMode ? 0 : 8,
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          "set 1 name", // TODO: artist info von soundcloud api fetchen
+                          "first SoundCloud link", // TODO: artist info von soundcloud api fetchen
                           style: GoogleFonts.sometypeMono(
                             textStyle: TextStyle(
                               color: Palette.glazedWhite,
@@ -341,36 +525,73 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                             ),
                           ),
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            AudioPlayerWidget(
-                              audioUrl:
-                                  // widget.dj.set1Url TODO: über die eingegebene URL die Audiodaten von Soundcloud API fetchen
-                                  'https://samplelib.com/lib/preview/mp3/sample-9s.mp3',
-                              playerController: _playerControllerOne,
-                            ),
-                            const SizedBox(width: 2),
-                            IconButton(
-                              onPressed: () {
-                                debugPrint(
-                                  "soundcloud öffnen",
-                                ); // TODO: soundcloud link über browser oder app öffnen
-                              },
-                              icon: SvgPicture.asset(
-                                'assets/icons/soundcloud.svg',
+                        !editMode
+                            ? Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                AudioPlayerWidget(
+                                  audioUrl:
+                                      // widget.dj.set1Url TODO: über die eingegebene URL die Audiodaten von Soundcloud API fetchen
+                                      'https://samplelib.com/lib/preview/mp3/sample-9s.mp3',
+                                  playerController: _playerControllerOne,
+                                ),
+                                const SizedBox(width: 2),
+                                IconButton(
+                                  onPressed: () {
+                                    debugPrint(
+                                      "soundcloud öffnen",
+                                    ); // TODO: soundcloud link über browser oder app öffnen
+                                  },
+                                  icon: SvgPicture.asset(
+                                    'assets/icons/soundcloud.svg',
+                                  ),
+                                ),
+                              ],
+                            )
+                            : Center(
+                              child: Container(
+                                width: 240,
+                                height: 36,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Palette.glazedWhite,
+                                    width: 1,
+                                  ),
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: Palette.glazedWhite.o(0.2),
+                                ),
+                                child: TextField(
+                                  style: TextStyle(
+                                    color: Palette.glazedWhite,
+                                    fontSize: 10,
+                                  ),
+                                  controller: null,
+                                  decoration: InputDecoration(
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Palette.forgedGold,
+                                        width: 3,
+                                      ),
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      borderSide: BorderSide(
+                                        color: Palette.forgedGold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
-                          ],
-                        ),
                       ],
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: !editMode ? 4 : 24),
                     Column(
+                      spacing: !editMode ? 0 : 8,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          "set 2 name", // TODO: artist info von soundcloud api fetchen
+                          "second SoundCloud link", // TODO: artist info von soundcloud api fetchen
                           style: GoogleFonts.sometypeMono(
                             textStyle: TextStyle(
                               color: Palette.glazedWhite,
@@ -382,54 +603,117 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                             ),
                           ),
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            AudioPlayerWidget(
-                              audioUrl:
-                                  // widget.dj.set2URl TODO: über die eingegebene URL die Audiodaten von Soundcloud API fetchen
-                                  'https://samplelib.com/lib/preview/mp3/sample-12s.mp3',
-                              playerController: _playerControllerTwo,
-                            ),
-                            const SizedBox(width: 2),
-                            IconButton(
-                              onPressed: () {
-                                debugPrint(
-                                  "soundcloud öffnen", // TODO: soundcloud link über browser oder app öffnen
-                                );
-                              },
-                              icon: SvgPicture.asset(
-                                'assets/icons/soundcloud.svg',
+                        !editMode
+                            ? Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                AudioPlayerWidget(
+                                  audioUrl:
+                                      // widget.dj.set2URl TODO: über die eingegebene URL die Audiodaten von Soundcloud API fetchen
+                                      'https://samplelib.com/lib/preview/mp3/sample-12s.mp3',
+                                  playerController: _playerControllerTwo,
+                                ),
+                                const SizedBox(width: 2),
+                                IconButton(
+                                  onPressed: () {
+                                    debugPrint(
+                                      "soundcloud öffnen", // TODO: soundcloud link über browser oder app öffnen
+                                    );
+                                  },
+                                  icon: SvgPicture.asset(
+                                    'assets/icons/soundcloud.svg',
+                                  ),
+                                ),
+                              ],
+                            )
+                            : Center(
+                              child: Container(
+                                width: 240,
+                                height: 36,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Palette.glazedWhite,
+                                    width: 1,
+                                  ),
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: Palette.glazedWhite.o(0.2),
+                                ),
+                                child: TextField(
+                                  style: TextStyle(
+                                    color: Palette.glazedWhite,
+                                    fontSize: 10,
+                                  ),
+                                  controller: null,
+                                  decoration: InputDecoration(
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Palette.forgedGold,
+                                        width: 3,
+                                      ),
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      borderSide: BorderSide(
+                                        color: Palette.forgedGold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
-                          ],
-                        ),
                       ],
                     ),
                     SizedBox(height: widget.dj.mediaUrl == null ? 24 : 36),
-                    widget.dj.mediaUrl == null
-                        ? SizedBox.shrink()
-                        : ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: ImageSlideshow(
-                            width: double.infinity,
-                            height: 240,
-                            isLoop: true,
-                            autoPlayInterval: 12000,
-                            indicatorColor: Palette.shadowGrey,
-                            indicatorBackgroundColor: Palette.gigGrey,
-                            initialPage: index,
-                            onPageChanged: (value) {
-                              setState(() => index = value);
-                            },
-                            children: [
-                              for (String url in widget.dj.mediaUrl!)
-                                PinchZoom(
-                                  zoomEnabled: true,
-                                  maxScale: 2.5,
-                                  child: Image.network(url, fit: BoxFit.cover),
-                                ),
-                            ],
+                    !editMode
+                        ? widget.dj.mediaUrl == null
+                            ? SizedBox.shrink()
+                            : ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: ImageSlideshow(
+                                width: double.infinity,
+                                height: 240,
+                                isLoop: true,
+                                autoPlayInterval: 12000,
+                                indicatorColor: Palette.shadowGrey,
+                                indicatorBackgroundColor: Palette.gigGrey,
+                                initialPage: index,
+                                onPageChanged: (value) {
+                                  setState(() => index = value);
+                                },
+                                children: [
+                                  for (String url in widget.dj.mediaUrl!)
+                                    PinchZoom(
+                                      zoomEnabled: true,
+                                      maxScale: 2.5,
+                                      child: Image.network(
+                                        url,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            )
+                        : Center(
+                          child: Container(
+                            height: 160,
+                            width: 240,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Palette.forgedGold),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: IconButton(
+                              style: ButtonStyle(
+                                tapTargetSize: MaterialTapTargetSize.padded,
+                              ),
+                              onPressed: () {
+                                // TODO: image picker fit machen
+                              },
+                              icon: Icon(
+                                Icons.file_upload_rounded,
+                                color: Palette.concreteGrey,
+                                size: 48,
+                              ),
+                            ),
                           ),
                         ),
                     SizedBox(height: widget.dj.mediaUrl == null ? 24 : 36),
@@ -445,26 +729,110 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                             ),
                           ),
                         ),
-                        Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            color: Palette.shadowGrey,
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Text(
-                              widget.dj.info,
-                              style: TextStyle(
-                                color: Palette.primalBlack,
-                                fontSize: 14,
+                        !editMode
+                            ? Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: Palette.shadowGrey,
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Text(
+                                  widget.dj.info,
+                                  style: TextStyle(
+                                    color: Palette.primalBlack,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                            )
+                            : Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Palette.glazedWhite,
+                                  width: 1,
+                                ),
+                                borderRadius: BorderRadius.circular(8),
+                                color: Palette.glazedWhite.o(0.2),
+                              ),
+                              child: TextField(
+                                style: TextStyle(
+                                  color: Palette.glazedWhite,
+                                  fontSize: 14,
+                                ),
+                                controller: null,
+                                decoration: InputDecoration(
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Palette.forgedGold,
+                                      width: 3,
+                                    ),
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    borderSide: BorderSide(
+                                      color: Palette.forgedGold,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
                       ],
                     ),
-                    const SizedBox(height: 90),
+                    Center(
+                      child: SizedBox(
+                        height: 100,
+                        child:
+                            !widget.showEditButton
+                                ? OutlinedButton(
+                                  onPressed: () {
+                                    setState(() => editMode = !editMode);
+                                  },
+                                  style: ButtonStyle(
+                                    splashFactory: NoSplash.splashFactory,
+                                  ),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Palette.forgedGold,
+                                        width: 2,
+                                      ),
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(6.0),
+                                      child: Row(
+                                        spacing: 4,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            !editMode ? "edit profile" : "done",
+                                            style: GoogleFonts.sometypeMono(
+                                              textStyle: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 13,
+                                                color: Palette.glazedWhite,
+                                                decoration:
+                                                    TextDecoration.underline,
+                                                decorationColor:
+                                                    Palette.glazedWhite,
+                                              ),
+                                            ),
+                                          ),
+                                          Icon(
+                                            Icons.edit,
+                                            size: 14,
+                                            color: Palette.glazedWhite,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                : SizedBox.shrink(),
+                      ),
+                    ),
                   ],
                 ),
               ),

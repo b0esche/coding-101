@@ -27,7 +27,8 @@ abstract class AppUser {
   void showProfile(
     BuildContext context,
     dynamic repo,
-    bool showChatButton, {
+    bool showChatButton,
+    bool showEditButton, {
     AppUser? currentUser,
   });
 
@@ -66,7 +67,8 @@ class DJ extends AppUser {
   void showProfile(
     BuildContext context,
     dynamic repo,
-    showChatButton, {
+    showChatButton,
+    showEditButton, {
     AppUser? currentUser,
   }) {
     Navigator.of(context).push(
@@ -76,6 +78,7 @@ class DJ extends AppUser {
               dj: this,
               repo: repo,
               showChatButton: showChatButton,
+              showEditButton: showChatButton,
             ),
       ),
     );
@@ -104,7 +107,8 @@ class Booker extends AppUser {
   void showProfile(
     BuildContext context,
     dynamic repo,
-    showChatButton, {
+    showChatButton,
+    showEditButton, {
     AppUser? currentUser,
   }) {
     debugPrint('Profil für Booker $name anzeigen (noch nicht implementiert)');
