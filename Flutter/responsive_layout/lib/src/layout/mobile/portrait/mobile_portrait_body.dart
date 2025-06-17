@@ -33,7 +33,7 @@ class _MobilePortraitBodyState extends State<MobilePortraitBody> {
         Product(
           productName: drink['strDrink'] ?? 'Unknown',
           productPrice: (5 + i).toDouble(),
-          amountInStock: 18,
+          amountInStock: drink['strAlcoholic'] == 'Alcoholic' ? 18 : 0,
           productImages: [drink['strDrinkThumb']],
           productCategories: [],
           productDescription: drink["strInstructionsDE"] ?? '',
@@ -147,11 +147,11 @@ class _MobilePortraitBodyState extends State<MobilePortraitBody> {
                         _cocktailsFuture = fetchCocktails();
                       });
                     },
-                    child: const Padding(
+                    child: Padding(
                       padding: EdgeInsets.all(2.0),
                       child: Text(
                         "load new cocktails",
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(color: Palette.glazedWhite),
                       ),
                     ),
                   ),
@@ -219,7 +219,10 @@ class ProductCard extends StatelessWidget {
                       child: Text(
                         product.amountInStock.toString(),
                         style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: Palette.crimsonAlert,
+                          color:
+                              product.amountInStock == 18
+                                  ? Palette.crimsonAlert
+                                  : Palette.mintBreeze,
                         ),
                       ),
                     ),
