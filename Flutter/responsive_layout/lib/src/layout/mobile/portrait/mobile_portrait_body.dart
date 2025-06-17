@@ -40,12 +40,10 @@ class _MobilePortraitBodyState extends State<MobilePortraitBody> {
           productId: "",
           productSize: ProductSize.large,
           productTags:
-              [
-                drink["strIngredient1"],
-                drink["strIngredient2"],
-                drink["strIngredient3"],
-                drink["strIngredient4"],
-              ].whereType<String>().toList(),
+              List.generate(
+                15,
+                (i) => drink['strIngredient${i + 1}'],
+              ).whereType<String>().toList(),
           releaseDate: DateTime.now(),
         ),
       );
