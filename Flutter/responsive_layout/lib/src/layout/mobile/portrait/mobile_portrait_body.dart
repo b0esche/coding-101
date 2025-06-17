@@ -36,10 +36,16 @@ class _MobilePortraitBodyState extends State<MobilePortraitBody> {
           amountInStock: 18,
           productImages: [drink['strDrinkThumb']],
           productCategories: [],
-          productDescription: "",
+          productDescription: drink["strInstructionsDE"],
           productId: "",
           productSize: ProductSize.large,
-          productTags: [],
+          productTags:
+              [
+                drink["strIngredient1"],
+                drink["strIngredient2"],
+                drink["strIngredient3"],
+                drink["strIngredient4"],
+              ].whereType<String>().toList(),
           releaseDate: DateTime.now(),
         ),
       );
@@ -89,7 +95,31 @@ class _MobilePortraitBodyState extends State<MobilePortraitBody> {
                           mainAxisSpacing: 16,
                           crossAxisSpacing: 16,
                         ),
-                    itemBuilder: (ctx, i) => ProductCard(product: products[i]),
+                    itemBuilder:
+                        (ctx, i) => GestureDetector(
+                          onTap: () {
+                            showDialog(
+                              context: ctx,
+                              builder:
+                                  (context) => AlertDialog(
+                                    content: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      spacing: 24,
+                                      children: [
+                                        SizedBox(height: 16),
+                                        Text(
+                                          products[i].productTags.toString(),
+                                        ),
+                                        Text(products[i].productDescription),
+                                        SizedBox(height: 16),
+                                      ],
+                                    ),
+                                  ),
+                            );
+                            return;
+                          },
+                          child: ProductCard(product: products[i]),
+                        ),
                   ),
                 ),
                 SizedBox(height: 16),
