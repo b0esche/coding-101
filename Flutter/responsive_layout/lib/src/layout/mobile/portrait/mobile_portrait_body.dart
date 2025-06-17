@@ -36,7 +36,7 @@ class _MobilePortraitBodyState extends State<MobilePortraitBody> {
           amountInStock: 18,
           productImages: [drink['strDrinkThumb']],
           productCategories: [],
-          productDescription: drink["strInstructionsDE"],
+          productDescription: drink["strInstructionsDE"] ?? '',
           productId: "",
           productSize: ProductSize.large,
           productTags:
@@ -51,6 +51,38 @@ class _MobilePortraitBodyState extends State<MobilePortraitBody> {
       );
     }
     return list;
+  }
+
+  Future<void> detailDialog(BuildContext ctx, Product product) {
+    return showDialog(
+      context: ctx,
+      builder:
+          (context) => AlertDialog(
+            content: Column(
+              spacing: 16,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 8),
+                Text(
+                  product.productName,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(product.productTags.join(', ')),
+                const SizedBox(height: 8),
+                Text(product.productDescription),
+
+                ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("pop"),
+                ),
+              ],
+            ),
+          ),
+    );
   }
 
   @override
@@ -97,67 +129,31 @@ class _MobilePortraitBodyState extends State<MobilePortraitBody> {
                         ),
                     itemBuilder:
                         (ctx, i) => GestureDetector(
-                          onTap: () {
-                            showDialog(
-                              context: ctx,
-                              builder:
-                                  (context) => AlertDialog(
-                                    content: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      spacing: 24,
-                                      children: [
-                                        SizedBox(height: 4),
-                                        Text(
-                                          products[i].productName,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            decoration:
-                                                TextDecoration.underline,
-                                          ),
-                                        ),
-
-                                        Text(
-                                          products[i].productTags.toString(),
-                                        ),
-                                        Text(products[i].productDescription),
-
-                                        ElevatedButton(
-                                          onPressed:
-                                              () => Navigator.pop(context),
-                                          child: Text(
-                                            "pop",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                            );
-                            return;
-                          },
-                          child: ProductCard(product: products[i]),
+                          onTap: () => detailDialog(ctx, products[i]),
+                          child: ProductCard(
+                            product: products[i],
+                            onViewDetails:
+                                () => detailDialog(context, products[i]),
+                          ),
                         ),
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Center(
                   child: ElevatedButton(
-                    onPressed:
-                        () => setState(() {
-                          _cocktailsFuture = fetchCocktails();
-                        }),
-                    child: Padding(
-                      padding: const EdgeInsets.all(2.0),
+                    onPressed: () {
+                      setState(() => _cocktailsFuture = fetchCocktails());
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.all(2.0),
                       child: Text(
                         "load new cocktails",
-                        style: TextStyle(color: Palette.glazedWhite),
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
               ],
             ),
           ),
@@ -169,8 +165,13 @@ class _MobilePortraitBodyState extends State<MobilePortraitBody> {
 
 class ProductCard extends StatelessWidget {
   final Product product;
+  final VoidCallback onViewDetails;
 
-  const ProductCard({super.key, required this.product});
+  const ProductCard({
+    super.key,
+    required this.product,
+    required this.onViewDetails,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -180,13 +181,13 @@ class ProductCard extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [Palette.royalAzure, Palette.companyBlue.opac(0.2)],
-            stops: [0.3, 1],
+            stops: const [0.3, 1],
           ),
           boxShadow: [
             BoxShadow(
               color: Palette.primalBlack,
               blurRadius: 6,
-              offset: Offset(0, 3),
+              offset: const Offset(0, 3),
             ),
           ],
           borderRadius: AppRad.radius2,
@@ -198,12 +199,7 @@ class ProductCard extends StatelessWidget {
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  Image.network(
-                    product.productImages.isNotEmpty
-                        ? product.productImages.first
-                        : 'https://via.placeholder.com/150',
-                    fit: BoxFit.cover,
-                  ),
+                  Image.network(product.productImages.first, fit: BoxFit.cover),
                   Positioned(
                     top: 8,
                     left: 8,
@@ -257,8 +253,8 @@ class ProductCard extends StatelessWidget {
                         borderRadius: AppRad.radius1,
                       ),
                     ),
-                    onPressed: () {},
-                    child: const Text("Add to Cart"),
+                    onPressed: onViewDetails,
+                    child: const Text("View Details"),
                   ),
                 ],
               ),
