@@ -105,37 +105,78 @@ class MockDatabaseRepository implements DatabaseRepository {
   final List<OnlineOrder> _mockOrders = [];
 
   @override
-  Future<void> createAppUser(AppUser appUser) async {
-    print('Mock: Benutzer ${appUser.username} angelegt.');
+  Future<void> deleteAppUser(AppUser appUser, String customerId) {
+    // TODO: implement deleteAppUser
+    throw UnimplementedError();
   }
 
   @override
-  Future<void> addToBasket(Product product, String userId) async {
-    print(
-      'Mock: ${product.productName} zum Warenkorb von $userId hinzugefügt.',
-    );
+  Future<List<OnlineOrder>> getOrdersFromUser(String customerId) {
+    // TODO: implement getOrdersFromUser
+    throw UnimplementedError();
   }
 
   @override
-  Future<void> placeOrder(OnlineOrder order) async {
-    _mockOrders.add(order);
-    print('Mock: Bestellung ${order.orderId} gespeichert.');
+  Future<List<Product>> getProductsByTags(List<String>? tags) {
+    // TODO: implement getProductsByTags
+    throw UnimplementedError();
   }
 
   @override
-  Future<void> addToWishlist(Product product, AppUser appUser) async {
-    print('Mock: ${product.productName} zur Wishlist von ${appUser.username}.');
+  Future<void> removeFromBasket(
+    Product product,
+    String customerId,
+    String basketId,
+  ) {
+    // TODO: implement removeFromBasket
+    throw UnimplementedError();
   }
 
   @override
-  Future<List<Product>> showProducts(List<String> categories) async {
-    return mockProducts
-        .where((p) => p.productCategories.any(categories.contains))
-        .toList();
+  Future<void> removeFromWishlist(
+    Product product,
+    String customerId,
+    String wishlistId,
+  ) {
+    // TODO: implement removeFromWishlist
+    throw UnimplementedError();
   }
 
   @override
-  Future<List<OnlineOrder>> getOrders(String userId) async {
-    return _mockOrders;
+  Future<void> updateAppUser(AppUser appUser, String customerId) {
+    // TODO: implement updateAppUser
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> addToBasket(
+    Product product,
+    String customerId,
+    String basketId,
+  ) {
+    // TODO: implement addToBasket
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> addToWishlist(
+    Product product,
+    String customerId,
+    String wishlistId,
+  ) {
+    // TODO: implement addToWishlist
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> createAppUser(AppUser appUser) {
+    // TODO: implement createAppUser
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> placeOrder(OnlineOrder order) {
+    // TODO: implement placeOrder
+    throw UnimplementedError();
   }
 }

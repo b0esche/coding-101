@@ -25,7 +25,7 @@ class App extends StatelessWidget {
       darkTheme: darkTheme,
       // routes: ,
       home: ResponsiveLayout(
-        mobilePortraitBody: MobilePortraitBody(products: products),
+        mobilePortraitBody: MobilePortraitBody(),
         mobileLandscapeBody: MobileLandscpaeBody(),
         tabletBody: TabletBody(),
         desktopBody: DesktopBody(),

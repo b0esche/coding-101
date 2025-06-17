@@ -4,9 +4,25 @@ import 'package:responsive_layout/src/data/models/product.dart';
 
 abstract class DatabaseRepository {
   Future<void> createAppUser(AppUser appUser);
-  Future<void> addToBasket(Product product, String userId);
+  Future<void> updateAppUser(AppUser appUser, String customerId);
+  Future<void> deleteAppUser(AppUser appUser, String customerId);
+  Future<void> addToBasket(Product product, String customerId, String basketId);
+  Future<void> removeFromBasket(
+    Product product,
+    String customerId,
+    String basketId,
+  );
   Future<void> placeOrder(OnlineOrder order);
-  Future<void> addToWishlist(Product product, AppUser appUser);
-  Future<List<Product>> showProducts(List<String> categories);
-  Future<List<OnlineOrder>> getOrders(String userId);
+  Future<void> addToWishlist(
+    Product product,
+    String customerId,
+    String wishlistId,
+  );
+  Future<void> removeFromWishlist(
+    Product product,
+    String customerId,
+    String wishlistId,
+  );
+  Future<List<Product>> getProductsByTags(List<String>? tags);
+  Future<List<OnlineOrder>> getOrdersFromUser(String customerId);
 }
