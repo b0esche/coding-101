@@ -146,7 +146,9 @@ class _MobilePortraitBodyState extends State<MobilePortraitBody> {
                 Center(
                   child: ElevatedButton(
                     onPressed: () {
-                      setState(() => _cocktailsFuture = fetchCocktails());
+                      setState(() {
+                        _cocktailsFuture = fetchCocktails();
+                      });
                     },
                     child: const Padding(
                       padding: EdgeInsets.all(2.0),
