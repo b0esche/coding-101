@@ -100,7 +100,6 @@ class _MobilePortraitBodyState extends State<MobilePortraitBody> {
         }
         final products = snap.data!;
         return Scaffold(
-          backgroundColor: Palette.shadowGrey,
           body: Padding(
             padding: AppPad.padding2,
             child: Column(
@@ -195,6 +194,7 @@ class ProductCard extends StatelessWidget {
             ),
           ],
           borderRadius: AppRad.radius2,
+          border: Border.all(width: 2, color: Palette.concreteGrey.opac(0.3)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

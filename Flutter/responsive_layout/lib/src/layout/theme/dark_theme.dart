@@ -7,6 +7,7 @@ ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
   primaryColor: Palette.royalAzure,
   scaffoldBackgroundColor: Palette.primalBlack,
+
   appBarTheme: AppBarTheme(
     backgroundColor: Palette.primalBlack,
     elevation: 0,
