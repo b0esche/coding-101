@@ -67,6 +67,7 @@ class _MobilePortraitBodyState extends State<MobilePortraitBody> {
                   product.productName,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
+                    fontSize: 16,
                     decoration: TextDecoration.underline,
                   ),
                 ),
@@ -74,10 +75,13 @@ class _MobilePortraitBodyState extends State<MobilePortraitBody> {
                 Text(product.productTags.join(', ')),
                 const SizedBox(height: 8),
                 Text(product.productDescription),
-
+                SizedBox(height: 8),
                 ElevatedButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text("pop"),
+                  child: Text(
+                    "pop",
+                    style: TextStyle(color: Palette.glazedWhite),
+                  ),
                 ),
               ],
             ),
