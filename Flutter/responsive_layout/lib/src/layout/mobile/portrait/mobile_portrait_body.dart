@@ -106,12 +106,31 @@ class _MobilePortraitBodyState extends State<MobilePortraitBody> {
                                       mainAxisSize: MainAxisSize.min,
                                       spacing: 24,
                                       children: [
-                                        SizedBox(height: 16),
+                                        SizedBox(height: 4),
+                                        Text(
+                                          products[i].productName,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            decoration:
+                                                TextDecoration.underline,
+                                          ),
+                                        ),
+
                                         Text(
                                           products[i].productTags.toString(),
                                         ),
                                         Text(products[i].productDescription),
-                                        SizedBox(height: 16),
+
+                                        ElevatedButton(
+                                          onPressed:
+                                              () => Navigator.pop(context),
+                                          child: Text(
+                                            "pop",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
