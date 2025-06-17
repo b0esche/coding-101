@@ -60,37 +60,6 @@ class _MobilePortraitBodyState extends State<MobilePortraitBody> {
         }
         final products = snap.data!;
         return Scaffold(
-          drawer: Drawer(
-            backgroundColor: Palette.companyBlue,
-            width: 240,
-            elevation: 2,
-            child: SafeArea(
-              child: ListView(
-                padding: EdgeInsets.zero,
-                children: List.generate(products.length, (index) {
-                  final product = products[index];
-                  return Container(
-                    margin: const EdgeInsets.symmetric(
-                      vertical: 8,
-                      horizontal: 16,
-                    ),
-                    padding: AppPad.padding2,
-                    decoration: BoxDecoration(
-                      color: Palette.glazedWhite.opac(0.1),
-                      borderRadius: AppRad.radius1,
-                    ),
-                    child: Text(
-                      product.productName,
-                      style: TextStyle(
-                        color: Palette.glazedWhite,
-                        fontSize: 18,
-                      ),
-                    ),
-                  );
-                }),
-              ),
-            ),
-          ),
           backgroundColor: Palette.shadowGrey,
           body: Padding(
             padding: AppPad.padding2,
