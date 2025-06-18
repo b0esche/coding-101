@@ -219,6 +219,8 @@ class ProductCard extends StatelessWidget {
                       child: Text(
                         product.amountInStock.toString(),
                         style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                          fontWeight: FontWeight.w800,
+                          fontSize: 13,
                           color:
                               product.amountInStock == 18
                                   ? Palette.crimsonAlert
