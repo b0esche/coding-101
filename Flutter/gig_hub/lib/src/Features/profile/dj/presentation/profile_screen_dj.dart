@@ -53,6 +53,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
   int index = 0;
 
   bool editMode = false;
+
   final _formKey = GlobalKey<FormState>();
   final _locationFocusNode = FocusNode();
   String? _locationError;
@@ -347,13 +348,16 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                       ),
                       child:
                           !editMode
-                              ? Text(
-                                widget.dj.name,
-                                style: GoogleFonts.sometypeMono(
-                                  textStyle: TextStyle(
-                                    color: Palette.glazedWhite,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
+                              ? Hero(
+                                tag: context,
+                                child: Text(
+                                  widget.dj.name,
+                                  style: GoogleFonts.sometypeMono(
+                                    textStyle: TextStyle(
+                                      color: Palette.glazedWhite,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               )
@@ -884,7 +888,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                 children: [
                                   AudioPlayerWidget(
                                     audioUrl:
-                                        // widget.dj.set2URl TODO: über die eingegebene URL die Audiodaten von Soundcloud API fetchen
+                                        //TODO: über die eingegebene URL die Audiodaten von Soundcloud API fetchen
                                         'https://samplelib.com/lib/preview/mp3/sample-12s.mp3',
                                     playerController: _playerControllerTwo,
                                   ),

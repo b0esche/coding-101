@@ -81,20 +81,23 @@ class _SearchListTileState extends State<SearchListTile> {
                         children: [
                           SizedBox(
                             width: 190,
-                            child: Text(
-                              widget.name,
-                              style: GoogleFonts.sometypeMono(
-                                textStyle: TextStyle(
-                                  decoration: TextDecoration.underline,
-                                  decorationColor: Palette.primalBlack.o(0.2),
-                                  wordSpacing: -4,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
+                            child: Hero(
+                              tag: context,
+                              child: Text(
+                                widget.name,
+                                style: GoogleFonts.sometypeMono(
+                                  textStyle: TextStyle(
+                                    decoration: TextDecoration.underline,
+                                    decorationColor: Palette.primalBlack.o(0.2),
+                                    wordSpacing: -4,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
 
-                                  overflow:
-                                      isExpanded
-                                          ? TextOverflow.fade
-                                          : TextOverflow.ellipsis,
+                                    overflow:
+                                        isExpanded
+                                            ? TextOverflow.fade
+                                            : TextOverflow.ellipsis,
+                                  ),
                                 ),
                               ),
                             ),

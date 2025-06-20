@@ -66,8 +66,9 @@ class MockDatabaseRepository implements DatabaseRepository {
       city: "Saint-Tropez",
       rating: 5,
       about: "Diese Worte widme ich meinem Onkel Falco",
-      set1Url: "https://soundcloud.com/yourset",
-      set2Url: "https://soundcloud.com/yourotherset",
+      set1Url: "https://soundcloud.com/janfleck/hard-as-fuck",
+      set2Url:
+          "https://api-v2.soundcloud.com/media/soundcloud:tracks:743803324/6fe54972-be2a-4841-af1b-d1be58d9f57f/stream/progressive?track_authorization=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJnZW8iOiJERSIsInN1YiI6IiIsInJpZCI6ImRlY2M1ZTliLWM2Y2QtNDEzYi1hZjk5LWU3OThhYmIwNWM4MSIsImlhdCI6MTc1MDQ0NTE2OH0.Dj4jmLlblDzE-qM3KzHVhG-y_gH4lu5dgcwEDzJXL2U",
       mediaUrl: [
         "https://picsum.photos/250",
         "https://picsum.photos/251",
