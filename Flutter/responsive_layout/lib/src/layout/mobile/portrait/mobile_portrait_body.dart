@@ -37,7 +37,7 @@ class _MobilePortraitBodyState extends State<MobilePortraitBody> {
           productImages: [drink['strDrinkThumb']],
           productCategories: [],
           productDescription: drink["strInstructionsDE"] ?? '',
-          productId: "",
+          productID: "",
           productSize: ProductSize.large,
           productTags:
               List.generate(
@@ -113,7 +113,9 @@ class _MobilePortraitBodyState extends State<MobilePortraitBody> {
                     period: const Duration(seconds: 5),
                     child: Text(
                       "Trending Products",
-                      style: Theme.of(context).textTheme.bodyLarge,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        decoration: TextDecoration.underline,
+                      ),
                     ),
                   ),
                 ),
@@ -148,10 +150,13 @@ class _MobilePortraitBodyState extends State<MobilePortraitBody> {
                       });
                     },
                     child: Padding(
-                      padding: EdgeInsets.all(2.0),
+                      padding: EdgeInsets.only(left: 2.0, right: 2.0),
                       child: Text(
                         "load new cocktails",
-                        style: TextStyle(color: Palette.glazedWhite),
+                        style: TextStyle(
+                          color: Palette.glazedWhite,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),

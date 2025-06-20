@@ -4,21 +4,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 enum ProductSize { small, medium, large }
 
 class Product {
-  final String productId;
-  final String productName;
-  final String productDescription;
+  final String productID, productName, productDescription;
   final int amountInStock;
   final double productPrice;
   final ProductSize productSize;
   final DateTime releaseDate;
-  final List<String> productCategories;
-  final List<String> productTags;
-  final List<String> productImages;
+  final List<String> productCategories, productTags, productImages;
 
   bool get isAvailable => amountInStock > 0;
 
   Product({
-    required this.productId,
+    required this.productID,
     required this.productName,
     required this.productDescription,
     required this.amountInStock,
@@ -37,7 +33,7 @@ class Product {
     }
 
     return Product(
-      productId: data['productId'] ?? doc.id,
+      productID: data['productId'] ?? doc.id,
       productName: data['productName'] ?? '',
       productDescription: data['productDescription'] ?? '',
       amountInStock: data['amountInStock'] ?? 0,
@@ -51,7 +47,7 @@ class Product {
   }
 
   Map<String, dynamic> toFirestore() => {
-    'productId': productId,
+    'productID': productID,
     'productName': productName,
     'productDescription': productDescription,
     'amountInStock': amountInStock,

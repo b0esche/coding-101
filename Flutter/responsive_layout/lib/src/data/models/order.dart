@@ -4,8 +4,7 @@ import 'package:responsive_layout/src/data/models/product.dart';
 enum OrderStatus { pending, processing, shipped, delivered, canceled }
 
 class OnlineOrder {
-  final String orderId;
-  final String customerId;
+  final String orderId, customerId;
   final List<Product> products;
   final double totalPrice;
   final DateTime orderDate;

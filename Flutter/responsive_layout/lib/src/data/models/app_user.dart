@@ -1,18 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AppUser {
-  final String customerId;
-  final String username;
-  final String deliveryStreet;
-  final String deliveryHouseNumber;
-  final String deliveryZipCode;
-  final String deliveryCity;
-  final String userEmail;
-  final String? phoneNumber;
-  final String? avatarUrl;
+  final String customerId,
+      username,
+      deliveryStreet,
+      deliveryHouseNumber,
+      deliveryZipCode,
+      deliveryCity,
+      userEmail;
+  final String? phoneNumber, avatarUrl;
   final bool isVerified;
-  final List<String>? wishlist;
-  final List<String>? orderHistoryIds;
+  final List<String>? wishlist, orderHistoryIds;
   final DateTime? lastLogin;
   final DateTime createdAt;
 

@@ -27,8 +27,8 @@ class MockDatabaseRepository implements DatabaseRepository {
       rating: 3.5,
       about:
           "Ich mache sehr tolle Musik und Ich mache sehr tolle Musik und Ich mache sehr tolle Musik und Ich mache sehr tolle Musik",
-      set1Url: "set1Url",
-      set2Url: "set2Url",
+      set1Url: "https://soundcloud.com/yourset",
+      set2Url: "https://soundcloud.com/yourotherset",
       mediaUrl: [
         "https://picsum.photos/250",
         "https://picsum.photos/251",
@@ -48,8 +48,8 @@ class MockDatabaseRepository implements DatabaseRepository {
       city: "Graz",
       rating: 4.5,
       about: "Ich bin der besteste sowieso",
-      set1Url: "set1Url",
-      set2Url: "set2Url",
+      set1Url: "https://soundcloud.com/yourset",
+      set2Url: "https://soundcloud.com/yourotherset",
       mediaUrl: null,
       info: "info",
       genres: [genres[12], genres[10], genres[29], genres[14]],
@@ -66,8 +66,8 @@ class MockDatabaseRepository implements DatabaseRepository {
       city: "Saint-Tropez",
       rating: 5,
       about: "Diese Worte widme ich meinem Onkel Falco",
-      set1Url: "set1Url",
-      set2Url: "set2Url",
+      set1Url: "https://soundcloud.com/yourset",
+      set2Url: "https://soundcloud.com/yourotherset",
       mediaUrl: [
         "https://picsum.photos/250",
         "https://picsum.photos/251",
@@ -88,8 +88,8 @@ class MockDatabaseRepository implements DatabaseRepository {
       city: "Wuppertal",
       rating: 4.5,
       about: "Da wo ich lege wächst kein Grass mehr ich sach dir dat",
-      set1Url: "set1Url",
-      set2Url: "set2Url",
+      set1Url: "https://soundcloud.com/yourset",
+      set2Url: "https://soundcloud.com/yourotherset",
       mediaUrl: [
         "https://picsum.photos/250",
         "https://picsum.photos/251",
@@ -109,8 +109,8 @@ class MockDatabaseRepository implements DatabaseRepository {
       city: "Wien",
       rating: 4.5,
       about: "Frag besser nicht...",
-      set1Url: "set1Url",
-      set2Url: "set2Url",
+      set1Url: "https://soundcloud.com/yourset",
+      set2Url: "https://soundcloud.com/yourotherset",
       mediaUrl: [
         "https://picsum.photos/250",
         "https://picsum.photos/251",
@@ -131,8 +131,8 @@ class MockDatabaseRepository implements DatabaseRepository {
       bpmMin: 140,
       bpmMax: 172,
       about: "Mein Sound fährt im Hühnerstall Motorrad",
-      set1Url: "set1Url",
-      set2Url: "set2Url",
+      set1Url: "https://soundcloud.com/yourset",
+      set2Url: "https://soundcloud.com/yourotherset",
       mediaUrl: [
         "https://picsum.photos/250",
         "https://picsum.photos/251",
@@ -153,8 +153,8 @@ class MockDatabaseRepository implements DatabaseRepository {
       bpmMin: 90,
       bpmMax: 122,
       about: "alles easy",
-      set1Url: "set1Url",
-      set2Url: "set2Url",
+      set1Url: "https://soundcloud.com/yourset",
+      set2Url: "https://soundcloud.com/yourotherset",
       mediaUrl: [
         "https://picsum.photos/250",
         "https://picsum.photos/251",
@@ -278,10 +278,14 @@ class MockDatabaseRepository implements DatabaseRepository {
     await Future.delayed(const Duration(seconds: 1));
     try {
       return _djs.firstWhere((dj) => dj.userId == userId);
-    } catch (e) {}
+    } catch (e) {
+      //
+    }
     try {
       return bookers.firstWhere((booker) => booker.userId == userId);
-    } catch (e) {}
+    } catch (e) {
+      //
+    }
     return null;
   }
 

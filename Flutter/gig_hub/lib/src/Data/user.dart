@@ -2,14 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:gig_hub/src/Features/profile/dj/presentation/profile_screen_dj.dart';
 
 abstract class AppUser {
-  final String userId;
-  final String name;
-  String email;
-  final String headUrl;
-  final String avatarUrl;
-  final String city;
-  final String about;
-  final String info;
+  final String userId, headUrl, avatarUrl;
+  String name, email, about, info, city;
   final double? rating;
 
   AppUser({
@@ -24,7 +18,7 @@ abstract class AppUser {
     this.rating,
   });
 
-  void showProfile(
+  Future<void> showProfile(
     BuildContext context,
     dynamic repo,
     bool showChatButton,
@@ -39,10 +33,8 @@ abstract class AppUser {
 
 class DJ extends AppUser {
   final List<String> genres;
-  final int bpmMin;
-  final int bpmMax;
-  final String set1Url;
-  final String set2Url;
+  int bpmMin, bpmMax;
+  String set1Url, set2Url;
   final List<String>? mediaUrl;
 
   DJ({
@@ -62,26 +54,30 @@ class DJ extends AppUser {
     required super.email,
     required super.city,
   });
-
   @override
-  void showProfile(
+  Future<void> showProfile(
     BuildContext context,
     dynamic repo,
-    showChatButton,
-    showEditButton, {
+    bool showChatButton,
+    bool showEditButton, {
     AppUser? currentUser,
-  }) {
-    Navigator.of(context).push(
+    void Function(DJ updatedDj)? onProfileUpdated,
+  }) async {
+    final updatedDj = await Navigator.of(context).push<DJ>(
       MaterialPageRoute(
         builder:
             (context) => ProfileScreenDJ(
               dj: this,
               repo: repo,
               showChatButton: showChatButton,
-              showEditButton: showChatButton,
+              showEditButton: showEditButton,
             ),
       ),
     );
+
+    if (updatedDj != null && onProfileUpdated != null) {
+      onProfileUpdated(updatedDj);
+    }
   }
 }
 
@@ -104,7 +100,7 @@ class Booker extends AppUser {
   });
 
   @override
-  void showProfile(
+  Future<void> showProfile(
     BuildContext context,
     dynamic repo,
     showChatButton,
@@ -112,5 +108,6 @@ class Booker extends AppUser {
     AppUser? currentUser,
   }) {
     debugPrint('Profil für Booker $name anzeigen (noch nicht implementiert)');
+    throw ();
   }
 }

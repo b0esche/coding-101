@@ -241,7 +241,7 @@ class _SearchListTileState extends State<SearchListTile> {
                                           context,
                                           widget.repo,
                                           true,
-                                          false,
+                                          true,
                                           currentUser: widget.user,
                                         );
                                       },

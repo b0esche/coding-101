@@ -1,22 +1,27 @@
+import 'dart:convert';
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gig_hub/src/Data/user.dart';
 import 'package:gig_hub/src/Features/chat/presentation/chat_screen.dart';
 import 'package:gig_hub/src/Features/profile/dj/presentation/audio_player.dart';
+import 'package:gig_hub/src/Features/search/presentation/widgets/bpm_selection_dialog.dart';
+import 'package:gig_hub/src/Features/search/presentation/widgets/genre_selection_dialog.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:gig_hub/src/Common/genre_bubble.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
+import 'package:http/http.dart' as http;
 import 'package:pinch_zoom/pinch_zoom.dart';
 
 class ProfileScreenDJArgs {
   final DJ dj;
   final DatabaseRepository repo;
-  final bool showChatButton;
-  final bool showEditButton;
+  final bool showChatButton, showEditButton;
 
   ProfileScreenDJArgs({
     required this.dj,
@@ -31,8 +36,7 @@ class ProfileScreenDJ extends StatefulWidget {
 
   final DJ dj;
   final dynamic repo;
-  final bool showChatButton;
-  final bool showEditButton;
+  final bool showChatButton, showEditButton;
   const ProfileScreenDJ({
     super.key,
     required this.dj,
@@ -46,8 +50,14 @@ class ProfileScreenDJ extends StatefulWidget {
 }
 
 class _ProfileScreenDJState extends State<ProfileScreenDJ> {
-  late final PlayerController _playerControllerOne;
-  late final PlayerController _playerControllerTwo;
+  int index = 0;
+
+  bool editMode = false;
+  final _formKey = GlobalKey<FormState>();
+  final _locationFocusNode = FocusNode();
+  String? _locationError;
+
+  late final PlayerController _playerControllerOne, _playerControllerTwo;
   late final TextEditingController _nameController = TextEditingController(
     text: widget.dj.name,
   );
@@ -67,20 +77,30 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
   late final TextEditingController _infoController = TextEditingController(
     text: widget.dj.info,
   );
-
-  int index = 0;
-
-  bool editMode = false;
-
   @override
   void initState() {
+    super.initState();
+
     _playerControllerOne = PlayerController();
     _playerControllerTwo = PlayerController();
-    super.initState();
+
+    _locationFocusNode.addListener(_onLocationFocusChange);
+  }
+
+  void _onLocationFocusChange() {
+    if (!_locationFocusNode.hasFocus) {
+      _validateCity(_locationController.text);
+    }
   }
 
   @override
-  void dispose() async {
+  void dispose() {
+    _locationFocusNode.removeListener(_onLocationFocusChange);
+    _locationFocusNode.dispose();
+
+    _playerControllerOne.dispose();
+    _playerControllerTwo.dispose();
+
     _nameController.dispose();
     _locationController.dispose();
     _bpmController.dispose();
@@ -88,6 +108,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
     _soundcloudControllerOne.dispose();
     _soundcloudControllerTwo.dispose();
     _infoController.dispose();
+
     super.dispose();
   }
 
@@ -108,6 +129,96 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
     }
 
     return null;
+  }
+
+  Future<void> _validateCity(String value) async {
+    final apiKey = dotenv.env['GOOGLE_API_KEY'];
+    final trimmedValue = value.trim();
+
+    if (trimmedValue.isEmpty) {
+      setState(() => _locationError = ' ');
+      _formKey.currentState?.validate();
+      return;
+    }
+
+    final query = Uri.encodeComponent(trimmedValue);
+    final url = Uri.parse(
+      'https://maps.googleapis.com/maps/api/place/autocomplete/json'
+      '?input=$query&types=(cities)&language=en&key=$apiKey',
+    );
+
+    setState(() {
+      _locationError = null;
+    });
+
+    try {
+      final response = await http.get(url);
+      final data = jsonDecode(response.body);
+
+      bool isValidCityFound = false;
+      if (response.statusCode == 200 && data['status'] == 'OK') {
+        final predictions = data['predictions'] as List;
+
+        if (predictions.isNotEmpty) {
+          for (var prediction in predictions) {
+            final String mainText =
+                prediction['structured_formatting']['main_text']
+                    ?.toString()
+                    .trim() ??
+                '';
+            final List types = prediction['types'] ?? [];
+
+            if (mainText.toLowerCase() == trimmedValue.toLowerCase() &&
+                (types.contains('locality') ||
+                    types.contains('administrative_area_level_3') ||
+                    types.contains('political'))) {
+              isValidCityFound = true;
+              break;
+            }
+          }
+        }
+
+        setState(() {
+          _locationError = isValidCityFound ? null : ' ';
+          if (editMode) {
+            _formKey.currentState?.validate();
+          }
+        });
+      } else {
+        debugPrint(
+          'Google Places API Error: ${data['status']} - ${data['error_message']}',
+        );
+        setState(() {
+          _locationError = ' ';
+          if (editMode) {
+            _formKey.currentState?.validate();
+          }
+        });
+      }
+    } catch (e) {
+      debugPrint('Network error during city validation: $e');
+      setState(() => _locationError = ' ');
+      if (editMode) {
+        _formKey.currentState?.validate();
+      }
+    }
+  }
+
+  Future<void> _showGenreDialog() async {
+    final result = await showDialog<List<String>>(
+      context: context,
+      builder:
+          (context) =>
+              GenreSelectionDialog(initialSelectedGenres: widget.dj.genres),
+    );
+
+    if (result != null && result.isNotEmpty) {
+      setState(() {
+        widget.dj.genres
+          ..clear()
+          ..addAll(result);
+      });
+    }
   }
 
   @override
@@ -147,6 +258,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
               )
               : null,
       body: Form(
+        key: _formKey,
         child: Column(
           children: [
             Stack(
@@ -185,7 +297,11 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                   child: Padding(
                     padding: const EdgeInsets.all(2.0),
                     child: IconButton(
-                      onPressed: () => Navigator.of(context).pop(),
+                      onPressed: () {
+                        PlayerController().stopAllPlayers();
+
+                        Navigator.pop(context);
+                      },
                       icon: Icon(
                         Icons.chevron_left,
                         shadows: [
@@ -253,9 +369,14 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                   color: Palette.glazedWhite.o(0.2),
                                 ),
                                 child: TextFormField(
+                                  onEditingComplete: () {
+                                    setState(() {
+                                      widget.dj.name = _nameController.text;
+                                    });
+                                  },
                                   style: TextStyle(
                                     color: Palette.glazedWhite,
-                                    fontSize: 10,
+                                    fontSize: 12,
                                   ),
                                   controller: _nameController,
                                   decoration: InputDecoration(
@@ -389,6 +510,13 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                             fontSize: 10,
                                           ),
                                           controller: _locationController,
+                                          focusNode: _locationFocusNode,
+                                          validator: (value) {
+                                            return _locationError;
+                                          },
+                                          autovalidateMode:
+                                              AutovalidateMode
+                                                  .onUserInteraction,
                                           decoration: InputDecoration(
                                             focusedBorder: OutlineInputBorder(
                                               borderSide: BorderSide(
@@ -402,6 +530,10 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                               borderSide: BorderSide(
                                                 color: Palette.forgedGold,
                                               ),
+                                            ),
+                                            errorStyle: TextStyle(
+                                              fontSize: 0,
+                                              height: 0,
                                             ),
                                           ),
                                         ),
@@ -444,6 +576,31 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                           color: Palette.glazedWhite.o(0.2),
                                         ),
                                         child: TextFormField(
+                                          readOnly: true,
+                                          onTap: () async {
+                                            final result =
+                                                await showDialog<List<int>>(
+                                                  context: context,
+                                                  builder:
+                                                      (context) =>
+                                                          BpmSelectionDialog(
+                                                            intialSelectedBpm: [
+                                                              widget.dj.bpmMin,
+                                                              widget.dj.bpmMax,
+                                                            ],
+                                                          ),
+                                                );
+
+                                            if (result != null &&
+                                                result.length == 2) {
+                                              setState(() {
+                                                widget.dj.bpmMin = result[0];
+                                                widget.dj.bpmMax = result[1];
+                                                _bpmController.text =
+                                                    '${result[0]}-${result[1]} bpm';
+                                              });
+                                            }
+                                          },
                                           style: TextStyle(
                                             color: Palette.glazedWhite,
                                             fontSize: 10,
@@ -513,9 +670,18 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                   color: Palette.glazedWhite.o(0.2),
                                 ),
                                 child: TextFormField(
+                                  onEditingComplete: () {
+                                    setState(() {
+                                      widget.dj.about = _aboutController.text;
+                                    });
+                                  },
+                                  minLines: 1,
+                                  maxLines: 7,
+                                  maxLength: 250,
                                   style: TextStyle(
                                     color: Palette.glazedWhite,
                                     fontSize: 14,
+                                    overflow: TextOverflow.visible,
                                   ),
                                   controller: _aboutController,
                                   decoration: InputDecoration(
@@ -563,8 +729,8 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                         borderRadius: BorderRadius.circular(16),
                                       ),
                                       child: GestureDetector(
-                                        onTap:
-                                            () {}, // TODO: genre dialog openen
+                                        onTap: _showGenreDialog,
+
                                         child: const GenreBubble(
                                           genre: " edit genres ",
                                         ),
@@ -630,12 +796,52 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                     style: TextStyle(
                                       color: Palette.glazedWhite,
                                       fontSize: 10,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
                                     controller: _soundcloudControllerOne,
                                     validator: soundcloudValidator,
                                     autovalidateMode:
                                         AutovalidateMode.onUnfocus,
+
                                     decoration: InputDecoration(
+                                      prefixIcon:
+                                          _soundcloudControllerOne.text.isEmpty
+                                              ? null
+                                              : IconButton(
+                                                style: ButtonStyle(
+                                                  splashFactory:
+                                                      NoSplash.splashFactory,
+                                                ),
+                                                onPressed:
+                                                    _soundcloudControllerOne
+                                                        .clear,
+                                                icon: Icon(
+                                                  Icons.close,
+                                                  color: Palette.glazedWhite,
+                                                  size: 18,
+                                                ),
+                                              ),
+
+                                      suffixIcon: IconButton(
+                                        style: ButtonStyle(
+                                          splashFactory: NoSplash.splashFactory,
+                                        ),
+                                        icon: Icon(
+                                          Icons.paste_rounded,
+                                          color: Palette.forgedGold,
+                                          size: 20,
+                                        ),
+                                        onPressed: () async {
+                                          final data = await Clipboard.getData(
+                                            Clipboard.kTextPlain,
+                                          );
+                                          if (data != null &&
+                                              data.text != null) {
+                                            _soundcloudControllerOne.text =
+                                                data.text!;
+                                          }
+                                        },
+                                      ),
                                       focusedBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
                                           color: Palette.forgedGold,
@@ -711,12 +917,50 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                     style: TextStyle(
                                       color: Palette.glazedWhite,
                                       fontSize: 10,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
                                     controller: _soundcloudControllerTwo,
                                     validator: soundcloudValidator,
                                     autovalidateMode:
                                         AutovalidateMode.onUnfocus,
                                     decoration: InputDecoration(
+                                      prefixIcon:
+                                          _soundcloudControllerTwo.text.isEmpty
+                                              ? null
+                                              : IconButton(
+                                                style: ButtonStyle(
+                                                  splashFactory:
+                                                      NoSplash.splashFactory,
+                                                ),
+                                                onPressed:
+                                                    _soundcloudControllerTwo
+                                                        .clear,
+                                                icon: Icon(
+                                                  Icons.close,
+                                                  color: Palette.glazedWhite,
+                                                  size: 18,
+                                                ),
+                                              ),
+                                      suffixIcon: IconButton(
+                                        style: ButtonStyle(
+                                          splashFactory: NoSplash.splashFactory,
+                                        ),
+                                        icon: Icon(
+                                          Icons.paste_rounded,
+                                          color: Palette.forgedGold,
+                                          size: 20,
+                                        ),
+                                        onPressed: () async {
+                                          final data = await Clipboard.getData(
+                                            Clipboard.kTextPlain,
+                                          );
+                                          if (data != null &&
+                                              data.text != null) {
+                                            _soundcloudControllerTwo.text =
+                                                data.text!;
+                                          }
+                                        },
+                                      ),
                                       focusedBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
                                           color: Palette.forgedGold,
@@ -830,9 +1074,20 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                   color: Palette.glazedWhite.o(0.2),
                                 ),
                                 child: TextFormField(
+                                  onEditingComplete: () {
+                                    setState(() {
+                                      widget.dj.info = _infoController.text;
+                                    });
+                                  },
+                                  minLines: 1,
+                                  maxLines: 7,
+                                  maxLength: 250,
+                                  cursorColor: Palette.forgedGold,
+
                                   style: TextStyle(
                                     color: Palette.glazedWhite,
                                     fontSize: 14,
+                                    overflow: TextOverflow.visible,
                                   ),
                                   controller: _infoController,
                                   decoration: InputDecoration(
@@ -860,12 +1115,52 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                               !widget.showEditButton
                                   ? OutlinedButton(
                                     onPressed: () {
-                                      !editMode
-                                          ? PlayerController().stopAllPlayers()
-                                          : PlayerController()
-                                              .overrideAudioSession;
+                                      if (editMode &&
+                                          _formKey.currentState!.validate()) {
+                                        !editMode
+                                            ? PlayerController()
+                                                .stopAllPlayers()
+                                            : PlayerController()
+                                                .overrideAudioSession;
 
-                                      setState(() => editMode = !editMode);
+                                        widget.dj.about = _aboutController.text;
+                                        widget.dj.info = _infoController.text;
+                                        widget.dj.name = _nameController.text;
+                                        widget.dj.set1Url =
+                                            _soundcloudControllerOne.text;
+                                        widget.dj.set2Url =
+                                            _soundcloudControllerTwo.text;
+
+                                        final bpmText =
+                                            _bpmController.text.trim();
+                                        final bpmParts = bpmText
+                                            .split(' ')
+                                            .first
+                                            .split('-');
+
+                                        if (bpmParts.length == 2) {
+                                          widget.dj.bpmMin =
+                                              int.tryParse(
+                                                bpmParts[0].trim(),
+                                              ) ??
+                                              0;
+                                          widget.dj.bpmMax =
+                                              int.tryParse(
+                                                bpmParts[1].trim(),
+                                              ) ??
+                                              0;
+                                        }
+
+                                        if (_locationError == null) {
+                                          widget.dj.city =
+                                              _locationController.text;
+                                        }
+
+                                        setState(() => editMode = !editMode);
+                                      } else if (!editMode) {
+                                        PlayerController().stopAllPlayers();
+                                        setState(() => editMode = !editMode);
+                                      }
                                     },
                                     style: ButtonStyle(
                                       splashFactory: NoSplash.splashFactory,
