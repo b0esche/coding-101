@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 
 /// Inoffizielle, öffentlich zugängliche SoundCloud client_id.
 /// ⚠️ Diese kann jederzeit blockiert werden und sollte nicht produktiv eingesetzt werden.
-const String _clientId = 'yNSW5UvBmb1A5j7qPUtIMuB9Itx3jsOC';
+const String _clientId = '';
 
 /// Hilfsfunktion zur Bereinigung des SoundCloud-Links
 String sanitizeSoundCloudUrl(String url) {
