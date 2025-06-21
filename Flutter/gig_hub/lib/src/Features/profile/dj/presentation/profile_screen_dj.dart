@@ -1,22 +1,5 @@
-import 'dart:convert';
-import 'package:audio_waveforms/audio_waveforms.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
-import 'package:flutter_rating_stars/flutter_rating_stars.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:gig_hub/src/Data/user.dart';
-import 'package:gig_hub/src/Features/chat/presentation/chat_screen.dart';
-import 'package:gig_hub/src/Features/profile/dj/presentation/audio_player.dart';
-import 'package:gig_hub/src/Features/search/presentation/widgets/bpm_selection_dialog.dart';
-import 'package:gig_hub/src/Features/search/presentation/widgets/genre_selection_dialog.dart';
-import 'package:gig_hub/src/Theme/palette.dart';
-import 'package:gig_hub/src/Common/genre_bubble.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:gig_hub/src/Data/database_repository.dart';
-import 'package:http/http.dart' as http;
-import 'package:pinch_zoom/pinch_zoom.dart';
+import "../../../../Common/app_imports.dart";
+import "../../../../Common/app_imports.dart" as http;
 
 class ProfileScreenDJArgs {
   final DJ dj;
@@ -402,56 +385,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                     ),
                   ),
                 ),
-                Positioned(
-                  top: 140,
-                  right: 0,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(12),
-                        topLeft: Radius.circular(12),
-                      ),
-                      color: Palette.primalBlack.o(0.7),
-                      border: Border(
-                        left: BorderSide(
-                          width: 2,
-                          color: Palette.gigGrey.o(0.6),
-                        ),
-                        top: BorderSide(
-                          width: 2,
-                          color: Palette.gigGrey.o(0.6),
-                        ),
-                        bottom: BorderSide(
-                          width: 2,
-                          color: Palette.gigGrey.o(0.6),
-                        ),
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        left: 2,
-                        top: 2,
-                        bottom: 2,
-                      ),
-                      child: RatingStars(
-                        value: widget.dj.rating ?? 0,
-                        starBuilder:
-                            (index, color) =>
-                                Icon(Icons.star, color: color, size: 18),
-                        starCount: 5,
-                        maxValue: 5,
-                        axis: Axis.vertical,
-                        angle: 15,
-                        starSpacing: 0,
-                        starSize: 18,
-                        valueLabelVisibility: false,
-                        animationDuration: const Duration(milliseconds: 350),
-                        starOffColor: Palette.shadowGrey,
-                        starColor: Palette.forgedGold,
-                      ),
-                    ),
-                  ),
-                ),
+                UserStarRating(widget: widget),
                 Positioned(
                   right: 0,
                   left: 0,
@@ -811,40 +745,14 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                       prefixIcon:
                                           _soundcloudControllerOne.text.isEmpty
                                               ? null
-                                              : IconButton(
-                                                style: ButtonStyle(
-                                                  splashFactory:
-                                                      NoSplash.splashFactory,
-                                                ),
-                                                onPressed:
-                                                    _soundcloudControllerOne
-                                                        .clear,
-                                                icon: Icon(
-                                                  Icons.close,
-                                                  color: Palette.glazedWhite,
-                                                  size: 18,
-                                                ),
+                                              : RemoveButton(
+                                                soundcloudController:
+                                                    _soundcloudControllerOne,
                                               ),
 
-                                      suffixIcon: IconButton(
-                                        style: ButtonStyle(
-                                          splashFactory: NoSplash.splashFactory,
-                                        ),
-                                        icon: Icon(
-                                          Icons.paste_rounded,
-                                          color: Palette.forgedGold,
-                                          size: 20,
-                                        ),
-                                        onPressed: () async {
-                                          final data = await Clipboard.getData(
-                                            Clipboard.kTextPlain,
-                                          );
-                                          if (data != null &&
-                                              data.text != null) {
-                                            _soundcloudControllerOne.text =
-                                                data.text!;
-                                          }
-                                        },
+                                      suffixIcon: PasteButton(
+                                        soundcloudController:
+                                            _soundcloudControllerOne,
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
@@ -931,39 +839,13 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                       prefixIcon:
                                           _soundcloudControllerTwo.text.isEmpty
                                               ? null
-                                              : IconButton(
-                                                style: ButtonStyle(
-                                                  splashFactory:
-                                                      NoSplash.splashFactory,
-                                                ),
-                                                onPressed:
-                                                    _soundcloudControllerTwo
-                                                        .clear,
-                                                icon: Icon(
-                                                  Icons.close,
-                                                  color: Palette.glazedWhite,
-                                                  size: 18,
-                                                ),
+                                              : RemoveButton(
+                                                soundcloudController:
+                                                    _soundcloudControllerTwo,
                                               ),
-                                      suffixIcon: IconButton(
-                                        style: ButtonStyle(
-                                          splashFactory: NoSplash.splashFactory,
-                                        ),
-                                        icon: Icon(
-                                          Icons.paste_rounded,
-                                          color: Palette.forgedGold,
-                                          size: 20,
-                                        ),
-                                        onPressed: () async {
-                                          final data = await Clipboard.getData(
-                                            Clipboard.kTextPlain,
-                                          );
-                                          if (data != null &&
-                                              data.text != null) {
-                                            _soundcloudControllerTwo.text =
-                                                data.text!;
-                                          }
-                                        },
+                                      suffixIcon: PasteButton(
+                                        soundcloudController:
+                                            _soundcloudControllerTwo,
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
