@@ -663,7 +663,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                               ),
                         ],
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 32),
                       Center(
                         child: Wrap(
                           spacing: 16,
@@ -888,13 +888,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                               ),
                         ],
                       ),
-                      SizedBox(
-                        height:
-                            widget.dj.mediaUrl == null ||
-                                    widget.dj.mediaUrl!.isEmpty
-                                ? 16
-                                : 36,
-                      ),
+                      SizedBox(height: 36),
                       !editMode
                           ? widget.dj.mediaUrl == null ||
                                   widget.dj.mediaUrl!.isEmpty
@@ -965,8 +959,16 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                               ),
                             ),
                           ),
-
-                      widget.dj.mediaUrl != null && editMode
+                      SizedBox(
+                        height:
+                            widget.dj.mediaUrl != null &&
+                                    widget.dj.mediaUrl!.isNotEmpty
+                                ? null
+                                : 24,
+                      ),
+                      (widget.dj.mediaUrl != null &&
+                              widget.dj.mediaUrl!.isNotEmpty &&
+                              editMode)
                           ? Center(
                             child: TextButton(
                               onPressed:
@@ -975,7 +977,10 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                   ),
                               child: Text(
                                 "remove all images",
-                                style: TextStyle(color: Palette.glazedWhite),
+                                style: TextStyle(
+                                  color: Palette.alarmRed.o(0.7),
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
                           )
@@ -984,7 +989,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                         height:
                             widget.dj.mediaUrl == null ||
                                     widget.dj.mediaUrl!.isEmpty
-                                ? 4
+                                ? 8
                                 : 36,
                       ),
 
