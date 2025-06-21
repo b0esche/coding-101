@@ -282,7 +282,6 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                           splashFactory: NoSplash.splashFactory,
                         ),
                         onPressed: () async {
-                          debugPrint("lol");
                           final XFile? newMedia = await ImagePicker().pickImage(
                             source: ImageSource.gallery,
                           );
@@ -889,9 +888,16 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                               ),
                         ],
                       ),
-                      SizedBox(height: widget.dj.mediaUrl == null ? 24 : 36),
+                      SizedBox(
+                        height:
+                            widget.dj.mediaUrl == null ||
+                                    widget.dj.mediaUrl!.isEmpty
+                                ? 16
+                                : 36,
+                      ),
                       !editMode
-                          ? widget.dj.mediaUrl == null
+                          ? widget.dj.mediaUrl == null ||
+                                  widget.dj.mediaUrl!.isEmpty
                               ? SizedBox.shrink()
                               : ClipRRect(
                                 borderRadius: BorderRadius.circular(8),
@@ -907,15 +913,23 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                     setState(() => index = value);
                                   },
                                   children: [
-                                    for (String url in widget.dj.mediaUrl!)
-                                      PinchZoom(
-                                        zoomEnabled: true,
-                                        maxScale: 2.5,
-                                        child: Image.network(
-                                          url,
-                                          fit: BoxFit.cover,
+                                    if (widget.dj.mediaUrl != null &&
+                                        widget.dj.mediaUrl!.isNotEmpty)
+                                      for (String path in widget.dj.mediaUrl!)
+                                        PinchZoom(
+                                          zoomEnabled: true,
+                                          maxScale: 2.5,
+                                          child:
+                                              path.startsWith('http')
+                                                  ? Image.network(
+                                                    path,
+                                                    fit: BoxFit.cover,
+                                                  )
+                                                  : Image.file(
+                                                    File(path),
+                                                    fit: BoxFit.cover,
+                                                  ),
                                         ),
-                                      ),
                                   ],
                                 ),
                               )
@@ -931,8 +945,17 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                 style: ButtonStyle(
                                   tapTargetSize: MaterialTapTargetSize.padded,
                                 ),
-                                onPressed: () {
-                                  // TODO: image picker fit machen
+                                onPressed: () async {
+                                  List<XFile> medias =
+                                      await ImagePicker().pickMultiImage();
+                                  List<String> mediaUrls =
+                                      medias
+                                          .map((element) => element.path)
+                                          .toList();
+                                  setState(() {
+                                    widget.dj.mediaUrl =
+                                        widget.dj.mediaUrl! + mediaUrls;
+                                  });
                                 },
                                 icon: Icon(
                                   Icons.file_upload_rounded,
@@ -942,7 +965,28 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                               ),
                             ),
                           ),
-                      SizedBox(height: widget.dj.mediaUrl == null ? 24 : 36),
+
+                      widget.dj.mediaUrl != null && editMode
+                          ? Center(
+                            child: TextButton(
+                              onPressed:
+                                  () => setState(
+                                    () => widget.dj.mediaUrl!.clear(),
+                                  ),
+                              child: Text(
+                                "remove all images",
+                                style: TextStyle(color: Palette.glazedWhite),
+                              ),
+                            ),
+                          )
+                          : SizedBox.shrink(),
+                      SizedBox(
+                        height:
+                            widget.dj.mediaUrl == null ||
+                                    widget.dj.mediaUrl!.isEmpty
+                                ? 4
+                                : 36,
+                      ),
 
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
