@@ -985,13 +985,11 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                             ),
                           )
                           : SizedBox.shrink(),
-                      SizedBox(
-                        height:
-                            widget.dj.mediaUrl == null ||
-                                    widget.dj.mediaUrl!.isEmpty
-                                ? 8
-                                : 36,
-                      ),
+
+                      widget.dj.mediaUrl != null &&
+                              widget.dj.mediaUrl!.isNotEmpty
+                          ? SizedBox(height: 36)
+                          : SizedBox.shrink(),
 
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
