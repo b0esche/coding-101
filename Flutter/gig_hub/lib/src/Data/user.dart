@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:gig_hub/src/Features/profile/dj/presentation/profile_screen_dj.dart';
 
 abstract class AppUser {
-  final String userId, headUrl, avatarUrl;
-  String name, email, about, info, city;
+  final String userId, avatarUrl;
+  String name, email, about, info, city, headUrl;
   final double? rating;
 
   AppUser({
@@ -35,7 +35,7 @@ class DJ extends AppUser {
   final List<String> genres;
   int bpmMin, bpmMax;
   String set1Url, set2Url;
-  final List<String>? mediaUrl;
+  List<String>? mediaUrl;
 
   DJ({
     required this.genres,

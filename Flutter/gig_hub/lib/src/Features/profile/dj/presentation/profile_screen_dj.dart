@@ -1,3 +1,7 @@
+import "dart:io";
+
+import "package:image_picker/image_picker.dart";
+
 import "../../../../Common/app_imports.dart";
 import "../../../../Common/app_imports.dart" as http;
 
@@ -250,12 +254,22 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                 SizedBox(
                   width: double.infinity,
                   height: 256,
-                  child: Image.network(
-                    widget.dj.headUrl,
-                    fit: BoxFit.cover,
-                    colorBlendMode: editMode ? BlendMode.difference : null,
-                    color: editMode ? Palette.primalBlack : null,
-                  ),
+                  child:
+                      !widget.dj.headUrl.startsWith('http')
+                          ? Image.file(
+                            File(widget.dj.headUrl),
+                            fit: BoxFit.cover,
+                            colorBlendMode:
+                                editMode ? BlendMode.difference : null,
+                            color: editMode ? Palette.primalBlack : null,
+                          )
+                          : Image.network(
+                            widget.dj.headUrl,
+                            fit: BoxFit.cover,
+                            colorBlendMode:
+                                editMode ? BlendMode.difference : null,
+                            color: editMode ? Palette.primalBlack : null,
+                          ),
                 ),
 
                 editMode
@@ -267,7 +281,17 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                           tapTargetSize: MaterialTapTargetSize.padded,
                           splashFactory: NoSplash.splashFactory,
                         ),
-                        onPressed: () {}, // TODO: image picker fit machen
+                        onPressed: () async {
+                          debugPrint("lol");
+                          final XFile? newMedia = await ImagePicker().pickImage(
+                            source: ImageSource.gallery,
+                          );
+                          if (newMedia != null) {
+                            setState(() {
+                              widget.dj.headUrl = newMedia.path;
+                            });
+                          }
+                        },
                         icon: Icon(
                           Icons.file_upload_rounded,
                           color: Palette.concreteGrey,
