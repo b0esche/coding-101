@@ -68,8 +68,17 @@ class GenreBubble extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Palette.shadowGrey, width: 0.5),
+          border: Border.all(color: Palette.shadowGrey, width: 0.85),
           color: Palette.gigGrey.o(0.8),
+          boxShadow: [
+            BoxShadow(
+              offset: Offset(0.8, 0.8),
+              color: Palette.gigGrey.o(0.8),
+              blurStyle: BlurStyle.inner,
+              spreadRadius: 0.8,
+              blurRadius: 16,
+            ),
+          ],
         ),
         child: Padding(
           padding: const EdgeInsets.all(4),

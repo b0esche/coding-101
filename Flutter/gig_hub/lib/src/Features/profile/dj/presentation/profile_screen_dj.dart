@@ -324,6 +324,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                   ),
                 ),
                 Positioned.fill(
+                  bottom: 2,
                   child: Align(
                     alignment: Alignment.bottomCenter,
                     child: Container(
@@ -416,7 +417,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                   child: Divider(
                     height: 0,
                     thickness: 2,
-                    color: Palette.gigGrey.o(0.6),
+                    color: Palette.forgedGold.o(0.8),
                   ),
                 ),
               ],
@@ -706,7 +707,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            "first SoundCloud link", // TODO: artist info von soundcloud api fetchen
+                            "first SoundCloud set name", // TODO: artist info von soundcloud api fetchen
                             style: GoogleFonts.sometypeMono(
                               textStyle: TextStyle(
                                 color: Palette.glazedWhite,
@@ -801,7 +802,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            "second SoundCloud link", // TODO: artist info von soundcloud api fetchen
+                            "second SoundCloud set name", // TODO: artist info von soundcloud api fetchen
                             style: GoogleFonts.sometypeMono(
                               textStyle: TextStyle(
                                 color: Palette.glazedWhite,
@@ -947,8 +948,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                           .map((element) => element.path)
                                           .toList();
                                   setState(() {
-                                    widget.dj.mediaUrl =
-                                        widget.dj.mediaUrl! + mediaUrls;
+                                    widget.dj.mediaUrl!.addAll(mediaUrls);
                                   });
                                 },
                                 icon: Icon(

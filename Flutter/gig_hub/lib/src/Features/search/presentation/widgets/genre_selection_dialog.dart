@@ -34,7 +34,9 @@ class _GenreSelectionDialogState extends State<GenreSelectionDialog> {
           ),
         ),
       ),
-      backgroundColor: Palette.forgedGold.o(0.95),
+      backgroundColor: Palette.forgedGold.o(0.8),
+      surfaceTintColor: Palette.forgedGold,
+      shadowColor: Palette.forgedGold,
 
       children: [
         SizedBox(

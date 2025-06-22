@@ -285,29 +285,46 @@ class _MainScreenState extends State<MainScreen> {
                     });
                   },
                 ),
+                SizedBox(height: 8),
                 Column(
+                  spacing: 4,
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Text(
-                          "sort by",
-                          style: TextStyle(
-                            color: Palette.glazedWhite,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
+                        RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: 'sort by ',
+                                style: TextStyle(
+                                  color: Palette.glazedWhite,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  wordSpacing: -1,
+                                ),
+                              ),
+                              WidgetSpan(
+                                alignment: PlaceholderAlignment.middle,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      _isExpanded = !_isExpanded;
+                                    });
+                                  },
+                                  child: Icon(
+                                    _isExpanded
+                                        ? Icons.expand_less
+                                        : Icons.expand_more,
+                                    size: 19,
+                                    color: Palette.glazedWhite,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                        ExpandIcon(
-                          isExpanded: _isExpanded,
-                          onPressed: (bool isExpanded) {
-                            setState(() {
-                              _isExpanded = !isExpanded;
-                            });
-                          },
-                          color: Palette.glazedWhite,
                         ),
                       ],
                     ),
@@ -319,6 +336,7 @@ class _MainScreenState extends State<MainScreen> {
                       ),
                   ],
                 ),
+                SizedBox(height: 8),
                 Expanded(
                   child:
                       _isLoading

@@ -42,14 +42,24 @@ class _SearchListTileState extends State<SearchListTile> {
     return AnimatedContainer(
       duration: Duration(milliseconds: 300),
       curve: Curves.easeInOut,
-      padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8, right: 6),
-      margin: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8, right: 8),
+      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 2),
       decoration: BoxDecoration(
         border: Border.all(color: Palette.glazedWhite, width: 2),
         borderRadius: BorderRadius.circular(16),
-        color: Palette.glazedWhite,
+        color: Palette.glazedWhite.o(0.35),
+        boxShadow: [
+          BoxShadow(
+            spreadRadius: 2,
+            blurRadius: 12,
+            offset: Offset(0.5, 0.5),
+            color: Palette.glazedWhite.o(0.3),
+            blurStyle: BlurStyle.inner,
+          ),
+        ],
       ),
       child: InkWell(
+        splashFactory: NoSplash.splashFactory,
         onTap: () {
           setState(() {
             isExpanded = !isExpanded;
@@ -107,9 +117,9 @@ class _SearchListTileState extends State<SearchListTile> {
                             value: widget.rating ?? 0,
                             starBuilder:
                                 (index, color) => Icon(
-                                  Icons.star_outlined,
+                                  Icons.star_border_rounded,
                                   color: color,
-                                  size: 20,
+                                  size: 22,
                                 ),
                             starCount: 5,
                             maxValue: 5,
@@ -162,7 +172,7 @@ class _SearchListTileState extends State<SearchListTile> {
                                     Container(
                                       decoration: BoxDecoration(
                                         border: Border.all(
-                                          width: 1,
+                                          width: 2,
                                           color: Palette.forgedGold.o(0.8),
                                         ),
                                         borderRadius: BorderRadius.circular(10),
@@ -194,7 +204,7 @@ class _SearchListTileState extends State<SearchListTile> {
                                     Container(
                                       decoration: BoxDecoration(
                                         border: Border.all(
-                                          width: 1,
+                                          width: 2,
                                           color: Palette.forgedGold.o(0.8),
                                         ),
                                         borderRadius: BorderRadius.circular(10),
