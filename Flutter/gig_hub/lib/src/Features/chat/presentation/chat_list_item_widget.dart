@@ -46,15 +46,18 @@ class ChatListItemWidget extends StatelessWidget {
           leading: Container(
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: Palette.primalBlack, width: 1.5),
+              border: Border.all(
+                color: Palette.primalBlack.o(0.35),
+                width: 1.3,
+              ),
             ),
             child: CircleAvatar(
-              radius: 28,
               backgroundImage:
                   avatarUrl.isNotEmpty
                       ? NetworkImage(avatarUrl)
                       : const AssetImage('assets/images/default_avatar.jpg')
                           as ImageProvider<Object>,
+              radius: 28,
             ),
           ),
           title: Text(

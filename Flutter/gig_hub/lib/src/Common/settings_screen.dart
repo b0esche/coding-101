@@ -1,8 +1,10 @@
+import 'dart:io'; // Wichtig für FileImage
 import 'package:flutter/material.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
 import 'package:gig_hub/src/Data/user.dart' as repo;
 import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -16,6 +18,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   repo.AppUser? _currentUser;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
+
+  XFile? _pickedImage;
 
   @override
   void initState() {
@@ -35,7 +39,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   String? validateEmail(String? input) {
     if (input == null || input.isEmpty) return "can't be empty";
-    if (input.length < 5) return "enter full adress";
+    if (input.length < 5) return "enter full address";
     if (!input.contains('@') || !input.contains('.')) return "invalid input";
     if (input.startsWith('@') || input.endsWith('@')) return "invalid input";
     if (input.contains(' ')) return "can't contain space";
@@ -56,9 +60,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
       backgroundColor: Palette.primalBlack,
       body: Center(
         child: Column(
-          spacing: 36,
+          spacing: 16,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            const SizedBox(),
+            const SizedBox(height: 24),
             Align(
               alignment: Alignment.topLeft,
               child: IconButton(
@@ -71,6 +76,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               tag: context,
               child: Image.asset("assets/images/gighub_logo.png"),
             ),
+            const SizedBox(height: 24),
             Stack(
               children: [
                 Container(
@@ -78,27 +84,53 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     shape: BoxShape.circle,
                     border: Border.all(color: Palette.glazedWhite, width: 1.5),
                   ),
-                  child: const CircleAvatar(
+                  child: CircleAvatar(
                     radius: 64,
-                    backgroundImage: AssetImage(
-                      "assets/images/default_avatar.jpg",
-                    ),
+                    backgroundImage:
+                        _pickedImage != null
+                            ? FileImage(File(_pickedImage!.path))
+                            : (_currentUser?.avatarUrl.startsWith('http') ==
+                                        true
+                                    ? NetworkImage(_currentUser!.avatarUrl)
+                                    : FileImage(File(_currentUser!.avatarUrl)))
+                                as ImageProvider,
                   ),
                 ),
                 Positioned(
                   bottom: 0,
                   right: 0,
                   child: IconButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      final picker = ImagePicker();
+                      final picked = await picker.pickImage(
+                        source: ImageSource.gallery,
+                      );
+                      if (picked != null) {
+                        setState(() {
+                          _pickedImage = picked;
+                          _currentUser?.avatarUrl = picked.path;
+                        });
+                      }
+                    },
                     icon: Icon(
                       Icons.upload_file_rounded,
-                      color: Palette.gigGrey,
+                      color: Palette.shadowGrey,
                       size: 32,
+                      shadows: [
+                        BoxShadow(
+                          blurRadius: 2,
+                          blurStyle: BlurStyle.inner,
+                          color: Palette.primalBlack,
+                          spreadRadius: 2,
+                          offset: Offset(0.6, 0.6),
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ],
             ),
+            const SizedBox(height: 24),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -144,14 +176,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         helperText: "press enter when finished",
                         labelStyle: TextStyle(color: Palette.primalBlack),
                         suffixIcon: IconButton(
-                          onPressed: () {
-                            _emailController.clear();
-                          },
-                          icon: Icon(Icons.delete),
+                          onPressed: () => _emailController.clear(),
+                          icon: const Icon(Icons.delete),
                         ),
                         fillColor: Palette.glazedWhite,
                         filled: true,
-                        alignLabelWithHint: true,
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                         hintText: "press enter when done",
                         hintStyle: TextStyle(color: Palette.forgedGold),
@@ -161,6 +190,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               ],
             ),
+            const SizedBox(height: 24),
             FilledButton(
               onPressed: () {},
               child: const Text("change password"),
@@ -170,7 +200,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             Align(
               alignment: Alignment.bottomRight,
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 24, 0),
+                padding: const EdgeInsets.fromLTRB(0, 0, 24, 12),
                 child: Text(
                   "version 1.0.0 alpha",
                   style: TextStyle(color: Palette.glazedWhite),

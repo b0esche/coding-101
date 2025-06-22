@@ -195,7 +195,7 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final String loggedInUserAvatar =
+    String loggedInUserAvatar =
         _loggedInUser?.avatarUrl ?? "https://picsum.photos/100";
 
     return Scaffold(
@@ -231,8 +231,8 @@ class _MainScreenState extends State<MainScreen> {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 border: Border.all(
-                                  color: Palette.glazedWhite,
-                                  width: 1.5,
+                                  color: Palette.glazedWhite.o(0.5),
+                                  width: 1.4,
                                 ),
                               ),
                               child: CircleAvatar(

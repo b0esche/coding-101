@@ -40,10 +40,15 @@ class _SearchListTileState extends State<SearchListTile> {
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
-      duration: Duration(milliseconds: 300),
+      duration: Duration(milliseconds: 200),
       curve: Curves.easeInOut,
-      padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8, right: 6),
-      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 2),
+      padding: EdgeInsets.only(
+        left: 8,
+        top: 8,
+        bottom: isExpanded ? 8 : 12,
+        right: 6,
+      ),
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 2),
       decoration: BoxDecoration(
         border: Border.all(color: Palette.glazedWhite, width: 2),
         borderRadius: BorderRadius.circular(16),
@@ -74,7 +79,10 @@ class _SearchListTileState extends State<SearchListTile> {
                 Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(color: Palette.primalBlack, width: 1.5),
+                    border: Border.all(
+                      color: Palette.primalBlack.o(0.35),
+                      width: 1.35,
+                    ),
                   ),
                   child: CircleAvatar(
                     backgroundImage: widget.image,
@@ -183,9 +191,10 @@ class _SearchListTileState extends State<SearchListTile> {
                                         child: Row(
                                           spacing: 4,
                                           children: [
-                                            const Icon(
+                                            Icon(
                                               Icons.location_pin,
                                               size: 18,
+                                              color: Palette.primalBlack,
                                             ),
                                             Padding(
                                               padding:
@@ -195,7 +204,13 @@ class _SearchListTileState extends State<SearchListTile> {
                                                     4,
                                                     0,
                                                   ),
-                                              child: Text(widget.location),
+                                              child: Text(
+                                                widget.location,
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Palette.primalBlack,
+                                                ),
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -215,7 +230,11 @@ class _SearchListTileState extends State<SearchListTile> {
                                         child: Row(
                                           spacing: 4,
                                           children: [
-                                            const Icon(Icons.speed, size: 22),
+                                            Icon(
+                                              Icons.speed,
+                                              size: 22,
+                                              color: Palette.primalBlack,
+                                            ),
                                             Padding(
                                               padding:
                                                   const EdgeInsets.fromLTRB(
@@ -226,6 +245,10 @@ class _SearchListTileState extends State<SearchListTile> {
                                                   ),
                                               child: Text(
                                                 "${widget.bpmMin}-${widget.bpmMax} bpm",
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Palette.primalBlack,
+                                                ),
                                               ),
                                             ),
                                           ],

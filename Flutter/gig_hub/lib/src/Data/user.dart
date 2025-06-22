@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:gig_hub/src/Features/profile/dj/presentation/profile_screen_dj.dart';
 
 abstract class AppUser {
-  final String userId, avatarUrl;
-  String name, email, about, info, city, headUrl;
+  final String userId;
+  String name, email, about, info, city, headUrl, avatarUrl;
   final double? rating;
 
   AppUser({
