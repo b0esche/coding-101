@@ -1,10 +1,18 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:gig_hub/src/Common/main_screen.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
+import 'package:gig_hub/src/Data/oauth_consts.dart';
 import 'package:gig_hub/src/Features/auth/sign_up_bottomsheet.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:uni_links/uni_links.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
+
+import '../../Common/app_imports.dart' as http;
 
 class LoginScreen extends StatefulWidget {
   final DatabaseRepository repo;
@@ -23,6 +31,77 @@ class _LoginScreenState extends State<LoginScreen> {
   );
   Set<String> selected = {'dj'};
   bool _isObscured = true;
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   initUniLinks();
+  //   listenForRedirect();
+  // }
+
+  // void initUniLinks() {
+  //   uriLinkStream.listen((Uri? uri) {
+  //     if (uri != null && uri.scheme == 'gighub') {
+  //       final authCode = uri.queryParameters['code'];
+  //       if (authCode != null) {
+  //         // Hier kannst du das Token mit dem code anfordern
+  //         print('Authorization code: $authCode');
+  //       }
+  //     }
+  //   });
+  // }
+
+  // Future<void> launchSoundCloudLogin() async {
+  //   final authUrl = Uri.parse(
+  //     '$authEndpoint'
+  //     '?client_id=$clientId'
+  //     '&redirect_uri=$redirectUri'
+  //     '&response_type=code'
+  //     '&scope=non-expiring',
+  //   );
+
+  //   if (await canLaunchUrl(authUrl)) {
+  //     await launchUrl(authUrl, mode: LaunchMode.externalApplication);
+  //   } else {
+  //     throw 'Could not launch $authUrl';
+  //   }
+  // }
+
+  // void listenForRedirect() {
+  //   uriLinkStream.listen((Uri? uri) {
+  //     if (uri != null && uri.scheme == 'gighub') {
+  //       final code = uri.queryParameters['code'];
+  //       if (code != null) {
+  //         print('✅ Authorization Code erhalten: $code');
+  //         exchangeCodeForToken(code);
+  //       }
+  //     }
+  //   });
+  // }
+
+  // Future<void> exchangeCodeForToken(String code) async {
+  //   final response = await http.post(
+  //     Uri.parse(tokenEndpoint),
+  //     body: {
+  //       'client_id': clientId,
+  //       'client_secret': clientSecret,
+  //       'grant_type': 'authorization_code',
+  //       'redirect_uri': redirectUri,
+  //       'code': code,
+  //     },
+  //   );
+
+  //   if (response.statusCode == 200) {
+  //     final data = jsonDecode(response.body);
+  //     final accessToken = data['access_token'];
+  //     print('🎉 Access Token: $accessToken');
+
+  //     // Optional: Speichern (z. B. mit shared_preferences) & API aufrufen
+  //   } else {
+  //     print('❌ Fehler beim Token-Austausch: ${response.body}');
+  //   }
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

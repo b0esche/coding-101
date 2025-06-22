@@ -42,7 +42,7 @@ class _SearchListTileState extends State<SearchListTile> {
     return AnimatedContainer(
       duration: Duration(milliseconds: 300),
       curve: Curves.easeInOut,
-      padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8, right: 8),
+      padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8, right: 6),
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 2),
       decoration: BoxDecoration(
         border: Border.all(color: Palette.glazedWhite, width: 2),

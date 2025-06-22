@@ -226,7 +226,6 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                       currentUser: widget.dj,
                     ),
                   );
-                  debugPrint("Jetzt wird getalkt!");
                 },
                 child: Container(
                   decoration: BoxDecoration(
