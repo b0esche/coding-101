@@ -97,7 +97,7 @@ class _SearchFunctionCardState extends State<SearchFunctionCard> {
   }
 
   bool isSearchCardCollapsed = false;
-  bool showSearchContent = false;
+  bool showSearchContent = true;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -120,7 +120,8 @@ class _SearchFunctionCardState extends State<SearchFunctionCard> {
           duration: Duration(milliseconds: 500),
           width: !isSearchCardCollapsed ? 300 : 110,
           height: !isSearchCardCollapsed ? 192 : 48,
-          curve: Curves.fastEaseInToSlowEaseOut,
+          curve: Curves.easeInOut,
+
           alignment: Alignment.center,
           child: Card(
             shape: RoundedRectangleBorder(
@@ -141,6 +142,8 @@ class _SearchFunctionCardState extends State<SearchFunctionCard> {
               child: AnimatedSwitcher(
                 duration: Duration(milliseconds: 500),
                 reverseDuration: Duration(microseconds: 500),
+                switchInCurve: Curves.easeInOut,
+                switchOutCurve: Curves.easeInOut,
                 child:
                     showSearchContent
                         ? Column(
@@ -175,32 +178,29 @@ class _SearchFunctionCardState extends State<SearchFunctionCard> {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 const SizedBox(width: 85),
-                                Hero(
-                                  tag: 'searchButtonTag',
-                                  child: ElevatedButton(
-                                    onPressed: _search,
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Palette.shadowGrey,
-                                      splashFactory: NoSplash.splashFactory,
-                                      maximumSize: const Size(150, 24),
-                                      minimumSize: const Size(88, 22),
-                                      padding: EdgeInsets.zero,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                        side: BorderSide(
-                                          color: Palette.concreteGrey.o(0.7),
-                                          width: 1.5,
-                                        ),
+                                ElevatedButton(
+                                  onPressed: _search,
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Palette.shadowGrey,
+                                    splashFactory: NoSplash.splashFactory,
+                                    maximumSize: const Size(150, 24),
+                                    minimumSize: const Size(88, 22),
+                                    padding: EdgeInsets.zero,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      side: BorderSide(
+                                        color: Palette.concreteGrey.o(0.7),
+                                        width: 1.5,
                                       ),
-                                      elevation: 3,
                                     ),
-                                    child: Text(
-                                      "search",
-                                      style: GoogleFonts.sometypeMono(
-                                        textStyle: TextStyle(
-                                          color: Palette.primalBlack,
-                                          fontSize: 14,
-                                        ),
+                                    elevation: 3,
+                                  ),
+                                  child: Text(
+                                    "search",
+                                    style: GoogleFonts.sometypeMono(
+                                      textStyle: TextStyle(
+                                        color: Palette.primalBlack,
+                                        fontSize: 14,
                                       ),
                                     ),
                                   ),
@@ -276,43 +276,37 @@ class _SearchFunctionCardState extends State<SearchFunctionCard> {
                         )
                         : Center(
                           key: ValueKey('collapsed'),
-                          child: Hero(
-                            tag: 'searchButtonTag',
-                            child: ElevatedButton(
-                              onPressed: () async {
-                                setState(() {
-                                  isSearchCardCollapsed =
-                                      !isSearchCardCollapsed;
-                                });
-                                await Future.delayed(
-                                  Duration(milliseconds: 500),
-                                );
-                                setState(() {
-                                  showSearchContent = !showSearchContent;
-                                });
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Palette.shadowGrey,
-                                splashFactory: NoSplash.splashFactory,
-                                maximumSize: const Size(150, 24),
-                                minimumSize: const Size(88, 22),
-                                padding: EdgeInsets.zero,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                  side: BorderSide(
-                                    color: Palette.concreteGrey.o(0.7),
-                                    width: 1.5,
-                                  ),
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              setState(() {
+                                isSearchCardCollapsed = !isSearchCardCollapsed;
+                              });
+                              await Future.delayed(Duration(milliseconds: 500));
+                              setState(() {
+                                showSearchContent = !showSearchContent;
+                              });
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Palette.shadowGrey,
+                              splashFactory: NoSplash.splashFactory,
+                              maximumSize: const Size(150, 24),
+                              minimumSize: const Size(88, 22),
+                              padding: EdgeInsets.zero,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                side: BorderSide(
+                                  color: Palette.concreteGrey.o(0.7),
+                                  width: 1.5,
                                 ),
-                                elevation: 3,
                               ),
-                              child: Text(
-                                "search",
-                                style: GoogleFonts.sometypeMono(
-                                  textStyle: TextStyle(
-                                    color: Palette.primalBlack,
-                                    fontSize: 14,
-                                  ),
+                              elevation: 3,
+                            ),
+                            child: Text(
+                              "search",
+                              style: GoogleFonts.sometypeMono(
+                                textStyle: TextStyle(
+                                  color: Palette.primalBlack,
+                                  fontSize: 14,
                                 ),
                               ),
                             ),
