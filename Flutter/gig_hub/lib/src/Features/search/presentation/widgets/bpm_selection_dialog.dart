@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 
 class BpmSelectionDialog extends StatefulWidget {
   final List<int>? intialSelectedBpm;
@@ -28,58 +30,80 @@ class _BpmSelectionDialogState extends State<BpmSelectionDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: Palette.forgedGold.o(0.95),
-
+      backgroundColor: Palette.primalBlack.o(0.7),
+      surfaceTintColor: Palette.forgedGold,
+      elevation: 0.6,
+      shadowColor: Palette.forgedGold.o(0.35),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           SizedBox(height: 12),
-          SizedBox(
-            height: 160,
-            width: 300,
-            child: Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(24),
-              ),
-              color: Palette.shadowGrey.o(0.6),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 24,
+          LiquidGlass(
+            shape: LiquidRoundedRectangle(borderRadius: Radius.circular(24)),
+            settings: LiquidGlassSettings(thickness: 16, refractiveIndex: 1.2),
+            child: SizedBox(
+              height: 160,
+              width: 300,
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24),
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Text(
-                      '${bpmRange.start.round()} - ${bpmRange.end.round()} bpm',
-                      style: TextStyle(
-                        color: Palette.primalBlack,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    SliderTheme(
-                      data: SliderTheme.of(
-                        context,
-                      ).copyWith(showValueIndicator: ShowValueIndicator.never),
-                      child: RangeSlider(
-                        min: 60,
-                        max: 200,
-                        divisions: 140,
-                        labels: RangeLabels(
-                          bpmRange.start.round().toString(),
-                          bpmRange.end.round().toString(),
+                color: Palette.shadowGrey.o(0.6),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 24,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Text(
+                        '${bpmRange.start.round()} - ${bpmRange.end.round()} bpm',
+                        style: GoogleFonts.sometypeMono(
+                          textStyle: TextStyle(
+                            color: Palette.primalBlack,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 17,
+                          ),
                         ),
-                        values: bpmRange,
-                        activeColor: Palette.forgedGold.o(0.9),
-                        inactiveColor: Palette.primalBlack.o(0.3),
-                        onChanged: (RangeValues values) {
-                          setState(() {
-                            bpmRange = values;
-                          });
-                        },
                       ),
-                    ),
-                  ],
+                      SliderTheme(
+                        data: SliderTheme.of(context).copyWith(
+                          showValueIndicator: ShowValueIndicator.never,
+                        ),
+                        child: LiquidGlass(
+                          shape: LiquidRoundedRectangle(
+                            borderRadius: Radius.circular(24),
+                          ),
+                          settings: LiquidGlassSettings(
+                            thickness: 10,
+                            blur: 20,
+                            lightIntensity: 1.2,
+                            glassColor: Palette.forgedGold.o(0.25),
+                            refractiveIndex: 1.3,
+                            chromaticAberration: 16,
+                          ),
+                          child: RangeSlider(
+                            min: 60,
+                            max: 200,
+                            divisions: 140,
+                            labels: RangeLabels(
+                              bpmRange.start.round().toString(),
+                              bpmRange.end.round().toString(),
+                            ),
+                            values: bpmRange,
+                            activeColor: Palette.forgedGold.o(0.9),
+                            inactiveColor: Palette.primalBlack.o(0.3),
+                            onChanged: (RangeValues values) {
+                              setState(() {
+                                bpmRange = values;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -99,16 +123,31 @@ class _BpmSelectionDialogState extends State<BpmSelectionDialog> {
                   borderRadius: BorderRadius.circular(24),
                 ),
                 child: Center(
-                  child: IconButton(
-                    onPressed: () {
-                      Navigator.of(
-                        context,
-                      ).pop([bpmRange.start.round(), bpmRange.end.round()]);
-                    },
-                    icon: Icon(
-                      Icons.check,
-                      color: Palette.primalBlack,
-                      size: 19,
+                  child: LiquidGlass(
+                    shape: LiquidRoundedSuperellipse(
+                      borderRadius: Radius.circular(24),
+                    ),
+                    glassContainsChild: false,
+
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.of(
+                          context,
+                        ).pop([bpmRange.start.round(), bpmRange.end.round()]);
+                      },
+                      icon: Icon(
+                        Icons.check,
+                        color: Palette.forgedGold.o(0.85),
+                        size: 19.2,
+                        shadows: [
+                          Shadow(
+                            offset: Offset(0.3, 0.3),
+                            blurRadius: 2,
+
+                            color: Palette.primalBlack.o(0.65),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

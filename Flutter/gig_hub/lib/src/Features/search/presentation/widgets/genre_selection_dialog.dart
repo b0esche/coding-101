@@ -25,9 +25,11 @@ class _GenreSelectionDialogState extends State<GenreSelectionDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shadowColor: Palette.forgedGold,
-      elevation: 6,
-      backgroundColor: Palette.forgedGold.o(0.8),
+      shadowColor: Palette.forgedGold.o(0.35),
+      elevation: 0.6,
+      backgroundColor: Palette.primalBlack.o(0.7),
+      surfaceTintColor: Palette.forgedGold,
+
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -161,7 +163,7 @@ class _GenreSelectionDialogState extends State<GenreSelectionDialog> {
                           },
                           icon: Icon(
                             Icons.check_rounded,
-                            color: Palette.primalBlack,
+                            color: Palette.forgedGold.o(0.85),
                             size: 19.2,
                             shadows: [
                               Shadow(

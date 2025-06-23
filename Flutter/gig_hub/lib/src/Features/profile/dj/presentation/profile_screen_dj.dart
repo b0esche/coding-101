@@ -299,7 +299,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                     )
                     : Positioned(child: SizedBox.shrink()),
                 Positioned(
-                  top: 40,
+                  top: 32,
                   child: Padding(
                     padding: const EdgeInsets.all(2.0),
                     child: IconButton(

@@ -44,7 +44,7 @@ class _SearchListTileState extends State<SearchListTile> {
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
-      duration: Duration(milliseconds: 200),
+      duration: Duration(milliseconds: 150),
       curve: Curves.easeInOut,
       padding: EdgeInsets.only(
         left: 8,
@@ -56,7 +56,7 @@ class _SearchListTileState extends State<SearchListTile> {
       decoration: BoxDecoration(
         border: Border.all(color: Palette.glazedWhite, width: 2),
         borderRadius: BorderRadius.circular(16),
-        color: Palette.glazedWhite.o(0.35),
+        color: Palette.glazedWhite.o(0.4),
         boxShadow: [
           BoxShadow(
             spreadRadius: 2,
@@ -117,6 +117,13 @@ class _SearchListTileState extends State<SearchListTile> {
                                       isExpanded
                                           ? TextOverflow.fade
                                           : TextOverflow.ellipsis,
+                                  shadows: [
+                                    Shadow(
+                                      offset: Offset(0.8, 0.8),
+                                      color: Palette.shadowGrey,
+                                      blurRadius: 4,
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
@@ -163,7 +170,7 @@ class _SearchListTileState extends State<SearchListTile> {
 
             AnimatedOpacity(
               opacity: isExpanded ? 1.0 : 0.0,
-              duration: const Duration(milliseconds: 120),
+              duration: const Duration(milliseconds: 100),
               child:
                   isExpanded
                       ? Padding(
@@ -186,7 +193,7 @@ class _SearchListTileState extends State<SearchListTile> {
                                           color: Palette.forgedGold.o(0.8),
                                         ),
                                         borderRadius: BorderRadius.circular(10),
-                                        color: Palette.forgedGold.o(0.6),
+                                        color: Palette.forgedGold.o(0.45),
                                       ),
                                       child: Padding(
                                         padding: const EdgeInsets.all(4.0),
@@ -211,6 +218,7 @@ class _SearchListTileState extends State<SearchListTile> {
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.w500,
                                                   color: Palette.primalBlack,
+                                                  fontSize: 13,
                                                 ),
                                               ),
                                             ),
@@ -225,7 +233,7 @@ class _SearchListTileState extends State<SearchListTile> {
                                           color: Palette.forgedGold.o(0.8),
                                         ),
                                         borderRadius: BorderRadius.circular(10),
-                                        color: Palette.forgedGold.o(0.6),
+                                        color: Palette.forgedGold.o(0.45),
                                       ),
                                       child: Padding(
                                         padding: const EdgeInsets.all(4.0),
@@ -250,6 +258,7 @@ class _SearchListTileState extends State<SearchListTile> {
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.w500,
                                                   color: Palette.primalBlack,
+                                                  fontSize: 13,
                                                 ),
                                               ),
                                             ),

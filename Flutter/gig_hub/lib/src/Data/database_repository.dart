@@ -148,12 +148,13 @@ class MockDatabaseRepository implements DatabaseRepository {
       rating: 3.0,
     ),
     DJ(
-      genres: [genres[17], genres[22], genres[41], genres[49]],
+      genres: [genres[17], genres[22], genres[41], genres[49], genres[12]],
       headUrl: "https://picsum.photos/154",
       avatarUrl: "https://picsum.photos/112",
       bpmMin: 90,
       bpmMax: 122,
-      about: "alles easy",
+      about:
+          "alles easy yoyoyo. Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum",
       set1Url: "https://soundcloud.com/yourset",
       set2Url: "https://soundcloud.com/yourotherset",
       mediaUrl: [

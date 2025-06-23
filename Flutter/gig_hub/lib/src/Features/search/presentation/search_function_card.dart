@@ -98,129 +98,135 @@ class _SearchFunctionCardState extends State<SearchFunctionCard> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 300,
-      height: 192,
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        elevation: 3,
-        color: Palette.glazedWhite,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 0, 0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CustomFormField(
-                readOnly: true,
-                label: "genre...",
-                onPressed: _showGenreDialog,
-                controller: genreController,
-              ),
-              const SizedBox(height: 8),
-              CustomFormField(
-                readOnly: true,
-                label: "bpm...",
-                onPressed: _showBpmDialog,
-                controller: bpmController,
-              ),
-              const SizedBox(height: 8),
-              LocationAutocompleteField(
-                controller: locationController,
-                onCitySelected: (city) {
-                  setState(() {
-                    selectedCity = city;
-                  });
-                },
-              ),
-              const SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  const SizedBox(width: 85),
-                  ElevatedButton(
-                    onPressed: _search,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Palette.shadowGrey,
-                      splashFactory: NoSplash.splashFactory,
-                      maximumSize: const Size(150, 24),
-                      minimumSize: const Size(88, 22),
-                      padding: EdgeInsets.zero,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        side: BorderSide(
-                          color: Palette.concreteGrey.o(0.7),
-                          width: 1.5,
-                        ),
-                      ),
-                      elevation: 3,
-                    ),
-                    child: Text(
-                      "search",
-                      style: GoogleFonts.sometypeMono(
-                        textStyle: TextStyle(
-                          color: Palette.primalBlack,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const Spacer(),
-                  TextButton(
-                    style: ButtonStyle(
-                      foregroundColor: WidgetStateProperty.resolveWith<Color>((
-                        states,
-                      ) {
-                        if (states.contains(WidgetState.pressed)) {
-                          return Palette.forgedGold;
-                        }
-                        return Palette.primalBlack;
-                      }),
-                      alignment: Alignment.bottomCenter,
-                      splashFactory: NoSplash.splashFactory,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        selectedGenres.clear();
-                        selectedBpm = null;
-                        selectedCity = null;
-                        genreController.clear();
-                        bpmController.clear();
-                        locationController.clear();
-                      });
-                      widget.onBpmRangeChanged(null);
-                      widget.onGenresChanged(null);
-                      _search();
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Palette.shadowGrey,
-                        border: Border.all(color: Palette.concreteGrey),
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(6),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Palette.gigGrey,
-                            blurRadius: 4,
-                            offset: const Offset(0.5, 2),
+    return LiquidGlass(
+      shape: LiquidRoundedRectangle(borderRadius: Radius.circular(16)),
+      settings: LiquidGlassSettings(thickness: 13, refractiveIndex: 1.3),
+      child: SizedBox(
+        width: 300,
+        height: 192,
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          elevation: 3,
+          color: Palette.glazedWhite,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 0, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CustomFormField(
+                  readOnly: true,
+                  label: "genre...",
+                  onPressed: _showGenreDialog,
+                  controller: genreController,
+                ),
+                const SizedBox(height: 8),
+                CustomFormField(
+                  readOnly: true,
+                  label: "bpm...",
+                  onPressed: _showBpmDialog,
+                  controller: bpmController,
+                ),
+                const SizedBox(height: 8),
+                LocationAutocompleteField(
+                  controller: locationController,
+                  onCitySelected: (city) {
+                    setState(() {
+                      selectedCity = city;
+                    });
+                  },
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    const SizedBox(width: 85),
+                    ElevatedButton(
+                      onPressed: _search,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Palette.shadowGrey,
+                        splashFactory: NoSplash.splashFactory,
+                        maximumSize: const Size(150, 24),
+                        minimumSize: const Size(88, 22),
+                        padding: EdgeInsets.zero,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          side: BorderSide(
+                            color: Palette.concreteGrey.o(0.7),
+                            width: 1.5,
                           ),
-                        ],
+                        ),
+                        elevation: 3,
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
-                        child: Text(
-                          "clear",
-                          style: GoogleFonts.sometypeMono(
-                            textStyle: const TextStyle(fontSize: 11),
+                      child: Text(
+                        "search",
+                        style: GoogleFonts.sometypeMono(
+                          textStyle: TextStyle(
+                            color: Palette.primalBlack,
+                            fontSize: 14,
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                    const Spacer(),
+                    TextButton(
+                      style: ButtonStyle(
+                        foregroundColor: WidgetStateProperty.resolveWith<Color>(
+                          (states) {
+                            if (states.contains(WidgetState.pressed)) {
+                              return Palette.forgedGold;
+                            }
+                            return Palette.primalBlack;
+                          },
+                        ),
+                        alignment: Alignment.bottomCenter,
+                        splashFactory: NoSplash.splashFactory,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          selectedGenres.clear();
+                          selectedBpm = null;
+                          selectedCity = null;
+                          genreController.clear();
+                          bpmController.clear();
+                          locationController.clear();
+                        });
+                        widget.onBpmRangeChanged(null);
+                        widget.onGenresChanged(null);
+                        _search();
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Palette.shadowGrey,
+                          border: Border.all(color: Palette.concreteGrey),
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(6),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Palette.gigGrey,
+                              blurRadius: 4,
+                              offset: const Offset(0.5, 2),
+                            ),
+                          ],
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
+                          child: Text(
+                            "clear",
+                            style: GoogleFonts.sometypeMono(
+                              textStyle: const TextStyle(fontSize: 11),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
