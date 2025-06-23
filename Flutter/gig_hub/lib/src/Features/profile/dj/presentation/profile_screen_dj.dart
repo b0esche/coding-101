@@ -86,8 +86,8 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
     _locationFocusNode.removeListener(_onLocationFocusChange);
     _locationFocusNode.dispose();
 
-    _playerControllerOne.dispose();
-    _playerControllerTwo.dispose();
+    // _playerControllerOne.dispose();
+    // _playerControllerTwo.dispose();
 
     _nameController.dispose();
     _locationController.dispose();
@@ -304,8 +304,6 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                     padding: const EdgeInsets.all(2.0),
                     child: IconButton(
                       onPressed: () {
-                        PlayerController().stopAllPlayers();
-
                         Navigator.pop(context);
                       },
                       icon: Icon(
@@ -354,16 +352,13 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                       ),
                       child:
                           !editMode
-                              ? Hero(
-                                tag: context,
-                                child: Text(
-                                  widget.dj.name,
-                                  style: GoogleFonts.sometypeMono(
-                                    textStyle: TextStyle(
-                                      color: Palette.glazedWhite,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                              ? Text(
+                                widget.dj.name,
+                                style: GoogleFonts.sometypeMono(
+                                  textStyle: TextStyle(
+                                    color: Palette.glazedWhite,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               )
@@ -685,7 +680,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                       decoration: BoxDecoration(
                                         border: Border.all(
                                           color: Palette.forgedGold,
-                                          width: 2,
+                                          width: 2.7,
                                         ),
                                         borderRadius: BorderRadius.circular(16),
                                       ),

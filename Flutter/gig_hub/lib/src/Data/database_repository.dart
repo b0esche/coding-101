@@ -276,7 +276,7 @@ class MockDatabaseRepository implements DatabaseRepository {
 
   @override
   Future<AppUser?> getUserById(String userId) async {
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 2));
     try {
       return _djs.firstWhere((dj) => dj.userId == userId);
     } catch (e) {

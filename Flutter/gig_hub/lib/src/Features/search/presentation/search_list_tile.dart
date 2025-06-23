@@ -1,9 +1,13 @@
+import 'dart:math';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:gig_hub/src/Data/user.dart';
 import 'package:gig_hub/src/Common/genre_bubble.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 
 class SearchListTile extends StatefulWidget {
   final DJ user;
@@ -99,23 +103,20 @@ class _SearchListTileState extends State<SearchListTile> {
                         children: [
                           SizedBox(
                             width: 190,
-                            child: Hero(
-                              tag: context,
-                              child: Text(
-                                widget.name,
-                                style: GoogleFonts.sometypeMono(
-                                  textStyle: TextStyle(
-                                    decoration: TextDecoration.underline,
-                                    decorationColor: Palette.primalBlack.o(0.2),
-                                    wordSpacing: -4,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20,
+                            child: Text(
+                              widget.name,
+                              style: GoogleFonts.sometypeMono(
+                                textStyle: TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  decorationColor: Palette.primalBlack.o(0.2),
+                                  wordSpacing: -4,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
 
-                                    overflow:
-                                        isExpanded
-                                            ? TextOverflow.fade
-                                            : TextOverflow.ellipsis,
-                                  ),
+                                  overflow:
+                                      isExpanded
+                                          ? TextOverflow.fade
+                                          : TextOverflow.ellipsis,
                                 ),
                               ),
                             ),
@@ -135,7 +136,7 @@ class _SearchListTileState extends State<SearchListTile> {
                             angle: 0,
                             starSpacing: 0,
                             valueLabelVisibility: false,
-                            animationDuration: Duration(milliseconds: 350),
+                            animationDuration: Duration(milliseconds: 250),
                             starOffColor: Palette.shadowGrey,
                             starColor: Palette.forgedGold,
                           ),
@@ -159,9 +160,10 @@ class _SearchListTileState extends State<SearchListTile> {
                 ),
               ],
             ),
+
             AnimatedOpacity(
               opacity: isExpanded ? 1.0 : 0.0,
-              duration: const Duration(milliseconds: 250),
+              duration: const Duration(milliseconds: 120),
               child:
                   isExpanded
                       ? Padding(

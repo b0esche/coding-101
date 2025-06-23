@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gig_hub/src/Common/genre_bubble.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
+import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 
 class GenreSelectionDialog extends StatefulWidget {
   final List<String> initialSelectedGenres;
@@ -31,79 +32,83 @@ class _GenreSelectionDialogState extends State<GenreSelectionDialog> {
         mainAxisSize: MainAxisSize.min,
         children: [
           SizedBox(height: 14),
-          SizedBox(
-            height: 318,
-            width: 300,
-            child: Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(24),
-              ),
-              color: Palette.shadowGrey.o(0.6),
-              child: ListView.separated(
-                itemCount: genres.length,
-                itemBuilder: (context, index) {
-                  final genre = genres[index];
-                  final isSelected = selectedGenres.contains(genre);
+          LiquidGlass(
+            settings: LiquidGlassSettings(thickness: 16, refractiveIndex: 1.2),
+            shape: LiquidRoundedRectangle(borderRadius: Radius.circular(28)),
+            child: SizedBox(
+              height: 318,
+              width: 300,
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                color: Palette.shadowGrey.o(0.6),
+                child: ListView.separated(
+                  itemCount: genres.length,
+                  itemBuilder: (context, index) {
+                    final genre = genres[index];
+                    final isSelected = selectedGenres.contains(genre);
 
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        if (isSelected) {
-                          selectedGenres.remove(genre);
-                          _showLimitWarning = false;
-                        } else if (selectedGenres.length < 5) {
-                          selectedGenres.add(genre);
-                          _showLimitWarning = false;
-                        } else {
-                          _showLimitWarning = true;
-                        }
-                      });
-                    },
-                    child: ListTile(
-                      title: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            genre,
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: Palette.primalBlack,
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          if (isSelected) {
+                            selectedGenres.remove(genre);
+                            _showLimitWarning = false;
+                          } else if (selectedGenres.length < 5) {
+                            selectedGenres.add(genre);
+                            _showLimitWarning = false;
+                          } else {
+                            _showLimitWarning = true;
+                          }
+                        });
+                      },
+                      child: ListTile(
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              genre,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: Palette.primalBlack,
+                              ),
                             ),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              setState(() {
-                                if (isSelected) {
-                                  selectedGenres.remove(genre);
-                                  _showLimitWarning = false;
-                                } else if (selectedGenres.length < 5) {
-                                  selectedGenres.add(genre);
-                                  _showLimitWarning = false;
-                                } else {
-                                  _showLimitWarning = true;
-                                }
-                              });
-                            },
-                            icon: Icon(
-                              isSelected
-                                  ? Icons.check_circle
-                                  : Icons.circle_outlined,
-                              color: Palette.primalBlack.o(0.9),
+                            IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  if (isSelected) {
+                                    selectedGenres.remove(genre);
+                                    _showLimitWarning = false;
+                                  } else if (selectedGenres.length < 5) {
+                                    selectedGenres.add(genre);
+                                    _showLimitWarning = false;
+                                  } else {
+                                    _showLimitWarning = true;
+                                  }
+                                });
+                              },
+                              icon: Icon(
+                                isSelected
+                                    ? Icons.check_circle
+                                    : Icons.circle_outlined,
+                                color: Palette.primalBlack.o(0.9),
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                },
-                separatorBuilder: (context, index) {
-                  return Divider(
-                    endIndent: 16,
-                    indent: 16,
-                    thickness: 2,
-                    color: Palette.primalBlack.o(0.3),
-                  );
-                },
+                    );
+                  },
+                  separatorBuilder: (context, index) {
+                    return Divider(
+                      endIndent: 16,
+                      indent: 16,
+                      thickness: 2,
+                      color: Palette.primalBlack.o(0.3),
+                    );
+                  },
+                ),
               ),
             ),
           ),
@@ -120,8 +125,9 @@ class _GenreSelectionDialogState extends State<GenreSelectionDialog> {
                   child: Text(
                     "select up to 5!",
                     style: TextStyle(
-                      fontWeight: FontWeight.w800,
-                      color: Palette.alarmRed.o(0.75),
+                      fontWeight: FontWeight.w700,
+                      color: Palette.alarmRed.o(0.9),
+                      fontSize: 14,
                     ),
                   ),
                 ),
@@ -140,14 +146,32 @@ class _GenreSelectionDialogState extends State<GenreSelectionDialog> {
                       borderRadius: BorderRadius.circular(24),
                     ),
                     child: Center(
-                      child: IconButton(
-                        onPressed: () {
-                          Navigator.of(context).pop(selectedGenres);
-                        },
-                        icon: Icon(
-                          Icons.check_rounded,
-                          color: Palette.primalBlack,
-                          size: 19,
+                      child: LiquidGlass(
+                        shape: LiquidRoundedSuperellipse(
+                          borderRadius: Radius.circular(24),
+                        ),
+                        glassContainsChild: false,
+
+                        child: IconButton(
+                          style: ButtonStyle(
+                            splashFactory: NoSplash.splashFactory,
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop(selectedGenres);
+                          },
+                          icon: Icon(
+                            Icons.check_rounded,
+                            color: Palette.primalBlack,
+                            size: 19.2,
+                            shadows: [
+                              Shadow(
+                                offset: Offset(0.3, 0.3),
+                                blurRadius: 2,
+
+                                color: Palette.primalBlack.o(0.65),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),

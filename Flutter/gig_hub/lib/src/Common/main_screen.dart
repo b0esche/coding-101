@@ -7,6 +7,7 @@ import 'package:gig_hub/src/Data/user.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:gig_hub/src/Features/search/presentation/sort_button.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
+import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key, required this.repo});

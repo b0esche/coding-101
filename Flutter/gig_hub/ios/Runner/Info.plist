@@ -51,6 +51,8 @@
 		<string>Need permisson to upload images to your profile.</string>
 		<key>NSCameraUsageDescription</key>
 		<string>Need permission to access your camera to take a new image.</string>
+		<key>ITSAppUsesNonExemptEncryption</key>
+		<false/>
 		<key>CFBundleURLTypes</key>
 		<array>
   			<dict>

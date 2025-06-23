@@ -7,6 +7,7 @@ import 'package:gig_hub/src/Features/search/presentation/widgets/genre_selection
 import 'package:gig_hub/src/Features/search/presentation/widgets/location_picker.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 
 class SearchFunctionCard extends StatefulWidget {
   final void Function(List<DJ>) onSearchResults;

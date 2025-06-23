@@ -27,98 +27,96 @@ class _BpmSelectionDialogState extends State<BpmSelectionDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return SimpleDialog(
-      title: Center(
-        child: Text(
-          "select bpm range",
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
-            color: Palette.primalBlack,
-            decoration: TextDecoration.underline,
-          ),
-        ),
-      ),
+    return Dialog(
       backgroundColor: Palette.forgedGold.o(0.95),
-      children: [
-        SizedBox(
-          height: 160,
-          width: 300,
-          child: Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(24),
-            ),
-            color: Palette.shadowGrey.o(0.6),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 24,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Text(
-                    '${bpmRange.start.round()} - ${bpmRange.end.round()} bpm',
-                    style: TextStyle(
-                      color: Palette.primalBlack,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  SliderTheme(
-                    data: SliderTheme.of(
-                      context,
-                    ).copyWith(showValueIndicator: ShowValueIndicator.never),
-                    child: RangeSlider(
-                      min: 60,
-                      max: 200,
-                      divisions: 140,
-                      labels: RangeLabels(
-                        bpmRange.start.round().toString(),
-                        bpmRange.end.round().toString(),
-                      ),
-                      values: bpmRange,
-                      activeColor: Palette.forgedGold.o(0.9),
-                      inactiveColor: Palette.primalBlack.o(0.3),
-                      onChanged: (RangeValues values) {
-                        setState(() {
-                          bpmRange = values;
-                        });
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-        Align(
-          alignment: Alignment.bottomRight,
-          child: Padding(
-            padding: const EdgeInsets.only(right: 12, top: 12),
-            child: Container(
-              height: 36,
-              width: 36,
-              decoration: BoxDecoration(
-                border: BoxBorder.all(
-                  color: Palette.shadowGrey.o(0.7),
-                  width: 1.5,
-                ),
+
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(height: 12),
+          SizedBox(
+            height: 160,
+            width: 300,
+            child: Card(
+              shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(24),
               ),
-              child: Center(
-                child: IconButton(
-                  onPressed: () {
-                    Navigator.of(
-                      context,
-                    ).pop([bpmRange.start.round(), bpmRange.end.round()]);
-                  },
-                  icon: Icon(Icons.check, color: Palette.primalBlack, size: 19),
+              color: Palette.shadowGrey.o(0.6),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 24,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Text(
+                      '${bpmRange.start.round()} - ${bpmRange.end.round()} bpm',
+                      style: TextStyle(
+                        color: Palette.primalBlack,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    SliderTheme(
+                      data: SliderTheme.of(
+                        context,
+                      ).copyWith(showValueIndicator: ShowValueIndicator.never),
+                      child: RangeSlider(
+                        min: 60,
+                        max: 200,
+                        divisions: 140,
+                        labels: RangeLabels(
+                          bpmRange.start.round().toString(),
+                          bpmRange.end.round().toString(),
+                        ),
+                        values: bpmRange,
+                        activeColor: Palette.forgedGold.o(0.9),
+                        inactiveColor: Palette.primalBlack.o(0.3),
+                        onChanged: (RangeValues values) {
+                          setState(() {
+                            bpmRange = values;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
-        ),
-      ],
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 12, top: 8, bottom: 12),
+              child: Container(
+                height: 36,
+                width: 36,
+                decoration: BoxDecoration(
+                  border: BoxBorder.all(
+                    color: Palette.shadowGrey.o(0.7),
+                    width: 1.5,
+                  ),
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: Center(
+                  child: IconButton(
+                    onPressed: () {
+                      Navigator.of(
+                        context,
+                      ).pop([bpmRange.start.round(), bpmRange.end.round()]);
+                    },
+                    icon: Icon(
+                      Icons.check,
+                      color: Palette.primalBlack,
+                      size: 19,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
