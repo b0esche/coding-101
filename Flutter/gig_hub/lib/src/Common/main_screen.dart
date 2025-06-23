@@ -378,7 +378,7 @@ class _MainScreenState extends State<MainScreen> {
                               top: 0,
                               left: 0,
                               right: 0,
-                              height: 22,
+                              height: 20,
                               child: IgnorePointer(
                                 child: LiquidGlass(
                                   shape: LiquidRoundedRectangle(

@@ -1,13 +1,9 @@
-import 'dart:math';
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:gig_hub/src/Data/user.dart';
 import 'package:gig_hub/src/Common/genre_bubble.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 
 class SearchListTile extends StatefulWidget {
   final DJ user;
@@ -56,7 +52,7 @@ class _SearchListTileState extends State<SearchListTile> {
       decoration: BoxDecoration(
         border: Border.all(color: Palette.glazedWhite, width: 2),
         borderRadius: BorderRadius.circular(16),
-        color: Palette.glazedWhite.o(0.4),
+        color: Palette.glazedWhite.o(0.35),
         boxShadow: [
           BoxShadow(
             spreadRadius: 2,

@@ -40,7 +40,7 @@ class SortButtonsWidget extends StatelessWidget {
         visualDensity: VisualDensity.compact,
         padding: EdgeInsets.zero,
         foregroundColor: isSelected ? selectedColor : defaultColor,
-        textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+        textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
       ),
       onPressed: () {
         onSortOptionChanged(option);

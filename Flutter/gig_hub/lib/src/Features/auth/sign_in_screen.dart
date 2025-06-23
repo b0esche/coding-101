@@ -1,16 +1,10 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:gig_hub/src/Common/main_screen.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
-import 'package:gig_hub/src/Data/oauth_consts.dart';
 import 'package:gig_hub/src/Features/auth/sign_up_bottomsheet.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:uni_links/uni_links.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../Common/app_imports.dart' as http;
 
