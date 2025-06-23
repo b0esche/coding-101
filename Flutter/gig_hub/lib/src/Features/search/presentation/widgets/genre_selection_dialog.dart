@@ -163,7 +163,7 @@ class _GenreSelectionDialogState extends State<GenreSelectionDialog> {
                           },
                           icon: Icon(
                             Icons.check_rounded,
-                            color: Palette.forgedGold.o(0.85),
+                            color: Palette.forgedGold,
                             size: 19.2,
                             shadows: [
                               Shadow(

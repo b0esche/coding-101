@@ -97,7 +97,7 @@ class _SearchFunctionCardState extends State<SearchFunctionCard> {
   }
 
   bool isSearchCardCollapsed = false;
-  bool showSearchContent = true;
+  bool showSearchContent = false;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -120,7 +120,7 @@ class _SearchFunctionCardState extends State<SearchFunctionCard> {
           duration: Duration(milliseconds: 500),
           width: !isSearchCardCollapsed ? 300 : 110,
           height: !isSearchCardCollapsed ? 192 : 48,
-          curve: Curves.linear,
+          curve: Curves.fastEaseInToSlowEaseOut,
           alignment: Alignment.center,
           child: Card(
             shape: RoundedRectangleBorder(
@@ -138,12 +138,13 @@ class _SearchFunctionCardState extends State<SearchFunctionCard> {
                         left: 8,
                         right: 8,
                       ),
-              child:
-                  showSearchContent
-                      ? AnimatedOpacity(
-                        opacity: showSearchContent ? 1 : 0,
-                        duration: Duration(milliseconds: 200),
-                        child: Column(
+              child: AnimatedSwitcher(
+                duration: Duration(milliseconds: 500),
+                reverseDuration: Duration(microseconds: 500),
+                child:
+                    showSearchContent
+                        ? Column(
+                          key: ValueKey('expanded'),
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             CustomFormField(
@@ -272,48 +273,52 @@ class _SearchFunctionCardState extends State<SearchFunctionCard> {
                               ],
                             ),
                           ],
-                        ),
-                      )
-                      : Center(
-                        child: Hero(
-                          tag: 'seachButtonTag',
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              setState(() {
-                                isSearchCardCollapsed = !isSearchCardCollapsed;
-                              });
-                              await Future.delayed(Duration(milliseconds: 550));
-                              setState(() {
-                                showSearchContent = !showSearchContent;
-                              });
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Palette.shadowGrey,
-                              splashFactory: NoSplash.splashFactory,
-                              maximumSize: const Size(150, 24),
-                              minimumSize: const Size(88, 22),
-                              padding: EdgeInsets.zero,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                side: BorderSide(
-                                  color: Palette.concreteGrey.o(0.7),
-                                  width: 1.5,
+                        )
+                        : Center(
+                          key: ValueKey('collapsed'),
+                          child: Hero(
+                            tag: 'searchButtonTag',
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                setState(() {
+                                  isSearchCardCollapsed =
+                                      !isSearchCardCollapsed;
+                                });
+                                await Future.delayed(
+                                  Duration(milliseconds: 500),
+                                );
+                                setState(() {
+                                  showSearchContent = !showSearchContent;
+                                });
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Palette.shadowGrey,
+                                splashFactory: NoSplash.splashFactory,
+                                maximumSize: const Size(150, 24),
+                                minimumSize: const Size(88, 22),
+                                padding: EdgeInsets.zero,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  side: BorderSide(
+                                    color: Palette.concreteGrey.o(0.7),
+                                    width: 1.5,
+                                  ),
                                 ),
+                                elevation: 3,
                               ),
-                              elevation: 3,
-                            ),
-                            child: Text(
-                              "search",
-                              style: GoogleFonts.sometypeMono(
-                                textStyle: TextStyle(
-                                  color: Palette.primalBlack,
-                                  fontSize: 14,
+                              child: Text(
+                                "search",
+                                style: GoogleFonts.sometypeMono(
+                                  textStyle: TextStyle(
+                                    color: Palette.primalBlack,
+                                    fontSize: 14,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ),
+              ),
             ),
           ),
         ),
