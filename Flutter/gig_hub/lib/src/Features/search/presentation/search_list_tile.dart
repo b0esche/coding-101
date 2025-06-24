@@ -52,7 +52,7 @@ class _SearchListTileState extends State<SearchListTile> {
       decoration: BoxDecoration(
         border: Border.all(color: Palette.glazedWhite, width: 2),
         borderRadius: BorderRadius.circular(16),
-        color: Palette.glazedWhite.o(0.35),
+        color: Palette.glazedWhite.o(0.3),
         boxShadow: [
           BoxShadow(
             spreadRadius: 2,

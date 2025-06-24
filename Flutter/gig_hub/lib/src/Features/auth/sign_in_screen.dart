@@ -4,6 +4,7 @@ import 'package:gig_hub/src/Data/database_repository.dart';
 import 'package:gig_hub/src/Features/auth/sign_up_bottomsheet.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../Common/app_imports.dart' as http;
@@ -119,55 +120,68 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(
                 height: 48,
                 width: 270,
-                child: SegmentedButton<String>(
-                  expandedInsets: EdgeInsets.all(2),
-                  showSelectedIcon: false,
-                  segments: const [
-                    ButtonSegment<String>(
-                      value: 'booker',
-                      label: Text("booker", style: TextStyle(fontSize: 12)),
-                    ),
-                    ButtonSegment<String>(
-                      value: 'dj',
-                      label: Text("    DJ    ", style: TextStyle(fontSize: 12)),
-                    ),
-                  ],
-                  selected: selected,
-                  onSelectionChanged: (Set<String> newSelection) {
-                    setState(() {
-                      selected = newSelection;
-                    });
-                  },
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.resolveWith<Color?>((
-                      states,
-                    ) {
-                      if (states.contains(WidgetState.selected)) {
-                        return Palette.shadowGrey;
-                      }
-                      return Palette.shadowGrey.o(0.35);
-                    }),
-                    foregroundColor: WidgetStateProperty.all(
-                      Palette.primalBlack,
-                    ),
-                    textStyle: WidgetStateProperty.resolveWith<TextStyle?>((
-                      states,
-                    ) {
-                      return TextStyle(
-                        fontWeight:
-                            states.contains(WidgetState.selected)
-                                ? FontWeight.bold
-                                : FontWeight.normal,
-                      );
-                    }),
-                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        side: BorderSide(color: Palette.shadowGrey, width: 2),
+                child: LiquidGlass(
+                  shape: LiquidRoundedRectangle(
+                    borderRadius: Radius.circular(16),
+                  ),
+                  settings: LiquidGlassSettings(
+                    thickness: 16,
+                    refractiveIndex: 1.1,
+                    chromaticAberration: 0.2,
+                  ),
+                  child: SegmentedButton<String>(
+                    expandedInsets: EdgeInsets.all(2),
+                    showSelectedIcon: false,
+                    segments: const [
+                      ButtonSegment<String>(
+                        value: 'booker',
+                        label: Text("booker", style: TextStyle(fontSize: 12)),
                       ),
-                    ),
-                    padding: WidgetStateProperty.all<EdgeInsets>(
-                      const EdgeInsets.symmetric(horizontal: 24),
+                      ButtonSegment<String>(
+                        value: 'dj',
+                        label: Text(
+                          "    DJ    ",
+                          style: TextStyle(fontSize: 12),
+                        ),
+                      ),
+                    ],
+                    selected: selected,
+                    onSelectionChanged: (Set<String> newSelection) {
+                      setState(() {
+                        selected = newSelection;
+                      });
+                    },
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.resolveWith<Color?>((
+                        states,
+                      ) {
+                        if (states.contains(WidgetState.selected)) {
+                          return Palette.shadowGrey;
+                        }
+                        return Palette.shadowGrey.o(0.35);
+                      }),
+                      foregroundColor: WidgetStateProperty.all(
+                        Palette.primalBlack,
+                      ),
+                      textStyle: WidgetStateProperty.resolveWith<TextStyle?>((
+                        states,
+                      ) {
+                        return TextStyle(
+                          fontWeight:
+                              states.contains(WidgetState.selected)
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                        );
+                      }),
+                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          side: BorderSide(color: Palette.shadowGrey, width: 2),
+                        ),
+                      ),
+                      padding: WidgetStateProperty.all<EdgeInsets>(
+                        const EdgeInsets.symmetric(horizontal: 24),
+                      ),
                     ),
                   ),
                 ),
@@ -304,39 +318,51 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     SizedBox(height: 8),
-                    ElevatedButton(
-                      style: ButtonStyle(
-                        padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
-                          EdgeInsets.only(left: 120, right: 120),
-                        ),
-                        backgroundColor: WidgetStateProperty.all<Color>(
-                          Palette.forgedGold,
-                        ),
-                        shape: WidgetStateProperty.all<OutlinedBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                            side: BorderSide(
-                              color: Palette.concreteGrey.o(0.7),
-                              width: 2,
+
+                    LiquidGlass(
+                      shape: LiquidRoundedRectangle(
+                        borderRadius: Radius.circular(16),
+                      ),
+                      settings: LiquidGlassSettings(
+                        thickness: 24,
+                        refractiveIndex: 1.1,
+                        chromaticAberration: 2,
+                      ),
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
+                            EdgeInsets.only(left: 120, right: 120),
+                          ),
+                          backgroundColor: WidgetStateProperty.all<Color>(
+                            Palette.forgedGold,
+                          ),
+                          shape: WidgetStateProperty.all<OutlinedBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              side: BorderSide(
+                                color: Palette.concreteGrey.o(0.7),
+                                width: 2,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (context) => MainScreen(repo: widget.repo),
-                          ),
-                        );
-                      },
-                      child: Text(
-                        "log in",
-                        style: GoogleFonts.sometypeMono(
-                          textStyle: TextStyle(
-                            color: Palette.glazedWhite,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            wordSpacing: -6,
+                        onPressed: () {
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder:
+                                  (context) => MainScreen(repo: widget.repo),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          "log in",
+                          style: GoogleFonts.sometypeMono(
+                            textStyle: TextStyle(
+                              color: Palette.glazedWhite,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              wordSpacing: -6,
+                            ),
                           ),
                         ),
                       ),
@@ -407,43 +433,53 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(height: 16),
               Divider(color: Palette.glazedWhite.o(0.5)),
               SizedBox(height: 24),
-              Shimmer.fromColors(
-                period: Duration(milliseconds: 2300),
-                baseColor: Palette.glazedWhite,
-                highlightColor: Palette.forgedGold,
-                child: Container(
-                  height: 48,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.transparent,
-                      foregroundColor: Colors.transparent,
-                      padding: EdgeInsets.only(left: 78, right: 78),
+              LiquidGlass(
+                shape: LiquidRoundedRectangle(
+                  borderRadius: Radius.circular(16),
+                ),
+                settings: LiquidGlassSettings(
+                  thickness: 20,
+                  refractiveIndex: 1.1,
+                  chromaticAberration: 1.2,
+                ),
+                child: Shimmer.fromColors(
+                  period: Duration(milliseconds: 2300),
+                  baseColor: Palette.glazedWhite,
+                  highlightColor: Palette.forgedGold,
+                  child: Container(
+                    height: 48,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        foregroundColor: Colors.transparent,
+                        padding: EdgeInsets.only(left: 78, right: 78),
 
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        side: BorderSide(
-                          color: Palette.glazedWhite.o(0.7),
-                          width: 2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          side: BorderSide(
+                            color: Palette.glazedWhite.o(0.7),
+                            width: 2,
+                          ),
                         ),
                       ),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (context) => MainScreen(repo: widget.repo),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      "continue as guest",
-                      style: GoogleFonts.sometypeMono(
-                        textStyle: TextStyle(
-                          color: Palette.primalBlack,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
+                      onPressed: () {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => MainScreen(repo: widget.repo),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        "continue as guest",
+                        style: GoogleFonts.sometypeMono(
+                          textStyle: TextStyle(
+                            color: Palette.primalBlack,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ),

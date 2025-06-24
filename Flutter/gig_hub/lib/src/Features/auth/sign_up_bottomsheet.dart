@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:gig_hub/src/Common/main_screen.dart';
+import 'package:gig_hub/src/Common/settings_screen.dart';
+import 'package:gig_hub/src/Features/profile/dj/presentation/create_profile_dj.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 
 class SignUpSheet extends StatefulWidget {
   const SignUpSheet({super.key});
@@ -11,6 +15,7 @@ class SignUpSheet extends StatefulWidget {
 
 class _SignUpSheetState extends State<SignUpSheet> {
   Set<String> selected = {'dj'};
+  bool isObscured = false;
 
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
@@ -43,53 +48,65 @@ class _SignUpSheetState extends State<SignUpSheet> {
             SizedBox(
               height: 48,
               width: 270,
-              child: SegmentedButton<String>(
-                expandedInsets: EdgeInsets.all(2),
-                showSelectedIcon: false,
-                segments: const [
-                  ButtonSegment<String>(
-                    value: 'booker',
-                    label: Text("booker", style: TextStyle(fontSize: 12)),
-                  ),
-                  ButtonSegment<String>(
-                    value: 'dj',
-                    label: Text("    DJ    ", style: TextStyle(fontSize: 12)),
-                  ),
-                ],
-                selected: selected,
-                onSelectionChanged: (Set<String> newSelection) {
-                  setState(() {
-                    selected = newSelection;
-                  });
-                },
-                style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.resolveWith<Color?>((
-                    states,
-                  ) {
-                    if (states.contains(WidgetState.selected)) {
-                      return Palette.shadowGrey;
-                    }
-                    return Palette.shadowGrey.o(0.35);
-                  }),
-                  foregroundColor: WidgetStateProperty.all(Palette.primalBlack),
-                  textStyle: WidgetStateProperty.resolveWith<TextStyle?>((
-                    states,
-                  ) {
-                    return TextStyle(
-                      fontWeight:
-                          states.contains(WidgetState.selected)
-                              ? FontWeight.bold
-                              : FontWeight.normal,
-                    );
-                  }),
-                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      side: BorderSide(color: Palette.shadowGrey, width: 2),
+              child: LiquidGlass(
+                shape: LiquidRoundedRectangle(
+                  borderRadius: Radius.circular(16),
+                ),
+                settings: LiquidGlassSettings(
+                  thickness: 16,
+                  refractiveIndex: 1.1,
+                  chromaticAberration: 0.2,
+                ),
+                child: SegmentedButton<String>(
+                  expandedInsets: EdgeInsets.all(2),
+                  showSelectedIcon: false,
+                  segments: const [
+                    ButtonSegment<String>(
+                      value: 'booker',
+                      label: Text("booker", style: TextStyle(fontSize: 12)),
                     ),
-                  ),
-                  padding: WidgetStateProperty.all<EdgeInsets>(
-                    const EdgeInsets.symmetric(horizontal: 24),
+                    ButtonSegment<String>(
+                      value: 'dj',
+                      label: Text("    DJ    ", style: TextStyle(fontSize: 12)),
+                    ),
+                  ],
+                  selected: selected,
+                  onSelectionChanged: (Set<String> newSelection) {
+                    setState(() {
+                      selected = newSelection;
+                    });
+                  },
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.resolveWith<Color?>((
+                      states,
+                    ) {
+                      if (states.contains(WidgetState.selected)) {
+                        return Palette.shadowGrey;
+                      }
+                      return Palette.shadowGrey.o(0.35);
+                    }),
+                    foregroundColor: WidgetStateProperty.all(
+                      Palette.primalBlack,
+                    ),
+                    textStyle: WidgetStateProperty.resolveWith<TextStyle?>((
+                      states,
+                    ) {
+                      return TextStyle(
+                        fontWeight:
+                            states.contains(WidgetState.selected)
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                      );
+                    }),
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        side: BorderSide(color: Palette.shadowGrey, width: 2),
+                      ),
+                    ),
+                    padding: WidgetStateProperty.all<EdgeInsets>(
+                      const EdgeInsets.symmetric(horizontal: 24),
+                    ),
                   ),
                 ),
               ),
@@ -100,7 +117,7 @@ class _SignUpSheetState extends State<SignUpSheet> {
               validator: validateName,
               style: TextStyle(color: Palette.glazedWhite),
               decoration: InputDecoration(
-                hintText: "name",
+                hintText: "official name",
                 hintStyle: TextStyle(color: Palette.glazedWhite.o(0.7)),
                 prefixIcon: Icon(
                   Icons.person,
@@ -137,13 +154,23 @@ class _SignUpSheetState extends State<SignUpSheet> {
             const SizedBox(height: 24),
             TextFormField(
               controller: _passwordController,
-              obscureText: true,
+              obscureText: isObscured ? true : false,
               validator: validatePassword,
               style: TextStyle(color: Palette.glazedWhite),
               decoration: InputDecoration(
                 hintText: "password",
                 hintStyle: TextStyle(color: Palette.glazedWhite.o(0.7)),
                 prefixIcon: Icon(Icons.lock, color: Palette.glazedWhite.o(0.7)),
+                suffixIcon: IconButton(
+                  onPressed:
+                      () => setState(() {
+                        isObscured = !isObscured;
+                      }),
+                  icon: Icon(
+                    isObscured ? Icons.visibility : Icons.visibility_off,
+                    color: Palette.concreteGrey,
+                  ),
+                ),
                 filled: true,
                 fillColor: Palette.glazedWhite.o(0.1),
                 border: OutlineInputBorder(
@@ -155,7 +182,7 @@ class _SignUpSheetState extends State<SignUpSheet> {
             const SizedBox(height: 24),
             TextFormField(
               controller: _confirmController,
-              obscureText: true,
+              obscureText: isObscured ? true : false,
               validator:
                   (value) =>
                       validateConfirmPassword(value, _passwordController.text),
@@ -176,33 +203,54 @@ class _SignUpSheetState extends State<SignUpSheet> {
               ),
             ),
             const SizedBox(height: 64),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Palette.forgedGold,
-                  foregroundColor: Palette.primalBlack,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                    side: BorderSide(
-                      color: Palette.concreteGrey.o(0.7),
-                      width: 2,
+            LiquidGlass(
+              shape: LiquidRoundedRectangle(borderRadius: Radius.circular(16)),
+              settings: LiquidGlassSettings(
+                thickness: 32,
+                refractiveIndex: 1.1,
+                chromaticAberration: 2,
+              ),
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Palette.forgedGold,
+                    foregroundColor: Palette.primalBlack,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      side: BorderSide(
+                        color: Palette.concreteGrey.o(0.7),
+                        width: 2,
+                      ),
                     ),
                   ),
-                ),
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    // zur profilerstellung
-                  }
-                },
-                child: Text(
-                  "next",
-                  style: GoogleFonts.sometypeMono(
-                    textStyle: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Palette.glazedWhite,
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      // TODO: hier Firestore User anlegen
+                      if (selected.contains('dj')) {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => CreateProfileScreenDJ(),
+                          ),
+                        );
+                      } else if (selected.contains('booker')) {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => SettingsScreen(),
+                          ),
+                        );
+                      }
+                    }
+                  },
+                  child: Text(
+                    "next",
+                    style: GoogleFonts.sometypeMono(
+                      textStyle: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Palette.glazedWhite,
+                      ),
                     ),
                   ),
                 ),

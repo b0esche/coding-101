@@ -22,7 +22,7 @@ class App extends StatelessWidget {
       themeMode: ThemeMode.system,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      home: CreateProfileScreenDJ(),
+      home: LoginScreen(repo: repo),
       onGenerateRoute: (settings) {
         switch (settings.name) {
           case ProfileScreenDJ.routeName:
