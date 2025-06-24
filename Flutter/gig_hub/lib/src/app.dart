@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gig_hub/src/Common/main_screen.dart';
 import 'package:gig_hub/src/Common/settings_screen.dart';
+import 'package:gig_hub/src/Data/user.dart';
 import 'package:gig_hub/src/Features/auth/sign_in_screen.dart';
+import 'package:gig_hub/src/Features/profile/dj/presentation/create_profile_dj.dart';
 import 'package:gig_hub/src/Features/profile/dj/presentation/profile_screen_dj.dart';
 import 'package:gig_hub/src/Features/profile/booker/presentation/profile_screen_booker.dart';
 import 'package:gig_hub/src/Theme/app_theme.dart';
@@ -20,7 +22,7 @@ class App extends StatelessWidget {
       themeMode: ThemeMode.system,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      home: LoginScreen(repo: repo),
+      home: CreateProfileScreenDJ(),
       onGenerateRoute: (settings) {
         switch (settings.name) {
           case ProfileScreenDJ.routeName:

@@ -272,6 +272,7 @@ class _SearchFunctionCardState extends State<SearchFunctionCard> {
                                 ),
                               ],
                             ),
+                            Container(),
                           ],
                         )
                         : Center(

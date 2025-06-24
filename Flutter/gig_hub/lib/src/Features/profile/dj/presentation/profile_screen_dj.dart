@@ -429,7 +429,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                         children: [
                           Container(
                             decoration: BoxDecoration(
-                              color: Palette.shadowGrey.o(0.6),
+                              color: Palette.shadowGrey.o(0.35),
                               borderRadius: BorderRadius.circular(8),
                               border: Border.all(color: Palette.concreteGrey),
                             ),
@@ -500,7 +500,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                           ),
                           Container(
                             decoration: BoxDecoration(
-                              color: Palette.shadowGrey.o(0.6),
+                              color: Palette.shadowGrey.o(0.35),
                               borderRadius: BorderRadius.circular(8),
                               border: Border.all(color: Palette.concreteGrey),
                             ),
@@ -508,7 +508,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                               padding: const EdgeInsets.all(6.0),
                               child: Row(
                                 children: [
-                                  const Icon(Icons.speed, size: 22),
+                                  const Icon(Icons.speed, size: 24),
                                   const SizedBox(width: 4),
                                   !editMode
                                       ? Text(
