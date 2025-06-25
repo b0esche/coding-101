@@ -1,6 +1,6 @@
 import "dart:io";
 
-import "package:image_picker/image_picker.dart";
+import "package:liquid_glass_renderer/liquid_glass_renderer.dart";
 
 import "../../../../Common/app_imports.dart";
 import "../../../../Common/app_imports.dart" as http;
@@ -86,8 +86,8 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
     _locationFocusNode.removeListener(_onLocationFocusChange);
     _locationFocusNode.dispose();
 
-    // _playerControllerOne.dispose();
-    // _playerControllerTwo.dispose();
+    _playerControllerOne.dispose();
+    _playerControllerTwo.dispose();
 
     _nameController.dispose();
     _locationController.dispose();
@@ -211,331 +211,365 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Palette.primalBlack,
-      floatingActionButton:
-          widget.showChatButton
-              ? FloatingActionButton(
-                onPressed: () {
-                  Navigator.pushNamed(
-                    context,
-                    ChatScreen.routeName,
-                    arguments: ChatScreenArgs(
-                      chatPartner: widget.dj,
-                      repo: widget.repo,
-                      currentUser: widget.dj,
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) {
+        PlayerController().stopAllPlayers().whenComplete(
+          () => PlayerController().dispose(),
+        );
+      },
+      canPop: true,
+      child: Scaffold(
+        backgroundColor: Palette.primalBlack,
+        floatingActionButton:
+            widget.showChatButton
+                ? FloatingActionButton(
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      ChatScreen.routeName,
+                      arguments: ChatScreenArgs(
+                        chatPartner: widget.dj,
+                        repo: widget.repo,
+                        currentUser: widget.dj,
+                      ),
+                    );
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Palette.glazedWhite, Palette.gigGrey],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        stops: const [0, 0.8],
+                      ),
+                      shape: BoxShape.circle,
                     ),
-                  );
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Palette.glazedWhite, Palette.gigGrey],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      stops: const [0, 0.8],
+                    child: const Padding(
+                      padding: EdgeInsets.all(14.0),
+                      child: Icon(Icons.chat_outlined),
                     ),
-                    shape: BoxShape.circle,
                   ),
-                  child: const Padding(
-                    padding: EdgeInsets.all(14.0),
-                    child: Icon(Icons.chat_outlined),
+                )
+                : null,
+        body: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              Stack(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    height: 256,
+                    child:
+                        !widget.dj.headUrl.startsWith('http')
+                            ? Image.file(
+                              File(widget.dj.headUrl),
+                              fit: BoxFit.cover,
+                              colorBlendMode:
+                                  editMode ? BlendMode.difference : null,
+                              color: editMode ? Palette.primalBlack : null,
+                            )
+                            : Image.network(
+                              widget.dj.headUrl,
+                              fit: BoxFit.cover,
+                              colorBlendMode:
+                                  editMode ? BlendMode.difference : null,
+                              color: editMode ? Palette.primalBlack : null,
+                            ),
                   ),
-                ),
-              )
-              : null,
-      body: Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            Stack(
-              children: [
-                SizedBox(
-                  width: double.infinity,
-                  height: 256,
-                  child:
-                      !widget.dj.headUrl.startsWith('http')
-                          ? Image.file(
-                            File(widget.dj.headUrl),
-                            fit: BoxFit.cover,
-                            colorBlendMode:
-                                editMode ? BlendMode.difference : null,
-                            color: editMode ? Palette.primalBlack : null,
-                          )
-                          : Image.network(
-                            widget.dj.headUrl,
-                            fit: BoxFit.cover,
-                            colorBlendMode:
-                                editMode ? BlendMode.difference : null,
-                            color: editMode ? Palette.primalBlack : null,
-                          ),
-                ),
 
-                editMode
-                    ? Positioned(
-                      top: 120,
-                      left: 180,
-                      child: IconButton(
-                        style: ButtonStyle(
-                          tapTargetSize: MaterialTapTargetSize.padded,
-                          splashFactory: NoSplash.splashFactory,
+                  editMode
+                      ? Positioned(
+                        top: 120,
+                        left: 180,
+                        child: IconButton(
+                          style: ButtonStyle(
+                            tapTargetSize: MaterialTapTargetSize.padded,
+                            splashFactory: NoSplash.splashFactory,
+                          ),
+                          onPressed: () async {
+                            final XFile? newMedia = await ImagePicker()
+                                .pickImage(source: ImageSource.gallery);
+                            if (newMedia != null) {
+                              setState(() {
+                                widget.dj.headUrl = newMedia.path;
+                              });
+                            }
+                          },
+                          icon: Icon(
+                            Icons.file_upload_rounded,
+                            color: Palette.concreteGrey,
+                            size: 48,
+                          ),
                         ),
-                        onPressed: () async {
-                          final XFile? newMedia = await ImagePicker().pickImage(
-                            source: ImageSource.gallery,
-                          );
-                          if (newMedia != null) {
-                            setState(() {
-                              widget.dj.headUrl = newMedia.path;
-                            });
-                          }
+                      )
+                      : Positioned(child: SizedBox.shrink()),
+                  Positioned(
+                    top: 32,
+                    child: Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: IconButton(
+                        onPressed: () {
+                          PlayerController()
+                              .stopAllPlayers()
+                              .whenComplete(() {
+                                PlayerController().dispose();
+                              })
+                              .whenComplete(() {
+                                if (context.mounted) {
+                                  Navigator.of(context).pop();
+                                }
+                              });
                         },
                         icon: Icon(
-                          Icons.file_upload_rounded,
-                          color: Palette.concreteGrey,
-                          size: 48,
-                        ),
-                      ),
-                    )
-                    : Positioned(child: SizedBox.shrink()),
-                Positioned(
-                  top: 32,
-                  child: Padding(
-                    padding: const EdgeInsets.all(2.0),
-                    child: IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: Icon(
-                        Icons.chevron_left,
-                        shadows: [
-                          BoxShadow(blurRadius: 4, color: Palette.primalBlack),
-                        ],
-                      ),
-                      iconSize: 36,
-                      color: Palette.shadowGrey,
-                      style: const ButtonStyle(
-                        tapTargetSize: MaterialTapTargetSize.padded,
-                      ),
-                    ),
-                  ),
-                ),
-                Positioned.fill(
-                  bottom: 2,
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Palette.primalBlack.o(0.6),
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(12),
-                          topRight: Radius.circular(12),
-                        ),
-                        border: Border(
-                          left: BorderSide(
-                            color: Palette.gigGrey.o(0.6),
-                            width: 2,
-                          ),
-                          right: BorderSide(
-                            color: Palette.gigGrey.o(0.6),
-                            width: 2,
-                          ),
-                          top: BorderSide(
-                            color: Palette.gigGrey.o(0.6),
-                            width: 2,
-                          ),
-                        ),
-                      ),
-                      child:
-                          !editMode
-                              ? Text(
-                                widget.dj.name,
-                                style: GoogleFonts.sometypeMono(
-                                  textStyle: TextStyle(
-                                    color: Palette.glazedWhite,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              )
-                              : Container(
-                                width: 160,
-                                height: 28,
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: Palette.glazedWhite,
-                                    width: 1,
-                                  ),
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: Palette.glazedWhite.o(0.2),
-                                ),
-                                child: TextFormField(
-                                  onEditingComplete: () {
-                                    setState(() {
-                                      widget.dj.name = _nameController.text;
-                                    });
-                                  },
-                                  style: TextStyle(
-                                    color: Palette.glazedWhite,
-                                    fontSize: 12,
-                                  ),
-                                  controller: _nameController,
-                                  decoration: InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Palette.forgedGold,
-                                        width: 3,
-                                      ),
-                                    ),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                      borderSide: BorderSide(
-                                        color: Palette.forgedGold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                    ),
-                  ),
-                ),
-                UserStarRating(widget: widget),
-                Positioned(
-                  right: 0,
-                  left: 0,
-                  bottom: 0,
-                  child: Divider(
-                    height: 0,
-                    thickness: 2,
-                    color: Palette.forgedGold.o(0.8),
-                  ),
-                ),
-              ],
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 12),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Palette.shadowGrey.o(0.35),
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: Palette.concreteGrey),
+                          Icons.chevron_left,
+                          shadows: [
+                            BoxShadow(
+                              blurRadius: 4,
+                              color: Palette.primalBlack,
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(6.0),
-                              child: Row(
-                                children: [
-                                  const Icon(Icons.place, size: 20),
-                                  const SizedBox(width: 4),
-                                  !editMode
-                                      ? Text(
-                                        widget.dj.city,
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Palette.primalBlack,
+                          ],
+                        ),
+                        iconSize: 36,
+                        color: Palette.shadowGrey,
+                        style: const ButtonStyle(
+                          tapTargetSize: MaterialTapTargetSize.padded,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned.fill(
+                    bottom: 2,
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Palette.primalBlack.o(0.6),
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(12),
+                            topRight: Radius.circular(12),
+                          ),
+                          border: Border(
+                            left: BorderSide(
+                              color: Palette.gigGrey.o(0.6),
+                              width: 2,
+                            ),
+                            right: BorderSide(
+                              color: Palette.gigGrey.o(0.6),
+                              width: 2,
+                            ),
+                            top: BorderSide(
+                              color: Palette.gigGrey.o(0.6),
+                              width: 2,
+                            ),
+                          ),
+                        ),
+                        child:
+                            !editMode
+                                ? Text(
+                                  widget.dj.name,
+                                  style: GoogleFonts.sometypeMono(
+                                    textStyle: TextStyle(
+                                      color: Palette.glazedWhite,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                )
+                                : Container(
+                                  width: 160,
+                                  height: 28,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Palette.glazedWhite,
+                                      width: 1,
+                                    ),
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: Palette.glazedWhite.o(0.2),
+                                  ),
+                                  child: TextFormField(
+                                    onEditingComplete: () {
+                                      setState(() {
+                                        widget.dj.name = _nameController.text;
+                                      });
+                                    },
+                                    style: TextStyle(
+                                      color: Palette.glazedWhite,
+                                      fontSize: 12,
+                                    ),
+                                    controller: _nameController,
+                                    decoration: InputDecoration(
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: Palette.forgedGold,
+                                          width: 3,
                                         ),
-                                      )
-                                      : Container(
-                                        width: 100,
-                                        height: 24,
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                            color: Palette.glazedWhite,
-                                            width: 1,
-                                          ),
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                          color: Palette.glazedWhite.o(0.2),
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: BorderSide(
+                                          color: Palette.forgedGold,
                                         ),
-                                        child: TextFormField(
-                                          style: TextStyle(
-                                            color: Palette.glazedWhite,
-                                            fontSize: 10,
-                                          ),
-                                          controller: _locationController,
-                                          focusNode: _locationFocusNode,
-                                          validator: (value) {
-                                            return _locationError;
-                                          },
-                                          autovalidateMode:
-                                              AutovalidateMode
-                                                  .onUserInteraction,
-                                          decoration: InputDecoration(
-                                            focusedBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                color: Palette.forgedGold,
-                                                width: 3,
-                                              ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                      ),
+                    ),
+                  ),
+                  UserStarRating(widget: widget),
+                  Positioned(
+                    right: 0,
+                    left: 0,
+                    bottom: 0,
+                    child: Divider(
+                      height: 0,
+                      thickness: 2,
+                      color: Palette.forgedGold.o(0.8),
+                    ),
+                  ),
+                ],
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 12),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            LiquidGlass(
+                              shape: LiquidRoundedRectangle(
+                                borderRadius: Radius.circular(8),
+                              ),
+                              settings: LiquidGlassSettings(thickness: 8),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Palette.shadowGrey.o(0.4),
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color: Palette.concreteGrey,
+                                  ),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(6.0),
+                                  child: Row(
+                                    children: [
+                                      const Icon(Icons.place, size: 20),
+                                      const SizedBox(width: 4),
+                                      !editMode
+                                          ? Text(
+                                            widget.dj.city,
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: Palette.primalBlack,
                                             ),
-                                            border: OutlineInputBorder(
+                                          )
+                                          : Container(
+                                            width: 100,
+                                            height: 24,
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                color: Palette.glazedWhite,
+                                                width: 1,
+                                              ),
                                               borderRadius:
                                                   BorderRadius.circular(8),
-                                              borderSide: BorderSide(
-                                                color: Palette.forgedGold,
+                                              color: Palette.glazedWhite.o(0.2),
+                                            ),
+                                            child: TextFormField(
+                                              style: TextStyle(
+                                                color: Palette.glazedWhite,
+                                                fontSize: 10,
+                                              ),
+                                              controller: _locationController,
+                                              focusNode: _locationFocusNode,
+                                              validator: (value) {
+                                                return _locationError;
+                                              },
+                                              autovalidateMode:
+                                                  AutovalidateMode
+                                                      .onUserInteraction,
+                                              decoration: InputDecoration(
+                                                focusedBorder:
+                                                    OutlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                        color:
+                                                            Palette.forgedGold,
+                                                        width: 3,
+                                                      ),
+                                                    ),
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                  borderSide: BorderSide(
+                                                    color: Palette.forgedGold,
+                                                  ),
+                                                ),
+                                                errorStyle: TextStyle(
+                                                  fontSize: 0,
+                                                  height: 0,
+                                                ),
                                               ),
                                             ),
-                                            errorStyle: TextStyle(
-                                              fontSize: 0,
-                                              height: 0,
-                                            ),
                                           ),
-                                        ),
-                                      ),
-                                ],
+                                    ],
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Palette.shadowGrey.o(0.35),
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: Palette.concreteGrey),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(6.0),
-                              child: Row(
-                                children: [
-                                  const Icon(Icons.speed, size: 24),
-                                  const SizedBox(width: 4),
-                                  !editMode
-                                      ? Text(
-                                        '${widget.dj.bpmMin}-${widget.dj.bpmMax} bpm',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Palette.primalBlack,
-                                        ),
-                                      )
-                                      : Container(
-                                        width: 100,
-                                        height: 24,
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                            color: Palette.glazedWhite,
-                                            width: 1,
-                                          ),
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                          color: Palette.glazedWhite.o(0.2),
-                                        ),
-                                        child: TextFormField(
-                                          readOnly: true,
-                                          onTap: () async {
-                                            final result =
-                                                await showDialog<List<int>>(
+                            LiquidGlass(
+                              shape: LiquidRoundedRectangle(
+                                borderRadius: Radius.circular(8),
+                              ),
+                              settings: LiquidGlassSettings(thickness: 8),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Palette.shadowGrey.o(0.4),
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color: Palette.concreteGrey,
+                                  ),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(6.0),
+                                  child: Row(
+                                    children: [
+                                      const Icon(Icons.speed, size: 20),
+                                      const SizedBox(width: 4),
+                                      !editMode
+                                          ? Text(
+                                            '${widget.dj.bpmMin}-${widget.dj.bpmMax} bpm',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: Palette.primalBlack,
+                                            ),
+                                          )
+                                          : Container(
+                                            width: 100,
+                                            height: 24,
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                color: Palette.glazedWhite,
+                                                width: 1,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              color: Palette.glazedWhite.o(0.2),
+                                            ),
+                                            child: TextFormField(
+                                              readOnly: true,
+                                              onTap: () async {
+                                                final result = await showDialog<
+                                                  List<int>
+                                                >(
                                                   context: context,
                                                   builder:
                                                       (context) =>
@@ -547,628 +581,648 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                                           ),
                                                 );
 
-                                            if (result != null &&
-                                                result.length == 2) {
-                                              setState(() {
-                                                widget.dj.bpmMin = result[0];
-                                                widget.dj.bpmMax = result[1];
-                                                _bpmController.text =
-                                                    '${result[0]}-${result[1]} bpm';
-                                              });
-                                            }
-                                          },
-                                          style: TextStyle(
-                                            color: Palette.glazedWhite,
-                                            fontSize: 10,
-                                          ),
-                                          controller: _bpmController,
-                                          decoration: InputDecoration(
-                                            focusedBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                color: Palette.forgedGold,
-                                                width: 3,
+                                                if (result != null &&
+                                                    result.length == 2) {
+                                                  setState(() {
+                                                    widget.dj.bpmMin =
+                                                        result[0];
+                                                    widget.dj.bpmMax =
+                                                        result[1];
+                                                    _bpmController.text =
+                                                        '${result[0]}-${result[1]} bpm';
+                                                  });
+                                                }
+                                              },
+                                              style: TextStyle(
+                                                color: Palette.glazedWhite,
+                                                fontSize: 10,
                                               ),
-                                            ),
-                                            border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                              borderSide: BorderSide(
-                                                color: Palette.forgedGold,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 24),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            " about",
-                            style: GoogleFonts.sometypeMono(
-                              textStyle: TextStyle(
-                                color: Palette.glazedWhite,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                          !editMode
-                              ? Container(
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: Palette.shadowGrey,
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Text(
-                                    widget.dj.about,
-                                    style: TextStyle(
-                                      color: Palette.primalBlack,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ),
-                              )
-                              : Container(
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: Palette.glazedWhite,
-                                    width: 1,
-                                  ),
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: Palette.glazedWhite.o(0.2),
-                                ),
-                                child: TextFormField(
-                                  onEditingComplete: () {
-                                    setState(() {
-                                      widget.dj.about = _aboutController.text;
-                                    });
-                                  },
-                                  minLines: 1,
-                                  maxLines: 7,
-                                  maxLength: 250,
-                                  style: TextStyle(
-                                    color: Palette.glazedWhite,
-                                    fontSize: 14,
-                                    overflow: TextOverflow.visible,
-                                  ),
-                                  controller: _aboutController,
-                                  decoration: InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Palette.forgedGold,
-                                        width: 3,
-                                      ),
-                                    ),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                      borderSide: BorderSide(
-                                        color: Palette.forgedGold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                        ],
-                      ),
-                      const SizedBox(height: 32),
-                      Center(
-                        child: Wrap(
-                          spacing: 16,
-                          runSpacing: 8,
-                          children:
-                              !editMode
-                                  ? widget.dj.genres
-                                      .map(
-                                        (genreString) =>
-                                            GenreBubble(genre: genreString),
-                                      )
-                                      .toList()
-                                  : [
-                                    ...widget.dj.genres.map(
-                                      (genreString) =>
-                                          GenreBubble(genre: genreString),
-                                    ),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: Palette.forgedGold,
-                                          width: 2.7,
-                                        ),
-                                        borderRadius: BorderRadius.circular(16),
-                                      ),
-                                      child: GestureDetector(
-                                        onTap: _showGenreDialog,
-
-                                        child: const GenreBubble(
-                                          genre: " edit genres ",
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                        ),
-                      ),
-                      const SizedBox(height: 28),
-                      Column(
-                        spacing: !editMode ? 0 : 8,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            "first SoundCloud set name", // TODO: artist info von soundcloud api fetchen
-                            style: GoogleFonts.sometypeMono(
-                              textStyle: TextStyle(
-                                color: Palette.glazedWhite,
-                                fontWeight: FontWeight.w600,
-                                decoration: TextDecoration.underline,
-                                decorationColor: Palette.glazedWhite,
-                                decorationStyle: TextDecorationStyle.dotted,
-                                decorationThickness: 2,
-                              ),
-                            ),
-                          ),
-                          !editMode
-                              ? Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  AudioPlayerWidget(
-                                    audioUrl:
-                                        // widget.dj.set1Url TODO: über die eingegebene URL die Audiodaten von Soundcloud API fetchen
-                                        'https://samplelib.com/lib/preview/mp3/sample-9s.mp3',
-                                    playerController: _playerControllerOne,
-                                  ),
-                                  const SizedBox(width: 2),
-                                  IconButton(
-                                    onPressed: () {
-                                      debugPrint(
-                                        "soundcloud öffnen",
-                                      ); // TODO: soundcloud link über browser oder app öffnen
-                                    },
-                                    icon: SvgPicture.asset(
-                                      'assets/icons/soundcloud.svg',
-                                    ),
-                                  ),
-                                ],
-                              )
-                              : Center(
-                                child: Container(
-                                  width: 260,
-                                  height: 48,
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: Palette.glazedWhite,
-                                      width: 1,
-                                    ),
-                                    borderRadius: BorderRadius.circular(8),
-                                    color: Palette.glazedWhite.o(0.2),
-                                  ),
-                                  child: TextFormField(
-                                    style: TextStyle(
-                                      color: Palette.glazedWhite,
-                                      fontSize: 10,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    controller: _soundcloudControllerOne,
-                                    validator: soundcloudValidator,
-                                    autovalidateMode:
-                                        AutovalidateMode.onUnfocus,
-
-                                    decoration: InputDecoration(
-                                      prefixIcon:
-                                          _soundcloudControllerOne.text.isEmpty
-                                              ? null
-                                              : RemoveButton(
-                                                soundcloudController:
-                                                    _soundcloudControllerOne,
-                                              ),
-
-                                      suffixIcon: PasteButton(
-                                        soundcloudController:
-                                            _soundcloudControllerOne,
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: Palette.forgedGold,
-                                          width: 3,
-                                        ),
-                                      ),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                        borderSide: BorderSide(
-                                          color: Palette.forgedGold,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                        ],
-                      ),
-                      SizedBox(height: !editMode ? 4 : 24),
-                      Column(
-                        spacing: !editMode ? 0 : 8,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            "second SoundCloud set name", // TODO: artist info von soundcloud api fetchen
-                            style: GoogleFonts.sometypeMono(
-                              textStyle: TextStyle(
-                                color: Palette.glazedWhite,
-                                fontWeight: FontWeight.w600,
-                                decoration: TextDecoration.underline,
-                                decorationColor: Palette.glazedWhite,
-                                decorationStyle: TextDecorationStyle.dotted,
-                                decorationThickness: 2,
-                              ),
-                            ),
-                          ),
-                          !editMode
-                              ? Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  AudioPlayerWidget(
-                                    audioUrl:
-                                        //TODO: über die eingegebene URL die Audiodaten von Soundcloud API fetchen
-                                        'https://samplelib.com/lib/preview/mp3/sample-12s.mp3',
-                                    playerController: _playerControllerTwo,
-                                  ),
-                                  const SizedBox(width: 2),
-                                  IconButton(
-                                    onPressed: () {
-                                      debugPrint(
-                                        "soundcloud öffnen", // TODO: soundcloud link über browser oder app öffnen
-                                      );
-                                    },
-                                    icon: SvgPicture.asset(
-                                      'assets/icons/soundcloud.svg',
-                                    ),
-                                  ),
-                                ],
-                              )
-                              : Center(
-                                child: Container(
-                                  width: 260,
-                                  height: 48,
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: Palette.glazedWhite,
-                                      width: 1,
-                                    ),
-                                    borderRadius: BorderRadius.circular(8),
-                                    color: Palette.glazedWhite.o(0.2),
-                                  ),
-                                  child: TextFormField(
-                                    style: TextStyle(
-                                      color: Palette.glazedWhite,
-                                      fontSize: 10,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    controller: _soundcloudControllerTwo,
-                                    validator: soundcloudValidator,
-                                    autovalidateMode:
-                                        AutovalidateMode.onUnfocus,
-                                    decoration: InputDecoration(
-                                      prefixIcon:
-                                          _soundcloudControllerTwo.text.isEmpty
-                                              ? null
-                                              : RemoveButton(
-                                                soundcloudController:
-                                                    _soundcloudControllerTwo,
-                                              ),
-                                      suffixIcon: PasteButton(
-                                        soundcloudController:
-                                            _soundcloudControllerTwo,
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: Palette.forgedGold,
-                                          width: 3,
-                                        ),
-                                      ),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                        borderSide: BorderSide(
-                                          color: Palette.forgedGold,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                        ],
-                      ),
-                      SizedBox(height: 36),
-                      !editMode
-                          ? widget.dj.mediaUrl == null ||
-                                  widget.dj.mediaUrl!.isEmpty
-                              ? SizedBox.shrink()
-                              : ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: ImageSlideshow(
-                                  width: double.infinity,
-                                  height: 240,
-                                  isLoop: true,
-                                  autoPlayInterval: 12000,
-                                  indicatorColor: Palette.shadowGrey,
-                                  indicatorBackgroundColor: Palette.gigGrey,
-                                  initialPage: index,
-                                  onPageChanged: (value) {
-                                    setState(() => index = value);
-                                  },
-                                  children: [
-                                    if (widget.dj.mediaUrl != null &&
-                                        widget.dj.mediaUrl!.isNotEmpty)
-                                      for (String path in widget.dj.mediaUrl!)
-                                        PinchZoom(
-                                          zoomEnabled: true,
-                                          maxScale: 2.5,
-                                          child:
-                                              path.startsWith('http')
-                                                  ? Image.network(
-                                                    path,
-                                                    fit: BoxFit.cover,
-                                                  )
-                                                  : Image.file(
-                                                    File(path),
-                                                    fit: BoxFit.cover,
+                                              controller: _bpmController,
+                                              decoration: InputDecoration(
+                                                focusedBorder:
+                                                    OutlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                        color:
+                                                            Palette.forgedGold,
+                                                        width: 3,
+                                                      ),
+                                                    ),
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                  borderSide: BorderSide(
+                                                    color: Palette.forgedGold,
                                                   ),
-                                        ),
-                                  ],
-                                ),
-                              )
-                          : Center(
-                            child: Container(
-                              height: 160,
-                              width: 240,
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Palette.forgedGold),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: IconButton(
-                                style: ButtonStyle(
-                                  tapTargetSize: MaterialTapTargetSize.padded,
-                                ),
-                                onPressed: () async {
-                                  List<XFile> medias =
-                                      await ImagePicker().pickMultiImage();
-                                  List<String> mediaUrls =
-                                      medias
-                                          .map((element) => element.path)
-                                          .toList();
-                                  setState(() {
-                                    widget.dj.mediaUrl!.addAll(mediaUrls);
-                                  });
-                                },
-                                icon: Icon(
-                                  Icons.file_upload_rounded,
-                                  color: Palette.concreteGrey,
-                                  size: 48,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                      SizedBox(
-                        height:
-                            widget.dj.mediaUrl != null &&
-                                    widget.dj.mediaUrl!.isNotEmpty
-                                ? null
-                                : 24,
-                      ),
-                      (widget.dj.mediaUrl != null &&
-                              widget.dj.mediaUrl!.isNotEmpty &&
-                              editMode)
-                          ? Center(
-                            child: TextButton(
-                              onPressed:
-                                  () => setState(
-                                    () => widget.dj.mediaUrl!.clear(),
-                                  ),
-                              child: Text(
-                                "remove all images",
-                                style: TextStyle(
-                                  color: Palette.alarmRed.o(0.7),
+                          ],
+                        ),
+                        const SizedBox(height: 24),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              " about",
+                              style: GoogleFonts.sometypeMono(
+                                textStyle: TextStyle(
+                                  color: Palette.glazedWhite,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
                             ),
-                          )
-                          : SizedBox.shrink(),
+                            !editMode
+                                ? Container(
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: Palette.shadowGrey,
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Text(
+                                      widget.dj.about,
+                                      style: TextStyle(
+                                        color: Palette.primalBlack,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                : Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Palette.glazedWhite,
+                                      width: 1,
+                                    ),
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: Palette.glazedWhite.o(0.2),
+                                  ),
+                                  child: TextFormField(
+                                    onEditingComplete: () {
+                                      setState(() {
+                                        widget.dj.about = _aboutController.text;
+                                      });
+                                    },
+                                    minLines: 1,
+                                    maxLines: 7,
+                                    maxLength: 250,
+                                    style: TextStyle(
+                                      color: Palette.glazedWhite,
+                                      fontSize: 14,
+                                      overflow: TextOverflow.visible,
+                                    ),
+                                    controller: _aboutController,
+                                    decoration: InputDecoration(
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: Palette.forgedGold,
+                                          width: 3,
+                                        ),
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: BorderSide(
+                                          color: Palette.forgedGold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                          ],
+                        ),
+                        const SizedBox(height: 32),
+                        Center(
+                          child: Wrap(
+                            spacing: 16,
+                            runSpacing: 8,
+                            children:
+                                !editMode
+                                    ? widget.dj.genres
+                                        .map(
+                                          (genreString) =>
+                                              GenreBubble(genre: genreString),
+                                        )
+                                        .toList()
+                                    : [
+                                      ...widget.dj.genres.map(
+                                        (genreString) =>
+                                            GenreBubble(genre: genreString),
+                                      ),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: Palette.forgedGold,
+                                            width: 2.7,
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            16,
+                                          ),
+                                        ),
+                                        child: GestureDetector(
+                                          onTap: _showGenreDialog,
 
-                      widget.dj.mediaUrl != null &&
-                              widget.dj.mediaUrl!.isNotEmpty
-                          ? SizedBox(height: 36)
-                          : SizedBox.shrink(),
-
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            " info / requirements",
-                            style: GoogleFonts.sometypeMono(
-                              textStyle: TextStyle(
-                                color: Palette.glazedWhite,
-                                fontWeight: FontWeight.w600,
+                                          child: const GenreBubble(
+                                            genre: " edit genres ",
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                          ),
+                        ),
+                        const SizedBox(height: 28),
+                        Column(
+                          spacing: !editMode ? 0 : 8,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              "first SoundCloud set name", // TODO: artist info von soundcloud api fetchen
+                              style: GoogleFonts.sometypeMono(
+                                textStyle: TextStyle(
+                                  color: Palette.glazedWhite,
+                                  fontWeight: FontWeight.w600,
+                                  decoration: TextDecoration.underline,
+                                  decorationColor: Palette.glazedWhite,
+                                  decorationStyle: TextDecorationStyle.dotted,
+                                  decorationThickness: 2,
+                                ),
                               ),
                             ),
-                          ),
-                          !editMode
-                              ? Container(
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: Palette.shadowGrey,
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Text(
-                                    widget.dj.info,
-                                    style: TextStyle(
-                                      color: Palette.primalBlack,
-                                      fontSize: 14,
+                            !editMode
+                                ? Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    AudioPlayerWidget(
+                                      audioUrl:
+                                          // widget.dj.set1Url TODO: über die eingegebene URL die Audiodaten von Soundcloud API fetchen
+                                          'https://samplelib.com/lib/preview/mp3/sample-9s.mp3',
+                                      playerController: _playerControllerOne,
+                                    ),
+                                    const SizedBox(width: 2),
+                                    IconButton(
+                                      onPressed: () {
+                                        debugPrint(
+                                          "soundcloud öffnen",
+                                        ); // TODO: soundcloud link über browser oder app öffnen
+                                      },
+                                      icon: SvgPicture.asset(
+                                        'assets/icons/soundcloud.svg',
+                                      ),
+                                    ),
+                                  ],
+                                )
+                                : Center(
+                                  child: Container(
+                                    width: 260,
+                                    height: 48,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Palette.glazedWhite,
+                                        width: 1,
+                                      ),
+                                      borderRadius: BorderRadius.circular(8),
+                                      color: Palette.glazedWhite.o(0.2),
+                                    ),
+                                    child: TextFormField(
+                                      style: TextStyle(
+                                        color: Palette.glazedWhite,
+                                        fontSize: 10,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      controller: _soundcloudControllerOne,
+                                      validator: soundcloudValidator,
+                                      autovalidateMode:
+                                          AutovalidateMode.onUnfocus,
+
+                                      decoration: InputDecoration(
+                                        prefixIcon:
+                                            _soundcloudControllerOne
+                                                    .text
+                                                    .isEmpty
+                                                ? null
+                                                : RemoveButton(
+                                                  soundcloudController:
+                                                      _soundcloudControllerOne,
+                                                ),
+
+                                        suffixIcon: PasteButton(
+                                          soundcloudController:
+                                              _soundcloudControllerOne,
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: Palette.forgedGold,
+                                            width: 3,
+                                          ),
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                          borderSide: BorderSide(
+                                            color: Palette.forgedGold,
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              )
-                              : Container(
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: Palette.glazedWhite,
-                                    width: 1,
-                                  ),
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: Palette.glazedWhite.o(0.2),
+                          ],
+                        ),
+                        SizedBox(height: !editMode ? 4 : 24),
+                        Column(
+                          spacing: !editMode ? 0 : 8,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              "second SoundCloud set name", // TODO: artist info von soundcloud api fetchen
+                              style: GoogleFonts.sometypeMono(
+                                textStyle: TextStyle(
+                                  color: Palette.glazedWhite,
+                                  fontWeight: FontWeight.w600,
+                                  decoration: TextDecoration.underline,
+                                  decorationColor: Palette.glazedWhite,
+                                  decorationStyle: TextDecorationStyle.dotted,
+                                  decorationThickness: 2,
                                 ),
-                                child: TextFormField(
-                                  onEditingComplete: () {
+                              ),
+                            ),
+                            !editMode
+                                ? Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    AudioPlayerWidget(
+                                      audioUrl:
+                                          //TODO: über die eingegebene URL die Audiodaten von Soundcloud API fetchen
+                                          'https://samplelib.com/lib/preview/mp3/sample-12s.mp3',
+                                      playerController: _playerControllerTwo,
+                                    ),
+                                    const SizedBox(width: 2),
+                                    IconButton(
+                                      onPressed: () {
+                                        debugPrint(
+                                          "soundcloud öffnen", // TODO: soundcloud link über browser oder app öffnen
+                                        );
+                                      },
+                                      icon: SvgPicture.asset(
+                                        'assets/icons/soundcloud.svg',
+                                      ),
+                                    ),
+                                  ],
+                                )
+                                : Center(
+                                  child: Container(
+                                    width: 260,
+                                    height: 48,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Palette.glazedWhite,
+                                        width: 1,
+                                      ),
+                                      borderRadius: BorderRadius.circular(8),
+                                      color: Palette.glazedWhite.o(0.2),
+                                    ),
+                                    child: TextFormField(
+                                      style: TextStyle(
+                                        color: Palette.glazedWhite,
+                                        fontSize: 10,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      controller: _soundcloudControllerTwo,
+                                      validator: soundcloudValidator,
+                                      autovalidateMode:
+                                          AutovalidateMode.onUnfocus,
+                                      decoration: InputDecoration(
+                                        prefixIcon:
+                                            _soundcloudControllerTwo
+                                                    .text
+                                                    .isEmpty
+                                                ? null
+                                                : RemoveButton(
+                                                  soundcloudController:
+                                                      _soundcloudControllerTwo,
+                                                ),
+                                        suffixIcon: PasteButton(
+                                          soundcloudController:
+                                              _soundcloudControllerTwo,
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: Palette.forgedGold,
+                                            width: 3,
+                                          ),
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                          borderSide: BorderSide(
+                                            color: Palette.forgedGold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                          ],
+                        ),
+                        SizedBox(height: 36),
+                        !editMode
+                            ? widget.dj.mediaUrl == null ||
+                                    widget.dj.mediaUrl!.isEmpty
+                                ? SizedBox.shrink()
+                                : ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: ImageSlideshow(
+                                    width: double.infinity,
+                                    height: 240,
+                                    isLoop: true,
+                                    autoPlayInterval: 12000,
+                                    indicatorColor: Palette.shadowGrey,
+                                    indicatorBackgroundColor: Palette.gigGrey,
+                                    initialPage: index,
+                                    onPageChanged: (value) {
+                                      setState(() => index = value);
+                                    },
+                                    children: [
+                                      if (widget.dj.mediaUrl != null &&
+                                          widget.dj.mediaUrl!.isNotEmpty)
+                                        for (String path in widget.dj.mediaUrl!)
+                                          PinchZoom(
+                                            zoomEnabled: true,
+                                            maxScale: 2.5,
+                                            child:
+                                                path.startsWith('http')
+                                                    ? Image.network(
+                                                      path,
+                                                      fit: BoxFit.cover,
+                                                    )
+                                                    : Image.file(
+                                                      File(path),
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                          ),
+                                    ],
+                                  ),
+                                )
+                            : Center(
+                              child: Container(
+                                height: 160,
+                                width: 240,
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Palette.forgedGold),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: IconButton(
+                                  style: ButtonStyle(
+                                    tapTargetSize: MaterialTapTargetSize.padded,
+                                  ),
+                                  onPressed: () async {
+                                    List<XFile> medias =
+                                        await ImagePicker().pickMultiImage();
+                                    List<String> mediaUrls =
+                                        medias
+                                            .map((element) => element.path)
+                                            .toList();
                                     setState(() {
-                                      widget.dj.info = _infoController.text;
+                                      widget.dj.mediaUrl!.addAll(mediaUrls);
                                     });
                                   },
-                                  minLines: 1,
-                                  maxLines: 7,
-                                  maxLength: 250,
-                                  cursorColor: Palette.forgedGold,
-
-                                  style: TextStyle(
-                                    color: Palette.glazedWhite,
-                                    fontSize: 14,
-                                    overflow: TextOverflow.visible,
-                                  ),
-                                  controller: _infoController,
-                                  decoration: InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Palette.forgedGold,
-                                        width: 3,
-                                      ),
-                                    ),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                      borderSide: BorderSide(
-                                        color: Palette.forgedGold,
-                                      ),
-                                    ),
+                                  icon: Icon(
+                                    Icons.file_upload_rounded,
+                                    color: Palette.concreteGrey,
+                                    size: 48,
                                   ),
                                 ),
                               ),
-                        ],
-                      ),
-                      Center(
-                        child: SizedBox(
-                          height: 100,
-                          child:
-                              !widget.showEditButton
-                                  ? OutlinedButton(
-                                    onPressed: () {
-                                      if (editMode &&
-                                          _formKey.currentState!.validate()) {
-                                        !editMode
-                                            ? PlayerController()
-                                                .stopAllPlayers()
-                                            : PlayerController()
-                                                .overrideAudioSession;
-
-                                        widget.dj.about = _aboutController.text;
-                                        widget.dj.info = _infoController.text;
-                                        widget.dj.name = _nameController.text;
-                                        widget.dj.set1Url =
-                                            _soundcloudControllerOne.text;
-                                        widget.dj.set2Url =
-                                            _soundcloudControllerTwo.text;
-
-                                        final bpmText =
-                                            _bpmController.text.trim();
-                                        final bpmParts = bpmText
-                                            .split(' ')
-                                            .first
-                                            .split('-');
-
-                                        if (bpmParts.length == 2) {
-                                          widget.dj.bpmMin =
-                                              int.tryParse(
-                                                bpmParts[0].trim(),
-                                              ) ??
-                                              0;
-                                          widget.dj.bpmMax =
-                                              int.tryParse(
-                                                bpmParts[1].trim(),
-                                              ) ??
-                                              0;
-                                        }
-
-                                        if (_locationError == null) {
-                                          widget.dj.city =
-                                              _locationController.text;
-                                        }
-
-                                        setState(() => editMode = !editMode);
-                                      } else if (!editMode) {
-                                        PlayerController().stopAllPlayers();
-                                        setState(() => editMode = !editMode);
-                                      }
-                                    },
-                                    style: ButtonStyle(
-                                      splashFactory: NoSplash.splashFactory,
-                                      tapTargetSize:
-                                          MaterialTapTargetSize.shrinkWrap,
+                            ),
+                        SizedBox(
+                          height:
+                              widget.dj.mediaUrl != null &&
+                                      widget.dj.mediaUrl!.isNotEmpty
+                                  ? null
+                                  : 24,
+                        ),
+                        (widget.dj.mediaUrl != null &&
+                                widget.dj.mediaUrl!.isNotEmpty &&
+                                editMode)
+                            ? Center(
+                              child: TextButton(
+                                onPressed:
+                                    () => setState(
+                                      () => widget.dj.mediaUrl!.clear(),
                                     ),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: Palette.forgedGold,
-                                          width: 2,
-                                        ),
-                                        borderRadius: BorderRadius.circular(16),
+                                child: Text(
+                                  "remove all images",
+                                  style: TextStyle(
+                                    color: Palette.alarmRed.o(0.7),
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            )
+                            : SizedBox.shrink(),
+
+                        widget.dj.mediaUrl != null &&
+                                widget.dj.mediaUrl!.isNotEmpty
+                            ? SizedBox(height: 36)
+                            : SizedBox.shrink(),
+
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              " info / requirements",
+                              style: GoogleFonts.sometypeMono(
+                                textStyle: TextStyle(
+                                  color: Palette.glazedWhite,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                            !editMode
+                                ? Container(
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: Palette.shadowGrey,
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Text(
+                                      widget.dj.info,
+                                      style: TextStyle(
+                                        color: Palette.primalBlack,
+                                        fontSize: 14,
                                       ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(6.0),
-                                        child: Row(
-                                          spacing: 4,
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text(
-                                              !editMode
-                                                  ? "edit profile"
-                                                  : "done",
-                                              style: GoogleFonts.sometypeMono(
-                                                textStyle: TextStyle(
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 13,
-                                                  color: Palette.glazedWhite,
-                                                  decoration:
-                                                      TextDecoration.underline,
-                                                  decorationColor:
-                                                      Palette.glazedWhite,
+                                    ),
+                                  ),
+                                )
+                                : Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Palette.glazedWhite,
+                                      width: 1,
+                                    ),
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: Palette.glazedWhite.o(0.2),
+                                  ),
+                                  child: TextFormField(
+                                    onEditingComplete: () {
+                                      setState(() {
+                                        widget.dj.info = _infoController.text;
+                                      });
+                                    },
+                                    minLines: 1,
+                                    maxLines: 7,
+                                    maxLength: 250,
+                                    cursorColor: Palette.forgedGold,
+
+                                    style: TextStyle(
+                                      color: Palette.glazedWhite,
+                                      fontSize: 14,
+                                      overflow: TextOverflow.visible,
+                                    ),
+                                    controller: _infoController,
+                                    decoration: InputDecoration(
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: Palette.forgedGold,
+                                          width: 3,
+                                        ),
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: BorderSide(
+                                          color: Palette.forgedGold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                          ],
+                        ),
+                        Center(
+                          child: SizedBox(
+                            height: 100,
+                            child:
+                                !widget.showEditButton
+                                    ? OutlinedButton(
+                                      onPressed: () {
+                                        if (editMode &&
+                                            _formKey.currentState!.validate()) {
+                                          !editMode
+                                              ? PlayerController()
+                                                  .stopAllPlayers()
+                                              : PlayerController()
+                                                  .overrideAudioSession;
+
+                                          widget.dj.about =
+                                              _aboutController.text;
+                                          widget.dj.info = _infoController.text;
+                                          widget.dj.name = _nameController.text;
+                                          widget.dj.set1Url =
+                                              _soundcloudControllerOne.text;
+                                          widget.dj.set2Url =
+                                              _soundcloudControllerTwo.text;
+
+                                          final bpmText =
+                                              _bpmController.text.trim();
+                                          final bpmParts = bpmText
+                                              .split(' ')
+                                              .first
+                                              .split('-');
+
+                                          if (bpmParts.length == 2) {
+                                            widget.dj.bpmMin =
+                                                int.tryParse(
+                                                  bpmParts[0].trim(),
+                                                ) ??
+                                                0;
+                                            widget.dj.bpmMax =
+                                                int.tryParse(
+                                                  bpmParts[1].trim(),
+                                                ) ??
+                                                0;
+                                          }
+
+                                          if (_locationError == null) {
+                                            widget.dj.city =
+                                                _locationController.text;
+                                          }
+
+                                          setState(() => editMode = !editMode);
+                                        } else if (!editMode) {
+                                          PlayerController().stopAllPlayers();
+                                          setState(() => editMode = !editMode);
+                                        }
+                                      },
+                                      style: ButtonStyle(
+                                        splashFactory: NoSplash.splashFactory,
+                                        tapTargetSize:
+                                            MaterialTapTargetSize.shrinkWrap,
+                                      ),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: Palette.forgedGold,
+                                            width: 2,
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            16,
+                                          ),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(6.0),
+                                          child: Row(
+                                            spacing: 4,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(
+                                                !editMode
+                                                    ? "edit profile"
+                                                    : "done",
+                                                style: GoogleFonts.sometypeMono(
+                                                  textStyle: TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 13,
+                                                    color: Palette.glazedWhite,
+                                                    decoration:
+                                                        TextDecoration
+                                                            .underline,
+                                                    decorationColor:
+                                                        Palette.glazedWhite,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                            Icon(
-                                              !editMode
-                                                  ? Icons.edit
-                                                  : Icons.done,
-                                              size: 14,
-                                              color: Palette.glazedWhite,
-                                            ),
-                                          ],
+                                              Icon(
+                                                !editMode
+                                                    ? Icons.edit
+                                                    : Icons.done,
+                                                size: 14,
+                                                color: Palette.glazedWhite,
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  )
-                                  : SizedBox.shrink(),
+                                    )
+                                    : SizedBox.shrink(),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

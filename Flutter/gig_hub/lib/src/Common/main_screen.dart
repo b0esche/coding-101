@@ -199,234 +199,245 @@ class _MainScreenState extends State<MainScreen> {
     String loggedInUserAvatar =
         _loggedInUser?.avatarUrl ?? "https://picsum.photos/100";
 
-    return Scaffold(
-      backgroundColor: Palette.primalBlack,
-      body: SafeArea(
-        child: Center(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                child: SizedBox(
-                  height: 130,
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        top: 8,
-                        right: 0,
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => const SettingsScreen(),
-                                fullscreenDialog: true,
-                              ),
-                            );
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: Palette.glazedWhite.o(0.5),
-                                width: 1.4,
-                              ),
-                            ),
-                            child: CircleAvatar(
-                              radius: 32,
-                              backgroundImage: NetworkImage(loggedInUserAvatar),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.center,
-                        child: SizedBox(
-                          height: 130,
-                          width: 130,
-                          child: Hero(
-                            tag: context,
-                            child: Image.asset('assets/images/gighub_logo.png'),
-                          ),
-                        ),
-                      ),
-                    ],
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        backgroundColor: Palette.primalBlack,
+        body: SafeArea(
+          child: Center(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
                   ),
-                ),
-              ),
-              SearchFunctionCard(
-                onSearchResults: (List<DJ> results) {
-                  setState(() {
-                    _usersDJ = results;
-                    _sortedUsersDJ = List.from(results);
-                    _selectedSortOption = '';
-                  });
-                },
-                onSearchLoading: (bool isLoading) {
-                  setState(() {
-                    _isLoading = isLoading;
-                  });
-                },
-                onBpmRangeChanged: (List<int>? bpmRange) {
-                  setState(() {
-                    _currentSearchBpmRange = bpmRange;
-                  });
-                },
-                onGenresChanged: (List<String>? genres) {
-                  setState(() {
-                    _currentSearchGenres = genres;
-                  });
-                },
-              ),
-              SizedBox(height: 8),
-              Column(
-                spacing: 4,
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: 'sort by ',
-                              style: TextStyle(
-                                color: Palette.glazedWhite,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                                wordSpacing: -1,
+                  child: SizedBox(
+                    height: 130,
+                    child: Stack(
+                      children: [
+                        Positioned(
+                          top: 8,
+                          right: 0,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => const SettingsScreen(),
+                                  fullscreenDialog: true,
+                                ),
+                              );
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Palette.glazedWhite.o(0.5),
+                                  width: 1.4,
+                                ),
                               ),
-                            ),
-                            WidgetSpan(
-                              alignment: PlaceholderAlignment.middle,
-                              child: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    _isExpanded = !_isExpanded;
-                                  });
-                                },
-                                child: Icon(
-                                  _isExpanded
-                                      ? Icons.expand_less
-                                      : Icons.expand_more,
-                                  size: 19,
-                                  color: Palette.glazedWhite,
+                              child: CircleAvatar(
+                                radius: 32,
+                                backgroundImage: NetworkImage(
+                                  loggedInUserAvatar,
                                 ),
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  if (_isExpanded)
-                    SortButtonsWidget(
-                      selectedSortOption: _selectedSortOption,
-                      onSortOptionChanged: _sortUsers,
-                      onExpandedChanged: _toggleExpanded,
-                    ),
-                ],
-              ),
-              SizedBox(height: 8),
-              Expanded(
-                child:
-                    _isLoading
-                        ? Center(
-                          child: CircularProgressIndicator(
-                            color: Palette.forgedGold,
                           ),
-                        )
-                        : Stack(
-                          children: [
-                            ListView.builder(
-                              padding: const EdgeInsets.only(
-                                top: 28,
-                                left: 4,
-                                right: 4,
-                                bottom: 164,
+                        ),
+                        Align(
+                          alignment: Alignment.center,
+                          child: SizedBox(
+                            height: 130,
+                            width: 130,
+                            child: Hero(
+                              tag: context,
+                              child: Image.asset(
+                                'assets/images/gighub_logo.png',
                               ),
-                              itemCount: _sortedUsersDJ.length,
-                              itemBuilder: (context, index) {
-                                final DJ currentUserDJ = _sortedUsersDJ[index];
-                                return LiquidGlass(
-                                  shape: LiquidRoundedRectangle(
-                                    borderRadius: Radius.circular(16),
-                                  ),
-                                  settings: LiquidGlassSettings(thickness: 2),
-                                  child: SearchListTile(
-                                    repo: _repo,
-                                    user: currentUserDJ,
-                                    name: currentUserDJ.name,
-                                    genres: currentUserDJ.genres,
-                                    image: NetworkImage(
-                                      currentUserDJ.avatarUrl,
-                                    ),
-                                    about: currentUserDJ.about,
-                                    location: currentUserDJ.city,
-                                    bpmMin: currentUserDJ.bpmMin,
-                                    bpmMax: currentUserDJ.bpmMax,
-                                    rating: currentUserDJ.rating ?? 0.0,
-                                  ),
-                                );
-                              },
                             ),
-                            Positioned(
-                              top: 0,
-                              left: 0,
-                              right: 0,
-                              height: 20,
-                              child: IgnorePointer(
-                                child: LiquidGlass(
-                                  shape: LiquidRoundedRectangle(
-                                    borderRadius: Radius.circular(0),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SearchFunctionCard(
+                  onSearchResults: (List<DJ> results) {
+                    setState(() {
+                      _usersDJ = results;
+                      _sortedUsersDJ = List.from(results);
+                      _selectedSortOption = '';
+                    });
+                  },
+                  onSearchLoading: (bool isLoading) {
+                    setState(() {
+                      _isLoading = isLoading;
+                    });
+                  },
+                  onBpmRangeChanged: (List<int>? bpmRange) {
+                    setState(() {
+                      _currentSearchBpmRange = bpmRange;
+                    });
+                  },
+                  onGenresChanged: (List<String>? genres) {
+                    setState(() {
+                      _currentSearchGenres = genres;
+                    });
+                  },
+                ),
+                SizedBox(height: 8),
+                Column(
+                  spacing: 4,
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: 'sort by ',
+                                style: TextStyle(
+                                  color: Palette.glazedWhite,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  wordSpacing: -1,
+                                ),
+                              ),
+                              WidgetSpan(
+                                alignment: PlaceholderAlignment.middle,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      _isExpanded = !_isExpanded;
+                                    });
+                                  },
+                                  child: Icon(
+                                    _isExpanded
+                                        ? Icons.expand_less
+                                        : Icons.expand_more,
+                                    size: 19,
+                                    color: Palette.glazedWhite,
                                   ),
-                                  glassContainsChild: false,
-                                  settings: LiquidGlassSettings(
-                                    thickness: 17,
-                                    blur: 1.7,
-                                  ),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        begin: Alignment.topCenter,
-                                        end: Alignment.bottomCenter,
-                                        colors: [
-                                          Palette.primalBlack,
-                                          Palette.primalBlack.o(0),
-                                        ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (_isExpanded)
+                      SortButtonsWidget(
+                        selectedSortOption: _selectedSortOption,
+                        onSortOptionChanged: _sortUsers,
+                        onExpandedChanged: _toggleExpanded,
+                      ),
+                  ],
+                ),
+                SizedBox(height: 8),
+                Expanded(
+                  child:
+                      _isLoading
+                          ? Center(
+                            child: CircularProgressIndicator(
+                              color: Palette.forgedGold,
+                            ),
+                          )
+                          : Stack(
+                            children: [
+                              ListView.builder(
+                                padding: const EdgeInsets.only(
+                                  top: 28,
+                                  left: 4,
+                                  right: 4,
+                                  bottom: 164,
+                                ),
+                                itemCount: _sortedUsersDJ.length,
+                                itemBuilder: (context, index) {
+                                  final DJ currentUserDJ =
+                                      _sortedUsersDJ[index];
+                                  return LiquidGlass(
+                                    shape: LiquidRoundedRectangle(
+                                      borderRadius: Radius.circular(16),
+                                    ),
+                                    settings: LiquidGlassSettings(thickness: 2),
+                                    child: SearchListTile(
+                                      repo: _repo,
+                                      user: currentUserDJ,
+                                      name: currentUserDJ.name,
+                                      genres: currentUserDJ.genres,
+                                      image: NetworkImage(
+                                        currentUserDJ.avatarUrl,
+                                      ),
+                                      about: currentUserDJ.about,
+                                      location: currentUserDJ.city,
+                                      bpmMin: currentUserDJ.bpmMin,
+                                      bpmMax: currentUserDJ.bpmMax,
+                                      rating: currentUserDJ.rating ?? 0.0,
+                                    ),
+                                  );
+                                },
+                              ),
+                              Positioned(
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                height: 20,
+                                child: IgnorePointer(
+                                  child: LiquidGlass(
+                                    shape: LiquidRoundedRectangle(
+                                      borderRadius: Radius.circular(0),
+                                    ),
+                                    glassContainsChild: false,
+                                    settings: LiquidGlassSettings(
+                                      thickness: 17,
+                                      blur: 1.7,
+                                    ),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topCenter,
+                                          end: Alignment.bottomCenter,
+                                          colors: [
+                                            Palette.primalBlack,
+                                            Palette.primalBlack.o(0),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-              ),
-            ],
+                            ],
+                          ),
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-      bottomNavigationBar: SafeArea(
-        child: BottomNavigationBar(
-          elevation: 4,
-          onTap: _onItemTapped,
-          currentIndex: _selectedIndex,
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: Palette.glazedWhite,
-          selectedItemColor: Palette.primalBlack,
-          unselectedItemColor: Palette.primalBlack,
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: "profile"),
-            BottomNavigationBarItem(icon: Icon(Icons.chat), label: "chats"),
-          ],
-          selectedFontSize: 12,
-          unselectedFontSize: 12,
-          iconSize: 22,
+        bottomNavigationBar: SafeArea(
+          child: BottomNavigationBar(
+            elevation: 4,
+            onTap: _onItemTapped,
+            currentIndex: _selectedIndex,
+            type: BottomNavigationBarType.fixed,
+            backgroundColor: Palette.glazedWhite,
+            selectedItemColor: Palette.primalBlack,
+            unselectedItemColor: Palette.primalBlack,
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person),
+                label: "profile",
+              ),
+              BottomNavigationBarItem(icon: Icon(Icons.chat), label: "chats"),
+            ],
+            selectedFontSize: 12,
+            unselectedFontSize: 12,
+            iconSize: 22,
+          ),
         ),
       ),
     );

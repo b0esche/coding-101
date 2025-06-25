@@ -1,21 +1,20 @@
-import "dart:convert";
 import "dart:io";
-import "package:flutter_dotenv/flutter_dotenv.dart";
-import "package:google_fonts/google_fonts.dart";
-import "package:image_picker/image_picker.dart";
-import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
-import 'package:pinch_zoom/pinch_zoom.dart';
+
+import "package:gig_hub/src/Common/main_screen.dart";
+
 import "../../../../Common/app_imports.dart";
 import "../../../../Common/app_imports.dart" as http;
 
 class CreateProfileScreenDJ extends StatefulWidget {
-  const CreateProfileScreenDJ({super.key});
+  final DatabaseRepository repo;
+  const CreateProfileScreenDJ({super.key, required this.repo});
 
   @override
   State<CreateProfileScreenDJ> createState() => _CreateProfileScreenDJState();
 }
 
 class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
+  DatabaseRepository repo = MockDatabaseRepository();
   final _formKey = GlobalKey<FormState>();
   late final _nameController = TextEditingController(text: 'your name');
   late final _locationController = TextEditingController(text: 'your city');
@@ -29,10 +28,10 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
   final _locationFocusNode = FocusNode();
   String? headUrl;
   String? _locationError;
-  String? bpmMin = '';
-  String? bpmMax = '';
-  String? about = '';
-  String? info = '';
+  String? bpmMin;
+  String? bpmMax;
+  String? about;
+  String? info;
   List<String>? genres = [];
   List<String>? mediaUrl = [];
   int index = 0;
@@ -48,6 +47,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
     _locationFocusNode.dispose();
     _nameController.dispose();
     _aboutController.dispose();
+    _infoController.dispose();
     _locationController.dispose();
     _bpmController.dispose();
     super.dispose();
@@ -132,7 +132,8 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
     final result = await showDialog<List<String>>(
       context: context,
       builder:
-          (context) => GenreSelectionDialog(initialSelectedGenres: genres!),
+          (context) =>
+              GenreSelectionDialog(initialSelectedGenres: genres ?? []),
     );
     if (result != null && result.isNotEmpty) {
       setState(() {
@@ -403,18 +404,26 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                       readOnly: true,
                                       textAlign: TextAlign.center,
                                       onTap: () async {
-                                        final result =
-                                            await showDialog<List<int>>(
-                                              context: context,
-                                              builder:
-                                                  (context) =>
-                                                      BpmSelectionDialog(
-                                                        intialSelectedBpm: [
-                                                          100,
-                                                          130,
-                                                        ],
-                                                      ),
-                                            );
+                                        final result = await showDialog<
+                                          List<int>
+                                        >(
+                                          context: context,
+                                          builder:
+                                              (context) => BpmSelectionDialog(
+                                                intialSelectedBpm: [
+                                                  int.tryParse(
+                                                        bpmMin?.toString() ??
+                                                            '',
+                                                      ) ??
+                                                      100,
+                                                  int.tryParse(
+                                                        bpmMax?.toString() ??
+                                                            '',
+                                                      ) ??
+                                                      130,
+                                                ],
+                                              ),
+                                        );
 
                                         if (result != null &&
                                             result.length == 2) {
@@ -650,6 +659,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                               ),
                             ),
                           ),
+
                           Container(
                             decoration: BoxDecoration(
                               border: Border.all(
@@ -661,11 +671,13 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                             ),
                             child: TextFormField(
                               onTap: _infoController.clear,
+                              onTapAlwaysCalled: false,
                               onEditingComplete: () {
                                 setState(() {
                                   info = _infoController.text;
                                 });
                               },
+
                               minLines: 1,
                               maxLines: 7,
                               maxLength: 250,
@@ -699,7 +711,40 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                         child: SizedBox(
                           height: 100,
                           child: OutlinedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              if (genres != null &&
+                                  headUrl != null &&
+                                  bpmMin != null &&
+                                  bpmMax != null &&
+                                  about != null &&
+                                  info != null) {
+                                repo.createDJ(
+                                  DJ(
+                                    genres: genres!,
+                                    headUrl: headUrl!,
+                                    avatarUrl: 'https://picsum.photos/100',
+                                    bpmMin: int.parse(bpmMin!),
+                                    bpmMax: int.parse(bpmMax!),
+                                    about: _aboutController.text,
+                                    set1Url: 'set1Url',
+                                    set2Url: 'set2Url',
+                                    mediaUrl: mediaUrl!,
+                                    info: _infoController.text,
+                                    userId: '',
+                                    name: _nameController.text,
+                                    email: 'email',
+                                    city: _locationController.text,
+                                  ),
+                                );
+                                Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) => MainScreen(repo: repo),
+                                  ),
+                                );
+                              }
+                            },
+
                             style: ButtonStyle(
                               splashFactory: NoSplash.splashFactory,
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,

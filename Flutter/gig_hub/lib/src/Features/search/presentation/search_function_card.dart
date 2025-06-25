@@ -96,8 +96,8 @@ class _SearchFunctionCardState extends State<SearchFunctionCard> {
     super.dispose();
   }
 
-  bool isSearchCardCollapsed = false;
-  bool showSearchContent = true;
+  bool isSearchCardCollapsed = true;
+  bool showSearchContent = false;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -272,7 +272,6 @@ class _SearchFunctionCardState extends State<SearchFunctionCard> {
                                 ),
                               ],
                             ),
-                            Container(),
                           ],
                         )
                         : Center(

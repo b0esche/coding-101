@@ -13,7 +13,7 @@ dependencies:
   flutter_native_splash: ^2.4.6
   flutter_rating_stars: ^1.1.0
   google_fonts: ^6.2.1
-  flutter_svg: ^1.0.0
+  flutter_svg: ^2.2.0
   shimmer: ^3.0.0
   http: ^1.4.0
   flutter_dotenv: ^5.2.0

@@ -17,3 +17,4 @@ export 'package:google_fonts/google_fonts.dart';
 export 'package:gig_hub/src/Data/database_repository.dart';
 export 'package:pinch_zoom/pinch_zoom.dart';
 export 'package:http/http.dart';
+export "package:image_picker/image_picker.dart";

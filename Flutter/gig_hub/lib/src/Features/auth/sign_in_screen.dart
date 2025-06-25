@@ -209,7 +209,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               context: context,
                               isScrollControlled: true,
                               builder: (BuildContext context) {
-                                return SignUpSheet();
+                                return SignUpSheet(repo: widget.repo);
                               },
                             );
                           },
@@ -229,56 +229,60 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderRadius: BorderRadius.circular(16),
                       ),
 
-                      child: Column(
-                        children: [
-                          TextFormField(
-                            controller: _loginEmailController,
-                            showCursor: true,
-                            maxLines: 1,
-                            decoration: InputDecoration(
-                              contentPadding: EdgeInsets.all(12),
-                              border: InputBorder.none,
-                              prefixIcon: Icon(
-                                Icons.email_outlined,
-                                color: Palette.primalBlack,
-                                size: 20,
+                      child: AutofillGroup(
+                        child: Column(
+                          children: [
+                            TextFormField(
+                              autofillHints: [AutofillHints.email],
+                              controller: _loginEmailController,
+                              showCursor: true,
+                              maxLines: 1,
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(12),
+                                border: InputBorder.none,
+                                prefixIcon: Icon(
+                                  Icons.email_outlined,
+                                  color: Palette.primalBlack,
+                                  size: 20,
+                                ),
                               ),
                             ),
-                          ),
-                          Divider(color: Palette.concreteGrey),
-                          TextFormField(
-                            controller: _loginPasswordController,
-                            showCursor: true,
-                            maxLines: 1,
-                            obscureText: _isObscured,
-                            obscuringCharacter: "✱",
-                            decoration: InputDecoration(
-                              contentPadding: EdgeInsets.all(8),
-                              border: InputBorder.none,
-                              prefixIcon: Icon(
-                                Icons.lock_outline_rounded,
-                                color: Palette.primalBlack,
-                                size: 20,
-                              ),
-                              suffixIcon: IconButton(
-                                onPressed:
-                                    () => setState(() {
-                                      _isObscured = !_isObscured;
-                                    }),
-                                icon:
-                                    !_isObscured
-                                        ? Icon(
-                                          Icons.visibility,
-                                          color: Palette.concreteGrey,
-                                        )
-                                        : Icon(
-                                          Icons.visibility_off,
-                                          color: Palette.concreteGrey,
-                                        ),
+                            Divider(color: Palette.concreteGrey),
+                            TextFormField(
+                              autofillHints: [AutofillHints.password],
+                              controller: _loginPasswordController,
+                              showCursor: true,
+                              maxLines: 1,
+                              obscureText: _isObscured,
+                              obscuringCharacter: "✱",
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(8),
+                                border: InputBorder.none,
+                                prefixIcon: Icon(
+                                  Icons.lock_outline_rounded,
+                                  color: Palette.primalBlack,
+                                  size: 20,
+                                ),
+                                suffixIcon: IconButton(
+                                  onPressed:
+                                      () => setState(() {
+                                        _isObscured = !_isObscured;
+                                      }),
+                                  icon:
+                                      !_isObscured
+                                          ? Icon(
+                                            Icons.visibility,
+                                            color: Palette.concreteGrey,
+                                          )
+                                          : Icon(
+                                            Icons.visibility_off,
+                                            color: Palette.concreteGrey,
+                                          ),
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                     SizedBox(height: 8),
@@ -326,7 +330,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       settings: LiquidGlassSettings(
                         thickness: 24,
                         refractiveIndex: 1.1,
-                        chromaticAberration: 2,
+                        chromaticAberration: 0.65,
                       ),
                       child: ElevatedButton(
                         style: ButtonStyle(
@@ -334,7 +338,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             EdgeInsets.only(left: 120, right: 120),
                           ),
                           backgroundColor: WidgetStateProperty.all<Color>(
-                            Palette.forgedGold,
+                            Palette.forgedGold.o(0.8),
                           ),
                           shape: WidgetStateProperty.all<OutlinedBorder>(
                             RoundedRectangleBorder(
@@ -361,7 +365,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               color: Palette.glazedWhite,
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
-                              wordSpacing: -6,
+                              wordSpacing: -8,
                             ),
                           ),
                         ),
@@ -443,7 +447,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   chromaticAberration: 1.2,
                 ),
                 child: Shimmer.fromColors(
-                  period: Duration(milliseconds: 2300),
+                  period: Duration(milliseconds: 2600),
                   baseColor: Palette.glazedWhite,
                   highlightColor: Palette.forgedGold,
                   child: Container(

@@ -1,13 +1,13 @@
-import 'package:flutter/material.dart';
-import 'package:gig_hub/src/Common/main_screen.dart';
+import 'package:gig_hub/src/Common/app_imports.dart';
+
 import 'package:gig_hub/src/Common/settings_screen.dart';
 import 'package:gig_hub/src/Features/profile/dj/presentation/create_profile_dj.dart';
-import 'package:gig_hub/src/Theme/palette.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 
 class SignUpSheet extends StatefulWidget {
-  const SignUpSheet({super.key});
+  final DatabaseRepository repo;
+  const SignUpSheet({super.key, required this.repo});
 
   @override
   State<SignUpSheet> createState() => _SignUpSheetState();
@@ -15,7 +15,7 @@ class SignUpSheet extends StatefulWidget {
 
 class _SignUpSheetState extends State<SignUpSheet> {
   Set<String> selected = {'dj'};
-  bool isObscured = false;
+  bool isObscured = true;
 
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
@@ -117,7 +117,7 @@ class _SignUpSheetState extends State<SignUpSheet> {
               validator: validateName,
               style: TextStyle(color: Palette.glazedWhite),
               decoration: InputDecoration(
-                hintText: "official name",
+                hintText: "username (not shown)",
                 hintStyle: TextStyle(color: Palette.glazedWhite.o(0.7)),
                 prefixIcon: Icon(
                   Icons.person,
@@ -135,6 +135,7 @@ class _SignUpSheetState extends State<SignUpSheet> {
             TextFormField(
               controller: _emailController,
               validator: validateEmail,
+              autofillHints: [AutofillHints.email],
               style: TextStyle(color: Palette.glazedWhite),
               decoration: InputDecoration(
                 hintText: "email",
@@ -156,6 +157,7 @@ class _SignUpSheetState extends State<SignUpSheet> {
               controller: _passwordController,
               obscureText: isObscured ? true : false,
               validator: validatePassword,
+              autofillHints: [AutofillHints.password],
               style: TextStyle(color: Palette.glazedWhite),
               decoration: InputDecoration(
                 hintText: "password",
@@ -231,7 +233,9 @@ class _SignUpSheetState extends State<SignUpSheet> {
                       if (selected.contains('dj')) {
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
-                            builder: (context) => CreateProfileScreenDJ(),
+                            builder:
+                                (context) =>
+                                    CreateProfileScreenDJ(repo: widget.repo),
                           ),
                         );
                       } else if (selected.contains('booker')) {
