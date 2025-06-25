@@ -98,220 +98,238 @@ class _SearchFunctionCardState extends State<SearchFunctionCard> {
 
   bool isSearchCardCollapsed = true;
   bool showSearchContent = false;
+  bool isSearchCardAnimating = true;
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onLongPress:
-          !isSearchCardCollapsed
-              ? () => setState(() {
-                showSearchContent = !showSearchContent;
+    return RepaintBoundary(
+      child: GestureDetector(
+        onLongPress:
+            !isSearchCardCollapsed
+                ? () => setState(() {
+                  showSearchContent = !showSearchContent;
 
-                isSearchCardCollapsed = !isSearchCardCollapsed;
-              })
-              : null,
-      child: LiquidGlass(
-        shape: LiquidRoundedRectangle(borderRadius: Radius.circular(16)),
-        settings: LiquidGlassSettings(
-          thickness: 13,
-          refractiveIndex: 1.3,
-          chromaticAberration: 1,
-        ),
-        child: AnimatedContainer(
-          duration: Duration(milliseconds: 350),
-          width: !isSearchCardCollapsed ? 300 : 110,
-          height: !isSearchCardCollapsed ? 192 : 48,
-          curve: Curves.easeInOut,
+                  isSearchCardCollapsed = !isSearchCardCollapsed;
 
-          alignment: Alignment.center,
-          child: Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            elevation: 3,
-            color: Palette.glazedWhite.o(0.2),
-            child: Padding(
-              padding:
-                  !isSearchCardCollapsed
-                      ? EdgeInsets.fromLTRB(16, 16, 0, 0)
-                      : EdgeInsetsGeometry.only(
-                        top: 2,
-                        bottom: 2,
-                        left: 8,
-                        right: 8,
-                      ),
-              child: AnimatedSwitcher(
-                duration: Duration(milliseconds: 250),
-                reverseDuration: Duration(microseconds: 250),
-                switchInCurve: Curves.easeInOut,
-                switchOutCurve: Curves.easeInOut,
-                child:
-                    showSearchContent
-                        ? Column(
-                          key: ValueKey('expanded'),
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            CustomFormField(
-                              readOnly: true,
-                              label: "genre...",
-                              onPressed: _showGenreDialog,
-                              controller: genreController,
-                            ),
-                            const SizedBox(height: 8),
-                            CustomFormField(
-                              readOnly: true,
-                              label: "bpm...",
-                              onPressed: _showBpmDialog,
-                              controller: bpmController,
-                            ),
-                            const SizedBox(height: 8),
-                            LocationAutocompleteField(
-                              controller: locationController,
-                              onCitySelected: (city) {
-                                setState(() {
-                                  selectedCity = city;
-                                });
-                              },
-                            ),
-                            const SizedBox(height: 8),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                const SizedBox(width: 85),
-                                ElevatedButton(
-                                  onPressed: _search,
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Palette.shadowGrey,
-                                    splashFactory: NoSplash.splashFactory,
-                                    maximumSize: const Size(150, 24),
-                                    minimumSize: const Size(88, 22),
-                                    padding: EdgeInsets.zero,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                      side: BorderSide(
-                                        color: Palette.concreteGrey.o(0.7),
-                                        width: 1.5,
-                                      ),
-                                    ),
-                                    elevation: 3,
-                                  ),
-                                  child: Text(
-                                    "search",
-                                    style: GoogleFonts.sometypeMono(
-                                      textStyle: TextStyle(
-                                        color: Palette.primalBlack,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const Spacer(),
-                                TextButton(
-                                  style: ButtonStyle(
-                                    foregroundColor:
-                                        WidgetStateProperty.resolveWith<Color>((
-                                          states,
-                                        ) {
-                                          if (states.contains(
-                                            WidgetState.pressed,
-                                          )) {
-                                            return Palette.forgedGold;
-                                          }
-                                          return Palette.primalBlack;
-                                        }),
-                                    alignment: Alignment.bottomCenter,
-                                    splashFactory: NoSplash.splashFactory,
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      selectedGenres.clear();
-                                      selectedBpm = null;
-                                      selectedCity = null;
-                                      genreController.clear();
-                                      bpmController.clear();
-                                      locationController.clear();
-                                    });
-                                    widget.onBpmRangeChanged(null);
-                                    widget.onGenresChanged(null);
-                                    _search();
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Palette.shadowGrey,
-                                      border: Border.all(
-                                        color: Palette.concreteGrey,
-                                      ),
-                                      borderRadius: const BorderRadius.all(
-                                        Radius.circular(6),
-                                      ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Palette.gigGrey,
-                                          blurRadius: 4,
-                                          offset: const Offset(0.5, 2),
+                  isSearchCardAnimating = !isSearchCardAnimating;
+                })
+                : null,
+        child: LiquidGlass(
+          shape: LiquidRoundedRectangle(borderRadius: Radius.circular(16)),
+          settings: LiquidGlassSettings(
+            thickness: 13,
+            refractiveIndex: 1.3,
+            chromaticAberration: 1,
+          ),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 350),
+            width: !isSearchCardCollapsed ? 300 : 110,
+            height: !isSearchCardCollapsed ? 192 : 48,
+            curve: Curves.easeInOut,
+
+            alignment: Alignment.center,
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              elevation: 3,
+              color: Palette.glazedWhite.o(0.2),
+              child: Padding(
+                padding:
+                    !isSearchCardCollapsed
+                        ? EdgeInsets.fromLTRB(16, 16, 0, 0)
+                        : EdgeInsetsGeometry.only(
+                          top: 2,
+                          bottom: 2,
+                          left: 8,
+                          right: 8,
+                        ),
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 250),
+                  reverseDuration: const Duration(microseconds: 250),
+                  switchInCurve: Curves.easeInOut,
+                  switchOutCurve: Curves.easeInOut,
+                  child:
+                      showSearchContent
+                          ? Column(
+                            key: const ValueKey('expanded'),
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CustomFormField(
+                                readOnly: true,
+                                label: "genre...",
+                                onPressed: _showGenreDialog,
+                                controller: genreController,
+                              ),
+                              const SizedBox(height: 8),
+                              CustomFormField(
+                                readOnly: true,
+                                label: "bpm...",
+                                onPressed: _showBpmDialog,
+                                controller: bpmController,
+                              ),
+                              const SizedBox(height: 8),
+                              LocationAutocompleteField(
+                                controller: locationController,
+                                onCitySelected: (city) {
+                                  setState(() {
+                                    selectedCity = city;
+                                  });
+                                },
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  const SizedBox(width: 85),
+                                  ElevatedButton(
+                                    onPressed: _search,
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Palette.shadowGrey,
+                                      splashFactory: NoSplash.splashFactory,
+                                      maximumSize: const Size(150, 24),
+                                      minimumSize: const Size(88, 22),
+                                      padding: EdgeInsets.zero,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        side: BorderSide(
+                                          color: Palette.concreteGrey.o(0.7),
+                                          width: 1.5,
                                         ),
-                                      ],
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                        4,
-                                        0,
-                                        4,
-                                        0,
                                       ),
-                                      child: Text(
-                                        "clear",
-                                        style: GoogleFonts.sometypeMono(
-                                          textStyle: const TextStyle(
-                                            fontSize: 11,
+                                      elevation: 3,
+                                    ),
+                                    child: Text(
+                                      "search",
+                                      style: GoogleFonts.sometypeMono(
+                                        textStyle: TextStyle(
+                                          color: Palette.primalBlack,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  TextButton(
+                                    style: ButtonStyle(
+                                      foregroundColor:
+                                          WidgetStateProperty.resolveWith<
+                                            Color
+                                          >((states) {
+                                            if (states.contains(
+                                              WidgetState.pressed,
+                                            )) {
+                                              return Palette.forgedGold;
+                                            }
+                                            return Palette.primalBlack;
+                                          }),
+                                      alignment: Alignment.bottomCenter,
+                                      splashFactory: NoSplash.splashFactory,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        FocusManager.instance.primaryFocus
+                                            ?.unfocus();
+                                        selectedGenres.clear();
+                                        selectedBpm = null;
+                                        selectedCity = null;
+                                        genreController.clear();
+                                        bpmController.clear();
+                                        locationController.clear();
+                                      });
+                                      widget.onBpmRangeChanged(null);
+                                      widget.onGenresChanged(null);
+                                      _search();
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Palette.shadowGrey,
+                                        border: Border.all(
+                                          color: Palette.concreteGrey,
+                                        ),
+                                        borderRadius: const BorderRadius.all(
+                                          Radius.circular(6),
+                                        ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Palette.gigGrey,
+                                            blurRadius: 4,
+                                            offset: const Offset(0.5, 2),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                          4,
+                                          0,
+                                          4,
+                                          0,
+                                        ),
+                                        child: Text(
+                                          "clear",
+                                          style: GoogleFonts.sometypeMono(
+                                            textStyle: TextStyle(
+                                              fontSize: 11,
+                                              color: Palette.primalBlack,
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
                                   ),
+                                ],
+                              ),
+                            ],
+                          )
+                          : isSearchCardAnimating
+                          ? Center(
+                            key: const ValueKey('collapsed'),
+                            child: ElevatedButton(
+                              autofocus: true,
+                              onPressed: () async {
+                                setState(() {
+                                  isSearchCardAnimating =
+                                      !isSearchCardAnimating;
+                                  isSearchCardCollapsed =
+                                      !isSearchCardCollapsed;
+                                });
+                                await Future.delayed(
+                                  const Duration(milliseconds: 350),
+                                );
+                                setState(() {
+                                  showSearchContent = !showSearchContent;
+                                });
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Palette.shadowGrey,
+                                splashFactory: NoSplash.splashFactory,
+
+                                maximumSize: const Size(150, 24),
+                                minimumSize: const Size(88, 22),
+                                padding: EdgeInsets.zero,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  side: BorderSide(
+                                    color: Palette.concreteGrey.o(0.7),
+                                    width: 1.5,
+                                  ),
                                 ),
-                              ],
-                            ),
-                          ],
-                        )
-                        : Center(
-                          key: ValueKey('collapsed'),
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              setState(() {
-                                isSearchCardCollapsed = !isSearchCardCollapsed;
-                              });
-                              await Future.delayed(Duration(milliseconds: 500));
-                              setState(() {
-                                showSearchContent = !showSearchContent;
-                              });
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Palette.shadowGrey,
-                              splashFactory: NoSplash.splashFactory,
-                              maximumSize: const Size(150, 24),
-                              minimumSize: const Size(88, 22),
-                              padding: EdgeInsets.zero,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                side: BorderSide(
-                                  color: Palette.concreteGrey.o(0.7),
-                                  width: 1.5,
+                                elevation: 3,
+                              ),
+                              child: Text(
+                                "search",
+                                style: GoogleFonts.sometypeMono(
+                                  textStyle: TextStyle(
+                                    color: Palette.primalBlack,
+                                    fontSize: 14,
+                                  ),
                                 ),
                               ),
-                              elevation: 3,
                             ),
-                            child: Text(
-                              "search",
-                              style: GoogleFonts.sometypeMono(
-                                textStyle: TextStyle(
-                                  color: Palette.primalBlack,
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
+                          )
+                          : null,
+                ),
               ),
             ),
           ),
