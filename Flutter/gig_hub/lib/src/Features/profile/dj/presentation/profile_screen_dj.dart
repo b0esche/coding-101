@@ -742,7 +742,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              "first SoundCloud set name", // TODO: artist info von soundcloud api fetchen
+                              "first SoundCloud set link", // TODO: artist info von soundcloud api fetchen
                               style: GoogleFonts.sometypeMono(
                                 textStyle: TextStyle(
                                   color: Palette.glazedWhite,
@@ -841,7 +841,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              "second SoundCloud set name", // TODO: artist info von soundcloud api fetchen
+                              "second SoundCloud set link", // TODO: artist info von soundcloud api fetchen
                               style: GoogleFonts.sometypeMono(
                                 textStyle: TextStyle(
                                   color: Palette.glazedWhite,

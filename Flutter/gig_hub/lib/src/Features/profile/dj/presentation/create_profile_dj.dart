@@ -16,15 +16,13 @@ class CreateProfileScreenDJ extends StatefulWidget {
 class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
   DatabaseRepository repo = MockDatabaseRepository();
   final _formKey = GlobalKey<FormState>();
-  late final _nameController = TextEditingController(text: 'your name');
+  late final _nameController = TextEditingController();
   late final _locationController = TextEditingController(text: 'your city');
   late final _bpmController = TextEditingController(text: 'your tempo');
-  late final _aboutController = TextEditingController(
-    text: 'something about you',
-  );
-  late final _infoController = TextEditingController(
-    text: 'your booking information',
-  );
+  late final _aboutController = TextEditingController();
+  late final _infoController = TextEditingController();
+  late final _soundcloudControllerOne = TextEditingController();
+  late final _soundcloudControllerTwo = TextEditingController();
   final _locationFocusNode = FocusNode();
   String? headUrl;
   String? _locationError;
@@ -32,9 +30,10 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
   String? bpmMax;
   String? about;
   String? info;
-  List<String>? genres = [];
-  List<String>? mediaUrl = [];
+  List<String>? genres;
+  List<String>? mediaUrl;
   int index = 0;
+  bool isSoundcloudConnected = false;
   @override
   void initState() {
     _locationFocusNode.addListener(_onLocationFocusChange);
@@ -140,6 +139,25 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
         genres = result;
       });
     }
+  }
+
+  String? soundcloudValidator(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'enter url to your set on soundcloud';
+    }
+
+    final uri = Uri.tryParse(value);
+    if (uri == null ||
+        !uri.hasAbsolutePath ||
+        !(uri.isScheme('http') || uri.isScheme('https'))) {
+      return 'invalid url';
+    }
+
+    if (!value.contains('soundcloud.com')) {
+      return 'invalid url';
+    }
+
+    return null;
   }
 
   @override
@@ -493,7 +511,6 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                               color: Palette.glazedWhite.o(0.2),
                             ),
                             child: TextFormField(
-                              onTap: _aboutController.clear,
                               onEditingComplete: () {
                                 setState(() {
                                   about = _aboutController.text;
@@ -528,7 +545,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 32),
+                      const SizedBox(height: 40),
                       Center(
                         child: Wrap(
                           spacing: 16,
@@ -558,12 +575,16 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 36),
-                      Placeholder(
-                        color: Palette.glazedWhite,
-                        fallbackHeight: 150,
-                      ),
                       const SizedBox(height: 48),
+                      IndexedStack(
+                        index: isSoundcloudConnected ? 0 : 1,
+                        children: [
+                          soundcloudFields(),
+                          soundcloudConnectButton(),
+                        ],
+                      ),
+
+                      SizedBox(height: isSoundcloudConnected ? 72 : 0),
                       (mediaUrl != null && mediaUrl!.isNotEmpty)
                           ? ClipRRect(
                             borderRadius: BorderRadius.circular(8),
@@ -617,7 +638,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                           .map((element) => element.path)
                                           .toList();
                                   setState(() {
-                                    mediaUrl!.addAll(newMediaUrls);
+                                    mediaUrl = newMediaUrls;
                                   });
                                 },
                                 icon: Icon(
@@ -646,7 +667,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                             ),
                           )
                           : SizedBox.shrink(),
-                      SizedBox(height: 24),
+                      SizedBox(height: 36),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -670,12 +691,8 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                               color: Palette.glazedWhite.o(0.2),
                             ),
                             child: TextFormField(
-                              onTap: _infoController.clear,
-                              onTapAlwaysCalled: false,
                               onEditingComplete: () {
-                                setState(() {
-                                  info = _infoController.text;
-                                });
+                                setState(() => info = _infoController.text);
                               },
 
                               minLines: 1,
@@ -712,12 +729,11 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                           height: 100,
                           child: OutlinedButton(
                             onPressed: () {
-                              if (genres != null &&
-                                  headUrl != null &&
-                                  bpmMin != null &&
-                                  bpmMax != null &&
-                                  about != null &&
-                                  info != null) {
+                              FocusManager.instance.primaryFocus?.unfocus();
+                              if (headUrl!.isNotEmpty &&
+                                  bpmMin!.isNotEmpty &&
+                                  bpmMax!.isNotEmpty &&
+                                  _nameController.text.isNotEmpty) {
                                 repo.createDJ(
                                   DJ(
                                     genres: genres!,
@@ -744,7 +760,6 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                 );
                               }
                             },
-
                             style: ButtonStyle(
                               splashFactory: NoSplash.splashFactory,
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -794,6 +809,151 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Column soundcloudFields() {
+    return Column(
+      children: [
+        Column(
+          spacing: 8,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "first SoundCloud set link", // TODO: artist info von soundcloud api fetchen
+              style: GoogleFonts.sometypeMono(
+                textStyle: TextStyle(
+                  color: Palette.glazedWhite,
+                  fontWeight: FontWeight.w600,
+                  decoration: TextDecoration.underline,
+                  decorationColor: Palette.glazedWhite,
+                  decorationStyle: TextDecorationStyle.dotted,
+                  decorationThickness: 2,
+                ),
+              ),
+            ),
+            Center(
+              child: Container(
+                width: 260,
+                height: 48,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Palette.glazedWhite, width: 1),
+                  borderRadius: BorderRadius.circular(8),
+                  color: Palette.glazedWhite.o(0.2),
+                ),
+                child: TextFormField(
+                  style: TextStyle(
+                    color: Palette.glazedWhite,
+                    fontSize: 10,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  controller: _soundcloudControllerOne,
+                  validator: soundcloudValidator,
+                  autovalidateMode: AutovalidateMode.onUnfocus,
+
+                  decoration: InputDecoration(
+                    prefixIcon:
+                        _soundcloudControllerOne.text.isEmpty
+                            ? null
+                            : RemoveButton(
+                              soundcloudController: _soundcloudControllerOne,
+                            ),
+
+                    suffixIcon: PasteButton(
+                      soundcloudController: _soundcloudControllerOne,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Palette.forgedGold,
+                        width: 3,
+                      ),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: Palette.forgedGold),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 24),
+        Column(
+          spacing: 8,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              "second SoundCloud set link", // TODO: artist info von soundcloud api fetchen
+              style: GoogleFonts.sometypeMono(
+                textStyle: TextStyle(
+                  color: Palette.glazedWhite,
+                  fontWeight: FontWeight.w600,
+                  decoration: TextDecoration.underline,
+                  decorationColor: Palette.glazedWhite,
+                  decorationStyle: TextDecorationStyle.dotted,
+                  decorationThickness: 2,
+                ),
+              ),
+            ),
+            Center(
+              child: Container(
+                width: 260,
+                height: 48,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Palette.glazedWhite, width: 1),
+                  borderRadius: BorderRadius.circular(8),
+                  color: Palette.glazedWhite.o(0.2),
+                ),
+                child: TextFormField(
+                  style: TextStyle(
+                    color: Palette.glazedWhite,
+                    fontSize: 10,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  controller: _soundcloudControllerTwo,
+                  validator: soundcloudValidator,
+                  autovalidateMode: AutovalidateMode.onUnfocus,
+                  decoration: InputDecoration(
+                    prefixIcon:
+                        _soundcloudControllerTwo.text.isEmpty
+                            ? null
+                            : RemoveButton(
+                              soundcloudController: _soundcloudControllerTwo,
+                            ),
+                    suffixIcon: PasteButton(
+                      soundcloudController: _soundcloudControllerTwo,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Palette.forgedGold,
+                        width: 3,
+                      ),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: Palette.forgedGold),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget soundcloudConnectButton() {
+    return Center(
+      child: ElevatedButton(
+        onPressed: () {
+          setState(() {
+            isSoundcloudConnected = !isSoundcloudConnected;
+          });
+        },
+        child: Text('moin'),
       ),
     );
   }

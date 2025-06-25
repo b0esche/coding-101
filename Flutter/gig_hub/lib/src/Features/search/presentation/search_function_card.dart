@@ -117,7 +117,7 @@ class _SearchFunctionCardState extends State<SearchFunctionCard> {
           chromaticAberration: 1,
         ),
         child: AnimatedContainer(
-          duration: Duration(milliseconds: 500),
+          duration: Duration(milliseconds: 350),
           width: !isSearchCardCollapsed ? 300 : 110,
           height: !isSearchCardCollapsed ? 192 : 48,
           curve: Curves.easeInOut,
@@ -140,8 +140,8 @@ class _SearchFunctionCardState extends State<SearchFunctionCard> {
                         right: 8,
                       ),
               child: AnimatedSwitcher(
-                duration: Duration(milliseconds: 500),
-                reverseDuration: Duration(microseconds: 500),
+                duration: Duration(milliseconds: 250),
+                reverseDuration: Duration(microseconds: 250),
                 switchInCurve: Curves.easeInOut,
                 switchOutCurve: Curves.easeInOut,
                 child:
