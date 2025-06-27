@@ -22,11 +22,12 @@ class MockDatabaseRepository implements DatabaseRepository {
   final List<DJ> _djs = [
     DJ(
       avatarUrl: "https://picsum.photos/101",
-      headUrl: "https://picsum.photos/190",
+      headUrl:
+          "https://images.unsplash.com/photo-1496337589254-7e19d01cec44?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       city: "Berlin",
       rating: 3.5,
       about:
-          "Ich mache sehr tolle Musik und Ich mache sehr tolle Musik und Ich mache sehr tolle Musik und Ich mache sehr tolle Musik",
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.",
       set1Url: "https://soundcloud.com/yourset",
       set2Url: "https://soundcloud.com/yourotherset",
       mediaUrl: [

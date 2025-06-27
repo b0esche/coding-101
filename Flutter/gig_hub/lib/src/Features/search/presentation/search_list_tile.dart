@@ -171,7 +171,7 @@ class _SearchListTileState extends State<SearchListTile> {
               child:
                   isExpanded
                       ? Padding(
-                        padding: const EdgeInsets.only(top: 12),
+                        padding: EdgeInsets.only(top: 12),
                         child: Column(
                           children: [
                             const Divider(),

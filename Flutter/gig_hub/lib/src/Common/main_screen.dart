@@ -262,29 +262,31 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                   ),
                 ),
-                SearchFunctionCard(
-                  onSearchResults: (List<DJ> results) {
-                    setState(() {
-                      _usersDJ = results;
-                      _sortedUsersDJ = List.from(results);
-                      _selectedSortOption = '';
-                    });
-                  },
-                  onSearchLoading: (bool isLoading) {
-                    setState(() {
-                      _isLoading = isLoading;
-                    });
-                  },
-                  onBpmRangeChanged: (List<int>? bpmRange) {
-                    setState(() {
-                      _currentSearchBpmRange = bpmRange;
-                    });
-                  },
-                  onGenresChanged: (List<String>? genres) {
-                    setState(() {
-                      _currentSearchGenres = genres;
-                    });
-                  },
+                RepaintBoundary(
+                  child: SearchFunctionCard(
+                    onSearchResults: (List<DJ> results) {
+                      setState(() {
+                        _usersDJ = results;
+                        _sortedUsersDJ = List.from(results);
+                        _selectedSortOption = '';
+                      });
+                    },
+                    onSearchLoading: (bool isLoading) {
+                      setState(() {
+                        _isLoading = isLoading;
+                      });
+                    },
+                    onBpmRangeChanged: (List<int>? bpmRange) {
+                      setState(() {
+                        _currentSearchBpmRange = bpmRange;
+                      });
+                    },
+                    onGenresChanged: (List<String>? genres) {
+                      setState(() {
+                        _currentSearchGenres = genres;
+                      });
+                    },
+                  ),
                 ),
                 SizedBox(height: 8),
                 Column(
