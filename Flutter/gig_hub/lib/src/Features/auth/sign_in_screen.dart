@@ -330,7 +330,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       settings: LiquidGlassSettings(
                         thickness: 24,
                         refractiveIndex: 1.1,
-                        chromaticAberration: 0.65,
+                        chromaticAberration: 0.35,
                       ),
                       child: ElevatedButton(
                         style: ButtonStyle(
@@ -444,7 +444,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 settings: LiquidGlassSettings(
                   thickness: 20,
                   refractiveIndex: 1.1,
-                  chromaticAberration: 1.2,
+                  chromaticAberration: 0.35,
                 ),
                 child: Shimmer.fromColors(
                   period: Duration(milliseconds: 2600),
