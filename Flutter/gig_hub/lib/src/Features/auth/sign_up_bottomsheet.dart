@@ -1,7 +1,7 @@
 import 'package:gig_hub/src/Common/app_imports.dart';
 
-import 'package:gig_hub/src/Common/settings_screen.dart';
 import 'package:gig_hub/src/Data/auth_repository.dart';
+import 'package:gig_hub/src/Features/profile/booker/presentation/create_profile_screen_booker.dart';
 import 'package:gig_hub/src/Features/profile/dj/presentation/create_profile_dj.dart';
 
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
@@ -120,7 +120,7 @@ class _SignUpSheetState extends State<SignUpSheet> {
               validator: validateName,
               style: TextStyle(color: Palette.glazedWhite),
               decoration: InputDecoration(
-                hintText: "username (not shown)",
+                hintText: "username (not shown on profile)",
                 hintStyle: TextStyle(color: Palette.glazedWhite.o(0.7)),
                 prefixIcon: Icon(
                   Icons.person,
@@ -213,7 +213,7 @@ class _SignUpSheetState extends State<SignUpSheet> {
               settings: LiquidGlassSettings(
                 thickness: 32,
                 refractiveIndex: 1.1,
-                chromaticAberration: 2,
+                chromaticAberration: 1.1,
               ),
               child: SizedBox(
                 width: double.infinity,
@@ -232,7 +232,6 @@ class _SignUpSheetState extends State<SignUpSheet> {
                   ),
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      // TODO: hier Firestore User anlegen
                       if (selected.contains('dj')) {
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
@@ -249,7 +248,12 @@ class _SignUpSheetState extends State<SignUpSheet> {
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
                             builder:
-                                (context) => SettingsScreen(auth: widget.auth),
+                                (context) => CreateProfileScreenBooker(
+                                  repo: widget.repo,
+                                  auth: widget.auth,
+                                  email: _emailController.text,
+                                  pw: _passwordController.text,
+                                ),
                           ),
                         );
                       }

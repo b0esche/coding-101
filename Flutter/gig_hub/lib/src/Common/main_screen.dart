@@ -226,8 +226,10 @@ class _MainScreenState extends State<MainScreen> {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder:
-                                      (context) =>
-                                          SettingsScreen(auth: widget.auth),
+                                      (context) => SettingsScreen(
+                                        repo: widget.repo,
+                                        auth: widget.auth,
+                                      ),
                                   fullscreenDialog: true,
                                 ),
                               );

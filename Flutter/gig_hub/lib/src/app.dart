@@ -60,6 +60,7 @@ class App extends StatelessWidget {
                       return ProfileScreenBooker(
                         booker: args.booker,
                         repo: args.repo,
+                        showEditButton: args.showEditButton,
                       );
                     },
                   );
@@ -110,7 +111,7 @@ class App extends StatelessWidget {
           },
           routes: {
             '/main': (context) => MainScreen(repo: repo, auth: auth),
-            '/settings': (context) => SettingsScreen(auth: auth),
+            '/settings': (context) => SettingsScreen(repo: repo, auth: auth),
           },
         );
       },

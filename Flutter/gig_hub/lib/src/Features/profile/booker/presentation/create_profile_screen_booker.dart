@@ -5,12 +5,12 @@ import "package:gig_hub/src/Data/auth_repository.dart";
 import "../../../../Common/app_imports.dart";
 import "../../../../Common/app_imports.dart" as http;
 
-class CreateProfileScreenDJ extends StatefulWidget {
+class CreateProfileScreenBooker extends StatefulWidget {
   final DatabaseRepository repo;
   final AuthRepository auth;
   final String email;
   final String pw;
-  const CreateProfileScreenDJ({
+  const CreateProfileScreenBooker({
     super.key,
     required this.repo,
     required this.auth,
@@ -19,30 +19,29 @@ class CreateProfileScreenDJ extends StatefulWidget {
   });
 
   @override
-  State<CreateProfileScreenDJ> createState() => _CreateProfileScreenDJState();
+  State<CreateProfileScreenBooker> createState() =>
+      _CreateProfileScreenBookerState();
 }
 
-class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
+class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
   DatabaseRepository repo = MockDatabaseRepository();
   final _formKey = GlobalKey<FormState>();
   late final _nameController = TextEditingController();
   late final _locationController = TextEditingController(text: 'your city');
-  late final _bpmController = TextEditingController(text: 'your tempo');
+
   late final _aboutController = TextEditingController();
   late final _infoController = TextEditingController();
-  late final _soundcloudControllerOne = TextEditingController();
-  late final _soundcloudControllerTwo = TextEditingController();
+
   final _locationFocusNode = FocusNode();
   String? headUrl;
   String? _locationError;
-  String? bpmMin;
-  String? bpmMax;
+
   String? about;
   String? info;
-  List<String>? genres;
+
   List<String>? mediaUrl;
   int index = 0;
-  bool isSoundcloudConnected = false;
+
   @override
   void initState() {
     _locationFocusNode.addListener(_onLocationFocusChange);
@@ -57,7 +56,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
     _aboutController.dispose();
     _infoController.dispose();
     _locationController.dispose();
-    _bpmController.dispose();
+
     super.dispose();
   }
 
@@ -134,39 +133,6 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
         _formKey.currentState?.validate();
       });
     }
-  }
-
-  Future<void> _showGenreDialog() async {
-    final result = await showDialog<List<String>>(
-      context: context,
-      builder:
-          (context) =>
-              GenreSelectionDialog(initialSelectedGenres: genres ?? []),
-    );
-    if (result != null && result.isNotEmpty) {
-      setState(() {
-        genres = result;
-      });
-    }
-  }
-
-  String? soundcloudValidator(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'enter url to your set on soundcloud';
-    }
-
-    final uri = Uri.tryParse(value);
-    if (uri == null ||
-        !uri.hasAbsolutePath ||
-        !(uri.isScheme('http') || uri.isScheme('https'))) {
-      return 'invalid url';
-    }
-
-    if (!value.contains('soundcloud.com')) {
-      return 'invalid url';
-    }
-
-    return null;
   }
 
   @override
@@ -422,51 +388,22 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                               padding: const EdgeInsets.all(6.0),
                               child: Row(
                                 children: [
-                                  const Icon(Icons.speed, size: 24),
+                                  const Icon(
+                                    Icons.house_siding_rounded,
+                                    size: 24,
+                                  ),
                                   const SizedBox(width: 4),
                                   SizedBox(
                                     width: 100,
                                     height: 24,
                                     child: TextFormField(
-                                      readOnly: true,
                                       textAlign: TextAlign.center,
-                                      onTap: () async {
-                                        final result = await showDialog<
-                                          List<int>
-                                        >(
-                                          context: context,
-                                          builder:
-                                              (context) => BpmSelectionDialog(
-                                                intialSelectedBpm: [
-                                                  int.tryParse(
-                                                        bpmMin?.toString() ??
-                                                            '',
-                                                      ) ??
-                                                      100,
-                                                  int.tryParse(
-                                                        bpmMax?.toString() ??
-                                                            '',
-                                                      ) ??
-                                                      130,
-                                                ],
-                                              ),
-                                        );
-
-                                        if (result != null &&
-                                            result.length == 2) {
-                                          setState(() {
-                                            bpmMin = result[0].toString();
-                                            bpmMax = result[1].toString();
-                                            _bpmController.text =
-                                                '${result[0]}-${result[1]} bpm';
-                                          });
-                                        }
-                                      },
+                                      onTap: () async {},
                                       style: TextStyle(
                                         color: Palette.glazedWhite,
                                         fontSize: 10,
                                       ),
-                                      controller: _bpmController,
+
                                       decoration: InputDecoration(
                                         contentPadding: EdgeInsets.only(
                                           bottom: 12,
@@ -555,45 +492,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                         ],
                       ),
                       const SizedBox(height: 40),
-                      Center(
-                        child: Wrap(
-                          spacing: 16,
-                          runSpacing: 8,
-                          alignment: WrapAlignment.center,
-                          children: [
-                            if (genres != null && genres!.isNotEmpty) ...[
-                              ...genres!.map(
-                                (genre) => GenreBubble(genre: genre),
-                              ),
-                            ],
-                            Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Palette.forgedGold,
-                                  width: 2.7,
-                                ),
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              child: GestureDetector(
-                                onTap: _showGenreDialog,
-                                child: const GenreBubble(
-                                  genre: " edit genres ",
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 48),
-                      IndexedStack(
-                        index: isSoundcloudConnected ? 0 : 1,
-                        children: [
-                          soundcloudFields(),
-                          soundcloudConnectButton(),
-                        ],
-                      ),
 
-                      SizedBox(height: isSoundcloudConnected ? 72 : 0),
                       (mediaUrl != null && mediaUrl!.isNotEmpty)
                           ? ClipRRect(
                             borderRadius: BorderRadius.circular(8),
@@ -737,35 +636,31 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                         child: SizedBox(
                           height: 100,
                           child: OutlinedButton(
-                            onPressed: () async {
+                            onPressed: () {
                               FocusManager.instance.primaryFocus?.unfocus();
                               if (headUrl!.isNotEmpty &&
-                                  bpmMin!.isNotEmpty &&
-                                  bpmMax!.isNotEmpty &&
                                   _nameController.text.isNotEmpty) {
-                                await repo.createDJ(
-                                  DJ(
-                                    genres: genres!,
-                                    headUrl: headUrl!,
-                                    avatarUrl: 'https://picsum.photos/100',
-                                    bpmMin: int.parse(bpmMin!),
-                                    bpmMax: int.parse(bpmMax!),
-                                    about: _aboutController.text,
-                                    set1Url: 'set1Url',
-                                    set2Url: 'set2Url',
-                                    mediaUrl: mediaUrl!,
-                                    info: _infoController.text,
-                                    userId: '',
-                                    name: _nameController.text,
-                                    email: widget.email,
-                                    city: _locationController.text,
-                                  ),
-                                );
-
-                                await widget.auth
-                                    .createUserWithEmailAndPassword(
-                                      widget.email,
-                                      widget.pw,
+                                repo
+                                    .createBooker(
+                                      Booker(
+                                        headUrl: headUrl ?? "",
+                                        avatarUrl: "avatarUrl",
+                                        city: _locationController.text,
+                                        about: _aboutController.text,
+                                        info: _infoController.text,
+                                        type: 'club',
+                                        mediaUrl: mediaUrl,
+                                        userId: 'userId',
+                                        name: _nameController.text,
+                                        email: widget.email,
+                                      ),
+                                    )
+                                    .then(
+                                      (value) => widget.auth
+                                          .createUserWithEmailAndPassword(
+                                            widget.email,
+                                            widget.pw,
+                                          ),
                                     );
                               }
                             },
@@ -818,151 +713,6 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Column soundcloudFields() {
-    return Column(
-      children: [
-        Column(
-          spacing: 8,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              "first SoundCloud set link", // TODO: artist info von soundcloud api fetchen
-              style: GoogleFonts.sometypeMono(
-                textStyle: TextStyle(
-                  color: Palette.glazedWhite,
-                  fontWeight: FontWeight.w600,
-                  decoration: TextDecoration.underline,
-                  decorationColor: Palette.glazedWhite,
-                  decorationStyle: TextDecorationStyle.dotted,
-                  decorationThickness: 2,
-                ),
-              ),
-            ),
-            Center(
-              child: Container(
-                width: 260,
-                height: 48,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Palette.glazedWhite, width: 1),
-                  borderRadius: BorderRadius.circular(8),
-                  color: Palette.glazedWhite.o(0.2),
-                ),
-                child: TextFormField(
-                  style: TextStyle(
-                    color: Palette.glazedWhite,
-                    fontSize: 10,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  controller: _soundcloudControllerOne,
-                  validator: soundcloudValidator,
-                  autovalidateMode: AutovalidateMode.onUnfocus,
-
-                  decoration: InputDecoration(
-                    prefixIcon:
-                        _soundcloudControllerOne.text.isEmpty
-                            ? null
-                            : RemoveButton(
-                              soundcloudController: _soundcloudControllerOne,
-                            ),
-
-                    suffixIcon: PasteButton(
-                      soundcloudController: _soundcloudControllerOne,
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Palette.forgedGold,
-                        width: 3,
-                      ),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: Palette.forgedGold),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: 24),
-        Column(
-          spacing: 8,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              "second SoundCloud set link", // TODO: artist info von soundcloud api fetchen
-              style: GoogleFonts.sometypeMono(
-                textStyle: TextStyle(
-                  color: Palette.glazedWhite,
-                  fontWeight: FontWeight.w600,
-                  decoration: TextDecoration.underline,
-                  decorationColor: Palette.glazedWhite,
-                  decorationStyle: TextDecorationStyle.dotted,
-                  decorationThickness: 2,
-                ),
-              ),
-            ),
-            Center(
-              child: Container(
-                width: 260,
-                height: 48,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Palette.glazedWhite, width: 1),
-                  borderRadius: BorderRadius.circular(8),
-                  color: Palette.glazedWhite.o(0.2),
-                ),
-                child: TextFormField(
-                  style: TextStyle(
-                    color: Palette.glazedWhite,
-                    fontSize: 10,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  controller: _soundcloudControllerTwo,
-                  validator: soundcloudValidator,
-                  autovalidateMode: AutovalidateMode.onUnfocus,
-                  decoration: InputDecoration(
-                    prefixIcon:
-                        _soundcloudControllerTwo.text.isEmpty
-                            ? null
-                            : RemoveButton(
-                              soundcloudController: _soundcloudControllerTwo,
-                            ),
-                    suffixIcon: PasteButton(
-                      soundcloudController: _soundcloudControllerTwo,
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Palette.forgedGold,
-                        width: 3,
-                      ),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: Palette.forgedGold),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget soundcloudConnectButton() {
-    return Center(
-      child: ElevatedButton(
-        onPressed: () {
-          setState(() {
-            isSoundcloudConnected = !isSoundcloudConnected;
-          });
-        },
-        child: Text('moin'),
       ),
     );
   }

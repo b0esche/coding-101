@@ -9,14 +9,14 @@ import 'package:image_picker/image_picker.dart';
 
 class SettingsScreen extends StatefulWidget {
   final AuthRepository auth;
-  const SettingsScreen({super.key, required this.auth});
+  final DatabaseRepository repo;
+  const SettingsScreen({super.key, required this.repo, required this.auth});
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  final DatabaseRepository _databaseRepository = MockDatabaseRepository();
   repo.AppUser? _currentUser;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
@@ -30,7 +30,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _loadCurrentUser() async {
-    final user = await _databaseRepository.getUserById("dj_lorem");
+    final user = await widget.repo.getUserById("dj_lorem");
 
     setState(() {
       _currentUser = user;
@@ -207,7 +207,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
               FilledButton(
                 onPressed: () {},
-                child: const Text("change password"),
+                child: const Text("reset password"),
               ),
               FilledButton(
                 onPressed: () {},

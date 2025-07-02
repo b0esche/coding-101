@@ -8,7 +8,7 @@ export 'package:gig_hub/src/Data/user.dart';
 export 'package:gig_hub/src/Features/chat/presentation/chat_screen.dart';
 export 'package:gig_hub/src/Features/profile/dj/presentation/audio_player.dart';
 export 'package:gig_hub/src/Features/profile/dj/presentation/inputfield_buttons.dart';
-export 'package:gig_hub/src/Features/profile/dj/presentation/star_rating.dart';
+export 'package:gig_hub/src/Features/profile/dj/presentation/star_rating_dj.dart';
 export 'package:gig_hub/src/Features/search/presentation/widgets/bpm_selection_dialog.dart';
 export 'package:gig_hub/src/Features/search/presentation/widgets/genre_selection_dialog.dart';
 export 'package:gig_hub/src/Theme/palette.dart';

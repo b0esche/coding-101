@@ -356,10 +356,25 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         onPressed: () async {
-                          await widget.auth.signInWithEmailAndPassword(
-                            _loginEmailController.text,
-                            _loginPasswordController.text,
-                          );
+                          try {
+                            await widget.auth.signInWithEmailAndPassword(
+                              _loginEmailController.text,
+                              _loginPasswordController.text,
+                            );
+                          } catch (e) {
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                backgroundColor: Palette.forgedGold,
+                                content: Center(
+                                  child: Text(
+                                    "login error: invalid credentials!",
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
                         },
                         child: Text(
                           "log in",

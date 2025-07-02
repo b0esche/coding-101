@@ -133,7 +133,7 @@ class ChatScreenState extends State<ChatScreen> {
                               dj: widget.chatPartner as DJ,
                               repo: widget.repo,
                               showChatButton: false,
-                              showEditButton: false,
+                              showEditButton: true,
                             ),
                       ),
                     );
@@ -145,6 +145,7 @@ class ChatScreenState extends State<ChatScreen> {
                             (_) => ProfileScreenBooker(
                               booker: widget.chatPartner as Booker,
                               repo: widget.repo,
+                              showEditButton: false,
                             ),
                       ),
                     );
