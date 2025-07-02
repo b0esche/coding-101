@@ -1,13 +1,23 @@
 import "dart:io";
 
 import "package:gig_hub/src/Common/main_screen.dart";
+import "package:gig_hub/src/Data/auth_repository.dart";
 
 import "../../../../Common/app_imports.dart";
 import "../../../../Common/app_imports.dart" as http;
 
 class CreateProfileScreenDJ extends StatefulWidget {
   final DatabaseRepository repo;
-  const CreateProfileScreenDJ({super.key, required this.repo});
+  final AuthRepository auth;
+  final String email;
+  final String pw;
+  const CreateProfileScreenDJ({
+    super.key,
+    required this.repo,
+    required this.auth,
+    required this.email,
+    required this.pw,
+  });
 
   @override
   State<CreateProfileScreenDJ> createState() => _CreateProfileScreenDJState();
@@ -734,30 +744,32 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                   bpmMin!.isNotEmpty &&
                                   bpmMax!.isNotEmpty &&
                                   _nameController.text.isNotEmpty) {
-                                repo.createDJ(
-                                  DJ(
-                                    genres: genres!,
-                                    headUrl: headUrl!,
-                                    avatarUrl: 'https://picsum.photos/100',
-                                    bpmMin: int.parse(bpmMin!),
-                                    bpmMax: int.parse(bpmMax!),
-                                    about: _aboutController.text,
-                                    set1Url: 'set1Url',
-                                    set2Url: 'set2Url',
-                                    mediaUrl: mediaUrl!,
-                                    info: _infoController.text,
-                                    userId: '',
-                                    name: _nameController.text,
-                                    email: 'email',
-                                    city: _locationController.text,
-                                  ),
-                                );
-                                Navigator.of(context).pushReplacement(
-                                  MaterialPageRoute(
-                                    builder:
-                                        (context) => MainScreen(repo: repo),
-                                  ),
-                                );
+                                repo
+                                    .createDJ(
+                                      DJ(
+                                        genres: genres!,
+                                        headUrl: headUrl!,
+                                        avatarUrl: 'https://picsum.photos/100',
+                                        bpmMin: int.parse(bpmMin!),
+                                        bpmMax: int.parse(bpmMax!),
+                                        about: _aboutController.text,
+                                        set1Url: 'set1Url',
+                                        set2Url: 'set2Url',
+                                        mediaUrl: mediaUrl!,
+                                        info: _infoController.text,
+                                        userId: '',
+                                        name: _nameController.text,
+                                        email: widget.email,
+                                        city: _locationController.text,
+                                      ),
+                                    )
+                                    .then(
+                                      (value) => widget.auth
+                                          .createUserWithEmailAndPassword(
+                                            widget.email,
+                                            widget.pw,
+                                          ),
+                                    );
                               }
                             },
                             style: ButtonStyle(

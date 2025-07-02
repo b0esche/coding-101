@@ -1,5 +1,6 @@
 import 'dart:io'; // Wichtig für FileImage
 import 'package:flutter/material.dart';
+import 'package:gig_hub/src/Data/auth_repository.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
 import 'package:gig_hub/src/Data/user.dart' as repo;
 import 'package:gig_hub/src/Theme/palette.dart';
@@ -7,7 +8,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 
 class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({super.key});
+  final AuthRepository auth;
+  const SettingsScreen({super.key, required this.auth});
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
@@ -142,7 +144,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 4),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -202,7 +204,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
+
               FilledButton(
                 onPressed: () {},
                 child: const Text("change password"),
@@ -214,6 +216,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
               FilledButton(
                 onPressed: () {},
                 child: const Text("delete account"),
+              ),
+              FilledButton(
+                onPressed: () async {
+                  await widget.auth.signOut();
+                },
+                child: const Text("log out"),
               ),
               Align(
                 alignment: Alignment.bottomRight,

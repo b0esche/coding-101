@@ -1,13 +1,15 @@
 import 'package:gig_hub/src/Common/app_imports.dart';
 
 import 'package:gig_hub/src/Common/settings_screen.dart';
+import 'package:gig_hub/src/Data/auth_repository.dart';
 import 'package:gig_hub/src/Features/profile/dj/presentation/create_profile_dj.dart';
 
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 
 class SignUpSheet extends StatefulWidget {
   final DatabaseRepository repo;
-  const SignUpSheet({super.key, required this.repo});
+  final AuthRepository auth;
+  const SignUpSheet({super.key, required this.repo, required this.auth});
 
   @override
   State<SignUpSheet> createState() => _SignUpSheetState();
@@ -21,7 +23,8 @@ class _SignUpSheetState extends State<SignUpSheet> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -183,7 +186,7 @@ class _SignUpSheetState extends State<SignUpSheet> {
             ),
             const SizedBox(height: 24),
             TextFormField(
-              controller: _confirmController,
+              controller: _confirmPasswordController,
               obscureText: isObscured ? true : false,
               validator:
                   (value) =>
@@ -234,14 +237,19 @@ class _SignUpSheetState extends State<SignUpSheet> {
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
                             builder:
-                                (context) =>
-                                    CreateProfileScreenDJ(repo: widget.repo),
+                                (context) => CreateProfileScreenDJ(
+                                  repo: widget.repo,
+                                  auth: widget.auth,
+                                  email: _emailController.text,
+                                  pw: _passwordController.text,
+                                ),
                           ),
                         );
                       } else if (selected.contains('booker')) {
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
-                            builder: (context) => SettingsScreen(),
+                            builder:
+                                (context) => SettingsScreen(auth: widget.auth),
                           ),
                         );
                       }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gig_hub/src/Common/main_screen.dart';
+import 'package:gig_hub/src/Data/auth_repository.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
 import 'package:gig_hub/src/Features/auth/sign_up_bottomsheet.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
@@ -11,7 +12,8 @@ import '../../Common/app_imports.dart' as http;
 
 class LoginScreen extends StatefulWidget {
   final DatabaseRepository repo;
-  const LoginScreen({super.key, required this.repo});
+  final AuthRepository auth;
+  const LoginScreen({super.key, required this.repo, required this.auth});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -209,7 +211,10 @@ class _LoginScreenState extends State<LoginScreen> {
                               context: context,
                               isScrollControlled: true,
                               builder: (BuildContext context) {
-                                return SignUpSheet(repo: widget.repo);
+                                return SignUpSheet(
+                                  repo: widget.repo,
+                                  auth: widget.auth,
+                                );
                               },
                             );
                           },
@@ -350,12 +355,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         ),
-                        onPressed: () {
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder:
-                                  (context) => MainScreen(repo: widget.repo),
-                            ),
+                        onPressed: () async {
+                          await widget.auth.signInWithEmailAndPassword(
+                            _loginEmailController.text,
+                            _loginPasswordController.text,
                           );
                         },
                         child: Text(
@@ -472,7 +475,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () {
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
-                            builder: (context) => MainScreen(repo: widget.repo),
+                            builder:
+                                (context) => MainScreen(
+                                  repo: widget.repo,
+                                  auth: widget.auth,
+                                ),
                           ),
                         );
                       },

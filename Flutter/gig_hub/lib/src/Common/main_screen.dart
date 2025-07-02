@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gig_hub/src/Common/settings_screen.dart';
+import 'package:gig_hub/src/Data/auth_repository.dart';
 import 'package:gig_hub/src/Features/chat/presentation/chat_list_screen.dart';
 import 'package:gig_hub/src/Features/search/presentation/search_function_card.dart';
 import 'package:gig_hub/src/Features/search/presentation/search_list_tile.dart';
@@ -10,8 +11,9 @@ import 'package:gig_hub/src/Data/database_repository.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key, required this.repo});
+  const MainScreen({super.key, required this.repo, required this.auth});
   final DatabaseRepository repo;
+  final AuthRepository auth;
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -223,7 +225,9 @@ class _MainScreenState extends State<MainScreen> {
                             onTap: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (context) => const SettingsScreen(),
+                                  builder:
+                                      (context) =>
+                                          SettingsScreen(auth: widget.auth),
                                   fullscreenDialog: true,
                                 ),
                               );
