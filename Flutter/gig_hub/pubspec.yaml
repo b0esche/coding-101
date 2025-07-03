@@ -44,6 +44,7 @@ flutter:
     - assets/images/default_avatar.jpg
     - assets/icons/
     - .env
+    - assets/images/
 
 flutter_launcher_icons:
   android: "launcher_icon"

@@ -3,6 +3,7 @@ import 'package:gig_hub/src/Common/main_screen.dart';
 import 'package:gig_hub/src/Data/auth_repository.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
 import 'package:gig_hub/src/Features/auth/sign_up_bottomsheet.dart';
+import 'package:gig_hub/src/Features/profile/dj/presentation/create_profile_dj.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
@@ -109,7 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             spacing: 8,
             children: [
-              SizedBox(height: 72),
+              SizedBox(height: 64),
               SizedBox(
                 height: 110,
                 width: 110,
@@ -410,22 +411,21 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ],
               ),
-
+              SizedBox(height: 2),
               SizedBox(
-                height: 48,
-                width: 280,
+                height: 72,
+                width: 300,
                 child: Center(
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(
                         onPressed: () {
                           debugPrint("mit apple einloggen");
                         },
-                        icon: Icon(
-                          Icons.apple,
-                          color: Palette.glazedWhite,
-                          size: 48,
+                        icon: Image.asset(
+                          'assets/images/apple_logo.png',
+                          fit: BoxFit.contain,
                         ),
                       ),
                       IconButton(
@@ -433,32 +433,38 @@ class _LoginScreenState extends State<LoginScreen> {
                           try {
                             await widget.auth.signInWithGoogle();
                           } catch (e) {
-                            debugPrint("mit google einloggen");
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                backgroundColor: Palette.forgedGold,
+                                content: Center(
+                                  child: Text("access failed, please retry!"),
+                                ),
+                              ),
+                            );
                           }
                         },
-                        icon: Icon(
-                          Icons.g_mobiledata,
-                          color: Palette.glazedWhite,
-                          size: 56,
+                        icon: Image.asset(
+                          'assets/images/google_logo.png',
+                          fit: BoxFit.contain,
                         ),
                       ),
                       IconButton(
                         onPressed: () {
                           debugPrint("mit facebook einloggen");
                         },
-                        icon: Icon(
-                          Icons.facebook,
-                          color: Palette.glazedWhite,
-                          size: 44,
+                        icon: Image.asset(
+                          'assets/images/facebook_logo.png',
+                          fit: BoxFit.contain,
                         ),
                       ),
                     ],
                   ),
                 ),
               ),
-              SizedBox(height: 16),
+              SizedBox(height: 8),
               Divider(color: Palette.glazedWhite.o(0.5)),
-              SizedBox(height: 24),
+              SizedBox(height: 20),
               LiquidGlass(
                 shape: LiquidRoundedRectangle(
                   borderRadius: Radius.circular(16),
