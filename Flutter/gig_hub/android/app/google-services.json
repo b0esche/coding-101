@@ -12,7 +12,20 @@
           "package_name": "com.example.gig_hub"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "753984654569-4rqmmfs1lqcre7aj8lrt7149j6ncq2ek.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gig_hub",
+            "certificate_hash": "605d147a16392c3ee306d5c42e1afa7b704d2256"
+          }
+        },
+        {
+          "client_id": "753984654569-b13kjdjur7pjm9an46f3qt0aj36qdps6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDVCwA1EjSdy_h8lHBXpXq2DZYS4FmIM8Y"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "753984654569-b13kjdjur7pjm9an46f3qt0aj36qdps6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "753984654569-9da6clav6eamkjt0l2b27mehkl2l1spj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.gigHub"
+              }
+            }
+          ]
         }
       }
     }

@@ -109,7 +109,6 @@ class _SearchListTileState extends State<SearchListTile> {
                                   wordSpacing: -4,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 20,
-
                                   overflow:
                                       isExpanded
                                           ? TextOverflow.fade
@@ -117,7 +116,7 @@ class _SearchListTileState extends State<SearchListTile> {
                                   shadows: [
                                     Shadow(
                                       offset: Offset(0.8, 0.8),
-                                      color: Palette.shadowGrey,
+                                      color: Palette.shadowGrey.o(0.65),
                                       blurRadius: 4,
                                     ),
                                   ],

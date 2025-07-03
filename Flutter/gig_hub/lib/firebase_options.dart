@@ -63,6 +63,9 @@ class DefaultFirebaseOptions {
     messagingSenderId: '753984654569',
     projectId: 'gig-hub-8ac24',
     storageBucket: 'gig-hub-8ac24.firebasestorage.app',
+    androidClientId: '753984654569-4rqmmfs1lqcre7aj8lrt7149j6ncq2ek.apps.googleusercontent.com',
+    iosClientId: '753984654569-9da6clav6eamkjt0l2b27mehkl2l1spj.apps.googleusercontent.com',
     iosBundleId: 'com.example.gigHub',
   );
+
 }
