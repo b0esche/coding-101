@@ -452,8 +452,20 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       IconButton(
-                        onPressed: () {
-                          debugPrint("mit facebook einloggen");
+                        onPressed: () async {
+                          try {
+                            await widget.auth.signInWithFacebook();
+                          } catch (e) {
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                backgroundColor: Palette.forgedGold,
+                                content: Center(
+                                  child: Text("access failed, please retry!"),
+                                ),
+                              ),
+                            );
+                          }
                         },
                         icon: Image.asset(
                           'assets/images/facebook_logo.png',

@@ -31,8 +31,6 @@
 		<key>UISupportedInterfaceOrientations</key>
 		<array>
 			<string>UIInterfaceOrientationPortrait</string>
-			<string>UIInterfaceOrientationLandscapeLeft</string>
-			<string>UIInterfaceOrientationLandscapeRight</string>
 		</array>
 		<key>UISupportedInterfaceOrientations~ipad</key>
 		<array>
@@ -53,27 +51,41 @@
 		<string>Need permission to access your camera to take a new image.</string>
 		<key>ITSAppUsesNonExemptEncryption</key>
 		<false/>
+		<!-- Zusammengeführte CFBundleURLTypes -->
 		<key>CFBundleURLTypes</key>
 		<array>
-  			<dict>
-    			<key>CFBundleURLSchemes</key>
-    			<array>
-      				<string>gighub</string>
-    			</array>
-  			</dict>
+			<!-- Eigene URL-Scheme -->
+			<dict>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>gighub</string>
+				</array>
+			</dict>
+			<!-- Google URL-Scheme -->
+			<dict>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>com.googleusercontent.apps.753984654569-9da6clav6eamkjt0l2b27mehkl2l1spj</string>
+				</array>
+			</dict>
+			<!-- Facebook URL-Scheme -->
+			<dict>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>fb24351049274489890</string>
+				</array>
+			</dict>
 		</array>
 		<key>GIDClientID</key>
-    	<string>753984654569-9da6clav6eamkjt0l2b27mehkl2l1spj.apps.googleusercontent.com</string>
-   		<key>CFBundleURLTypes</key>
-    	<array>
-      		<dict>
-       			<key>CFBundleTypeRole</key>
-       		 	<string>Editor</string>
-        		<key>CFBundleURLSchemes</key>
-       		 	<array>
-          			<string>com.googleusercontent.apps.753984654569-9da6clav6eamkjt0l2b27mehkl2l1spj</string>
-       		 	</array>
-      		</dict>
-   	 	</array>
+		<string>753984654569-9da6clav6eamkjt0l2b27mehkl2l1spj.apps.googleusercontent.com</string>
+		<!-- Facebook Keys -->
+		<key>FacebookAppID</key>
+		<string>24351049274489890</string>
+		<key>FacebookClientToken</key>
+		<string>6b51d6e23be656eb0ae5c486d5384037</string>
+		<key>FacebookDisplayName</key>
+		<string>Gig Hub</string>
 	</dict>
 </plist>
