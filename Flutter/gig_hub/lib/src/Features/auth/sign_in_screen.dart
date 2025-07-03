@@ -430,8 +430,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       IconButton(
                         onPressed: () async {
-                          await widget.auth.signInWithGoogle();
-                          debugPrint("mit google einloggen");
+                          try {
+                            await widget.auth.signInWithGoogle();
+                          } catch (e) {
+                            debugPrint("mit google einloggen");
+                          }
                         },
                         icon: Icon(
                           Icons.g_mobiledata,
