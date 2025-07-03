@@ -3,7 +3,6 @@ import 'package:gig_hub/src/Common/main_screen.dart';
 import 'package:gig_hub/src/Data/auth_repository.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
 import 'package:gig_hub/src/Features/auth/sign_up_bottomsheet.dart';
-import 'package:gig_hub/src/Features/profile/dj/presentation/create_profile_dj.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
@@ -110,7 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             spacing: 8,
             children: [
-              SizedBox(height: 64),
+              SizedBox(height: 52),
               SizedBox(
                 height: 110,
                 width: 110,
@@ -438,7 +437,10 @@ class _LoginScreenState extends State<LoginScreen> {
                               SnackBar(
                                 backgroundColor: Palette.forgedGold,
                                 content: Center(
-                                  child: Text("access failed, please retry!"),
+                                  child: Text(
+                                    "access failed, please retry!",
+                                    style: TextStyle(fontSize: 16),
+                                  ),
                                 ),
                               ),
                             );
