@@ -461,10 +461,14 @@ class _LoginScreenState extends State<LoginScreen> {
                               SnackBar(
                                 backgroundColor: Palette.forgedGold,
                                 content: Center(
-                                  child: Text("access failed, please retry!"),
+                                  child: Text(
+                                    "access failed, please retry!",
+                                    style: TextStyle(fontSize: 16),
+                                  ),
                                 ),
                               ),
                             );
+                            debugPrint("$e");
                           }
                         },
                         icon: Image.asset(
