@@ -757,7 +757,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                     info: _infoController.text,
                                     userId: '',
                                     name: _nameController.text,
-                                    email: widget.email,
+
                                     city: _locationController.text,
                                   ),
                                 );

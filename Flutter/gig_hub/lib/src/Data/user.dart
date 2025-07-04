@@ -3,13 +3,13 @@ import 'package:gig_hub/src/Features/profile/dj/presentation/profile_screen_dj.d
 
 abstract class AppUser {
   final String userId;
-  String name, email, about, info, city, headUrl, avatarUrl;
+  String name, about, info, city, headUrl, avatarUrl;
   final double? rating;
 
   AppUser({
     required this.userId,
     required this.name,
-    required this.email,
+
     required this.headUrl,
     required this.avatarUrl,
     required this.city,
@@ -25,10 +25,6 @@ abstract class AppUser {
     bool showEditButton, {
     AppUser? currentUser,
   });
-
-  void updateEmail(AppUser? currentUser, String newEmail) {
-    email = newEmail;
-  }
 }
 
 class DJ extends AppUser {
@@ -51,7 +47,6 @@ class DJ extends AppUser {
     super.rating,
     required super.userId,
     required super.name,
-    required super.email,
     required super.city,
   });
   @override
@@ -96,7 +91,6 @@ class Booker extends AppUser {
     required this.mediaUrl,
     required super.userId,
     required super.name,
-    required super.email,
   });
 
   @override

@@ -652,7 +652,6 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                                         mediaUrl: mediaUrl,
                                         userId: 'userId',
                                         name: _nameController.text,
-                                        email: widget.email,
                                       ),
                                     )
                                     .then(

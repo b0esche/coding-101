@@ -4,6 +4,8 @@ import 'package:gig_hub/src/Data/auth_repository.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class FirebaseAuthRepository implements AuthRepository {
+  // sign up w/ email ###
+
   @override
   Future<void> createUserWithEmailAndPassword(String email, String pw) async {
     await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -11,6 +13,8 @@ class FirebaseAuthRepository implements AuthRepository {
       password: pw,
     );
   }
+
+  // sign in w/ email ###
 
   @override
   Future<void> signInWithEmailAndPassword(String email, String pw) async {
@@ -20,12 +24,14 @@ class FirebaseAuthRepository implements AuthRepository {
     );
   }
 
+  // sign in/up w/ apple ### TODO: impl. APPLE SIGN IN
+
   @override
-  Future<void> signOut() async {
-    await FirebaseAuth.instance.signOut();
-    await FacebookAuth.instance.logOut();
-    await GoogleSignIn.instance.signOut();
+  Future<void> signInWithApple() async {
+    //
   }
+
+  // sign in/up w/ google ###
 
   @override
   Future<void> signInWithGoogle() async {
@@ -39,6 +45,8 @@ class FirebaseAuthRepository implements AuthRepository {
     );
     await FirebaseAuth.instance.signInWithCredential(credential);
   }
+
+  // sign in/up w/ facebook ###
 
   @override
   Future<void> signInWithFacebook() async {
@@ -54,6 +62,17 @@ class FirebaseAuthRepository implements AuthRepository {
       throw Exception('Facebook login failed: ${result.status}');
     }
   }
+
+  // sign out all ###
+
+  @override
+  Future<void> signOut() async {
+    await FirebaseAuth.instance.signOut();
+    await GoogleSignIn.instance.signOut();
+    await FacebookAuth.instance.logOut();
+  }
+
+  // user stream ###
 
   @override
   Stream<User?> authStateChanges() {

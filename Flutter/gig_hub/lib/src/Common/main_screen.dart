@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gig_hub/src/Common/custom_nav_bar.dart';
 import 'package:gig_hub/src/Common/settings_screen.dart';
 import 'package:gig_hub/src/Data/auth_repository.dart';
 import 'package:gig_hub/src/Features/chat/presentation/chat_list_screen.dart';
@@ -26,7 +27,7 @@ class _MainScreenState extends State<MainScreen> {
   List<DJ> _usersDJ = [];
   List<DJ> _sortedUsersDJ = [];
   int _selectedIndex = 0;
-  AppUser? _loggedInUser;
+  DJ? _loggedInUser;
   late DatabaseRepository _repo;
 
   List<int>? _currentSearchBpmRange;
@@ -426,26 +427,26 @@ class _MainScreenState extends State<MainScreen> {
             ),
           ),
         ),
-        bottomNavigationBar: SafeArea(
-          child: BottomNavigationBar(
-            elevation: 4,
-            onTap: _onItemTapped,
-            currentIndex: _selectedIndex,
-            type: BottomNavigationBarType.fixed,
-            backgroundColor: Palette.glazedWhite,
-            selectedItemColor: Palette.primalBlack,
-            unselectedItemColor: Palette.primalBlack,
-            items: const [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.person),
-                label: "profile",
+        bottomNavigationBar: CustomNavBar(
+          repo: widget.repo,
+          auth: widget.auth,
+          dj:
+              _loggedInUser ??
+              DJ(
+                genres: [],
+                headUrl: '',
+                avatarUrl: 'avatarUrl',
+                bpmMin: 120,
+                bpmMax: 180,
+                about: "about",
+                set1Url: "set1Url",
+                set2Url: "Url",
+                mediaUrl: ["mediaUrl"],
+                info: "info",
+                userId: "userId",
+                name: "name",
+                city: 'Berlin',
               ),
-              BottomNavigationBarItem(icon: Icon(Icons.chat), label: "chats"),
-            ],
-            selectedFontSize: 12,
-            unselectedFontSize: 12,
-            iconSize: 22,
-          ),
         ),
       ),
     );

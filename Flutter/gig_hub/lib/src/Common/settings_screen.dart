@@ -34,7 +34,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     setState(() {
       _currentUser = user;
-      _emailController.text = _currentUser?.email ?? "";
+      // _emailController.text = _currentUser?.email ?? "";
     });
   }
 
@@ -168,7 +168,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         onFieldSubmitted: (newValue) {
                           if (_formKey.currentState!.validate() &&
                               _currentUser != null) {
-                            _currentUser!.updateEmail(_currentUser, newValue);
+                            // _currentUser!.updateEmail(_currentUser, newValue);
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 backgroundColor: Palette.forgedGold,

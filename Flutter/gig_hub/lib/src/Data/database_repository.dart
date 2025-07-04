@@ -41,7 +41,6 @@ class MockDatabaseRepository implements DatabaseRepository {
       bpmMax: 150,
       userId: "dj_lorem",
       name: "DJ Lorem Ipsum",
-      email: "loremipsum@email.com",
     ),
     DJ(
       avatarUrl: "https://picsum.photos/102",
@@ -58,7 +57,6 @@ class MockDatabaseRepository implements DatabaseRepository {
       bpmMax: 135,
       userId: "dj_bobo",
       name: "DJ Bobo",
-      email: "loremipsum@email.com",
     ),
     DJ(
       avatarUrl: "https://picsum.photos/103",
@@ -82,7 +80,6 @@ class MockDatabaseRepository implements DatabaseRepository {
       bpmMax: 160,
       userId: "dj_claudio",
       name: "Claudio Fahihi Montana",
-      email: "loremipsum@email.com",
     ),
     DJ(
       avatarUrl: "https://picsum.photos/104",
@@ -103,7 +100,6 @@ class MockDatabaseRepository implements DatabaseRepository {
       bpmMax: 170,
       userId: "dj_jan",
       name: "JanE Ri Knirsch",
-      email: "loremipsum@email.com",
     ),
     DJ(
       avatarUrl: "https://picsum.photos/105",
@@ -124,7 +120,6 @@ class MockDatabaseRepository implements DatabaseRepository {
       bpmMax: 150,
       userId: "dj_moneyboy",
       name: "Money Boy",
-      email: "loremipsum@email.com",
     ),
     DJ(
       genres: [genres[2], genres[3], genres[44], genres[12]],
@@ -144,7 +139,7 @@ class MockDatabaseRepository implements DatabaseRepository {
           "Ich esse ausschließlich Fallobst, welches beim Fall unter nN gelandet ist (nur aus Holland oder Flandern)",
       userId: "serId",
       name: "DJ Föbitz",
-      email: "e@mail.de",
+
       city: "Bonn",
       rating: 3.0,
     ),
@@ -166,7 +161,7 @@ class MockDatabaseRepository implements DatabaseRepository {
       info: "bitte ausschließlich pioneer mixer....",
       userId: "muserId",
       name: "DJ Carglass",
-      email: "ee@mail.de",
+
       city: "Chemnitz",
       rating: 3.5,
     ),
@@ -187,7 +182,7 @@ class MockDatabaseRepository implements DatabaseRepository {
       ],
       userId: 'booker_bitbat',
       name: 'BitBat Club',
-      email: 'abc@mail.de',
+
       rating: 4.5,
     ),
   ];
@@ -278,7 +273,7 @@ class MockDatabaseRepository implements DatabaseRepository {
 
   @override
   Future<AppUser?> getUserById(String userId) async {
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 1));
     try {
       return _djs.firstWhere((dj) => dj.userId == userId);
     } catch (e) {
