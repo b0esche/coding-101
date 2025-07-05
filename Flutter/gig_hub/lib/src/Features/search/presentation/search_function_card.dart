@@ -132,7 +132,7 @@ class _SearchFunctionCardState extends State<SearchFunctionCard> {
                 borderRadius: BorderRadius.circular(16),
               ),
               elevation: 3,
-              color: Palette.glazedWhite.o(0.2),
+              color: Palette.glazedWhite.o(0.15),
               child: Padding(
                 padding:
                     !isSearchCardCollapsed

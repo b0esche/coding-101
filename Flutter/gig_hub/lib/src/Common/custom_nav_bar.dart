@@ -94,7 +94,7 @@ class CustomNavBar extends StatelessWidget {
                           backgroundColor: Palette.forgedGold,
                           content: Center(
                             child: Text(
-                              "coming soon: rave radar!",
+                              "coming soon: RAVE RADAR!",
                               style: TextStyle(fontSize: 16),
                             ),
                           ),
