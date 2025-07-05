@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
-import 'package:gig_hub/src/Data/user.dart';
+import 'package:gig_hub/src/Data/app_user.dart';
 import 'package:gig_hub/src/Features/chat/domain/chat_message.dart';
 import 'package:gig_hub/src/Features/profile/booker/presentation/profile_screen_booker.dart';
 import 'package:gig_hub/src/Features/profile/dj/presentation/profile_screen_dj.dart';
@@ -8,9 +8,9 @@ import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ChatScreenArgs {
-  final AppUser chatPartner;
+  final DJ chatPartner;
   final DatabaseRepository repo;
-  final AppUser currentUser;
+  final DJ currentUser;
 
   ChatScreenArgs({
     required this.chatPartner,
@@ -22,9 +22,9 @@ class ChatScreenArgs {
 class ChatScreen extends StatefulWidget {
   static const routeName = '/chat';
 
-  final AppUser chatPartner;
+  final DJ chatPartner;
   final DatabaseRepository repo;
-  final AppUser currentUser;
+  final DJ currentUser;
 
   const ChatScreen({
     super.key,
@@ -43,7 +43,7 @@ class ChatScreenState extends State<ChatScreen> {
   final ScrollController _scrollController = ScrollController();
 
   String getPartnerAvatarUrl() {
-    return widget.chatPartner.avatarUrl;
+    return widget.chatPartner.avatarImageUrl;
   }
 
   @override
@@ -54,8 +54,8 @@ class ChatScreenState extends State<ChatScreen> {
 
   Future<void> _loadMessages() async {
     final messages = await widget.repo.getMessages(
-      widget.currentUser.userId,
-      widget.chatPartner.userId,
+      widget.currentUser.id,
+      widget.chatPartner.id,
     );
     if (!mounted) return;
     setState(() {
@@ -70,8 +70,8 @@ class ChatScreenState extends State<ChatScreen> {
 
     final newMessage = ChatMessage(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
-      senderId: widget.currentUser.userId,
-      receiverId: widget.chatPartner.userId,
+      senderId: widget.currentUser.id,
+      receiverId: widget.chatPartner.id,
       message: text,
       timestamp: DateTime.now(),
     );
@@ -130,7 +130,7 @@ class ChatScreenState extends State<ChatScreen> {
                       MaterialPageRoute(
                         builder:
                             (_) => ProfileScreenDJ(
-                              dj: widget.chatPartner as DJ,
+                              dj: widget.chatPartner,
                               repo: widget.repo,
                               showChatButton: false,
                               showEditButton: true,
@@ -190,7 +190,7 @@ class ChatScreenState extends State<ChatScreen> {
               itemCount: _messages.length,
               itemBuilder: (context, index) {
                 final message = _messages[_messages.length - 1 - index];
-                final isMe = message.senderId == widget.currentUser.userId;
+                final isMe = message.senderId == widget.currentUser.id;
                 return Align(
                   alignment:
                       isMe ? Alignment.centerRight : Alignment.centerLeft,

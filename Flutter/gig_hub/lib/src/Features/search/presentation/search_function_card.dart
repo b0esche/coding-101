@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
-import 'package:gig_hub/src/Data/user.dart';
+import 'package:gig_hub/src/Data/app_user.dart';
 import 'package:gig_hub/src/Features/search/presentation/custom_form_field.dart';
 import 'package:gig_hub/src/Features/search/presentation/widgets/bpm_selection_dialog.dart';
 import 'package:gig_hub/src/Features/search/presentation/widgets/genre_selection_dialog.dart';
@@ -271,6 +271,7 @@ class _SearchFunctionCardState extends State<SearchFunctionCard> {
                                           style: GoogleFonts.sometypeMono(
                                             textStyle: TextStyle(
                                               fontSize: 11,
+                                              fontWeight: FontWeight.w500,
                                               color: Palette.primalBlack,
                                             ),
                                           ),

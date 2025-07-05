@@ -1,6 +1,6 @@
 import 'package:gig_hub/src/Common/genre_bubble.dart';
 import '../Features/chat/domain/chat_message.dart';
-import 'user.dart';
+import 'app_user.dart';
 
 abstract class DatabaseRepository {
   Future<void> createDJ(DJ dj);
@@ -21,16 +21,15 @@ abstract class DatabaseRepository {
 class MockDatabaseRepository implements DatabaseRepository {
   final List<DJ> _djs = [
     DJ(
-      avatarUrl: "https://picsum.photos/101",
-      headUrl:
+      avatarImageUrl: "https://picsum.photos/101",
+      headImageUrl:
           "https://images.unsplash.com/photo-1496337589254-7e19d01cec44?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       city: "Berlin",
-      rating: 3.5,
+      userRating: 3.5,
       about:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.",
-      set1Url: "https://soundcloud.com/yourset",
-      set2Url: "https://soundcloud.com/yourotherset",
-      mediaUrl: [
+      streamingUrls: [],
+      mediaImageUrls: [
         "https://picsum.photos/250",
         "https://picsum.photos/251",
         "https://picsum.photos/252",
@@ -39,151 +38,28 @@ class MockDatabaseRepository implements DatabaseRepository {
       genres: [genres[1], genres[17], genres[23], genres[49]],
       bpmMin: 130,
       bpmMax: 150,
-      userId: "dj_lorem",
+      id: "dj_lorem",
       name: "DJ Lorem Ipsum",
-    ),
-    DJ(
-      avatarUrl: "https://picsum.photos/102",
-      headUrl: "https://picsum.photos/150",
-      city: "Graz",
-      rating: 4.5,
-      about: "Ich bin der besteste sowieso",
-      set1Url: "https://soundcloud.com/yourset",
-      set2Url: "https://soundcloud.com/yourotherset",
-      mediaUrl: null,
-      info: "info",
-      genres: [genres[12], genres[10], genres[29], genres[14]],
-      bpmMin: 120,
-      bpmMax: 135,
-      userId: "dj_bobo",
-      name: "DJ Bobo",
-    ),
-    DJ(
-      avatarUrl: "https://picsum.photos/103",
-      headUrl:
-          "https://images.unsplash.com/photo-1496337589254-7e19d01cec44?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      city: "Saint-Tropez",
-      rating: 5,
-      about: "Diese Worte widme ich meinem Onkel Falco",
-      set1Url: "https://soundcloud.com/janfleck/hard-as-fuck",
-      set2Url:
-          "https://api-v2.soundcloud.com/media/soundcloud:tracks:743803324/6fe54972-be2a-4841-af1b-d1be58d9f57f/stream/progressive?track_authorization=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJnZW8iOiJERSIsInN1YiI6IiIsInJpZCI6ImRlY2M1ZTliLWM2Y2QtNDEzYi1hZjk5LWU3OThhYmIwNWM4MSIsImlhdCI6MTc1MDQ0NTE2OH0.Dj4jmLlblDzE-qM3KzHVhG-y_gH4lu5dgcwEDzJXL2U",
-      mediaUrl: [
-        "https://picsum.photos/250",
-        "https://picsum.photos/251",
-        "https://picsum.photos/252",
-      ],
-      info:
-          "Ich brauche genügend Platz um meinen Hubschrauber zu parken, außerdem mindestens 3 Flaschen Champagner.",
-      genres: [genres[11], genres[0], genres[37], genres[46], genres[6]],
-      bpmMin: 130,
-      bpmMax: 160,
-      userId: "dj_claudio",
-      name: "Claudio Fahihi Montana",
-    ),
-    DJ(
-      avatarUrl: "https://picsum.photos/104",
-      headUrl: "https://picsum.photos/150",
-      city: "Wuppertal",
-      rating: 4.5,
-      about: "Da wo ich lege wächst kein Grass mehr ich sach dir dat",
-      set1Url: "https://soundcloud.com/yourset",
-      set2Url: "https://soundcloud.com/yourotherset",
-      mediaUrl: [
-        "https://picsum.photos/250",
-        "https://picsum.photos/251",
-        "https://picsum.photos/252",
-      ],
-      info: "info",
-      genres: [genres[15], genres[32], genres[33]],
-      bpmMin: 140,
-      bpmMax: 170,
-      userId: "dj_jan",
-      name: "JanE Ri Knirsch",
-    ),
-    DJ(
-      avatarUrl: "https://picsum.photos/105",
-      headUrl: "https://picsum.photos/150",
-      city: "Wien",
-      rating: 4.5,
-      about: "Frag besser nicht...",
-      set1Url: "https://soundcloud.com/yourset",
-      set2Url: "https://soundcloud.com/yourotherset",
-      mediaUrl: [
-        "https://picsum.photos/250",
-        "https://picsum.photos/251",
-        "https://picsum.photos/252",
-      ],
-      info: "info",
-      genres: [genres[14], genres[24], genres[34]],
-      bpmMin: 130,
-      bpmMax: 150,
-      userId: "dj_moneyboy",
-      name: "Money Boy",
-    ),
-    DJ(
-      genres: [genres[2], genres[3], genres[44], genres[12]],
-      headUrl: "https://picsum.photos/155",
-      avatarUrl: "https://picsum.photos/111",
-      bpmMin: 140,
-      bpmMax: 172,
-      about: "Mein Sound fährt im Hühnerstall Motorrad",
-      set1Url: "https://soundcloud.com/yourset",
-      set2Url: "https://soundcloud.com/yourotherset",
-      mediaUrl: [
-        "https://picsum.photos/250",
-        "https://picsum.photos/251",
-        "https://picsum.photos/252",
-      ],
-      info:
-          "Ich esse ausschließlich Fallobst, welches beim Fall unter nN gelandet ist (nur aus Holland oder Flandern)",
-      userId: "serId",
-      name: "DJ Föbitz",
-
-      city: "Bonn",
-      rating: 3.0,
-    ),
-    DJ(
-      genres: [genres[17], genres[22], genres[41], genres[49], genres[12]],
-      headUrl: "https://picsum.photos/154",
-      avatarUrl: "https://picsum.photos/112",
-      bpmMin: 90,
-      bpmMax: 122,
-      about:
-          "alles easy yoyoyo. Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum",
-      set1Url: "https://soundcloud.com/yourset",
-      set2Url: "https://soundcloud.com/yourotherset",
-      mediaUrl: [
-        "https://picsum.photos/250",
-        "https://picsum.photos/251",
-        "https://picsum.photos/252",
-      ],
-      info: "bitte ausschließlich pioneer mixer....",
-      userId: "muserId",
-      name: "DJ Carglass",
-
-      city: "Chemnitz",
-      rating: 3.5,
     ),
   ];
 
   final List<Booker> bookers = [
     Booker(
-      headUrl: "https://picsum.photos/150",
-      avatarUrl: "https://picsum.photos/105",
+      headImageUrl: "https://picsum.photos/150",
+      avatarImageUrl: "https://picsum.photos/105",
       city: 'Berlin',
-      type: 'Club',
+
       about: 'Trau dich',
       info: 'Wie sind um die Ecke links',
-      mediaUrl: [
+      mediaImageUrls: [
         "https://picsum.photos/250",
         "https://picsum.photos/251",
         "https://picsum.photos/252",
       ],
-      userId: 'booker_bitbat',
+      id: 'booker_bitbat',
       name: 'BitBat Club',
 
-      rating: 4.5,
+      userRating: 4.5,
     ),
   ];
   final List<ChatMessage> _messages = [
@@ -275,12 +151,12 @@ class MockDatabaseRepository implements DatabaseRepository {
   Future<AppUser?> getUserById(String userId) async {
     await Future.delayed(const Duration(seconds: 1));
     try {
-      return _djs.firstWhere((dj) => dj.userId == userId);
+      return _djs.firstWhere((dj) => dj.id == userId);
     } catch (e) {
       //
     }
     try {
-      return bookers.firstWhere((booker) => booker.userId == userId);
+      return bookers.firstWhere((booker) => booker.id == userId);
     } catch (e) {
       //
     }

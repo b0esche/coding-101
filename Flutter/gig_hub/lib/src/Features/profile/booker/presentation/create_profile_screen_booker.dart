@@ -39,7 +39,7 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
   String? about;
   String? info;
 
-  List<String>? mediaUrl;
+  List<String> mediaUrl = [];
   int index = 0;
 
   @override
@@ -643,14 +643,14 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                                 repo
                                     .createBooker(
                                       Booker(
-                                        headUrl: headUrl ?? "",
-                                        avatarUrl: "avatarUrl",
+                                        headImageUrl: headUrl ?? "",
+                                        avatarImageUrl: "avatarUrl",
                                         city: _locationController.text,
                                         about: _aboutController.text,
                                         info: _infoController.text,
-                                        type: 'club',
-                                        mediaUrl: mediaUrl,
-                                        userId: 'userId',
+
+                                        mediaImageUrls: mediaUrl,
+                                        id: 'userId',
                                         name: _nameController.text,
                                       ),
                                     )

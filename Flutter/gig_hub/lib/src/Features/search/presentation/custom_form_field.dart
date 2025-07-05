@@ -33,7 +33,7 @@ class CustomFormField extends StatelessWidget {
         style: GoogleFonts.sometypeMono(
           textStyle: TextStyle(
             color: Palette.glazedWhite,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
             fontSize: 16,
             overflow: TextOverflow.ellipsis,
             wordSpacing: -2,

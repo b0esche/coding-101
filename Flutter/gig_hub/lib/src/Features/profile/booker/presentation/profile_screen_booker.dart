@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
-import 'package:gig_hub/src/Data/user.dart';
+import 'package:gig_hub/src/Data/app_user.dart';
 import 'package:gig_hub/src/Features/profile/booker/presentation/star_rating_booker.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -71,16 +71,16 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                   width: double.infinity,
                   height: 256,
                   child:
-                      !widget.booker.headUrl.startsWith('http')
+                      !widget.booker.headImageUrl.startsWith('http')
                           ? Image.file(
-                            File(widget.booker.headUrl),
+                            File(widget.booker.headImageUrl),
                             fit: BoxFit.cover,
                             colorBlendMode:
                                 editMode ? BlendMode.difference : null,
                             color: editMode ? Palette.primalBlack : null,
                           )
                           : Image.network(
-                            widget.booker.headUrl,
+                            widget.booker.headImageUrl,
                             fit: BoxFit.cover,
                             colorBlendMode:
                                 editMode ? BlendMode.difference : null,
@@ -103,7 +103,7 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                           );
                           if (newMedia != null) {
                             setState(() {
-                              widget.booker.headUrl = newMedia.path;
+                              widget.booker.headImageUrl = newMedia.path;
                             });
                           }
                         },
@@ -283,7 +283,7 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                                   ),
                                   const SizedBox(width: 4),
                                   Text(
-                                    widget.booker.type,
+                                    widget.booker.name,
                                     style: TextStyle(
                                       fontSize: 14,
                                       color: Palette.primalBlack,
@@ -371,8 +371,8 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                       ),
                       const SizedBox(height: 36),
                       !editMode
-                          ? widget.booker.mediaUrl == null ||
-                                  widget.booker.mediaUrl!.isEmpty
+                          ? widget.booker.mediaImageUrls == null ||
+                                  widget.booker.mediaImageUrls.isEmpty
                               ? SizedBox.shrink()
                               : ClipRRect(
                                 borderRadius: BorderRadius.circular(8),
@@ -388,10 +388,10 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                                     setState(() => index = value);
                                   },
                                   children: [
-                                    if (widget.booker.mediaUrl != null &&
-                                        widget.booker.mediaUrl!.isNotEmpty)
+                                    if (widget.booker.mediaImageUrls != null &&
+                                        widget.booker.mediaImageUrls.isNotEmpty)
                                       for (String path
-                                          in widget.booker.mediaUrl!)
+                                          in widget.booker.mediaImageUrls)
                                         PinchZoom(
                                           zoomEnabled: true,
                                           maxScale: 2.5,
@@ -429,7 +429,9 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                                           .map((element) => element.path)
                                           .toList();
                                   setState(() {
-                                    widget.booker.mediaUrl!.addAll(mediaUrls);
+                                    widget.booker.mediaImageUrls.addAll(
+                                      mediaUrls,
+                                    );
                                   });
                                 },
                                 icon: Icon(

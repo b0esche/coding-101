@@ -4,20 +4,19 @@ abstract class AppUser {
   final String id;
   final UserType type;
 
-  AppUser({required this.id, required this.type});
+  const AppUser({required this.id, required this.type});
 }
 
 class Guest extends AppUser {
   final List<String> favoriteUIds;
-  Guest({required super.id, this.favoriteUIds = const []})
+  const Guest({required super.id, this.favoriteUIds = const []})
     : super(type: UserType.guest);
 }
 
 class DJ extends AppUser {
-  final List<String> genres, streamingUrls;
-  final int bpmMin, bpmMax;
-  final String name, city, about, info, headImageUrl, avatarImageUrl;
-  List<String> mediaImageUrls, favoriteUIds;
+  final List<String> mediaImageUrls, favoriteUIds, genres, streamingUrls;
+  String name, city, about, info, headImageUrl, avatarImageUrl;
+  int bpmMin, bpmMax;
   final double userRating;
 
   DJ({
@@ -40,7 +39,7 @@ class DJ extends AppUser {
 
 class Booker extends AppUser {
   final List<String> mediaImageUrls, favoriteUIds;
-  final String name, city, about, info, headImageUrl, avatarImageUrl;
+  String name, city, about, info, headImageUrl, avatarImageUrl;
   final double userRating;
 
   Booker({

@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:gig_hub/src/Common/custom_nav_bar.dart';
 import 'package:gig_hub/src/Common/settings_screen.dart';
 import 'package:gig_hub/src/Data/auth_repository.dart';
-import 'package:gig_hub/src/Features/chat/presentation/chat_list_screen.dart';
 import 'package:gig_hub/src/Features/search/presentation/search_function_card.dart';
 import 'package:gig_hub/src/Features/search/presentation/search_list_tile.dart';
-import 'package:gig_hub/src/Data/user.dart';
+import 'package:gig_hub/src/Data/app_user.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:gig_hub/src/Features/search/presentation/sort_button.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
@@ -165,42 +164,10 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-    if (index == 0 && _loggedInUser != null) {
-      _loggedInUser!.showProfile(
-        context,
-        _repo,
-        false,
-        false,
-        currentUser: _loggedInUser,
-      );
-    } else if (index == 1) {
-      if (_loggedInUser != null) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder:
-                (context) =>
-                    ChatListScreen(repo: _repo, currentUser: _loggedInUser!),
-          ),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Bitte zuerst einloggen, um Chats zu sehen."),
-          ),
-        );
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     String loggedInUserAvatar =
-        _loggedInUser?.avatarUrl ?? "https://picsum.photos/100";
+        _loggedInUser?.avatarImageUrl ?? "https://picsum.photos/100";
 
     return PopScope(
       canPop: false,
@@ -311,8 +278,8 @@ class _MainScreenState extends State<MainScreen> {
                                 text: 'sort by ',
                                 style: TextStyle(
                                   color: Palette.glazedWhite,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
                                   wordSpacing: -1,
                                 ),
                               ),
@@ -328,7 +295,7 @@ class _MainScreenState extends State<MainScreen> {
                                     _isExpanded
                                         ? Icons.expand_less
                                         : Icons.expand_more,
-                                    size: 19,
+                                    size: 20,
                                     color: Palette.glazedWhite,
                                   ),
                                 ),
@@ -379,13 +346,13 @@ class _MainScreenState extends State<MainScreen> {
                                       name: currentUserDJ.name,
                                       genres: currentUserDJ.genres,
                                       image: NetworkImage(
-                                        currentUserDJ.avatarUrl,
+                                        currentUserDJ.avatarImageUrl,
                                       ),
                                       about: currentUserDJ.about,
                                       location: currentUserDJ.city,
                                       bpmMin: currentUserDJ.bpmMin,
                                       bpmMax: currentUserDJ.bpmMax,
-                                      rating: currentUserDJ.rating ?? 0.0,
+                                      rating: currentUserDJ.userRating,
                                     ),
                                   );
                                 },
@@ -433,17 +400,18 @@ class _MainScreenState extends State<MainScreen> {
           dj:
               _loggedInUser ??
               DJ(
+                id: 'newId123',
                 genres: [],
-                headUrl: '',
-                avatarUrl: 'avatarUrl',
+                headImageUrl: '',
+                avatarImageUrl: 'avatarUrl',
                 bpmMin: 120,
                 bpmMax: 180,
                 about: "about",
-                set1Url: "set1Url",
-                set2Url: "Url",
-                mediaUrl: ["mediaUrl"],
+                streamingUrls: [],
+                mediaImageUrls: ["mediaUrl"],
                 info: "info",
-                userId: "userId",
+                favoriteUIds: [],
+                userRating: 4,
                 name: "name",
                 city: 'Berlin',
               ),

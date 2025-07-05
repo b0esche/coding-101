@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
-import 'package:gig_hub/src/Data/user.dart';
+import 'package:gig_hub/src/Data/app_user.dart';
 import 'package:gig_hub/src/Common/genre_bubble.dart';
+import 'package:gig_hub/src/Features/profile/dj/presentation/profile_screen_dj.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
@@ -299,17 +300,22 @@ class _SearchListTileState extends State<SearchListTile> {
                                           maxLines: 4,
                                           softWrap: true,
                                           overflow: TextOverflow.visible,
+                                          style: TextStyle(fontSize: 14.5),
                                         ),
                                       ),
                                     ),
                                     IconButton(
                                       onPressed: () {
-                                        widget.user.showProfile(
-                                          context,
-                                          widget.repo,
-                                          true,
-                                          true,
-                                          currentUser: widget.user,
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder:
+                                                (context) => ProfileScreenDJ(
+                                                  dj: widget.user,
+                                                  repo: widget.repo,
+                                                  showChatButton: true,
+                                                  showEditButton: true,
+                                                ),
+                                          ),
                                         );
                                       },
                                       icon: Icon(

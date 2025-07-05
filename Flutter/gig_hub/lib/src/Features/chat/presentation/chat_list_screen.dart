@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
-import 'package:gig_hub/src/Data/user.dart';
+import 'package:gig_hub/src/Data/app_user.dart';
 import 'package:gig_hub/src/Features/chat/domain/chat_message.dart';
 import 'package:gig_hub/src/Features/chat/domain/chat_list_item.dart';
 import 'package:gig_hub/src/Features/chat/presentation/chat_list_item_widget.dart';
@@ -9,7 +9,7 @@ import 'package:gig_hub/src/Features/chat/presentation/chat_screen.dart';
 
 class ChatListScreenArgs {
   final DatabaseRepository repo;
-  final AppUser currentUser;
+  final DJ currentUser;
 
   ChatListScreenArgs({required this.repo, required this.currentUser});
 }
@@ -24,7 +24,7 @@ class ChatListScreen extends StatefulWidget {
   });
 
   final DatabaseRepository repo;
-  final AppUser currentUser;
+  final DJ currentUser;
 
   @override
   State<ChatListScreen> createState() => _ChatListScreenState();
@@ -44,7 +44,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
   Future<void> _loadChatListItems() async {
     try {
       final allMessages = await widget.repo.getAllMessagesForUser(
-        widget.currentUser.userId,
+        widget.currentUser.id,
       );
 
       final Map<String, ChatMessage> latestMessagesByPartner = {};
@@ -52,7 +52,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
 
       for (var message in allMessages) {
         final partnerId =
-            message.senderId == widget.currentUser.userId
+            message.senderId == widget.currentUser.id
                 ? message.receiverId
                 : message.senderId;
         chatPartnerIds.add(partnerId);
@@ -73,7 +73,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
             latestMessagesByPartner.containsKey(partnerId)) {
           items.add(
             ChatListItem(
-              user: partnerUser,
+              user: partnerUser as DJ,
               recent: latestMessagesByPartner[partnerId]!,
             ),
           );
@@ -146,7 +146,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                         context,
                         ChatScreen.routeName,
                         arguments: ChatScreenArgs(
-                          chatPartner: chatListItem.user,
+                          chatPartner: chatListItem.user as DJ,
                           repo: widget.repo,
                           currentUser: widget.currentUser,
                         ),

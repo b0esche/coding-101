@@ -1,7 +1,7 @@
 // gig_hub/src/Features/chat/presentation/chat_list_item_widget.dart
 import 'package:flutter/material.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
-import 'package:gig_hub/src/Data/user.dart';
+import 'package:gig_hub/src/Data/app_user.dart';
 import 'package:gig_hub/src/Features/chat/domain/chat_list_item.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -9,7 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 class ChatListItemWidget extends StatelessWidget {
   final ChatListItem chatListItem;
   final DatabaseRepository repo;
-  final AppUser currentUser;
+  final DJ currentUser;
   final VoidCallback? onTap;
 
   const ChatListItemWidget({
@@ -22,7 +22,7 @@ class ChatListItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String avatarUrl = chatListItem.user.avatarUrl;
+    String avatarUrl = chatListItem.user.avatarImageUrl;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),

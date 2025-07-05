@@ -59,9 +59,9 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
     text: widget.dj.about,
   );
   late final TextEditingController _soundcloudControllerOne =
-      TextEditingController(text: widget.dj.set1Url);
+      TextEditingController(text: widget.dj.streamingUrls.first);
   late final TextEditingController _soundcloudControllerTwo =
-      TextEditingController(text: widget.dj.set2Url);
+      TextEditingController(text: widget.dj.streamingUrls.last);
   late final TextEditingController _infoController = TextEditingController(
     text: widget.dj.info,
   );
@@ -261,16 +261,16 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                     width: double.infinity,
                     height: 256,
                     child:
-                        !widget.dj.headUrl.startsWith('http')
+                        !widget.dj.headImageUrl.startsWith('http')
                             ? Image.file(
-                              File(widget.dj.headUrl),
+                              File(widget.dj.headImageUrl),
                               fit: BoxFit.cover,
                               colorBlendMode:
                                   editMode ? BlendMode.difference : null,
                               color: editMode ? Palette.primalBlack : null,
                             )
                             : Image.network(
-                              widget.dj.headUrl,
+                              widget.dj.headImageUrl,
                               fit: BoxFit.cover,
                               colorBlendMode:
                                   editMode ? BlendMode.difference : null,
@@ -292,7 +292,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                 .pickImage(source: ImageSource.gallery);
                             if (newMedia != null) {
                               setState(() {
-                                widget.dj.headUrl = newMedia.path;
+                                widget.dj.headImageUrl = newMedia.path;
                               });
                             }
                           },
@@ -934,8 +934,8 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                         ),
                         SizedBox(height: 36),
                         !editMode
-                            ? widget.dj.mediaUrl == null ||
-                                    widget.dj.mediaUrl!.isEmpty
+                            ? widget.dj.mediaImageUrls == null ||
+                                    widget.dj.mediaImageUrls.isEmpty
                                 ? SizedBox.shrink()
                                 : ClipRRect(
                                   borderRadius: BorderRadius.circular(8),
@@ -951,9 +951,10 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                       setState(() => index = value);
                                     },
                                     children: [
-                                      if (widget.dj.mediaUrl != null &&
-                                          widget.dj.mediaUrl!.isNotEmpty)
-                                        for (String path in widget.dj.mediaUrl!)
+                                      if (widget.dj.mediaImageUrls != null &&
+                                          widget.dj.mediaImageUrls.isNotEmpty)
+                                        for (String path
+                                            in widget.dj.mediaImageUrls)
                                           PinchZoom(
                                             zoomEnabled: true,
                                             maxScale: 2.5,
@@ -991,7 +992,9 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                             .map((element) => element.path)
                                             .toList();
                                     setState(() {
-                                      widget.dj.mediaUrl!.addAll(mediaUrls);
+                                      widget.dj.mediaImageUrls.addAll(
+                                        mediaUrls,
+                                      );
                                     });
                                   },
                                   icon: Icon(
@@ -1004,19 +1007,19 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                             ),
                         SizedBox(
                           height:
-                              widget.dj.mediaUrl != null &&
-                                      widget.dj.mediaUrl!.isNotEmpty
+                              widget.dj.mediaImageUrls != null &&
+                                      widget.dj.mediaImageUrls.isNotEmpty
                                   ? null
                                   : 24,
                         ),
-                        (widget.dj.mediaUrl != null &&
-                                widget.dj.mediaUrl!.isNotEmpty &&
+                        (widget.dj.mediaImageUrls != null &&
+                                widget.dj.mediaImageUrls.isNotEmpty &&
                                 editMode)
                             ? Center(
                               child: TextButton(
                                 onPressed:
                                     () => setState(
-                                      () => widget.dj.mediaUrl!.clear(),
+                                      () => widget.dj.mediaImageUrls.clear(),
                                     ),
                                 child: Text(
                                   "remove all images",
@@ -1029,8 +1032,8 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                             )
                             : SizedBox.shrink(),
 
-                        widget.dj.mediaUrl != null &&
-                                widget.dj.mediaUrl!.isNotEmpty
+                        widget.dj.mediaImageUrls != null &&
+                                widget.dj.mediaImageUrls.isNotEmpty
                             ? SizedBox(height: 36)
                             : SizedBox.shrink(),
 
@@ -1127,9 +1130,9 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                               _aboutController.text;
                                           widget.dj.info = _infoController.text;
                                           widget.dj.name = _nameController.text;
-                                          widget.dj.set1Url =
+                                          widget.dj.streamingUrls.first =
                                               _soundcloudControllerOne.text;
-                                          widget.dj.set2Url =
+                                          widget.dj.streamingUrls.last =
                                               _soundcloudControllerTwo.text;
 
                                           final bpmText =

@@ -746,19 +746,19 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                 await repo.createDJ(
                                   DJ(
                                     genres: genres!,
-                                    headUrl: headUrl!,
-                                    avatarUrl: 'https://picsum.photos/100',
+                                    headImageUrl: headUrl!,
+                                    avatarImageUrl: 'https://picsum.photos/100',
                                     bpmMin: int.parse(bpmMin!),
                                     bpmMax: int.parse(bpmMax!),
                                     about: _aboutController.text,
-                                    set1Url: 'set1Url',
-                                    set2Url: 'set2Url',
-                                    mediaUrl: mediaUrl!,
+                                    streamingUrls: [],
+                                    mediaImageUrls: mediaUrl!,
                                     info: _infoController.text,
-                                    userId: '',
+                                    id: '',
                                     name: _nameController.text,
-
+                                    userRating: 3,
                                     city: _locationController.text,
+                                    favoriteUIds: [],
                                   ),
                                 );
 

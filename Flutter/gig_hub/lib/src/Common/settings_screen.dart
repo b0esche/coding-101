@@ -1,8 +1,9 @@
 import 'dart:io'; // Wichtig für FileImage
 import 'package:flutter/material.dart';
+import 'package:gig_hub/src/Common/app_imports.dart';
 import 'package:gig_hub/src/Data/auth_repository.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
-import 'package:gig_hub/src/Data/user.dart' as repo;
+import 'package:gig_hub/src/Data/app_user.dart' as repo;
 import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -17,7 +18,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  repo.AppUser? _currentUser;
+  repo.DJ? _currentUser;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
 
@@ -30,7 +31,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _loadCurrentUser() async {
-    final user = await widget.repo.getUserById("dj_lorem");
+    final user = await widget.repo.getUserById("dj_lorem") as DJ;
 
     setState(() {
       _currentUser = user;
@@ -101,11 +102,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       backgroundImage:
                           _pickedImage != null
                               ? FileImage(File(_pickedImage!.path))
-                              : (_currentUser?.avatarUrl.startsWith('http') ==
+                              : (_currentUser?.avatarImageUrl.startsWith(
+                                            'http',
+                                          ) ==
                                           true
-                                      ? NetworkImage(_currentUser!.avatarUrl)
+                                      ? NetworkImage(
+                                        _currentUser!.avatarImageUrl,
+                                      )
                                       : FileImage(
-                                        File(_currentUser!.avatarUrl),
+                                        File(_currentUser!.avatarImageUrl),
                                       ))
                                   as ImageProvider,
                     ),
@@ -122,7 +127,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         if (picked != null) {
                           setState(() {
                             _pickedImage = picked;
-                            _currentUser?.avatarUrl = picked.path;
+                            _currentUser?.avatarImageUrl = picked.path;
                           });
                         }
                       },
