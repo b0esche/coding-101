@@ -8,8 +8,8 @@ abstract class AppUser {
 }
 
 class Guest extends AppUser {
-  final List<String>? favoriteUIds;
-  Guest({required super.id, required this.favoriteUIds})
+  final List<String> favoriteUIds;
+  Guest({required super.id, this.favoriteUIds = const []})
     : super(type: UserType.guest);
 }
 
