@@ -1,4 +1,4 @@
-import 'package:gig_hub/src/Common/app_imports.dart';
+import 'package:gig_hub/src/Data/app_imports.dart';
 
 import 'package:gig_hub/src/Data/auth_repository.dart';
 import 'package:gig_hub/src/Features/profile/booker/presentation/create_profile_screen_booker.dart';

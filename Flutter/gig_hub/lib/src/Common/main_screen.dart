@@ -4,7 +4,7 @@ import 'package:gig_hub/src/Common/settings_screen.dart';
 import 'package:gig_hub/src/Data/auth_repository.dart';
 import 'package:gig_hub/src/Features/search/presentation/search_function_card.dart';
 import 'package:gig_hub/src/Features/search/presentation/search_list_tile.dart';
-import 'package:gig_hub/src/Data/app_user.dart';
+import 'package:gig_hub/src/Data/users.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:gig_hub/src/Features/search/presentation/sort_button.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
@@ -25,7 +25,7 @@ class _MainScreenState extends State<MainScreen> {
   String _selectedSortOption = '';
   List<DJ> _usersDJ = [];
   List<DJ> _sortedUsersDJ = [];
-  int _selectedIndex = 0;
+  final int _selectedIndex = 0;
   DJ? _loggedInUser;
   late DatabaseRepository _repo;
 

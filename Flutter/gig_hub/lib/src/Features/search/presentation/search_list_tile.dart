@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
-import 'package:gig_hub/src/Data/app_user.dart';
+import 'package:gig_hub/src/Data/users.dart';
 import 'package:gig_hub/src/Common/genre_bubble.dart';
 import 'package:gig_hub/src/Features/profile/dj/presentation/profile_screen_dj.dart';
 import 'package:gig_hub/src/Theme/palette.dart';

@@ -1,10 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:gig_hub/src/Common/app_imports.dart';
+import 'package:gig_hub/src/Data/app_imports.dart';
 import 'package:gig_hub/src/Data/auth_repository.dart';
 import 'package:gig_hub/src/Features/chat/presentation/chat_list_screen.dart';
 import 'package:gig_hub/src/Features/profile/dj/presentation/profile_screen_dj.dart';
-import 'package:gig_hub/src/Theme/palette.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 
 class CustomNavBar extends StatelessWidget {
@@ -54,7 +51,7 @@ class CustomNavBar extends StatelessWidget {
                           dj: dj,
                           repo: repo,
                           showChatButton: false,
-                          showEditButton: true,
+                          showEditButton: false,
                         );
                       },
                     ),

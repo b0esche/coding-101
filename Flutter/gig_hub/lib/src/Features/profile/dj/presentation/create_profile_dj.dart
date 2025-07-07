@@ -2,8 +2,8 @@ import "dart:io";
 
 import "package:gig_hub/src/Data/auth_repository.dart";
 
-import "../../../../Common/app_imports.dart";
-import "../../../../Common/app_imports.dart" as http;
+import "../../../../Data/app_imports.dart";
+import "../../../../Data/app_imports.dart" as http;
 
 class CreateProfileScreenDJ extends StatefulWidget {
   final DatabaseRepository repo;

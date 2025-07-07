@@ -4,7 +4,7 @@ export 'package:flutter/material.dart';
 export 'package:flutter_dotenv/flutter_dotenv.dart';
 export 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 export 'package:flutter_svg/svg.dart';
-export 'package:gig_hub/src/Data/app_user.dart';
+export 'package:gig_hub/src/Data/users.dart';
 export 'package:gig_hub/src/Features/chat/presentation/chat_screen.dart';
 export 'package:gig_hub/src/Features/profile/dj/presentation/audio_player.dart';
 export 'package:gig_hub/src/Features/profile/dj/presentation/inputfield_buttons.dart';

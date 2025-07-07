@@ -2,8 +2,8 @@ import "dart:io";
 
 import "package:liquid_glass_renderer/liquid_glass_renderer.dart";
 
-import "../../../../Common/app_imports.dart";
-import "../../../../Common/app_imports.dart" as http;
+import "../../../../Data/app_imports.dart";
+import "../../../../Data/app_imports.dart" as http;
 
 class ProfileScreenDJArgs {
   final DJ dj;
@@ -934,8 +934,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                         ),
                         SizedBox(height: 36),
                         !editMode
-                            ? widget.dj.mediaImageUrls == null ||
-                                    widget.dj.mediaImageUrls.isEmpty
+                            ? widget.dj.mediaImageUrls.isEmpty
                                 ? SizedBox.shrink()
                                 : ClipRRect(
                                   borderRadius: BorderRadius.circular(8),
@@ -951,8 +950,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                       setState(() => index = value);
                                     },
                                     children: [
-                                      if (widget.dj.mediaImageUrls != null &&
-                                          widget.dj.mediaImageUrls.isNotEmpty)
+                                      if (widget.dj.mediaImageUrls.isNotEmpty)
                                         for (String path
                                             in widget.dj.mediaImageUrls)
                                           PinchZoom(
@@ -1007,14 +1005,9 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                             ),
                         SizedBox(
                           height:
-                              widget.dj.mediaImageUrls != null &&
-                                      widget.dj.mediaImageUrls.isNotEmpty
-                                  ? null
-                                  : 24,
+                              widget.dj.mediaImageUrls.isNotEmpty ? null : 24,
                         ),
-                        (widget.dj.mediaImageUrls != null &&
-                                widget.dj.mediaImageUrls.isNotEmpty &&
-                                editMode)
+                        (widget.dj.mediaImageUrls.isNotEmpty && editMode)
                             ? Center(
                               child: TextButton(
                                 onPressed:
@@ -1032,8 +1025,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                             )
                             : SizedBox.shrink(),
 
-                        widget.dj.mediaImageUrls != null &&
-                                widget.dj.mediaImageUrls.isNotEmpty
+                        widget.dj.mediaImageUrls.isNotEmpty
                             ? SizedBox(height: 36)
                             : SizedBox.shrink(),
 

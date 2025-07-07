@@ -8,7 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../../Common/app_imports.dart' as http;
+import '../../Data/app_imports.dart' as http;
 
 class LoginScreen extends StatefulWidget {
   final DatabaseRepository repo;

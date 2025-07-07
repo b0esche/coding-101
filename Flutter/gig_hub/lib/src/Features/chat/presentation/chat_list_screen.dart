@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
-import 'package:gig_hub/src/Data/app_user.dart';
+import 'package:gig_hub/src/Data/users.dart';
 import 'package:gig_hub/src/Features/chat/domain/chat_message.dart';
 import 'package:gig_hub/src/Features/chat/domain/chat_list_item.dart';
 import 'package:gig_hub/src/Features/chat/presentation/chat_list_item_widget.dart';
@@ -146,7 +146,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                         context,
                         ChatScreen.routeName,
                         arguments: ChatScreenArgs(
-                          chatPartner: chatListItem.user as DJ,
+                          chatPartner: chatListItem.user,
                           repo: widget.repo,
                           currentUser: widget.currentUser,
                         ),

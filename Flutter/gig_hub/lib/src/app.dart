@@ -11,6 +11,7 @@ import 'package:gig_hub/src/Theme/app_theme.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
 import 'package:gig_hub/src/Features/chat/presentation/chat_screen.dart';
 import 'package:gig_hub/src/Features/chat/presentation/chat_list_screen.dart';
+import 'package:gig_hub/tasksheet_6.1.4.dart';
 
 class App extends StatelessWidget {
   final DatabaseRepository repo;
@@ -31,7 +32,7 @@ class App extends StatelessWidget {
           home:
               snapshot.hasData
                   ? MainScreen(repo: repo, auth: auth)
-                  : LoginScreen(repo: repo, auth: auth),
+                  : Tasksheet614(),
           onGenerateRoute: (settings) {
             switch (settings.name) {
               case ProfileScreenDJ.routeName:

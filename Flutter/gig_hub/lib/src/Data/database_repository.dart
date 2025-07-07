@@ -1,6 +1,6 @@
 import 'package:gig_hub/src/Common/genre_bubble.dart';
 import '../Features/chat/domain/chat_message.dart';
-import 'app_user.dart';
+import 'users.dart';
 
 abstract class DatabaseRepository {
   Future<void> createDJ(DJ dj);

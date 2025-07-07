@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
-import 'package:gig_hub/src/Data/app_user.dart';
+import 'package:gig_hub/src/Data/users.dart';
 import 'package:gig_hub/src/Features/chat/domain/chat_message.dart';
 import 'package:gig_hub/src/Features/profile/booker/presentation/profile_screen_booker.dart';
 import 'package:gig_hub/src/Features/profile/dj/presentation/profile_screen_dj.dart';
@@ -124,32 +124,18 @@ class ChatScreenState extends State<ChatScreen> {
               ),
               child: GestureDetector(
                 onTap: () {
-                  if (widget.chatPartner is DJ) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (_) => ProfileScreenDJ(
-                              dj: widget.chatPartner,
-                              repo: widget.repo,
-                              showChatButton: false,
-                              showEditButton: true,
-                            ),
-                      ),
-                    );
-                  } else if (widget.chatPartner is Booker) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (_) => ProfileScreenBooker(
-                              booker: widget.chatPartner as Booker,
-                              repo: widget.repo,
-                              showEditButton: false,
-                            ),
-                      ),
-                    );
-                  }
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (_) => ProfileScreenDJ(
+                            dj: widget.chatPartner,
+                            repo: widget.repo,
+                            showChatButton: false,
+                            showEditButton: true,
+                          ),
+                    ),
+                  );
                 },
                 child: CircleAvatar(
                   backgroundImage:

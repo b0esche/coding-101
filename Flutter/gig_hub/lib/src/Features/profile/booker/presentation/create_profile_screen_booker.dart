@@ -2,8 +2,8 @@ import "dart:io";
 
 import "package:gig_hub/src/Data/auth_repository.dart";
 
-import "../../../../Common/app_imports.dart";
-import "../../../../Common/app_imports.dart" as http;
+import "../../../../Data/app_imports.dart";
+import "../../../../Data/app_imports.dart" as http;
 
 class CreateProfileScreenBooker extends StatefulWidget {
   final DatabaseRepository repo;
@@ -493,7 +493,7 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                       ),
                       const SizedBox(height: 40),
 
-                      (mediaUrl != null && mediaUrl!.isNotEmpty)
+                      (mediaUrl.isNotEmpty)
                           ? ClipRRect(
                             borderRadius: BorderRadius.circular(8),
                             child: ImageSlideshow(
@@ -508,7 +508,7 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                                 setState(() => index = value);
                               },
                               children:
-                                  mediaUrl!.map((path) {
+                                  mediaUrl.map((path) {
                                     return PinchZoom(
                                       zoomEnabled: true,
                                       maxScale: 2.5,
@@ -558,12 +558,12 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                             ),
                           ),
                       SizedBox(height: 8),
-                      (mediaUrl != null && mediaUrl!.isNotEmpty)
+                      (mediaUrl.isNotEmpty)
                           ? Center(
                             child: TextButton(
                               onPressed:
                                   () => setState(() {
-                                    mediaUrl!.clear();
+                                    mediaUrl.clear();
                                   }),
                               child: Text(
                                 "remove all images",
