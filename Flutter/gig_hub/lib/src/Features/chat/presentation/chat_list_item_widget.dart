@@ -9,7 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 class ChatListItemWidget extends StatelessWidget {
   final ChatListItem chatListItem;
   final DatabaseRepository repo;
-  final DJ currentUser;
+  final AppUser currentUser;
   final VoidCallback? onTap;
 
   const ChatListItemWidget({
@@ -22,7 +22,8 @@ class ChatListItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String avatarUrl = chatListItem.user.avatarImageUrl;
+    final avatarUrl = chatListItem.user.avatarUrl;
+    final userName = chatListItem.user.displayName;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),
@@ -61,7 +62,7 @@ class ChatListItemWidget extends StatelessWidget {
             ),
           ),
           title: Text(
-            chatListItem.user.name,
+            userName,
             style: GoogleFonts.sometypeMono(
               textStyle: TextStyle(
                 fontWeight: FontWeight.bold,

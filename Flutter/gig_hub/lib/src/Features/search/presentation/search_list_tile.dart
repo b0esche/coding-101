@@ -14,8 +14,8 @@ class SearchListTile extends StatefulWidget {
   final NetworkImage image;
   final String about;
   final String location;
-  final int bpmMin;
-  final int bpmMax;
+  final List<int> bpm;
+
   final double? rating;
   final dynamic repo;
 
@@ -26,8 +26,7 @@ class SearchListTile extends StatefulWidget {
     required this.image,
     required this.about,
     required this.location,
-    required this.bpmMin,
-    required this.bpmMax,
+    required this.bpm,
     super.key,
     required this.rating,
     required this.repo,
@@ -274,7 +273,7 @@ class _SearchListTileState extends State<SearchListTile> {
                                                       0,
                                                     ),
                                                 child: Text(
-                                                  "${widget.bpmMin}-${widget.bpmMax} bpm",
+                                                  "${widget.bpm.first}-${widget.bpm.last} bpm",
                                                   style: TextStyle(
                                                     fontWeight: FontWeight.w500,
                                                     color: Palette.primalBlack,

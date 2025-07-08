@@ -1,6 +1,7 @@
 import "dart:io";
 
 import "package:gig_hub/src/Data/auth_repository.dart";
+import "package:gig_hub/src/Data/firestore_repository.dart";
 
 import "../../../../Data/app_imports.dart";
 import "../../../../Data/app_imports.dart" as http;
@@ -23,7 +24,7 @@ class CreateProfileScreenDJ extends StatefulWidget {
 }
 
 class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
-  DatabaseRepository repo = MockDatabaseRepository();
+  DatabaseRepository repo = FirestoreDatabaseRepository();
   final _formKey = GlobalKey<FormState>();
   late final _nameController = TextEditingController();
   late final _locationController = TextEditingController(text: 'your city');
@@ -748,8 +749,10 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                     genres: genres!,
                                     headImageUrl: headUrl!,
                                     avatarImageUrl: 'https://picsum.photos/100',
-                                    bpmMin: int.parse(bpmMin!),
-                                    bpmMax: int.parse(bpmMax!),
+                                    bpm: [
+                                      int.parse(bpmMin!),
+                                      int.parse(bpmMax!),
+                                    ],
                                     about: _aboutController.text,
                                     streamingUrls: [],
                                     mediaImageUrls: mediaUrl!,

@@ -111,18 +111,18 @@ class _MainScreenState extends State<MainScreen> {
             sortedList.sort((a, b) {
               // Calculate overlap for DJ A
               int overlapA = 0;
-              if (a.bpmMax >= searchMin && a.bpmMin <= searchMax) {
+              if (a.bpm.last >= searchMin && a.bpm.first <= searchMax) {
                 overlapA =
-                    (a.bpmMax < searchMax ? a.bpmMax : searchMax) -
-                    (a.bpmMin > searchMin ? a.bpmMin : searchMin);
+                    (a.bpm.last < searchMax ? a.bpm.last : searchMax) -
+                    (a.bpm.first > searchMin ? a.bpm.first : searchMin);
               }
 
               // Calculate overlap for DJ B
               int overlapB = 0;
-              if (b.bpmMax >= searchMin && b.bpmMin <= searchMax) {
+              if (b.bpm.last >= searchMin && b.bpm.first <= searchMax) {
                 overlapB =
-                    (b.bpmMax < searchMax ? b.bpmMax : searchMax) -
-                    (b.bpmMin > searchMin ? b.bpmMin : searchMin);
+                    (b.bpm.last < searchMax ? b.bpm.last : searchMax) -
+                    (b.bpm.first > searchMin ? b.bpm.first : searchMin);
               }
 
               // Prioritize higher overlap
@@ -131,23 +131,24 @@ class _MainScreenState extends State<MainScreen> {
               }
 
               // If overlaps are equal, prioritize exact match of min/max
-              if (a.bpmMin == searchMin && a.bpmMax == searchMax) return -1;
-              if (b.bpmMin == searchMin && b.bpmMax == searchMax) return 1;
+              if (a.bpm.first == searchMin && a.bpm.last == searchMax)
+                return -1;
+              if (b.bpm.first == searchMin && b.bpm.last == searchMax) return 1;
 
               // Fallback: sort by how "centered" their range is to the search range,
               // or simply by min BPM, then max BPM for tie-breaking.
               // For a simple tie-breaker, let's use min BPM then max BPM.
-              int compareMin = a.bpmMin.compareTo(b.bpmMin);
+              int compareMin = a.bpm.first.compareTo(b.bpm.first);
               return compareMin == 0
-                  ? a.bpmMax.compareTo(b.bpmMax)
+                  ? a.bpm.last.compareTo(b.bpm.last)
                   : compareMin;
             });
           } else {
             // If no search BPM range is active, fall back to standard min/max sort
             sortedList.sort((a, b) {
-              int compareMin = a.bpmMin.compareTo(b.bpmMin);
+              int compareMin = a.bpm.first.compareTo(b.bpm.first);
               return compareMin == 0
-                  ? a.bpmMax.compareTo(b.bpmMax)
+                  ? a.bpm.last.compareTo(b.bpm.last)
                   : compareMin;
             });
           }
@@ -350,8 +351,8 @@ class _MainScreenState extends State<MainScreen> {
                                       ),
                                       about: currentUserDJ.about,
                                       location: currentUserDJ.city,
-                                      bpmMin: currentUserDJ.bpmMin,
-                                      bpmMax: currentUserDJ.bpmMax,
+                                      bpm: currentUserDJ.bpm,
+
                                       rating: currentUserDJ.userRating,
                                     ),
                                   );
@@ -404,8 +405,7 @@ class _MainScreenState extends State<MainScreen> {
                 genres: [],
                 headImageUrl: '',
                 avatarImageUrl: 'avatarUrl',
-                bpmMin: 120,
-                bpmMax: 180,
+                bpm: [120, 145],
                 about: "about",
                 streamingUrls: [],
                 mediaImageUrls: ["mediaUrl"],

@@ -53,7 +53,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
     text: widget.dj.city,
   );
   late final TextEditingController _bpmController = TextEditingController(
-    text: "${widget.dj.bpmMin}-${widget.dj.bpmMax} bpm",
+    text: "${widget.dj.bpm.first}-${widget.dj.bpm.last} bpm",
   );
   late final TextEditingController _aboutController = TextEditingController(
     text: widget.dj.about,
@@ -546,7 +546,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                       const SizedBox(width: 4),
                                       !editMode
                                           ? Text(
-                                            '${widget.dj.bpmMin}-${widget.dj.bpmMax} bpm',
+                                            '${widget.dj.bpm.first}-${widget.dj.bpm.last} bpm',
                                             style: TextStyle(
                                               fontSize: 14,
                                               color: Palette.primalBlack,
@@ -572,21 +572,22 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                                 >(
                                                   context: context,
                                                   builder:
-                                                      (context) =>
-                                                          BpmSelectionDialog(
-                                                            intialSelectedBpm: [
-                                                              widget.dj.bpmMin,
-                                                              widget.dj.bpmMax,
-                                                            ],
-                                                          ),
+                                                      (
+                                                        context,
+                                                      ) => BpmSelectionDialog(
+                                                        intialSelectedBpm: [
+                                                          widget.dj.bpm.first,
+                                                          widget.dj.bpm.last,
+                                                        ],
+                                                      ),
                                                 );
 
                                                 if (result != null &&
                                                     result.length == 2) {
                                                   setState(() {
-                                                    widget.dj.bpmMin =
+                                                    widget.dj.bpm.first =
                                                         result[0];
-                                                    widget.dj.bpmMax =
+                                                    widget.dj.bpm.last =
                                                         result[1];
                                                     _bpmController.text =
                                                         '${result[0]}-${result[1]} bpm';
@@ -1135,12 +1136,12 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                               .split('-');
 
                                           if (bpmParts.length == 2) {
-                                            widget.dj.bpmMin =
+                                            widget.dj.bpm.first =
                                                 int.tryParse(
                                                   bpmParts[0].trim(),
                                                 ) ??
                                                 0;
-                                            widget.dj.bpmMax =
+                                            widget.dj.bpm.last =
                                                 int.tryParse(
                                                   bpmParts[1].trim(),
                                                 ) ??

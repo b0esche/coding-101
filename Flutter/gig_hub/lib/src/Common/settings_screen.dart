@@ -1,11 +1,12 @@
-import 'dart:io'; // Wichtig für FileImage
+import 'dart:io';
 import 'package:gig_hub/src/Data/app_imports.dart';
 import 'package:gig_hub/src/Data/auth_repository.dart';
-import 'package:gig_hub/src/Data/users.dart' as repo;
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SettingsScreen extends StatefulWidget {
   final AuthRepository auth;
   final DatabaseRepository repo;
+
   const SettingsScreen({super.key, required this.repo, required this.auth});
 
   @override
@@ -13,11 +14,10 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  repo.DJ? _currentUser;
+  AppUser? _user;
+  XFile? _pickedImage;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
-
-  XFile? _pickedImage;
 
   @override
   void initState() {
@@ -26,12 +26,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _loadCurrentUser() async {
-    final user = await widget.repo.getUserById("dj_lorem") as DJ;
-
+    final user = await widget.repo.getCurrentUser();
     setState(() {
-      _currentUser = user;
-      // _emailController.text = _currentUser?.email ?? "";
+      _user = user;
+      _emailController.text = FirebaseAuth.instance.currentUser?.email ?? '';
     });
+  }
+
+  Future<void> _pickNewImage() async {
+    final picker = ImagePicker();
+    final picked = await picker.pickImage(source: ImageSource.gallery);
+    if (picked != null && _user != null) {
+      setState(() {
+        _pickedImage = picked;
+        if (_user is DJ) {
+          (_user as DJ).avatarImageUrl = picked.path;
+        } else if (_user is Booker) {
+          (_user as Booker).avatarImageUrl = picked.path;
+        }
+      });
+      await widget.repo.updateUser(_user!);
+    }
   }
 
   String? validateEmail(String? input) {
@@ -51,9 +66,47 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return null;
   }
 
+  Future<void> _onEmailSubmitted(String newValue) async {
+    if (_formKey.currentState?.validate() != true) return;
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      await user.verifyBeforeUpdateEmail(newValue);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Palette.forgedGold,
+          content: Center(
+            child: Text(
+              "email updated! please verify.",
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> _onResetPassword() async {
+    final email = FirebaseAuth.instance.currentUser?.email;
+    if (email != null) {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Palette.forgedGold,
+          content: Center(
+            child: Text("reset email sent!", style: TextStyle(fontSize: 16)),
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> _onLogout() async {
+    await widget.auth.signOut();
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (_currentUser == null) {
+    if (_user == null) {
       return Scaffold(
         backgroundColor: Palette.primalBlack,
         body: Center(
@@ -61,6 +114,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
       );
     } else {
+      final hasAvatar = _user is DJ || _user is Booker;
+      final avatarUrl =
+          hasAvatar
+              ? (_user is DJ
+                  ? (_user as DJ).avatarImageUrl
+                  : (_user as Booker).avatarImageUrl)
+              : null;
+
+      final ImageProvider? avatarProvider =
+          _pickedImage != null
+              ? FileImage(File(_pickedImage!.path))
+              : (hasAvatar
+                      ? (avatarUrl != null && avatarUrl.startsWith('http')
+                          ? NetworkImage(avatarUrl)
+                          : FileImage(File(avatarUrl!)))
+                      : null)
+                  as ImageProvider?;
+
       return Scaffold(
         backgroundColor: Palette.primalBlack,
         body: Center(
@@ -82,68 +153,45 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 child: Image.asset("assets/images/gighub_logo.png"),
               ),
               const SizedBox(height: 24),
-              Stack(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Palette.glazedWhite,
-                        width: 1.5,
+              if (hasAvatar && avatarProvider != null)
+                Stack(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Palette.glazedWhite,
+                          width: 1.5,
+                        ),
+                      ),
+                      child: CircleAvatar(
+                        radius: 64,
+                        backgroundImage: avatarProvider,
                       ),
                     ),
-                    child: CircleAvatar(
-                      radius: 64,
-                      backgroundImage:
-                          _pickedImage != null
-                              ? FileImage(File(_pickedImage!.path))
-                              : (_currentUser?.avatarImageUrl.startsWith(
-                                            'http',
-                                          ) ==
-                                          true
-                                      ? NetworkImage(
-                                        _currentUser!.avatarImageUrl,
-                                      )
-                                      : FileImage(
-                                        File(_currentUser!.avatarImageUrl),
-                                      ))
-                                  as ImageProvider,
-                    ),
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: IconButton(
-                      onPressed: () async {
-                        final picker = ImagePicker();
-                        final picked = await picker.pickImage(
-                          source: ImageSource.gallery,
-                        );
-                        if (picked != null) {
-                          setState(() {
-                            _pickedImage = picked;
-                            _currentUser?.avatarImageUrl = picked.path;
-                          });
-                        }
-                      },
-                      icon: Icon(
-                        Icons.upload_file_rounded,
-                        color: Palette.shadowGrey,
-                        size: 32,
-                        shadows: [
-                          BoxShadow(
-                            blurRadius: 2,
-                            blurStyle: BlurStyle.inner,
-                            color: Palette.primalBlack,
-                            spreadRadius: 2,
-                            offset: Offset(0.6, 0.6),
-                          ),
-                        ],
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: IconButton(
+                        onPressed: _pickNewImage,
+                        icon: Icon(
+                          Icons.upload_file_rounded,
+                          color: Palette.shadowGrey,
+                          size: 32,
+                          shadows: [
+                            BoxShadow(
+                              blurRadius: 2,
+                              blurStyle: BlurStyle.inner,
+                              color: Palette.primalBlack,
+                              spreadRadius: 2,
+                              offset: Offset(0.6, 0.6),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
               const SizedBox(height: 4),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -165,23 +213,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         autovalidateMode: AutovalidateMode.always,
                         validator: validateEmail,
                         keyboardType: TextInputType.emailAddress,
-                        onFieldSubmitted: (newValue) {
-                          if (_formKey.currentState!.validate() &&
-                              _currentUser != null) {
-                            // _currentUser!.updateEmail(_currentUser, newValue);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                backgroundColor: Palette.forgedGold,
-                                content: Center(
-                                  child: Text(
-                                    "email updated! please verify.",
-                                    style: TextStyle(fontSize: 16),
-                                  ),
-                                ),
-                              ),
-                            );
-                          }
-                        },
+                        onFieldSubmitted: _onEmailSubmitted,
                         controller: _emailController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
@@ -204,25 +236,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ],
               ),
-
+              const SizedBox(height: 24),
               FilledButton(
-                onPressed: () {},
+                onPressed: _onResetPassword,
                 child: const Text("reset password"),
               ),
               FilledButton(
-                onPressed: () {},
+                onPressed: () {
+                  // TODO: blocked users page
+                },
                 child: const Text("blocked users"),
               ),
               FilledButton(
-                onPressed: () {},
+                onPressed: () {
+                  // TODO: delete account logic
+                },
                 child: const Text("delete account"),
               ),
-              FilledButton(
-                onPressed: () async {
-                  await widget.auth.signOut();
-                },
-                child: const Text("log out"),
-              ),
+              FilledButton(onPressed: _onLogout, child: const Text("log out")),
               Align(
                 alignment: Alignment.bottomRight,
                 child: Padding(

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
 import 'package:gig_hub/src/Data/users.dart';
-import 'package:gig_hub/src/Features/chat/domain/chat_message.dart';
 import 'package:gig_hub/src/Features/chat/domain/chat_list_item.dart';
 import 'package:gig_hub/src/Features/chat/presentation/chat_list_item_widget.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
@@ -9,7 +8,7 @@ import 'package:gig_hub/src/Features/chat/presentation/chat_screen.dart';
 
 class ChatListScreenArgs {
   final DatabaseRepository repo;
-  final DJ currentUser;
+  final AppUser currentUser;
 
   ChatListScreenArgs({required this.repo, required this.currentUser});
 }
@@ -24,7 +23,7 @@ class ChatListScreen extends StatefulWidget {
   });
 
   final DatabaseRepository repo;
-  final DJ currentUser;
+  final AppUser currentUser;
 
   @override
   State<ChatListScreen> createState() => _ChatListScreenState();
@@ -38,45 +37,23 @@ class _ChatListScreenState extends State<ChatListScreen> {
   @override
   void initState() {
     super.initState();
-    _loadChatListItems();
+    _loadRecentChats();
   }
 
-  Future<void> _loadChatListItems() async {
+  Future<void> _loadRecentChats() async {
     try {
-      final allMessages = await widget.repo.getAllMessagesForUser(
-        widget.currentUser.id,
-      );
-
-      final Map<String, ChatMessage> latestMessagesByPartner = {};
-      final Set<String> chatPartnerIds = {};
-
-      for (var message in allMessages) {
-        final partnerId =
-            message.senderId == widget.currentUser.id
-                ? message.receiverId
-                : message.senderId;
-        chatPartnerIds.add(partnerId);
-
-        if (!latestMessagesByPartner.containsKey(partnerId) ||
-            message.timestamp.isAfter(
-              latestMessagesByPartner[partnerId]!.timestamp,
-            )) {
-          latestMessagesByPartner[partnerId] = message;
-        }
-      }
+      final recentMessages = await widget.repo.getChats(widget.currentUser.id);
 
       final List<ChatListItem> items = [];
+      for (final msg in recentMessages) {
+        final partnerId =
+            msg.senderId == widget.currentUser.id
+                ? msg.receiverId
+                : msg.senderId;
 
-      for (final partnerId in chatPartnerIds) {
         final partnerUser = await widget.repo.getUserById(partnerId);
-        if (partnerUser != null &&
-            latestMessagesByPartner.containsKey(partnerId)) {
-          items.add(
-            ChatListItem(
-              user: partnerUser as DJ,
-              recent: latestMessagesByPartner[partnerId]!,
-            ),
-          );
+        if (partnerUser != null) {
+          items.add(ChatListItem(user: partnerUser, recent: msg));
         }
       }
 
@@ -85,6 +62,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
       if (mounted) {
         setState(() {
           _chatListItems = items;
+          _hasError = false;
           _isLoading = false;
         });
       }
@@ -121,24 +99,24 @@ class _ChatListScreenState extends State<ChatListScreen> {
               : _hasError
               ? Center(
                 child: Text(
-                  'Fehler beim Laden der Chats.',
+                  'couldn\'t load chats',
                   style: TextStyle(color: Palette.glazedWhite),
                 ),
               )
               : _chatListItems.isEmpty
               ? Center(
                 child: Text(
-                  'Keine Chats vorhanden.',
+                  'no chats found.',
                   style: TextStyle(color: Palette.glazedWhite, fontSize: 16),
                 ),
               )
               : ListView.builder(
                 padding: const EdgeInsets.all(12),
                 itemCount: _chatListItems.length,
-                itemBuilder: (context, index) {
-                  final chatListItem = _chatListItems[index];
+                itemBuilder: (context, idx) {
+                  final chatItem = _chatListItems[idx];
                   return ChatListItemWidget(
-                    chatListItem: chatListItem,
+                    chatListItem: chatItem,
                     repo: widget.repo,
                     currentUser: widget.currentUser,
                     onTap: () {
@@ -146,7 +124,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                         context,
                         ChatScreen.routeName,
                         arguments: ChatScreenArgs(
-                          chatPartner: chatListItem.user,
+                          chatPartner: chatItem.user,
                           repo: widget.repo,
                           currentUser: widget.currentUser,
                         ),
