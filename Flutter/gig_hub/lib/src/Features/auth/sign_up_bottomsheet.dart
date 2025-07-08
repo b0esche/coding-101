@@ -20,7 +20,6 @@ class _SignUpSheetState extends State<SignUpSheet> {
   bool isObscured = true;
 
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
@@ -114,27 +113,8 @@ class _SignUpSheetState extends State<SignUpSheet> {
                 ),
               ),
             ),
-            const SizedBox(height: 44),
-            TextFormField(
-              controller: _nameController,
-              validator: validateName,
-              style: TextStyle(color: Palette.glazedWhite),
-              decoration: InputDecoration(
-                hintText: "username (not shown on profile)",
-                hintStyle: TextStyle(color: Palette.glazedWhite.o(0.7)),
-                prefixIcon: Icon(
-                  Icons.person,
-                  color: Palette.glazedWhite.o(0.7),
-                ),
-                filled: true,
-                fillColor: Palette.glazedWhite.o(0.1),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 72),
+
             TextFormField(
               controller: _emailController,
               validator: validateEmail,
@@ -155,7 +135,7 @@ class _SignUpSheetState extends State<SignUpSheet> {
                 ),
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 36),
             TextFormField(
               controller: _passwordController,
               obscureText: isObscured ? true : false,
@@ -184,7 +164,7 @@ class _SignUpSheetState extends State<SignUpSheet> {
                 ),
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 36),
             TextFormField(
               controller: _confirmPasswordController,
               obscureText: isObscured ? true : false,
@@ -207,7 +187,7 @@ class _SignUpSheetState extends State<SignUpSheet> {
                 ),
               ),
             ),
-            const SizedBox(height: 64),
+            const SizedBox(height: 96),
             LiquidGlass(
               shape: LiquidRoundedRectangle(borderRadius: Radius.circular(16)),
               settings: LiquidGlassSettings(
@@ -272,7 +252,7 @@ class _SignUpSheetState extends State<SignUpSheet> {
                 ),
               ),
             ),
-            const SizedBox(height: 36),
+            const SizedBox(height: 52),
           ],
         ),
       ),
