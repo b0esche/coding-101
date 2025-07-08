@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gig_hub/src/Common/main_screen.dart';
+import 'package:gig_hub/src/Data/app_imports.dart';
 import 'package:gig_hub/src/Data/auth_repository.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
 import 'package:gig_hub/src/Features/auth/sign_up_bottomsheet.dart';
@@ -515,13 +517,26 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                       ),
-                      onPressed: () {
+                      onPressed: () async {
+                        final userCredential =
+                            await FirebaseAuth.instance.signInAnonymously();
+                        final uid = userCredential.user?.uid;
+
+                        if (uid == null) {
+                          throw Exception("failed to create guest key");
+                        }
+
+                        final guestUser = Guest(id: uid);
+
+                        await widget.repo.createGuest(guestUser);
+                        if (!context.mounted) return;
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
                             builder:
                                 (context) => MainScreen(
                                   repo: widget.repo,
                                   auth: widget.auth,
+                                  initialUser: guestUser,
                                 ),
                           ),
                         );

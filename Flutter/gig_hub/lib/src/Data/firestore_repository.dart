@@ -10,11 +10,12 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
   /// ---------------------- USER ----------------------
 
   // create ###
+
   @override
   Future<void> createGuest(Guest guest) async {
-    final docRef = _firestore.collection('users').doc();
+    final docRef = _firestore.collection('users').doc(guest.id);
     await docRef.set({
-      'id': docRef.id,
+      'id': guest.id,
       'type': guest.type.name,
       'favoriteUIds': guest.favoriteUIds,
     });
@@ -22,24 +23,9 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
 
   @override
   Future<void> createDJ(DJ dj) async {
-    final docRef = _firestore.collection('users').doc();
-    final djWithId = DJ(
-      id: docRef.id,
-      avatarImageUrl: dj.avatarImageUrl,
-      headImageUrl: dj.headImageUrl,
-      name: dj.name,
-      city: dj.city,
-      about: dj.about,
-      info: dj.info,
-      genres: dj.genres,
-      bpm: dj.bpm,
-      streamingUrls: dj.streamingUrls,
-      userRating: dj.userRating,
-      mediaImageUrls: dj.mediaImageUrls,
-      favoriteUIds: dj.favoriteUIds,
-    );
+    final docRef = _firestore.collection('users').doc(dj.id);
 
-    await docRef.set({...djWithId.toJson(), 'type': dj.type.name});
+    await docRef.set(dj.toJson());
   }
 
   @override
@@ -248,20 +234,43 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
   }
 
   @override
-  Future<AppUser?> getCurrentUser() async {
-    final uid = _auth.currentUser?.uid;
-    if (uid == null) return null;
-    return getUserById(uid);
+  Future<AppUser> getCurrentUser() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) throw Exception("Kein eingeloggter User");
+
+    final doc =
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+    if (!doc.exists) throw Exception("User-Dokument nicht gefunden");
+
+    final data = doc.data();
+    if (data == null) throw Exception("Keine Daten im User-Dokument");
+
+    final type = data['type'] as String?;
+
+    switch (type) {
+      case 'dj':
+        return DJ.fromJson(user.uid, data);
+      case 'booker':
+        return Booker.fromJson(user.uid, data);
+      case 'guest':
+        return Guest.fromJson(user.uid, data);
+      default:
+        throw Exception("Unbekannter Benutzer-Typ: $type");
+    }
   }
 
   @override
-  Future<AppUser?> getUserById(String id) async {
-    final snapshot = await _firestore.collection('users').doc(id).get();
-    final data = snapshot.data();
-    if (data == null) return null;
+  Future<AppUser> getUserById(String id) async {
+    final doc = await _firestore.collection('users').doc(id).get();
+    if (!doc.exists) throw Exception("User mit ID '$id' nicht gefunden");
+
+    final data = doc.data();
+    if (data == null) throw Exception("Keine Daten im User-Dokument");
 
     final type = data['type'] as String?;
-    if (type == null) return null;
 
     switch (type) {
       case 'dj':
@@ -271,7 +280,7 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
       case 'guest':
         return Guest.fromJson(id, data);
       default:
-        return null;
+        throw Exception("Unbekannter Benutzer-Typ: $type");
     }
   }
 

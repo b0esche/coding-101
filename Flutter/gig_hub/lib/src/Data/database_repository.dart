@@ -4,7 +4,7 @@ import 'users.dart';
 
 abstract class DatabaseRepository {
   // create user ###
-  Future<void> createGuest(Guest user);
+  Future<void> createGuest(Guest guest);
   Future<void> createDJ(DJ user);
   Future<void> createBooker(Booker user);
 
@@ -35,7 +35,7 @@ abstract class DatabaseRepository {
   String getChatId(String uid1, String uid2);
 
   // utils ###
-  Future<AppUser?> getCurrentUser();
-  Future<AppUser?> getUserById(String id);
+  Future<AppUser> getCurrentUser();
+  Future<AppUser> getUserById(String id);
   Future<void> updateUser(AppUser user);
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gig_hub/src/Common/main_screen.dart';
 import 'package:gig_hub/src/Common/settings_screen.dart';
+import 'package:gig_hub/src/Data/app_imports.dart';
 import 'package:gig_hub/src/Data/auth_repository.dart';
 import 'package:gig_hub/src/Features/auth/sign_in_screen.dart';
 import 'package:gig_hub/src/Features/profile/dj/presentation/profile_screen_dj.dart';
@@ -28,7 +29,50 @@ class App extends StatelessWidget {
           darkTheme: AppTheme.darkTheme,
           home:
               snapshot.hasData
-                  ? MainScreen(repo: repo, auth: auth)
+                  ? FutureBuilder<AppUser>(
+                    future: repo.getCurrentUser(),
+                    builder: (context, userSnapshot) {
+                      if (userSnapshot.connectionState ==
+                          ConnectionState.waiting) {
+                        return const Scaffold(
+                          body: Center(child: CircularProgressIndicator()),
+                        );
+                      }
+
+                      if (userSnapshot.hasError) {
+                        // Log den Fehler für Entwicklung
+                        print(
+                          "❌ Fehler beim Laden des Benutzers: ${userSnapshot.error}",
+                        );
+
+                        return const Scaffold(
+                          body: Center(
+                            child: Text(
+                              '❌ Fehler: Benutzer konnte nicht geladen werden.\nBitte erneut versuchen.',
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        );
+                      }
+
+                      final user = userSnapshot.data;
+                      if (user == null) {
+                        print("❌ Benutzerobjekt ist null");
+                        return const Scaffold(
+                          body: Center(
+                            child: Text("Benutzerdaten nicht gefunden."),
+                          ),
+                        );
+                      }
+
+                      // Wenn alles klappt, MainScreen starten
+                      return MainScreen(
+                        repo: repo,
+                        auth: auth,
+                        initialUser: user,
+                      );
+                    },
+                  )
                   : LoginScreen(repo: repo, auth: auth),
           onGenerateRoute: (settings) {
             switch (settings.name) {
@@ -108,7 +152,12 @@ class App extends StatelessWidget {
             }
           },
           routes: {
-            '/main': (context) => MainScreen(repo: repo, auth: auth),
+            '/main':
+                (context) => MainScreen(
+                  repo: repo,
+                  auth: auth,
+                  initialUser: snapshot.data as AppUser,
+                ),
             '/settings': (context) => SettingsScreen(repo: repo, auth: auth),
           },
         );

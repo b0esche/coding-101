@@ -11,9 +11,15 @@ import 'package:gig_hub/src/Data/database_repository.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key, required this.repo, required this.auth});
+  const MainScreen({
+    super.key,
+    required this.repo,
+    required this.auth,
+    required this.initialUser,
+  });
   final DatabaseRepository repo;
   final AuthRepository auth;
+  final AppUser initialUser;
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -25,8 +31,7 @@ class _MainScreenState extends State<MainScreen> {
   String _selectedSortOption = '';
   List<DJ> _usersDJ = [];
   List<DJ> _sortedUsersDJ = [];
-  final int _selectedIndex = 0;
-  DJ? _loggedInUser;
+  AppUser? _loggedInUser;
   late DatabaseRepository _repo;
 
   List<int>? _currentSearchBpmRange;
@@ -36,6 +41,7 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     _repo = widget.repo;
+    _loggedInUser = widget.initialUser;
     _fetchDJs();
   }
 
@@ -44,9 +50,6 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {
       _usersDJ = users;
       _sortedUsersDJ = List.from(_usersDJ);
-      if (_usersDJ.isNotEmpty) {
-        _loggedInUser = _usersDJ.first;
-      }
     });
   }
 
@@ -131,8 +134,9 @@ class _MainScreenState extends State<MainScreen> {
               }
 
               // If overlaps are equal, prioritize exact match of min/max
-              if (a.bpm.first == searchMin && a.bpm.last == searchMax)
+              if (a.bpm.first == searchMin && a.bpm.last == searchMax) {
                 return -1;
+              }
               if (b.bpm.first == searchMin && b.bpm.last == searchMax) return 1;
 
               // Fallback: sort by how "centered" their range is to the search range,
@@ -167,9 +171,6 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String loggedInUserAvatar =
-        _loggedInUser?.avatarImageUrl ?? "https://picsum.photos/100";
-
     return PopScope(
       canPop: false,
       child: Scaffold(
@@ -187,39 +188,42 @@ class _MainScreenState extends State<MainScreen> {
                     height: 130,
                     child: Stack(
                       children: [
-                        Positioned(
-                          top: 8,
-                          right: 0,
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder:
-                                      (context) => SettingsScreen(
-                                        repo: widget.repo,
-                                        auth: widget.auth,
-                                      ),
-                                  fullscreenDialog: true,
+                        if (_loggedInUser is! Guest)
+                          Positioned(
+                            top: 8,
+                            right: 0,
+                            child: GestureDetector(
+                              onTap: () {
+                                if (_loggedInUser == null) return;
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) => SettingsScreen(
+                                          repo: widget.repo,
+                                          auth: widget.auth,
+                                        ),
+                                    fullscreenDialog: true,
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: Palette.glazedWhite.o(0.5),
+                                    width: 1.4,
+                                  ),
                                 ),
-                              );
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: Palette.glazedWhite.o(0.5),
-                                  width: 1.4,
-                                ),
-                              ),
-                              child: CircleAvatar(
-                                radius: 32,
-                                backgroundImage: NetworkImage(
-                                  loggedInUserAvatar,
+                                child: CircleAvatar(
+                                  radius: 32,
+                                  backgroundImage: NetworkImage(
+                                    _loggedInUser?.avatarUrl ??
+                                        "https://picsum.photos/100",
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
                         Align(
                           alignment: Alignment.center,
                           child: SizedBox(
@@ -237,6 +241,7 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                   ),
                 ),
+
                 RepaintBoundary(
                   child: SearchFunctionCard(
                     onSearchResults: (List<DJ> results) {
@@ -398,23 +403,7 @@ class _MainScreenState extends State<MainScreen> {
         bottomNavigationBar: CustomNavBar(
           repo: widget.repo,
           auth: widget.auth,
-          dj:
-              _loggedInUser ??
-              DJ(
-                id: 'newId123',
-                genres: [],
-                headImageUrl: '',
-                avatarImageUrl: 'avatarUrl',
-                bpm: [120, 145],
-                about: "about",
-                streamingUrls: [],
-                mediaImageUrls: ["mediaUrl"],
-                info: "info",
-                favoriteUIds: [],
-                userRating: 4,
-                name: "name",
-                city: 'Berlin',
-              ),
+          currentUser: _loggedInUser!,
         ),
       ),
     );

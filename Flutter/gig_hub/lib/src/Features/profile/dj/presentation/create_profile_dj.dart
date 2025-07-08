@@ -1,5 +1,6 @@
 import "dart:io";
 
+import "package:firebase_auth/firebase_auth.dart";
 import "package:gig_hub/src/Data/auth_repository.dart";
 import "package:gig_hub/src/Data/firestore_repository.dart";
 
@@ -740,12 +741,31 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                           child: OutlinedButton(
                             onPressed: () async {
                               FocusManager.instance.primaryFocus?.unfocus();
-                              if (headUrl!.isNotEmpty &&
-                                  bpmMin!.isNotEmpty &&
-                                  bpmMax!.isNotEmpty &&
+
+                              if (headUrl?.isNotEmpty == true &&
+                                  bpmMin?.isNotEmpty == true &&
+                                  bpmMax?.isNotEmpty == true &&
                                   _nameController.text.isNotEmpty) {
-                                await repo.createDJ(
-                                  DJ(
+                                try {
+                                  // 1. User anlegen
+                                  await widget.auth
+                                      .createUserWithEmailAndPassword(
+                                        widget.email,
+                                        widget.pw,
+                                      );
+
+                                  // 2. UID abrufen
+                                  final userId =
+                                      FirebaseAuth.instance.currentUser?.uid;
+                                  if (userId == null) {
+                                    throw Exception(
+                                      "Fehler beim Abrufen der UID nach Registrierung.",
+                                    );
+                                  }
+
+                                  // 3. DJ speichern
+                                  final dj = DJ(
+                                    id: userId,
                                     genres: genres!,
                                     headImageUrl: headUrl!,
                                     avatarImageUrl: 'https://picsum.photos/100',
@@ -755,21 +775,28 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                     ],
                                     about: _aboutController.text,
                                     streamingUrls: [],
-                                    mediaImageUrls: mediaUrl!,
+                                    mediaImageUrls: mediaUrl ?? [],
                                     info: _infoController.text,
-                                    id: '',
                                     name: _nameController.text,
-                                    userRating: 3,
+                                    userRating: 0,
                                     city: _locationController.text,
                                     favoriteUIds: [],
-                                  ),
-                                );
+                                  );
 
-                                await widget.auth
-                                    .createUserWithEmailAndPassword(
-                                      widget.email,
-                                      widget.pw,
-                                    );
+                                  await repo.createDJ(dj);
+                                } catch (e) {
+                                  if (!context.mounted) return;
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      backgroundColor: Palette.forgedGold,
+                                      content: Center(
+                                        child: Text(
+                                          "failed to create profile, try again later!",
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                }
                               }
                             },
                             style: ButtonStyle(
