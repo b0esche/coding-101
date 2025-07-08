@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
+import 'package:gig_hub/src/Data/firestore_repository.dart';
 import 'package:gig_hub/src/Data/users.dart';
 import 'package:gig_hub/src/Features/search/presentation/custom_form_field.dart';
 import 'package:gig_hub/src/Features/search/presentation/widgets/bpm_selection_dialog.dart';
@@ -74,7 +75,7 @@ class _SearchFunctionCardState extends State<SearchFunctionCard> {
   Future<void> _search() async {
     widget.onSearchLoading(true);
 
-    final repo = MockDatabaseRepository();
+    final repo = FirestoreDatabaseRepository();
     final results = await repo.searchDJs(
       city: selectedCity,
       genres: selectedGenres,

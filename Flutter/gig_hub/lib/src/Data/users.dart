@@ -44,19 +44,13 @@ class Guest extends AppUser {
 }
 
 class DJ extends AppUser {
-  final List<String> mediaImageUrls;
-  final List<String> favoriteUIds;
-  final List<String> genres;
-  final List<String> streamingUrls;
+  String name, city, about, info, headImageUrl, avatarImageUrl;
 
-  String name;
-  String city;
-  String about;
-  String info;
-  String headImageUrl;
-  String avatarImageUrl;
-  List<int> bpm;
   final double userRating;
+
+  final List<String> mediaImageUrls, favoriteUIds, genres, streamingUrls;
+
+  List<int> bpm;
 
   DJ({
     required super.id,
@@ -110,16 +104,11 @@ class DJ extends AppUser {
 }
 
 class Booker extends AppUser {
-  final List<String> mediaImageUrls;
-  final List<String> favoriteUIds;
+  String name, city, about, info, headImageUrl, avatarImageUrl;
 
-  String name;
-  String city;
-  String about;
-  String info;
-  String headImageUrl;
-  String avatarImageUrl;
   final double userRating;
+
+  final List<String> mediaImageUrls, favoriteUIds;
 
   Booker({
     required super.id,

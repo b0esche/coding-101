@@ -2,16 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:gig_hub/src/Common/main_screen.dart';
 import 'package:gig_hub/src/Common/settings_screen.dart';
 import 'package:gig_hub/src/Data/auth_repository.dart';
-
 import 'package:gig_hub/src/Features/auth/sign_in_screen.dart';
-
 import 'package:gig_hub/src/Features/profile/dj/presentation/profile_screen_dj.dart';
 import 'package:gig_hub/src/Features/profile/booker/presentation/profile_screen_booker.dart';
 import 'package:gig_hub/src/Theme/app_theme.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
 import 'package:gig_hub/src/Features/chat/presentation/chat_screen.dart';
 import 'package:gig_hub/src/Features/chat/presentation/chat_list_screen.dart';
-import 'package:gig_hub/tasksheet_6.1.4.dart';
 
 class App extends StatelessWidget {
   final DatabaseRepository repo;
@@ -32,7 +29,7 @@ class App extends StatelessWidget {
           home:
               snapshot.hasData
                   ? MainScreen(repo: repo, auth: auth)
-                  : Tasksheet614(),
+                  : LoginScreen(repo: repo, auth: auth),
           onGenerateRoute: (settings) {
             switch (settings.name) {
               case ProfileScreenDJ.routeName:

@@ -1,6 +1,7 @@
 import "dart:io";
 
 import "package:gig_hub/src/Data/auth_repository.dart";
+import "package:gig_hub/src/Data/firestore_repository.dart";
 
 import "../../../../Data/app_imports.dart";
 import "../../../../Data/app_imports.dart" as http;
@@ -24,7 +25,7 @@ class CreateProfileScreenBooker extends StatefulWidget {
 }
 
 class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
-  DatabaseRepository repo = MockDatabaseRepository();
+  DatabaseRepository repo = FirestoreDatabaseRepository();
   final _formKey = GlobalKey<FormState>();
   late final _nameController = TextEditingController();
   late final _locationController = TextEditingController(text: 'your city');

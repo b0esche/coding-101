@@ -1,8 +1,6 @@
 class ChatMessage {
-  final String id;
-  final String senderId;
-  final String receiverId;
-  final String message;
+  final String id, senderId, receiverId, message;
+
   final DateTime timestamp;
 
   ChatMessage({
@@ -12,11 +10,6 @@ class ChatMessage {
     required this.message,
     required this.timestamp,
   });
-
-  @override
-  String toString() {
-    return "$message - $timestamp\n";
-  }
 
   factory ChatMessage.fromJson(Map<String, dynamic> json) {
     return ChatMessage(

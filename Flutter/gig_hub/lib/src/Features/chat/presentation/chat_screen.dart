@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
 import 'package:gig_hub/src/Data/users.dart';
 import 'package:gig_hub/src/Features/chat/domain/chat_message.dart';
-import 'package:gig_hub/src/Features/profile/booker/presentation/profile_screen_booker.dart';
 import 'package:gig_hub/src/Features/profile/dj/presentation/profile_screen_dj.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ChatScreenArgs {
-  final DJ chatPartner;
+  final AppUser chatPartner;
   final DatabaseRepository repo;
-  final DJ currentUser;
+  final AppUser currentUser;
 
   ChatScreenArgs({
     required this.chatPartner,
@@ -22,9 +21,9 @@ class ChatScreenArgs {
 class ChatScreen extends StatefulWidget {
   static const routeName = '/chat';
 
-  final DJ chatPartner;
+  final AppUser chatPartner;
   final DatabaseRepository repo;
-  final DJ currentUser;
+  final AppUser currentUser;
 
   const ChatScreen({
     super.key,
@@ -43,7 +42,7 @@ class ChatScreenState extends State<ChatScreen> {
   final ScrollController _scrollController = ScrollController();
 
   String getPartnerAvatarUrl() {
-    return widget.chatPartner.avatarImageUrl;
+    return widget.chatPartner.avatarUrl;
   }
 
   @override
@@ -129,7 +128,7 @@ class ChatScreenState extends State<ChatScreen> {
                     MaterialPageRoute(
                       builder:
                           (_) => ProfileScreenDJ(
-                            dj: widget.chatPartner,
+                            dj: widget.chatPartner as DJ,
                             repo: widget.repo,
                             showChatButton: false,
                             showEditButton: true,
@@ -151,7 +150,7 @@ class ChatScreenState extends State<ChatScreen> {
             SizedBox(
               width: 222,
               child: Text(
-                widget.chatPartner.name,
+                widget.chatPartner.displayName,
                 style: GoogleFonts.sometypeMono(
                   textStyle: TextStyle(
                     overflow: TextOverflow.ellipsis,
