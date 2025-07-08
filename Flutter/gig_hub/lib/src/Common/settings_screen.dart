@@ -236,7 +236,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
               FilledButton(
                 onPressed: _onResetPassword,
                 child: const Text("reset password"),

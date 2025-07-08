@@ -24,7 +24,6 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
   @override
   Future<void> createDJ(DJ dj) async {
     final docRef = _firestore.collection('users').doc(dj.id);
-
     await docRef.set(dj.toJson());
   }
 

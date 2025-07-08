@@ -52,9 +52,8 @@ class _ChatListScreenState extends State<ChatListScreen> {
                 : msg.senderId;
 
         final partnerUser = await widget.repo.getUserById(partnerId);
-        if (partnerUser != null) {
-          items.add(ChatListItem(user: partnerUser, recent: msg));
-        }
+
+        items.add(ChatListItem(user: partnerUser, recent: msg));
       }
 
       items.sort((a, b) => b.recent.timestamp.compareTo(a.recent.timestamp));
@@ -106,7 +105,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
               : _chatListItems.isEmpty
               ? Center(
                 child: Text(
-                  'no chats found.',
+                  'no chats. start now!',
                   style: TextStyle(color: Palette.glazedWhite, fontSize: 16),
                 ),
               )
