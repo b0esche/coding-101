@@ -35,12 +35,10 @@ class Guest extends AppUser {
     'favoriteUIds': favoriteUIds,
   };
 
-  factory Guest.fromJson(String id, Map<String, dynamic> json) {
-    return Guest(
-      id: id,
-      favoriteUIds: List<String>.from(json['favoriteUIds'] ?? []),
-    );
-  }
+  factory Guest.fromJson(String id, Map<String, dynamic> json) => Guest(
+    id: id,
+    favoriteUIds: List<String>.from(json['favoriteUIds'] ?? []),
+  );
 }
 
 class DJ extends AppUser {
@@ -84,23 +82,21 @@ class DJ extends AppUser {
     'favoriteUIds': favoriteUIds,
   };
 
-  factory DJ.fromJson(String id, Map<String, dynamic> json) {
-    return DJ(
-      id: id,
-      avatarImageUrl: json['avatarImageUrl'],
-      headImageUrl: json['headImageUrl'],
-      name: json['name'],
-      city: json['city'],
-      about: json['about'],
-      info: json['info'],
-      genres: List<String>.from(json['genres'] ?? []),
-      bpm: List<int>.from(json['bpm'] ?? []),
-      streamingUrls: List<String>.from(json['streamingUrls'] ?? []),
-      userRating: (json['userRating'] ?? 0.0).toDouble(),
-      mediaImageUrls: List<String>.from(json['mediaImageUrls'] ?? []),
-      favoriteUIds: List<String>.from(json['favoriteUIds'] ?? []),
-    );
-  }
+  factory DJ.fromJson(String id, Map<String, dynamic> json) => DJ(
+    id: id,
+    avatarImageUrl: json['avatarImageUrl'],
+    headImageUrl: json['headImageUrl'],
+    name: json['name'],
+    city: json['city'],
+    about: json['about'],
+    info: json['info'],
+    genres: List<String>.from(json['genres'] ?? []),
+    bpm: List<int>.from(json['bpm'] ?? []),
+    streamingUrls: List<String>.from(json['streamingUrls'] ?? []),
+    userRating: (json['userRating'] ?? 0.0).toDouble(),
+    mediaImageUrls: List<String>.from(json['mediaImageUrls'] ?? []),
+    favoriteUIds: List<String>.from(json['favoriteUIds'] ?? []),
+  );
 }
 
 class Booker extends AppUser {
@@ -136,20 +132,18 @@ class Booker extends AppUser {
     'favoriteUIds': favoriteUIds,
   };
 
-  factory Booker.fromJson(String id, Map<String, dynamic> json) {
-    return Booker(
-      id: id,
-      avatarImageUrl: json['avatarImageUrl'],
-      headImageUrl: json['headImageUrl'],
-      name: json['name'],
-      city: json['city'],
-      about: json['about'],
-      info: json['info'],
-      userRating: (json['userRating'] ?? 0.0).toDouble(),
-      mediaImageUrls: List<String>.from(json['mediaImageUrls'] ?? []),
-      favoriteUIds: List<String>.from(json['favoriteUIds'] ?? []),
-    );
-  }
+  factory Booker.fromJson(String id, Map<String, dynamic> json) => Booker(
+    id: id,
+    avatarImageUrl: json['avatarImageUrl'],
+    headImageUrl: json['headImageUrl'],
+    name: json['name'],
+    city: json['city'],
+    about: json['about'],
+    info: json['info'],
+    userRating: (json['userRating'] ?? 0.0).toDouble(),
+    mediaImageUrls: List<String>.from(json['mediaImageUrls'] ?? []),
+    favoriteUIds: List<String>.from(json['favoriteUIds'] ?? []),
+  );
 }
 
 extension AppUserView on AppUser {
@@ -162,6 +156,6 @@ extension AppUserView on AppUser {
   String get avatarUrl {
     if (this is DJ) return (this as DJ).avatarImageUrl;
     if (this is Booker) return (this as Booker).avatarImageUrl;
-    return '';
+    return 'https://picsum.photos/106';
   }
 }
