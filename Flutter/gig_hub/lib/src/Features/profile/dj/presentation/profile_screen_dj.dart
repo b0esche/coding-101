@@ -1,6 +1,7 @@
 import "dart:io";
 
 import "package:cloud_firestore/cloud_firestore.dart";
+import "package:hive_flutter/hive_flutter.dart";
 import "package:liquid_glass_renderer/liquid_glass_renderer.dart";
 
 import "../../../../Data/app_imports.dart";
@@ -47,7 +48,18 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
   int index = 0;
 
   bool editMode = false;
-  late bool isFavorite;
+  bool get isFavorite {
+    final id = widget.dj.id;
+
+    if (widget.currentUser is Guest) {
+      return (widget.currentUser as Guest).favoriteUIds.contains(id);
+    } else if (widget.currentUser is Booker) {
+      return (widget.currentUser as Booker).favoriteUIds.contains(id);
+    } else if (widget.currentUser is DJ) {
+      return (widget.currentUser as DJ).favoriteUIds.contains(id);
+    }
+    return false;
+  }
 
   final _formKey = GlobalKey<FormState>();
   final _locationFocusNode = FocusNode();
@@ -81,19 +93,6 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
     _playerControllerTwo = PlayerController();
 
     _locationFocusNode.addListener(_onLocationFocusChange);
-
-    final id = widget.dj.id;
-
-    if (widget.currentUser is Guest) {
-      final guest = widget.currentUser as Guest;
-      isFavorite = guest.favoriteUIds.contains(id);
-    } else if (widget.currentUser is Booker) {
-      final booker = widget.currentUser as Booker;
-      isFavorite = booker.favoriteUIds.contains(id);
-    } else if (widget.currentUser is DJ) {
-      final dj = widget.currentUser as DJ;
-      isFavorite = dj.favoriteUIds.contains(id);
-    }
   }
 
   void _onLocationFocusChange() {
@@ -361,13 +360,13 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                   ),
                   widget.showFavoriteIcon
                       ? Positioned(
-                        bottom: 4,
-                        left: 4,
+                        bottom: 8,
+                        left: 8,
                         child: Container(
                           decoration: BoxDecoration(
                             border: Border.all(
                               width: 0.5,
-                              color: Palette.primalBlack.o(0.65),
+                              color: Palette.gigGrey.o(0.65),
                             ),
                             shape: BoxShape.circle,
                             color: Palette.primalBlack.o(0.35),
@@ -388,40 +387,57 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                               size: 22,
                             ),
                             onPressed: () async {
-                              setState(() {
-                                isFavorite = !isFavorite;
-                              });
-
                               final String targetId = widget.dj.id;
-
                               final String userId = widget.currentUser.id;
-
+                              final myFavoritesBox = Hive.box('favoritesBox');
                               final userDocRef = FirebaseFirestore.instance
                                   .collection('users')
                                   .doc(userId);
 
-                              try {
-                                if (isFavorite) {
-                                  await userDocRef.update({
-                                    'favoriteUIds': FieldValue.arrayUnion([
-                                      targetId,
-                                    ]),
-                                  });
-                                } else {
-                                  await userDocRef.update({
-                                    'favoriteUIds': FieldValue.arrayRemove([
-                                      targetId,
-                                    ]),
-                                  });
-                                }
-                              } catch (e) {
-                                debugPrint(
-                                  'Fehler beim Aktualisieren der Favoritenliste: $e',
-                                );
-                                setState(() {
-                                  isFavorite = !isFavorite;
+                              final bool newFavoriteStatus = !isFavorite;
+
+                              setState(() {});
+
+                              if (newFavoriteStatus) {
+                                await userDocRef.update({
+                                  'favoriteUIds': FieldValue.arrayUnion([
+                                    targetId,
+                                  ]),
                                 });
+                                myFavoritesBox.put(targetId, targetId);
+
+                                if (widget.currentUser is Guest) {
+                                  (widget.currentUser as Guest).favoriteUIds
+                                      .add(targetId);
+                                } else if (widget.currentUser is Booker) {
+                                  (widget.currentUser as Booker).favoriteUIds
+                                      .add(targetId);
+                                } else if (widget.currentUser is DJ) {
+                                  (widget.currentUser as DJ).favoriteUIds.add(
+                                    targetId,
+                                  );
+                                }
+                              } else {
+                                await userDocRef.update({
+                                  'favoriteUIds': FieldValue.arrayRemove([
+                                    targetId,
+                                  ]),
+                                });
+                                myFavoritesBox.delete(targetId);
+
+                                if (widget.currentUser is Guest) {
+                                  (widget.currentUser as Guest).favoriteUIds
+                                      .remove(targetId);
+                                } else if (widget.currentUser is Booker) {
+                                  (widget.currentUser as Booker).favoriteUIds
+                                      .remove(targetId);
+                                } else if (widget.currentUser is DJ) {
+                                  (widget.currentUser as DJ).favoriteUIds
+                                      .remove(targetId);
+                                }
                               }
+
+                              setState(() {});
                             },
                           ),
                         ),
