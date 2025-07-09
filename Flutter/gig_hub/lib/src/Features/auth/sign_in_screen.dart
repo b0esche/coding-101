@@ -1,12 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:gig_hub/src/Common/main_screen.dart';
 import 'package:gig_hub/src/Data/app_imports.dart';
 import 'package:gig_hub/src/Data/auth_repository.dart';
-import 'package:gig_hub/src/Data/database_repository.dart';
 import 'package:gig_hub/src/Features/auth/sign_up_bottomsheet.dart';
-import 'package:gig_hub/src/Theme/palette.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -22,12 +18,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _loginEmailController = TextEditingController(
-    text: "loremipsum@email.com",
-  );
-  final TextEditingController _loginPasswordController = TextEditingController(
-    text: "password",
-  );
+  final TextEditingController _loginEmailController = TextEditingController();
+  final TextEditingController _loginPasswordController =
+      TextEditingController();
   Set<String> selected = {'dj'};
   bool _isObscured = true;
 
@@ -240,11 +233,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Column(
                           children: [
                             TextFormField(
+                              keyboardType: TextInputType.emailAddress,
                               autofillHints: [AutofillHints.email],
                               controller: _loginEmailController,
                               showCursor: true,
                               maxLines: 1,
                               decoration: InputDecoration(
+                                hintText: 'email',
                                 contentPadding: EdgeInsets.all(12),
                                 border: InputBorder.none,
                                 prefixIcon: Icon(
@@ -256,6 +251,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             Divider(color: Palette.concreteGrey),
                             TextFormField(
+                              keyboardType: TextInputType.visiblePassword,
                               autofillHints: [AutofillHints.password],
                               controller: _loginPasswordController,
                               showCursor: true,
@@ -263,6 +259,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               obscureText: _isObscured,
                               obscuringCharacter: "✱",
                               decoration: InputDecoration(
+                                hintText: 'password',
                                 contentPadding: EdgeInsets.all(8),
                                 border: InputBorder.none,
                                 prefixIcon: Icon(
@@ -367,10 +364,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             if (!context.mounted) return;
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
+                                duration: Duration(milliseconds: 950),
                                 backgroundColor: Palette.forgedGold,
                                 content: Center(
                                   child: Text(
-                                    "login error: invalid credentials!",
+                                    "invalid credentials!",
                                     style: TextStyle(fontSize: 16),
                                   ),
                                 ),

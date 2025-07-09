@@ -1,5 +1,6 @@
 import 'package:gig_hub/src/Data/app_imports.dart';
 import 'package:gig_hub/src/Data/auth_repository.dart';
+import 'package:gig_hub/src/Features/auth/sign_up_bottomsheet.dart';
 import 'package:gig_hub/src/Features/chat/presentation/chat_list_screen.dart';
 import 'package:gig_hub/src/Features/profile/booker/presentation/profile_screen_booker.dart';
 import 'package:gig_hub/src/Features/profile/dj/presentation/profile_screen_dj.dart';
@@ -76,7 +77,7 @@ class CustomNavBar extends StatelessWidget {
                         backgroundColor: Palette.forgedGold,
                         content: Center(
                           child: Text(
-                            'register as DJ / booker to create a profile!',
+                            'sign up as DJ or booker to create a profile!',
                             style: TextStyle(fontSize: 16),
                           ),
                         ),
@@ -92,7 +93,19 @@ class CustomNavBar extends StatelessWidget {
               VerticalDivider(color: Palette.primalBlack),
               IconButton(
                 onPressed: () {
-                  if (currentUser is Guest) return;
+                  if (currentUser is Guest) {
+                    showModalBottomSheet(
+                      showDragHandle: true,
+                      backgroundColor: Colors.transparent,
+                      context: context,
+                      isScrollControlled: true,
+                      builder: (BuildContext context) {
+                        return SignUpSheet(repo: repo, auth: auth);
+                      },
+                    );
+                    return;
+                  }
+
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder:

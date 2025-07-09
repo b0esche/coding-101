@@ -1,5 +1,6 @@
 import "dart:io";
 
+import "package:firebase_auth/firebase_auth.dart";
 import "package:gig_hub/src/Data/auth_repository.dart";
 import "package:gig_hub/src/Data/firestore_repository.dart";
 
@@ -40,7 +41,7 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
   String? about;
   String? info;
 
-  List<String> mediaUrl = [];
+  List<String>? mediaUrl = [];
   int index = 0;
 
   @override
@@ -494,7 +495,7 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                       ),
                       const SizedBox(height: 40),
 
-                      (mediaUrl.isNotEmpty)
+                      (mediaUrl != null && mediaUrl!.isNotEmpty)
                           ? ClipRRect(
                             borderRadius: BorderRadius.circular(8),
                             child: ImageSlideshow(
@@ -509,7 +510,7 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                                 setState(() => index = value);
                               },
                               children:
-                                  mediaUrl.map((path) {
+                                  mediaUrl!.map((path) {
                                     return PinchZoom(
                                       zoomEnabled: true,
                                       maxScale: 2.5,
@@ -559,12 +560,12 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                             ),
                           ),
                       SizedBox(height: 8),
-                      (mediaUrl.isNotEmpty)
+                      (mediaUrl!.isNotEmpty)
                           ? Center(
                             child: TextButton(
                               onPressed:
                                   () => setState(() {
-                                    mediaUrl.clear();
+                                    mediaUrl!.clear();
                                   }),
                               child: Text(
                                 "remove all images",
@@ -637,31 +638,45 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                         child: SizedBox(
                           height: 100,
                           child: OutlinedButton(
-                            onPressed: () {
+                            onPressed: () async {
                               FocusManager.instance.primaryFocus?.unfocus();
                               if (headUrl!.isNotEmpty &&
                                   _nameController.text.isNotEmpty) {
-                                repo
-                                    .createBooker(
-                                      Booker(
-                                        headImageUrl: headUrl ?? "",
-                                        avatarImageUrl: "avatarUrl",
-                                        city: _locationController.text,
-                                        about: _aboutController.text,
-                                        info: _infoController.text,
-
-                                        mediaImageUrls: mediaUrl,
-                                        id: 'userId',
-                                        name: _nameController.text,
+                                try {
+                                  await widget.auth
+                                      .createUserWithEmailAndPassword(
+                                        widget.email,
+                                        widget.pw,
+                                      );
+                                  final userId =
+                                      FirebaseAuth.instance.currentUser?.uid;
+                                  if (userId == null) {
+                                    throw Exception('Fehler');
+                                  }
+                                  final booker = Booker(
+                                    id: userId,
+                                    avatarImageUrl: 'https://picsum.photos/102',
+                                    headImageUrl: headUrl!,
+                                    name: _nameController.text,
+                                    city: _locationController.text,
+                                    about: _aboutController.text,
+                                    info: _infoController.text,
+                                    mediaImageUrls: mediaUrl ?? [],
+                                  );
+                                  await repo.createBooker(booker);
+                                } catch (e) {
+                                  if (!context.mounted) return;
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      backgroundColor: Palette.forgedGold,
+                                      content: Center(
+                                        child: Text(
+                                          "failed to create profile, try again later!",
+                                        ),
                                       ),
-                                    )
-                                    .then(
-                                      (value) => widget.auth
-                                          .createUserWithEmailAndPassword(
-                                            widget.email,
-                                            widget.pw,
-                                          ),
-                                    );
+                                    ),
+                                  );
+                                }
                               }
                             },
                             style: ButtonStyle(

@@ -29,21 +29,8 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
 
   @override
   Future<void> createBooker(Booker booker) async {
-    final docRef = _firestore.collection('users').doc();
-    final bookerWithId = Booker(
-      id: docRef.id,
-      avatarImageUrl: booker.avatarImageUrl,
-      headImageUrl: booker.headImageUrl,
-      name: booker.name,
-      city: booker.city,
-      about: booker.about,
-      info: booker.info,
-      mediaImageUrls: booker.mediaImageUrls,
-      favoriteUIds: booker.favoriteUIds,
-      userRating: booker.userRating,
-    );
-
-    await docRef.set({...bookerWithId.toJson(), 'type': booker.type.name});
+    final docRef = _firestore.collection('users').doc(booker.id);
+    await docRef.set(booker.toJson());
   }
 
   // delete ###

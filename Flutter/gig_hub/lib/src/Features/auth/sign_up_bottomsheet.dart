@@ -46,6 +46,7 @@ class _SignUpSheetState extends State<SignUpSheet> {
                 fontWeight: FontWeight.bold,
               ),
             ),
+
             SizedBox(height: 36),
             SizedBox(
               height: 48,

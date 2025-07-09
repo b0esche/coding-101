@@ -180,10 +180,7 @@ class _MainScreenState extends State<MainScreen> {
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
+                  padding: const EdgeInsets.only(top: 4, left: 8, right: 8),
                   child: SizedBox(
                     height: 130,
                     child: Stack(
@@ -269,56 +266,59 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                 ),
                 SizedBox(height: 8),
-                Column(
-                  spacing: 4,
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: 'sort by ',
-                                style: TextStyle(
+                    GestureDetector(
+                      onTap:
+                          () => setState(() {
+                            _isExpanded = !_isExpanded;
+                          }),
+                      child: RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: 'sort by ',
+                              style: TextStyle(
+                                color: Palette.glazedWhite,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                wordSpacing: -1,
+                              ),
+                            ),
+                            WidgetSpan(
+                              alignment: PlaceholderAlignment.top,
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _isExpanded = !_isExpanded;
+                                  });
+                                },
+                                child: Icon(
+                                  _isExpanded
+                                      ? Icons.expand_less
+                                      : Icons.expand_more,
+                                  size: 20,
                                   color: Palette.glazedWhite,
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  wordSpacing: -1,
                                 ),
                               ),
-                              WidgetSpan(
-                                alignment: PlaceholderAlignment.middle,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      _isExpanded = !_isExpanded;
-                                    });
-                                  },
-                                  child: Icon(
-                                    _isExpanded
-                                        ? Icons.expand_less
-                                        : Icons.expand_more,
-                                    size: 20,
-                                    color: Palette.glazedWhite,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    if (_isExpanded)
-                      SortButtonsWidget(
-                        selectedSortOption: _selectedSortOption,
-                        onSortOptionChanged: _sortUsers,
-                        onExpandedChanged: _toggleExpanded,
                       ),
+                    ),
+                    SizedBox(width: 4),
                   ],
                 ),
+                if (_isExpanded)
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: SortButtonsWidget(
+                      selectedSortOption: _selectedSortOption,
+                      onSortOptionChanged: _sortUsers,
+                      onExpandedChanged: _toggleExpanded,
+                    ),
+                  ),
                 SizedBox(height: 8),
                 Expanded(
                   child:

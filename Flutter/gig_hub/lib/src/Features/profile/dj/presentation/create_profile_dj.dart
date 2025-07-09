@@ -591,7 +591,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                         index: isSoundcloudConnected ? 0 : 1,
                         children: [
                           soundcloudFields(),
-                          soundcloudConnectButton(),
+                          connectToSoundcloudButton(),
                         ],
                       ),
 
@@ -984,7 +984,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
     );
   }
 
-  Widget soundcloudConnectButton() {
+  Widget connectToSoundcloudButton() {
     return Center(
       child: ElevatedButton(
         onPressed: () {

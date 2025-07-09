@@ -69,9 +69,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _onEmailSubmitted(String newValue) async {
     if (_formKey.currentState?.validate() != true) return;
     final user = FirebaseAuth.instance.currentUser;
+    final messenger = ScaffoldMessenger.of(context);
     if (user != null) {
       await user.verifyBeforeUpdateEmail(newValue);
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         SnackBar(
           backgroundColor: Palette.forgedGold,
           content: Center(
@@ -87,9 +88,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future<void> _onResetPassword() async {
     final email = FirebaseAuth.instance.currentUser?.email;
+    final messenger = ScaffoldMessenger.of(context);
     if (email != null) {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         SnackBar(
           backgroundColor: Palette.forgedGold,
           content: Center(

@@ -1,4 +1,3 @@
-import 'package:gig_hub/src/Common/genre_bubble.dart';
 import '../Features/chat/domain/chat_message.dart';
 import 'users.dart';
 

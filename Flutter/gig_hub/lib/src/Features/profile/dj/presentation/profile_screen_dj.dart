@@ -93,8 +93,8 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
     _locationController.dispose();
     _bpmController.dispose();
     _aboutController.dispose();
-    _soundcloudControllerOne.dispose();
-    _soundcloudControllerTwo.dispose();
+    // _soundcloudControllerOne.dispose();
+    // _soundcloudControllerTwo.dispose();
     _infoController.dispose();
 
     super.dispose();
