@@ -73,6 +73,7 @@ class ChatScreenState extends State<ChatScreen> {
       receiverId: widget.chatPartner.id,
       message: text,
       timestamp: DateTime.now(),
+      read: false,
     );
 
     await widget.repo.sendMessage(newMessage);

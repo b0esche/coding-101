@@ -159,9 +159,17 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
       receiverId: message.receiverId,
       message: message.message,
       timestamp: message.timestamp,
+      read: message.read,
     );
 
     await docRef.set(newMessage.toJson());
+    final chatDoc = _firestore.collection('chats').doc(chatId);
+
+    await chatDoc.set({
+      'lastMessage': newMessage.message,
+      'lastTimestamp': newMessage.timestamp.toIso8601String(),
+      'participants': [message.senderId, message.receiverId],
+    }, SetOptions(merge: true));
   }
 
   @override
@@ -179,35 +187,50 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
             .get();
 
     return snapshot.docs
-        .map((doc) => ChatMessage.fromJson(doc.data()))
+        .map((doc) => ChatMessage.fromJson(doc.id, doc.data()))
         .toList();
   }
 
   @override
   Future<List<ChatMessage>> getChats(String userId) async {
-    final querySnapshot = await _firestore.collection('chats').get();
+    final querySnapshot =
+        await _firestore
+            .collection('chats')
+            .where('participants', arrayContains: userId)
+            .orderBy('lastTimestamp', descending: true)
+            .get();
+
     List<ChatMessage> allMessages = [];
 
     for (var doc in querySnapshot.docs) {
-      final messagesSnapshot =
-          await doc.reference
-              .collection('messages')
-              .orderBy('timestamp', descending: true)
-              .limit(1)
-              .get();
+      final data = doc.data();
+      final chatId = doc.id;
 
-      if (messagesSnapshot.docs.isNotEmpty) {
-        final lastMessage = ChatMessage.fromJson(
-          messagesSnapshot.docs.first.data(),
-        );
-        if (lastMessage.senderId == userId ||
-            lastMessage.receiverId == userId) {
-          allMessages.add(lastMessage);
-        }
-      }
+      final lastMessage = data['lastMessage'] as String? ?? '';
+      final timestamp = (data['lastTimestamp'] as Timestamp?)?.toDate();
+      final participants = List<String>.from(data['participants'] ?? []);
+      final senderId = data['lastSenderId'] as String? ?? userId;
+
+      if (timestamp == null || participants.length != 2) continue;
+
+      final receiverId = participants.firstWhere(
+        (id) => id != userId,
+        orElse: () => '',
+      );
+      if (receiverId.isEmpty) continue;
+
+      final message = ChatMessage(
+        id: chatId,
+        senderId: senderId,
+        receiverId: receiverId,
+        message: lastMessage,
+        timestamp: timestamp,
+        read: false,
+      );
+
+      allMessages.add(message);
     }
 
-    allMessages.sort((a, b) => b.timestamp.compareTo(a.timestamp));
     return allMessages;
   }
 

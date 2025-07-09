@@ -129,7 +129,7 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
         });
       }
     } catch (e) {
-      debugPrint('Network error during city validation: $e');
+      debugPrint('network error during city validation: $e');
       setState(() {
         _locationError = ' ';
         _formKey.currentState?.validate();

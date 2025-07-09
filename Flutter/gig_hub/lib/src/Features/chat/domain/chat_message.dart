@@ -1,7 +1,12 @@
-class ChatMessage {
-  final String id, senderId, receiverId, message;
+import 'package:cloud_firestore/cloud_firestore.dart';
 
+class ChatMessage {
+  final String id;
+  final String senderId;
+  final String receiverId;
+  final String message;
   final DateTime timestamp;
+  final bool read;
 
   ChatMessage({
     required this.id,
@@ -9,25 +14,27 @@ class ChatMessage {
     required this.receiverId,
     required this.message,
     required this.timestamp,
+    required this.read,
   });
 
-  factory ChatMessage.fromJson(Map<String, dynamic> json) {
+  factory ChatMessage.fromJson(String id, Map<String, dynamic> json) {
     return ChatMessage(
-      id: json['id'],
-      senderId: json['senderId'],
-      receiverId: json['receiverId'],
-      message: json['message'],
+      id: id,
+      senderId: json['senderId'] ?? '',
+      receiverId: json['receiverId'] ?? '',
+      message: json['message'] ?? '',
       timestamp: DateTime.parse(json['timestamp']),
+      read: json['read'] ?? false,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'senderId': senderId,
       'receiverId': receiverId,
       'message': message,
-      'timestamp': timestamp.toIso8601String(),
+      'timestamp': Timestamp.fromDate(timestamp),
+      'read': read,
     };
   }
 }

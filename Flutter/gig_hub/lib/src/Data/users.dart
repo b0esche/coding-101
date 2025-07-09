@@ -10,7 +10,7 @@ abstract class AppUser {
     final typeString = json['type'] as String?;
     final type = UserType.values.firstWhere(
       (e) => e.name == typeString,
-      orElse: () => throw Exception('Unknown user type: $typeString'),
+      orElse: () => throw Exception('unknown user type: $typeString'),
     );
 
     switch (type) {
