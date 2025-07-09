@@ -15,7 +15,7 @@ class SearchListTile extends StatefulWidget {
   final String about;
   final String location;
   final List<int> bpm;
-
+  final AppUser currentUser;
   final double? rating;
   final dynamic repo;
 
@@ -30,6 +30,7 @@ class SearchListTile extends StatefulWidget {
     super.key,
     required this.rating,
     required this.repo,
+    required this.currentUser,
   });
 
   @override
@@ -313,6 +314,8 @@ class _SearchListTileState extends State<SearchListTile> {
                                                   repo: widget.repo,
                                                   showChatButton: true,
                                                   showEditButton: true,
+                                                  currentUser:
+                                                      widget.currentUser,
                                                 ),
                                           ),
                                         );

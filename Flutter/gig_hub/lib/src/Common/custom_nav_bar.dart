@@ -51,6 +51,7 @@ class CustomNavBar extends StatelessWidget {
                       MaterialPageRoute(
                         builder:
                             (context) => ProfileScreenDJ(
+                              currentUser: currentUser,
                               dj: currentUser as DJ,
                               repo: repo,
                               showChatButton: false,
@@ -105,14 +106,12 @@ class CustomNavBar extends StatelessWidget {
                     );
                     return;
                   }
-
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder:
-                          (context) => ChatListScreen(
-                            repo: repo,
-                            currentUser: currentUser,
-                          ),
+                  Navigator.pushNamed(
+                    context,
+                    ChatListScreen.routeName,
+                    arguments: ChatListScreenArgs(
+                      repo: repo,
+                      currentUser: currentUser,
                     ),
                   );
                 },

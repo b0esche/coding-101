@@ -29,9 +29,12 @@ abstract class DatabaseRepository {
 
   // chat ###
   Future<void> sendMessage(ChatMessage message);
-  Future<List<ChatMessage>> getMessages(String senderId, String receiverId);
   Future<List<ChatMessage>> getChats(String userId);
   String getChatId(String uid1, String uid2);
+  Stream<List<ChatMessage>> getMessagesStream(
+    String senderId,
+    String receiverId,
+  );
 
   // utils ###
   Future<AppUser> getCurrentUser();

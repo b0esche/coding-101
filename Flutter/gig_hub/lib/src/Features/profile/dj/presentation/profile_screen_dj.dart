@@ -9,10 +9,12 @@ class ProfileScreenDJArgs {
   final DJ dj;
   final DatabaseRepository repo;
   final bool showChatButton, showEditButton;
+  final AppUser currentUser;
 
   ProfileScreenDJArgs({
     required this.dj,
     required this.repo,
+    required this.currentUser,
     this.showChatButton = true,
     this.showEditButton = false,
   });
@@ -24,10 +26,12 @@ class ProfileScreenDJ extends StatefulWidget {
   final DJ dj;
   final dynamic repo;
   final bool showChatButton, showEditButton;
+  final AppUser currentUser;
   const ProfileScreenDJ({
     super.key,
     required this.dj,
     required this.repo,
+    required this.currentUser,
     required this.showChatButton,
     required this.showEditButton,
   });
@@ -230,7 +234,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                       arguments: ChatScreenArgs(
                         chatPartner: widget.dj,
                         repo: widget.repo,
-                        currentUser: widget.dj,
+                        currentUser: widget.currentUser,
                       ),
                     );
                   },

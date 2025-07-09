@@ -91,7 +91,7 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
   @override
   Future<DJ> getProfileDJ() async {
     final uid = _auth.currentUser?.uid;
-    if (uid == null) throw Exception("No authenticated user");
+    if (uid == null) throw Exception("no authenticated user");
     final snapshot = await _firestore.collection('users').doc(uid).get();
     final data = snapshot.data();
     if (data == null || data['type'] != 'dj') throw Exception("DJ not found");
@@ -101,11 +101,11 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
   @override
   Future<Booker> getProfileBooker() async {
     final uid = _auth.currentUser?.uid;
-    if (uid == null) throw Exception("No authenticated user");
+    if (uid == null) throw Exception("no authenticated user");
     final snapshot = await _firestore.collection('users').doc(uid).get();
     final data = snapshot.data();
     if (data == null || data['type'] != 'booker') {
-      throw Exception("Booker not found");
+      throw Exception("booker not found");
     }
     return Booker.fromJson(uid, data);
   }
@@ -166,28 +166,9 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
 
     await chatDoc.set({
       'lastMessage': newMessage.message,
-      'lastTimestamp': newMessage.timestamp.toIso8601String(),
+      'lastTimestamp': FieldValue.serverTimestamp(),
       'participants': [message.senderId, message.receiverId],
     }, SetOptions(merge: true));
-  }
-
-  @override
-  Future<List<ChatMessage>> getMessages(
-    String senderId,
-    String receiverId,
-  ) async {
-    final chatId = getChatId(senderId, receiverId);
-    final snapshot =
-        await _firestore
-            .collection('chats')
-            .doc(chatId)
-            .collection('messages')
-            .orderBy('timestamp')
-            .get();
-
-    return snapshot.docs
-        .map((doc) => ChatMessage.fromJson(doc.id, doc.data()))
-        .toList();
   }
 
   @override
@@ -196,41 +177,57 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
         await _firestore
             .collection('chats')
             .where('participants', arrayContains: userId)
-            .orderBy('lastTimestamp', descending: true)
             .get();
 
     List<ChatMessage> allMessages = [];
 
     for (var doc in querySnapshot.docs) {
       final data = doc.data();
-      final chatId = doc.id;
 
+      final chatId = doc.id;
       final lastMessage = data['lastMessage'] as String? ?? '';
       final timestamp = (data['lastTimestamp'] as Timestamp?)?.toDate();
       final participants = List<String>.from(data['participants'] ?? []);
       final senderId = data['lastSenderId'] as String? ?? userId;
 
-      if (timestamp == null || participants.length != 2) continue;
+      final receiverId = participants.firstWhere((id) => id != userId);
 
-      final receiverId = participants.firstWhere(
-        (id) => id != userId,
-        orElse: () => '',
-      );
       if (receiverId.isEmpty) continue;
 
-      final message = ChatMessage(
-        id: chatId,
-        senderId: senderId,
-        receiverId: receiverId,
-        message: lastMessage,
-        timestamp: timestamp,
-        read: false,
+      allMessages.add(
+        ChatMessage(
+          id: chatId,
+          senderId: senderId,
+          receiverId: receiverId,
+          message: lastMessage,
+          timestamp: timestamp!,
+          read: false,
+        ),
       );
-
-      allMessages.add(message);
     }
 
     return allMessages;
+  }
+
+  @override
+  Stream<List<ChatMessage>> getMessagesStream(
+    String senderId,
+    String receiverId,
+  ) {
+    final chatId = getChatId(senderId, receiverId);
+    return _firestore
+        .collection('chats')
+        .doc(chatId)
+        .collection('messages')
+        .orderBy('timestamp')
+        .snapshots()
+        .map(
+          (snapshot) =>
+              snapshot.docs.map((doc) {
+                final data = doc.data();
+                return ChatMessage.fromJson(doc.id, data);
+              }).toList(),
+        );
   }
 
   /// ---------------------- UTILS ----------------------

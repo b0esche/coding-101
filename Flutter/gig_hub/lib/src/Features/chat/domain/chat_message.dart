@@ -18,12 +18,15 @@ class ChatMessage {
   });
 
   factory ChatMessage.fromJson(String id, Map<String, dynamic> json) {
+    final Timestamp? ts =
+        json['timestamp'] is Timestamp ? json['timestamp'] : null;
+
     return ChatMessage(
       id: id,
       senderId: json['senderId'] ?? '',
       receiverId: json['receiverId'] ?? '',
       message: json['message'] ?? '',
-      timestamp: DateTime.parse(json['timestamp']),
+      timestamp: ts?.toDate() ?? DateTime.now(),
       read: json['read'] ?? false,
     );
   }

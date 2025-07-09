@@ -66,6 +66,8 @@ class _ChatListScreenState extends State<ChatListScreen> {
         });
       }
     } catch (e) {
+      debugPrint('$e');
+
       if (mounted) {
         setState(() {
           _hasError = true;

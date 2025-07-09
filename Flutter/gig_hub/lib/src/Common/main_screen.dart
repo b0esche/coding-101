@@ -347,6 +347,7 @@ class _MainScreenState extends State<MainScreen> {
                                     ),
                                     settings: LiquidGlassSettings(thickness: 2),
                                     child: SearchListTile(
+                                      currentUser: widget.initialUser,
                                       repo: _repo,
                                       user: currentUserDJ,
                                       name: currentUserDJ.name,
