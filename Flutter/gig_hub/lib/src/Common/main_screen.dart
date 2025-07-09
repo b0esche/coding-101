@@ -180,7 +180,7 @@ class _MainScreenState extends State<MainScreen> {
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: 4, left: 8, right: 8),
+                  padding: const EdgeInsets.only(left: 8, right: 8),
                   child: SizedBox(
                     height: 130,
                     child: Stack(

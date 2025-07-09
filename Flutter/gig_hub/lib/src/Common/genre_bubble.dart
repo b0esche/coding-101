@@ -4,59 +4,92 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 
 List<String> genres = [
+  // TECHNO & HARTE SPIELARTEN
   "Techno",
-  "Tekno",
-  "Tekk",
   "Hard Techno",
-  "Hardtekk",
-  "Darktechno",
   "Melodic Techno",
   "Industrial",
+  "Dark Techno",
   "Schranz",
   "Peaktime",
-  "Groove / Hardgroove",
+  "Groove",
+  "Hardgroove",
+  "ACID",
+  "Hard Acid",
+  "Detroit",
+
+  // TEK / TEKKNO / HARTE STYLES
+  "Tekno",
+  "Tekk",
+  "Hardtekk",
+  "Bounce",
+  "Terror",
+  "Gabber",
+  "Frenchcore",
+  "Hardcore",
+  "Happy Hardcore",
+  "Uptempo",
+  "Hitech",
+  "Raggatek",
+
+  // TRANCE & PSY
   "Trance",
   "Hard Trance",
+  "Eurotrance",
+  "Eurodance",
   "Psytrance",
   "Progressive Psytrance",
   "Darkpsy",
-  "Eurotrance",
-  "Uptempo",
-  "Hitech",
-  "Rawstyle",
-  "Hardstyle",
-  "Hardcore",
-  "Frenchcore",
+  "Forest",
+  "Psytech",
+
+  // HOUSE
   "House",
   "Hard House",
   "Tech House",
   "Deep House",
-  "G-House",
-  "Minimal",
   "Progressive House",
+  "Acid House",
+  "G-House",
+  "Witch House",
+
+  // BASS / GARAGE / BREAKS
+  "Bass",
   "Garage",
   "Speed Garage",
-  "Jungle",
-  "Ragga Jungle",
+  "Miami Bass",
+  "Ghetto Tech",
+  "Jersey Club",
+  "Dubstep",
+  "Dub",
+  "Trap",
+
+  // DNB / JUNGLE
   "DnB",
   "Darkstep",
-  "Ghetto Tech",
-  "Miami Bass",
-  "ACID",
-  "Acid House",
-  "Electro",
-  "Dubstep",
-  "Terror",
-  "Hyperpop",
-  "Gabber",
+  "Jungle",
+  "Ragga Jungle",
+
+  // DISCO / SYNTH
+  "Disco",
   "Synthwave",
   "Vaporwave",
-  "Trap",
-  "Dub",
-  "Detroit",
-  "Raggatek",
-  "Downtempo",
+
+  // POP & MODERNE SPIELARTEN
+  "Hyperpop",
   "EDM",
+  "IDM",
+  "Experimental",
+  "Minimal",
+
+  // LATIN / AFRO
+  "Afro Beats",
+  "Reggaeton",
+  "Dancehall",
+
+  // SONSTIGES
+  "Makina",
+  "Downtempo",
 ];
 
 class GenreBubble extends StatelessWidget {

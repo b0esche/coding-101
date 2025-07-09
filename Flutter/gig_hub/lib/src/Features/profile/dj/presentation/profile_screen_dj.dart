@@ -1049,10 +1049,20 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                   child: ImageSlideshow(
                                     width: double.infinity,
                                     height: 240,
-                                    isLoop: true,
+                                    isLoop:
+                                        widget.dj.mediaImageUrls.length == 1
+                                            ? false
+                                            : true,
                                     autoPlayInterval: 12000,
-                                    indicatorColor: Palette.shadowGrey,
-                                    indicatorBackgroundColor: Palette.gigGrey,
+
+                                    indicatorColor:
+                                        widget.dj.mediaImageUrls.length == 1
+                                            ? Colors.transparent
+                                            : Palette.shadowGrey,
+                                    indicatorBackgroundColor:
+                                        widget.dj.mediaImageUrls.length == 1
+                                            ? Colors.transparent
+                                            : Palette.gigGrey,
                                     initialPage: index,
                                     onPageChanged: (value) {
                                       setState(() => index = value);
