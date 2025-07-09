@@ -10,7 +10,6 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
   /// ---------------------- USER ----------------------
 
   // create ###
-
   @override
   Future<void> createGuest(Guest guest) async {
     final docRef = _firestore.collection('users').doc(guest.id);
@@ -245,17 +244,17 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
   @override
   Future<AppUser> getCurrentUser() async {
     final user = FirebaseAuth.instance.currentUser;
-    if (user == null) throw Exception("Kein eingeloggter User");
+    if (user == null) throw Exception("no user logged in");
 
     final doc =
         await FirebaseFirestore.instance
             .collection('users')
             .doc(user.uid)
             .get();
-    if (!doc.exists) throw Exception("User-Dokument nicht gefunden");
+    if (!doc.exists) throw Exception("failed to load user data");
 
     final data = doc.data();
-    if (data == null) throw Exception("Keine Daten im User-Dokument");
+    if (data == null) throw Exception("failed to load user data");
 
     final type = data['type'] as String?;
 
@@ -267,17 +266,17 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
       case 'guest':
         return Guest.fromJson(user.uid, data);
       default:
-        throw Exception("Unbekannter Benutzer-Typ: $type");
+        throw Exception("unknown user type: $type");
     }
   }
 
   @override
   Future<AppUser> getUserById(String id) async {
     final doc = await _firestore.collection('users').doc(id).get();
-    if (!doc.exists) throw Exception("User mit ID '$id' nicht gefunden");
+    if (!doc.exists) throw Exception("user id '$id' nicht not found");
 
     final data = doc.data();
-    if (data == null) throw Exception("Keine Daten im User-Dokument");
+    if (data == null) throw Exception("no data for user");
 
     final type = data['type'] as String?;
 
@@ -289,7 +288,7 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
       case 'guest':
         return Guest.fromJson(id, data);
       default:
-        throw Exception("Unbekannter Benutzer-Typ: $type");
+        throw Exception("unknown user type: $type");
     }
   }
 
