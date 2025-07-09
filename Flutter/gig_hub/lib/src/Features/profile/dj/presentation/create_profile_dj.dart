@@ -642,8 +642,8 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                   tapTargetSize: MaterialTapTargetSize.padded,
                                 ),
                                 onPressed: () async {
-                                  List<XFile> medias =
-                                      await ImagePicker().pickMultiImage();
+                                  List<XFile> medias = await ImagePicker()
+                                      .pickMultiImage(limit: 10);
                                   List<String> newMediaUrls =
                                       medias
                                           .map((element) => element.path)

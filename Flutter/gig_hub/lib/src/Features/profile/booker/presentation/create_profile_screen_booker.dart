@@ -541,8 +541,8 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                                   tapTargetSize: MaterialTapTargetSize.padded,
                                 ),
                                 onPressed: () async {
-                                  List<XFile> medias =
-                                      await ImagePicker().pickMultiImage();
+                                  List<XFile> medias = await ImagePicker()
+                                      .pickMultiImage(limit: 10);
                                   List<String> newMediaUrls =
                                       medias
                                           .map((element) => element.path)

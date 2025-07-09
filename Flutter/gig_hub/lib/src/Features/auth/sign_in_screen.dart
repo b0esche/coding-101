@@ -468,7 +468,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ),
                             );
-                            debugPrint("$e");
                           }
                         },
                         icon: Image.asset(
