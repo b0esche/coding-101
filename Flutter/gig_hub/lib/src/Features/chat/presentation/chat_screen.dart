@@ -107,6 +107,7 @@ class ChatScreenState extends State<ChatScreen> {
                             repo: widget.repo,
                             showChatButton: false,
                             showEditButton: true,
+                            showFavoriteIcon: true,
                             currentUser: widget.currentUser,
                           ),
                     ),

@@ -7,9 +7,12 @@ import 'package:gig_hub/src/Data/firebase_auth_repository.dart';
 import 'package:gig_hub/src/Data/firestore_repository.dart';
 import 'package:gig_hub/src/app.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  var box = Hive.openBox('box');
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await dotenv.load(fileName: ".env");
   final DatabaseRepository repo = FirestoreDatabaseRepository();

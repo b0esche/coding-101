@@ -56,6 +56,7 @@ class CustomNavBar extends StatelessWidget {
                               repo: repo,
                               showChatButton: false,
                               showEditButton: false,
+                              showFavoriteIcon: false,
                             ),
                       ),
                     );

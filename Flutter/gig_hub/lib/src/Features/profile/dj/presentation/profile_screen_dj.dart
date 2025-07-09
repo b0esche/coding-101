@@ -1,5 +1,6 @@
 import "dart:io";
 
+import "package:cloud_firestore/cloud_firestore.dart";
 import "package:liquid_glass_renderer/liquid_glass_renderer.dart";
 
 import "../../../../Data/app_imports.dart";
@@ -8,15 +9,16 @@ import "../../../../Data/app_imports.dart" as http;
 class ProfileScreenDJArgs {
   final DJ dj;
   final DatabaseRepository repo;
-  final bool showChatButton, showEditButton;
+  final bool showChatButton, showEditButton, showFavoriteIcon;
   final AppUser currentUser;
 
   ProfileScreenDJArgs({
     required this.dj,
     required this.repo,
     required this.currentUser,
-    this.showChatButton = true,
-    this.showEditButton = false,
+    required this.showChatButton,
+    required this.showEditButton,
+    required this.showFavoriteIcon,
   });
 }
 
@@ -25,7 +27,7 @@ class ProfileScreenDJ extends StatefulWidget {
 
   final DJ dj;
   final dynamic repo;
-  final bool showChatButton, showEditButton;
+  final bool showChatButton, showEditButton, showFavoriteIcon;
   final AppUser currentUser;
   const ProfileScreenDJ({
     super.key,
@@ -34,6 +36,7 @@ class ProfileScreenDJ extends StatefulWidget {
     required this.currentUser,
     required this.showChatButton,
     required this.showEditButton,
+    required this.showFavoriteIcon,
   });
 
   @override
@@ -44,6 +47,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
   int index = 0;
 
   bool editMode = false;
+  late bool isFavorite;
 
   final _formKey = GlobalKey<FormState>();
   final _locationFocusNode = FocusNode();
@@ -77,6 +81,19 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
     _playerControllerTwo = PlayerController();
 
     _locationFocusNode.addListener(_onLocationFocusChange);
+
+    final id = widget.dj.id;
+
+    if (widget.currentUser is Guest) {
+      final guest = widget.currentUser as Guest;
+      isFavorite = guest.favoriteUIds.contains(id);
+    } else if (widget.currentUser is Booker) {
+      final booker = widget.currentUser as Booker;
+      isFavorite = booker.favoriteUIds.contains(id);
+    } else if (widget.currentUser is DJ) {
+      final dj = widget.currentUser as DJ;
+      isFavorite = dj.favoriteUIds.contains(id);
+    }
   }
 
   void _onLocationFocusChange() {
@@ -342,6 +359,74 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                       ),
                     ),
                   ),
+                  widget.showFavoriteIcon
+                      ? Positioned(
+                        bottom: 4,
+                        left: 4,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              width: 0.5,
+                              color: Palette.primalBlack.o(0.65),
+                            ),
+                            shape: BoxShape.circle,
+                            color: Palette.primalBlack.o(0.35),
+                          ),
+                          child: IconButton(
+                            style: ButtonStyle(
+                              splashFactory: NoSplash.splashFactory,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            icon: Icon(
+                              isFavorite
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              color:
+                                  isFavorite
+                                      ? const Color.fromARGB(255, 238, 82, 71)
+                                      : Palette.glazedWhite,
+                              size: 22,
+                            ),
+                            onPressed: () async {
+                              setState(() {
+                                isFavorite = !isFavorite;
+                              });
+
+                              final String targetId = widget.dj.id;
+
+                              final String userId = widget.currentUser.id;
+
+                              final userDocRef = FirebaseFirestore.instance
+                                  .collection('users')
+                                  .doc(userId);
+
+                              try {
+                                if (isFavorite) {
+                                  await userDocRef.update({
+                                    'favoriteUIds': FieldValue.arrayUnion([
+                                      targetId,
+                                    ]),
+                                  });
+                                } else {
+                                  await userDocRef.update({
+                                    'favoriteUIds': FieldValue.arrayRemove([
+                                      targetId,
+                                    ]),
+                                  });
+                                }
+                              } catch (e) {
+                                debugPrint(
+                                  'Fehler beim Aktualisieren der Favoritenliste: $e',
+                                );
+                                setState(() {
+                                  isFavorite = !isFavorite;
+                                });
+                              }
+                            },
+                          ),
+                        ),
+                      )
+                      : SizedBox.shrink(),
                   Positioned.fill(
                     bottom: 2,
                     child: Align(
@@ -473,6 +558,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                             widget.dj.city,
                                             style: TextStyle(
                                               fontSize: 14,
+                                              fontWeight: FontWeight.w500,
                                               color: Palette.primalBlack,
                                             ),
                                           )
@@ -553,6 +639,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                             '${widget.dj.bpm.first}-${widget.dj.bpm.last} bpm',
                                             style: TextStyle(
                                               fontSize: 14,
+                                              fontWeight: FontWeight.w500,
                                               color: Palette.primalBlack,
                                             ),
                                           )

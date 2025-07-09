@@ -75,6 +75,7 @@ class App extends StatelessWidget {
                           repo: args.repo,
                           showChatButton: args.showChatButton,
                           showEditButton: args.showEditButton,
+                          showFavoriteIcon: args.showChatButton,
                         ),
                   );
                 }

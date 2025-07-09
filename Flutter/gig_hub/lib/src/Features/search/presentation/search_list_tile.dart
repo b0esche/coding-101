@@ -314,6 +314,7 @@ class _SearchListTileState extends State<SearchListTile> {
                                                   repo: widget.repo,
                                                   showChatButton: true,
                                                   showEditButton: true,
+                                                  showFavoriteIcon: true,
                                                   currentUser:
                                                       widget.currentUser,
                                                 ),
