@@ -68,17 +68,124 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future<void> _onEmailSubmitted(String newValue) async {
     if (_formKey.currentState?.validate() != true) return;
+
     final user = FirebaseAuth.instance.currentUser;
     final messenger = ScaffoldMessenger.of(context);
-    if (user != null) {
+    if (user == null) return;
+
+    final password = await showDialog<String>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        final passwordController = TextEditingController();
+        final formKey = GlobalKey<FormState>();
+
+        return AlertDialog(
+          title: Center(
+            child: const Text(
+              'enter your password',
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+          content: Form(
+            key: formKey,
+            child: TextFormField(
+              controller: passwordController,
+              obscureText: true,
+              autofocus: true,
+              decoration: InputDecoration(
+                labelText: 'password',
+
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              validator:
+                  (value) =>
+                      (value == null || value.isEmpty)
+                          ? 'password neccessary'
+                          : null,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(null),
+              child: Text(
+                'cancel',
+                style: TextStyle(color: Palette.primalBlack),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (formKey.currentState?.validate() ?? false) {
+                  Navigator.of(context).pop(passwordController.text);
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Palette.shadowGrey,
+                splashFactory: NoSplash.splashFactory,
+                maximumSize: const Size(150, 24),
+                minimumSize: const Size(88, 22),
+                padding: EdgeInsets.zero,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  side: BorderSide(
+                    color: Palette.concreteGrey.o(0.7),
+                    width: 1.5,
+                  ),
+                ),
+                elevation: 3,
+              ),
+              child: Text(
+                'proceed',
+                style: TextStyle(color: Palette.primalBlack),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (password == null) {
+      return;
+    }
+
+    try {
+      final credential = EmailAuthProvider.credential(
+        email: user.email!,
+        password: password,
+      );
+
+      await user.reauthenticateWithCredential(credential);
+
       await user.verifyBeforeUpdateEmail(newValue);
+
       messenger.showSnackBar(
         SnackBar(
           backgroundColor: Palette.forgedGold,
+          content: const Center(
+            child: Text(
+              "email reset link was sent to your current email!",
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+        ),
+      );
+    } catch (e) {
+      messenger.showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.red,
           content: Center(
             child: Text(
-              "email updated! please verify.",
-              style: TextStyle(fontSize: 16),
+              'error: ${e.toString()}',
+              style: const TextStyle(fontSize: 16),
             ),
           ),
         ),

@@ -5,17 +5,14 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 class FirebaseAuthRepository implements AuthRepository {
   // sign up w/ email ###
-
   @override
   Future<void> createUserWithEmailAndPassword(String email, String pw) async {
-    await FirebaseAuth.instance.createUserWithEmailAndPassword(
-      email: email,
-      password: pw,
-    );
+    final userCredential = await FirebaseAuth.instance
+        .createUserWithEmailAndPassword(email: email, password: pw);
+    await userCredential.user?.sendEmailVerification();
   }
 
   // sign in w/ email ###
-
   @override
   Future<void> signInWithEmailAndPassword(String email, String pw) async {
     await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -25,14 +22,12 @@ class FirebaseAuthRepository implements AuthRepository {
   }
 
   // sign in/up w/ apple ### TODO: impl. APPLE SIGN IN
-
   @override
   Future<void> signInWithApple() async {
     //
   }
 
   // sign in/up w/ google ###
-
   @override
   Future<void> signInWithGoogle() async {
     await GoogleSignIn.instance.initialize();
@@ -47,7 +42,6 @@ class FirebaseAuthRepository implements AuthRepository {
   }
 
   // sign in/up w/ facebook ###
-
   @override
   Future<void> signInWithFacebook() async {
     final result = await FacebookAuth.instance.login(
@@ -64,7 +58,6 @@ class FirebaseAuthRepository implements AuthRepository {
   }
 
   // sign out all ###
-
   @override
   Future<void> signOut() async {
     await FirebaseAuth.instance.signOut();
@@ -73,7 +66,6 @@ class FirebaseAuthRepository implements AuthRepository {
   }
 
   // user stream ###
-
   @override
   Stream<User?> authStateChanges() {
     return FirebaseAuth.instance.authStateChanges();
