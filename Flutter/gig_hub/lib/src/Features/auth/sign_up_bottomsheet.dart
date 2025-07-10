@@ -194,7 +194,7 @@ class _SignUpSheetState extends State<SignUpSheet> {
               settings: LiquidGlassSettings(
                 thickness: 32,
                 refractiveIndex: 1.1,
-                chromaticAberration: 1.1,
+                chromaticAberration: 0.85,
               ),
               child: SizedBox(
                 width: double.infinity,

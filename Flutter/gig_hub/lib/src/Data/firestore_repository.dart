@@ -7,7 +7,7 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  /// ---------------------- USER ----------------------
+  /// USER ###
 
   // create ###
   @override
@@ -144,7 +144,7 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
     }).toList();
   }
 
-  /// ---------------------- CHAT ----------------------
+  /// CHAT ###
 
   @override
   Future<void> sendMessage(ChatMessage message) async {
@@ -230,7 +230,7 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
         );
   }
 
-  /// ---------------------- UTILS ----------------------
+  /// UTILS ###
 
   @override
   String getChatId(String uid1, String uid2) {

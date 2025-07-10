@@ -1240,10 +1240,13 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                               _aboutController.text;
                                           widget.dj.info = _infoController.text;
                                           widget.dj.name = _nameController.text;
-                                          widget.dj.streamingUrls.first =
-                                              _soundcloudControllerOne.text;
-                                          widget.dj.streamingUrls.last =
-                                              _soundcloudControllerTwo.text;
+                                          widget.dj.streamingUrls.add(
+                                            _soundcloudControllerOne.text,
+                                          );
+
+                                          widget.dj.streamingUrls.add(
+                                            _soundcloudControllerTwo.text,
+                                          );
 
                                           final bpmText =
                                               _bpmController.text.trim();

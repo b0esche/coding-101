@@ -341,26 +341,20 @@ class _MainScreenState extends State<MainScreen> {
                                 itemBuilder: (context, index) {
                                   final DJ currentUserDJ =
                                       _sortedUsersDJ[index];
-                                  return LiquidGlass(
-                                    shape: LiquidRoundedRectangle(
-                                      borderRadius: Radius.circular(16),
+                                  return SearchListTile(
+                                    currentUser: widget.initialUser,
+                                    repo: _repo,
+                                    user: currentUserDJ,
+                                    name: currentUserDJ.name,
+                                    genres: currentUserDJ.genres,
+                                    image: NetworkImage(
+                                      currentUserDJ.avatarImageUrl,
                                     ),
-                                    settings: LiquidGlassSettings(thickness: 2),
-                                    child: SearchListTile(
-                                      currentUser: widget.initialUser,
-                                      repo: _repo,
-                                      user: currentUserDJ,
-                                      name: currentUserDJ.name,
-                                      genres: currentUserDJ.genres,
-                                      image: NetworkImage(
-                                        currentUserDJ.avatarImageUrl,
-                                      ),
-                                      about: currentUserDJ.about,
-                                      location: currentUserDJ.city,
-                                      bpm: currentUserDJ.bpm,
+                                    about: currentUserDJ.about,
+                                    location: currentUserDJ.city,
+                                    bpm: currentUserDJ.bpm,
 
-                                      rating: currentUserDJ.userRating,
-                                    ),
+                                    rating: currentUserDJ.userRating,
                                   );
                                 },
                               ),

@@ -44,14 +44,6 @@ class App extends StatelessWidget {
                         );
                       }
 
-                      if (userSnapshot.hasError || userSnapshot.data == null) {
-                        return Scaffold(
-                          body: Center(
-                            child: Text("Fehler beim Laden des Benutzers"),
-                          ),
-                        );
-                      }
-
                       final user = userSnapshot.data!;
                       return MainScreen(
                         repo: repo,
