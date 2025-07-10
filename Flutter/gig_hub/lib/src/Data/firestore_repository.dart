@@ -243,16 +243,29 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) throw Exception("no user logged in");
 
-    final doc =
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .get();
-    if (!doc.exists) throw Exception("failed to load user data");
+    const int maxRetries = 5;
+    const Duration retryDelay = Duration(milliseconds: 300);
+    DocumentSnapshot<Map<String, dynamic>>? doc;
 
-    final data = doc.data();
-    if (data == null) throw Exception("failed to load user data");
+    for (int attempt = 0; attempt < maxRetries; attempt++) {
+      doc =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .get();
 
+      if (doc.exists && doc.data() != null) {
+        break;
+      }
+
+      await Future.delayed(retryDelay);
+    }
+
+    if (doc == null || !doc.exists || doc.data() == null) {
+      throw Exception("failed to load user data");
+    }
+
+    final data = doc.data()!;
     final type = data['type'] as String?;
 
     switch (type) {

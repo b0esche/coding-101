@@ -747,43 +747,46 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                   bpmMax?.isNotEmpty == true &&
                                   _nameController.text.isNotEmpty) {
                                 try {
-                                  // 1. User anlegen
                                   await widget.auth
                                       .createUserWithEmailAndPassword(
                                         widget.email,
                                         widget.pw,
-                                      );
+                                      )
+                                      .then((_) async {
+                                        final userId =
+                                            FirebaseAuth
+                                                .instance
+                                                .currentUser
+                                                ?.uid;
 
-                                  // 2. UID abrufen
-                                  final userId =
-                                      FirebaseAuth.instance.currentUser?.uid;
-                                  if (userId == null) {
-                                    throw Exception(
-                                      "Fehler beim Abrufen der UID nach Registrierung.",
-                                    );
-                                  }
+                                        if (userId == null) {
+                                          throw Exception(
+                                            "Fehler beim Abrufen der UID nach Registrierung.",
+                                          );
+                                        }
 
-                                  // 3. DJ speichern
-                                  final dj = DJ(
-                                    id: userId,
-                                    genres: genres!,
-                                    headImageUrl: headUrl!,
-                                    avatarImageUrl: 'https://picsum.photos/100',
-                                    bpm: [
-                                      int.parse(bpmMin!),
-                                      int.parse(bpmMax!),
-                                    ],
-                                    about: _aboutController.text,
-                                    streamingUrls: [],
-                                    mediaImageUrls: mediaUrl ?? [],
-                                    info: _infoController.text,
-                                    name: _nameController.text,
-                                    userRating: 0,
-                                    city: _locationController.text,
-                                    favoriteUIds: [],
-                                  );
+                                        final dj = DJ(
+                                          id: userId,
+                                          genres: genres!,
+                                          headImageUrl: headUrl!,
+                                          avatarImageUrl:
+                                              'https://picsum.photos/100',
+                                          bpm: [
+                                            int.parse(bpmMin!),
+                                            int.parse(bpmMax!),
+                                          ],
+                                          about: _aboutController.text,
+                                          streamingUrls: [],
+                                          mediaImageUrls: mediaUrl ?? [],
+                                          info: _infoController.text,
+                                          name: _nameController.text,
+                                          userRating: 0,
+                                          city: _locationController.text,
+                                          favoriteUIds: [],
+                                        );
 
-                                  await repo.createDJ(dj);
+                                        await repo.createDJ(dj);
+                                      });
                                 } catch (e) {
                                   if (!context.mounted) return;
                                   ScaffoldMessenger.of(context).showSnackBar(
@@ -791,7 +794,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                       backgroundColor: Palette.forgedGold,
                                       content: Center(
                                         child: Text(
-                                          "failed to create profile, try again later!",
+                                          "Failed to create profile, try again later!",
                                         ),
                                       ),
                                     ),

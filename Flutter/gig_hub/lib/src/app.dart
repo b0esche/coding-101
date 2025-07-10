@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:gig_hub/src/Common/main_screen.dart';
 import 'package:gig_hub/src/Common/settings_screen.dart';
 import 'package:gig_hub/src/Data/app_imports.dart';
@@ -27,32 +26,47 @@ class App extends StatelessWidget {
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
 
-          home:
-              snapshot.hasData
-                  ? FutureBuilder<AppUser>(
-                    future: repo.getCurrentUser(),
-                    builder: (context, userSnapshot) {
-                      if (userSnapshot.connectionState ==
-                          ConnectionState.waiting) {
-                        return Scaffold(
-                          backgroundColor: Palette.primalBlack,
-                          body: Center(
-                            child: CircularProgressIndicator(
-                              color: Palette.forgedGold,
-                            ),
-                          ),
-                        );
-                      }
+          home: StreamBuilder(
+            stream: auth.authStateChanges(),
+            builder: (context, authSnap) {
+              if (authSnap.connectionState == ConnectionState.waiting) {
+                return Scaffold(
+                  backgroundColor: Palette.primalBlack,
+                  body: Center(
+                    child: CircularProgressIndicator(color: Palette.forgedGold),
+                  ),
+                );
+              }
+              final fbUser = authSnap.data;
+              if (fbUser == null) {
+                return LoginScreen(repo: repo, auth: auth);
+              }
 
-                      final user = userSnapshot.data!;
-                      return MainScreen(
-                        repo: repo,
-                        auth: auth,
-                        initialUser: user,
-                      );
-                    },
-                  )
-                  : LoginScreen(repo: repo, auth: auth),
+              return FutureBuilder<AppUser>(
+                future: repo.getCurrentUser(),
+                builder: (context, userSnap) {
+                  if (userSnap.connectionState == ConnectionState.waiting) {
+                    return Scaffold(
+                      backgroundColor: Palette.primalBlack,
+                      body: Center(
+                        child: CircularProgressIndicator(
+                          color: Palette.forgedGold,
+                        ),
+                      ),
+                    );
+                  }
+
+                  final appUser = userSnap.data;
+
+                  return MainScreen(
+                    repo: repo,
+                    auth: auth,
+                    initialUser: appUser,
+                  );
+                },
+              );
+            },
+          ),
 
           onGenerateRoute: (settings) {
             switch (settings.name) {

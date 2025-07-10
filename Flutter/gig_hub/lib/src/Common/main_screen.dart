@@ -19,7 +19,7 @@ class MainScreen extends StatefulWidget {
   });
   final DatabaseRepository repo;
   final AuthRepository auth;
-  final AppUser initialUser;
+  final AppUser? initialUser;
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -342,7 +342,7 @@ class _MainScreenState extends State<MainScreen> {
                                   final DJ currentUserDJ =
                                       _sortedUsersDJ[index];
                                   return SearchListTile(
-                                    currentUser: widget.initialUser,
+                                    currentUser: widget.initialUser!,
                                     repo: _repo,
                                     user: currentUserDJ,
                                     name: currentUserDJ.name,
