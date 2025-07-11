@@ -3,6 +3,8 @@ import "dart:io";
 import "package:firebase_auth/firebase_auth.dart";
 import "package:gig_hub/src/Data/auth_repository.dart";
 import "package:gig_hub/src/Data/firestore_repository.dart";
+import "package:gig_hub/src/Data/oauth_consts.dart";
+import "package:url_launcher/url_launcher_string.dart";
 
 import "../../../../Data/app_imports.dart";
 import "../../../../Data/app_imports.dart" as http;
@@ -776,7 +778,10 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                             int.parse(bpmMax!),
                                           ],
                                           about: _aboutController.text,
-                                          streamingUrls: [],
+                                          streamingUrls: [
+                                            _soundcloudControllerOne.text,
+                                            _soundcloudControllerTwo.text,
+                                          ],
                                           mediaImageUrls: mediaUrl ?? [],
                                           info: _infoController.text,
                                           name: _nameController.text,
@@ -989,13 +994,17 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
 
   Widget connectToSoundcloudButton() {
     return Center(
-      child: ElevatedButton(
+      child: IconButton(
         onPressed: () {
-          setState(() {
-            isSoundcloudConnected = !isSoundcloudConnected;
-          });
+          launchUrlString(
+            'https://secure.soundcloud.com/authorize?client_id=$clientId&redirect_uri=$redirectUri&response_type=code&code_challenge=CODE_CHALLENGE&code_challenge_method=S256&state=STATE',
+          );
+
+          // setState(() {
+          //   isSoundcloudConnected = !isSoundcloudConnected;
+          // });
         },
-        child: Text('moin'),
+        icon: Image.asset('assets/images/btn-connect-l.png'),
       ),
     );
   }

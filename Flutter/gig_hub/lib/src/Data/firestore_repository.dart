@@ -13,11 +13,7 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
   @override
   Future<void> createGuest(Guest guest) async {
     final docRef = _firestore.collection('users').doc(guest.id);
-    await docRef.set({
-      'id': guest.id,
-      'type': guest.type.name,
-      'favoriteUIds': guest.favoriteUIds,
-    });
+    await docRef.set(guest.toJson());
   }
 
   @override

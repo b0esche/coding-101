@@ -241,7 +241,10 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
       child: Scaffold(
         backgroundColor: Palette.primalBlack,
         floatingActionButton:
-            widget.showChatButton
+            (widget.showChatButton &&
+                    widget.currentUser is! Guest &&
+                    !(widget.currentUser is DJ &&
+                        (widget.currentUser as DJ).id == widget.dj.id))
                 ? FloatingActionButton(
                   onPressed: () {
                     Navigator.pushNamed(
@@ -358,7 +361,9 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                       ),
                     ),
                   ),
-                  widget.showFavoriteIcon
+                  (widget.showFavoriteIcon &&
+                          !(widget.currentUser is DJ &&
+                              (widget.currentUser as DJ).id == widget.dj.id))
                       ? Positioned(
                         bottom: 8,
                         left: 8,
