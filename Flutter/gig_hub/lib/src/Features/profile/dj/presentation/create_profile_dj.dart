@@ -763,7 +763,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
 
                                         if (userId == null) {
                                           throw Exception(
-                                            "Fehler beim Abrufen der UID nach Registrierung.",
+                                            "request error after profile initialization.",
                                           );
                                         }
 
@@ -799,7 +799,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                       backgroundColor: Palette.forgedGold,
                                       content: Center(
                                         child: Text(
-                                          "Failed to create profile, try again later!",
+                                          "failed to create profile, try again later!",
                                         ),
                                       ),
                                     ),
