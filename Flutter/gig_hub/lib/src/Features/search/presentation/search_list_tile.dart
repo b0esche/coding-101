@@ -116,9 +116,9 @@ class _SearchListTileState extends State<SearchListTile> {
                                           : TextOverflow.ellipsis,
                                   shadows: [
                                     Shadow(
-                                      offset: Offset(0.8, 0.8),
-                                      color: Palette.shadowGrey.o(0.65),
-                                      blurRadius: 4,
+                                      offset: Offset(0.25, 0.25),
+                                      color: Palette.shadowGrey.o(0.35),
+                                      blurRadius: 3,
                                     ),
                                   ],
                                 ),

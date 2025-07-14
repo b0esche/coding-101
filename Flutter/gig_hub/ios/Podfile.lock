@@ -1,11 +1,11 @@
 PODS:
   - app_links (0.0.2):
     - Flutter
-  - AppAuth (1.7.6):
-    - AppAuth/Core (= 1.7.6)
-    - AppAuth/ExternalUserAgent (= 1.7.6)
-  - AppAuth/Core (1.7.6)
-  - AppAuth/ExternalUserAgent (1.7.6):
+  - AppAuth (1.7.4):
+    - AppAuth/Core (= 1.7.4)
+    - AppAuth/ExternalUserAgent (= 1.7.4)
+  - AppAuth/Core (1.7.4)
+  - AppAuth/ExternalUserAgent (1.7.4):
     - AppAuth/Core
   - AppCheckCore (11.2.0):
     - GoogleUtilities/Environment (~> 8.0)
@@ -26,6 +26,8 @@ PODS:
     - FBSDKCoreKit_Basics (= 18.0.0)
   - FBSDKCoreKit_Basics (18.0.0)
   - FBSDKLoginKit (18.0.0):
+    - FBSDKCoreKit (= 18.0.0)
+  - FBSDKShareKit (18.0.0):
     - FBSDKCoreKit (= 18.0.0)
   - Firebase/Auth (11.15.0):
     - Firebase/CoreOnly
@@ -84,6 +86,9 @@ PODS:
     - nanopb (~> 3.30910.0)
   - FirebaseSharedSwift (11.15.0)
   - Flutter (1.0.0)
+  - flutter_appauth (0.0.1):
+    - AppAuth (= 1.7.4)
+    - Flutter
   - flutter_facebook_auth (7.1.2):
     - FBSDKLoginKit (~> 18.0.0)
     - Flutter
@@ -162,10 +167,14 @@ DEPENDENCIES:
   - audio_session (from `.symlinks/plugins/audio_session/ios`)
   - audio_waveforms (from `.symlinks/plugins/audio_waveforms/ios`)
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
+  - FBSDKCoreKit
+  - FBSDKLoginKit
+  - FBSDKShareKit
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - FirebaseFirestore (from `https://github.com/invertase/firestore-ios-sdk-frameworks.git`, tag `11.15.0`)
   - Flutter (from `Flutter`)
+  - flutter_appauth (from `.symlinks/plugins/flutter_appauth/ios`)
   - flutter_facebook_auth (from `.symlinks/plugins/flutter_facebook_auth/ios`)
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - flutter_native_splash (from `.symlinks/plugins/flutter_native_splash/ios`)
@@ -185,6 +194,7 @@ SPEC REPOS:
     - FBSDKCoreKit
     - FBSDKCoreKit_Basics
     - FBSDKLoginKit
+    - FBSDKShareKit
     - Firebase
     - FirebaseAppCheckInterop
     - FirebaseAuth
@@ -226,6 +236,8 @@ EXTERNAL SOURCES:
     :tag: 11.15.0
   Flutter:
     :path: Flutter
+  flutter_appauth:
+    :path: ".symlinks/plugins/flutter_appauth/ios"
   flutter_facebook_auth:
     :path: ".symlinks/plugins/flutter_facebook_auth/ios"
   flutter_keyboard_visibility:
@@ -254,7 +266,7 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   app_links: 76b66b60cc809390ca1ad69bfd66b998d2387ac7
-  AppAuth: d4f13a8fe0baf391b2108511793e4b479691fb73
+  AppAuth: 182c5b88630569df5acb672720534756c29b3358
   AppCheckCore: cc8fd0a3a230ddd401f326489c99990b013f0c4f
   audio_session: 9bb7f6c970f21241b19f5a3658097ae459681ba0
   audio_waveforms: a6dde7fe7c0ea05f06ffbdb0f7c1b2b2ba6cedcf
@@ -263,6 +275,7 @@ SPEC CHECKSUMS:
   FBSDKCoreKit: d3f479a69127acebb1c6aad91c1a33907bcf6c2f
   FBSDKCoreKit_Basics: 017b6dc2a1862024815a8229e75661e627ac1e29
   FBSDKLoginKit: 5875762d1fe09ddcb05d03365d4f5dc34413843d
+  FBSDKShareKit: 082d1b087d6481af36f8d8433542f25f2fc2c8dd
   Firebase: d99ac19b909cd2c548339c2241ecd0d1599ab02e
   firebase_auth: dad1f2f9c317dba1b300933a3f7622fa30eb721c
   firebase_core: ece862f94b2bc72ee0edbeec7ab5c7cb09fe1ab5
@@ -281,6 +294,7 @@ SPEC CHECKSUMS:
   FirebaseFirestoreInternalBinary: ea89c368772c8fa4c9550a464b36c25796f6182c
   FirebaseSharedSwift: e17c654ef1f1a616b0b33054e663ad1035c8fd40
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  flutter_appauth: b951036a3b715d9e38fe5c0e2eb9aded58383984
   flutter_facebook_auth: d97dc09216aebd99d7ac52360186a630f67bdf18
   flutter_keyboard_visibility: 4625131e43015dbbe759d9b20daaf77e0e3f6619
   flutter_native_splash: c32d145d68aeda5502d5f543ee38c192065986cf
@@ -300,6 +314,6 @@ SPEC CHECKSUMS:
   RecaptchaInterop: 11e0b637842dfb48308d242afc3f448062325aba
   url_launcher_ios: 694010445543906933d732453a59da0a173ae33d
 
-PODFILE CHECKSUM: d79e6975a5850baaf794dd60dfb51dab0a4e99f3
+PODFILE CHECKSUM: 1e0b720f9b8ae073078d70312a2726f3eb2fadec
 
 COCOAPODS: 1.16.2

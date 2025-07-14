@@ -170,7 +170,7 @@ packages:
     source: hosted
     version: "0.3.4+2"
   crypto:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: crypto
       sha256: "1e445881f28f22d6140f181e07737b22f1e099a5e1ff94b0af2f9e4a463f4855"
@@ -310,6 +310,22 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_appauth:
+    dependency: "direct main"
+    description:
+      name: flutter_appauth
+      sha256: "8492fb10afa2368d47a1c2784accafc64fa898ff9f36c47113799a142ca00043"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.0.7"
+  flutter_appauth_platform_interface:
+    dependency: transitive
+    description:
+      name: flutter_appauth_platform_interface
+      sha256: "44feaa7058191b5d3cd7c9ff195262725773643121bcada172d49c2ddcff71cb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.0.0"
   flutter_dotenv:
     dependency: "direct main"
     description:
@@ -439,7 +455,7 @@ packages:
     source: hosted
     version: "1.1.0"
   flutter_secure_storage:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_secure_storage
       sha256: "9cad52d75ebc511adfae3d447d5d13da15a55a92c9410e50f67335b6d21d16ea"
@@ -548,18 +564,18 @@ packages:
     dependency: transitive
     description:
       name: google_sign_in_android
-      sha256: dc03996c6f95ef8191bae220006029f8cec6a83d6c03c43191ca8cd35e5bbbcb
+      sha256: "8cb9bc7ab17e4514cf0f682fa391768eb5df23fd03c54eed73bbd5352980f3c3"
       url: "https://pub.dev"
     source: hosted
-    version: "7.0.1"
+    version: "7.0.2"
   google_sign_in_ios:
     dependency: transitive
     description:
       name: google_sign_in_ios
-      sha256: "59937a674827540d12253415626ec24cc7e633bb785e2d2ca4f1580323e55a0c"
+      sha256: "44032e86ecff2d4ba4671f26f8dbecd2ca52cdbcc4458525191b8889b3b10ea3"
       url: "https://pub.dev"
     source: hosted
-    version: "6.0.0"
+    version: "6.0.1"
   google_sign_in_platform_interface:
     dependency: transitive
     description:
@@ -940,10 +956,10 @@ packages:
     dependency: transitive
     description:
       name: posix
-      sha256: f0d7856b6ca1887cfa6d1d394056a296ae33489db914e365e2044fdada449e62
+      sha256: "6323a5b0fa688b6a010df4905a56b00181479e6d10534cecfecede2aa55add61"
       url: "https://pub.dev"
     source: hosted
-    version: "6.0.2"
+    version: "6.0.3"
   rxdart:
     dependency: transitive
     description:
@@ -1009,10 +1025,10 @@ packages:
     dependency: transitive
     description:
       name: synchronized
-      sha256: "0669c70faae6270521ee4f05bffd2919892d42d1276e6c495be80174b6bc0ef6"
+      sha256: c254ade258ec8282947a0acbbc90b9575b4f19673533ee46f2f6e9b3aeefd7c0
       url: "https://pub.dev"
     source: hosted
-    version: "3.3.1"
+    version: "3.4.0"
   term_glyph:
     dependency: transitive
     description:
@@ -1049,10 +1065,10 @@ packages:
     dependency: "direct main"
     description:
       name: url_launcher
-      sha256: "9d06212b1362abc2f0f0d78e6f09f726608c74e3b9462e8368bb03314aa8d603"
+      sha256: f6a7e5c4835bb4e3026a04793a4199ca2d14c739ec378fdfe23fc8075d0439f8
       url: "https://pub.dev"
     source: hosted
-    version: "6.3.1"
+    version: "6.3.2"
   url_launcher_android:
     dependency: transitive
     description:

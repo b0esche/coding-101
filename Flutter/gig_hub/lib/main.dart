@@ -1,3 +1,5 @@
+// lib/main.dart
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:gig_hub/firebase_options.dart';
@@ -5,7 +7,9 @@ import 'package:gig_hub/src/Data/auth_repository.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
 import 'package:gig_hub/src/Data/firebase_auth_repository.dart';
 import 'package:gig_hub/src/Data/firestore_repository.dart';
+
 import 'package:gig_hub/src/app.dart';
+
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -15,7 +19,9 @@ void main() async {
   Hive.openBox('favoritesBox');
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await dotenv.load(fileName: ".env");
+
   final DatabaseRepository repo = FirestoreDatabaseRepository();
   final AuthRepository auth = FirebaseAuthRepository();
+
   runApp(App(repo: repo, auth: auth));
 }

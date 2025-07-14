@@ -1,10 +1,10 @@
+import "dart:async";
 import "dart:io";
 
+import "package:app_links/app_links.dart";
 import "package:firebase_auth/firebase_auth.dart";
 import "package:gig_hub/src/Data/auth_repository.dart";
-import "package:gig_hub/src/Data/firestore_repository.dart";
-import "package:gig_hub/src/Data/oauth_consts.dart";
-import "package:url_launcher/url_launcher_string.dart";
+import "package:gig_hub/src/Features/auth/soundcloud_authentication.dart";
 
 import "../../../../Data/app_imports.dart";
 import "../../../../Data/app_imports.dart" as http;
@@ -27,16 +27,16 @@ class CreateProfileScreenDJ extends StatefulWidget {
 }
 
 class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
-  DatabaseRepository repo = FirestoreDatabaseRepository();
+  late final DatabaseRepository repo;
   final _formKey = GlobalKey<FormState>();
-  late final _nameController = TextEditingController();
-  late final _locationController = TextEditingController(text: 'your city');
-  late final _bpmController = TextEditingController(text: 'your tempo');
-  late final _aboutController = TextEditingController();
-  late final _infoController = TextEditingController();
-  late final _soundcloudControllerOne = TextEditingController();
-  late final _soundcloudControllerTwo = TextEditingController();
-  final _locationFocusNode = FocusNode();
+  late final TextEditingController _nameController;
+  late final TextEditingController _locationController;
+  late final TextEditingController _bpmController;
+  late final TextEditingController _aboutController;
+  late final TextEditingController _infoController;
+  late final TextEditingController _soundcloudControllerOne;
+  late final TextEditingController _soundcloudControllerTwo;
+  final FocusNode _locationFocusNode = FocusNode();
   String? headUrl;
   String? _locationError;
   String? bpmMin;
@@ -47,10 +47,62 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
   List<String>? mediaUrl;
   int index = 0;
   bool isSoundcloudConnected = false;
+
+  late final AppLinks _appLinks;
+  final SoundcloudAuth _soundcloudAuth = SoundcloudAuth();
+  StreamSubscription<Uri>? _sub;
+
   @override
   void initState() {
-    _locationFocusNode.addListener(_onLocationFocusChange);
     super.initState();
+
+    repo = widget.repo;
+
+    _nameController = TextEditingController(text: 'your name');
+    _locationController = TextEditingController(text: 'your city');
+    _bpmController = TextEditingController(text: 'your tempo');
+    _aboutController = TextEditingController();
+    _infoController = TextEditingController();
+    _soundcloudControllerOne = TextEditingController();
+    _soundcloudControllerTwo = TextEditingController();
+
+    _locationFocusNode.addListener(_onLocationFocusChange);
+
+    _appLinks = AppLinks();
+    _initDeepLinks();
+  }
+
+  Future<void> _initDeepLinks() async {
+    try {
+      final Uri? initial = await _appLinks.getInitialLink();
+      if (initial != null) {
+        _onUri(initial);
+      }
+    } catch (e) {
+      throw ('error getting initial link: $e');
+    }
+
+    _sub = _appLinks.uriLinkStream.listen(
+      (Uri? uri) {
+        if (uri != null) {
+          _onUri(uri);
+        }
+      },
+      onError: (Object err) {
+        throw ('link stream srror: $err');
+      },
+    );
+  }
+
+  void _onUri(Uri uri) {
+    if (uri.toString().startsWith(SoundcloudAuth.redirectUri)) {
+      final String? code = uri.queryParameters['code'];
+      if (code != null && code.isNotEmpty) {
+        _soundcloudAuth.exchangeCodeForToken(code);
+      } else {
+        throw ('no code found in redirect');
+      }
+    }
   }
 
   @override
@@ -62,6 +114,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
     _infoController.dispose();
     _locationController.dispose();
     _bpmController.dispose();
+    _sub?.cancel();
     super.dispose();
   }
 
@@ -580,9 +633,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                               ),
                               child: GestureDetector(
                                 onTap: _showGenreDialog,
-                                child: const GenreBubble(
-                                  genre: " edit genres ",
-                                ),
+                                child: const GenreBubble(genre: " add genres "),
                               ),
                             ),
                           ],
@@ -995,14 +1046,12 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
   Widget connectToSoundcloudButton() {
     return Center(
       child: IconButton(
-        onPressed: () {
-          launchUrlString(
-            'https://secure.soundcloud.com/authorize?client_id=$clientId&redirect_uri=$redirectUri&response_type=code&code_challenge=CODE_CHALLENGE&code_challenge_method=S256&state=STATE',
+        onPressed: () async {
+          await _soundcloudAuth.authenticate().whenComplete(
+            () => setState(() {
+              isSoundcloudConnected = !isSoundcloudConnected;
+            }),
           );
-
-          // setState(() {
-          //   isSoundcloudConnected = !isSoundcloudConnected;
-          // });
         },
         icon: Image.asset('assets/images/btn-connect-l.png'),
       ),
