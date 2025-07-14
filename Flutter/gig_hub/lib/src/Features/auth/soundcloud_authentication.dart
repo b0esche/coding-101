@@ -83,4 +83,9 @@ class SoundcloudAuth {
     final digest = sha256.convert(bytes);
     return base64UrlEncode(digest.bytes).replaceAll('=', '');
   }
+
+  Future<String?> getAccessToken() async {
+    final token = await _secureStorage.read(key: 'access_token');
+    return token;
+  }
 }

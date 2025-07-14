@@ -5,6 +5,7 @@ import "package:app_links/app_links.dart";
 import "package:firebase_auth/firebase_auth.dart";
 import "package:gig_hub/src/Data/auth_repository.dart";
 import "package:gig_hub/src/Features/auth/soundcloud_authentication.dart";
+import "package:gig_hub/src/Features/auth/soundcloud_service.dart";
 
 import "../../../../Data/app_imports.dart";
 import "../../../../Data/app_imports.dart" as http;
@@ -52,6 +53,8 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
   final SoundcloudAuth _soundcloudAuth = SoundcloudAuth();
   StreamSubscription<Uri>? _sub;
 
+  List<SoundcloudTrack> userTrackList = [];
+
   @override
   void initState() {
     super.initState();
@@ -72,35 +75,31 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
     _initDeepLinks();
   }
 
-  Future<void> _initDeepLinks() async {
-    try {
-      final Uri? initial = await _appLinks.getInitialLink();
-      if (initial != null) {
-        _onUri(initial);
-      }
-    } catch (e) {
-      throw ('error getting initial link: $e');
-    }
-
-    _sub = _appLinks.uriLinkStream.listen(
-      (Uri? uri) {
-        if (uri != null) {
-          _onUri(uri);
-        }
-      },
-      onError: (Object err) {
-        throw ('link stream srror: $err');
-      },
-    );
+  void _initDeepLinks() {
+    _sub = _appLinks.uriLinkStream.listen((uri) {
+      _onUri(uri);
+    }, onError: (err) => debugPrint('link stream error: $err'));
   }
 
-  void _onUri(Uri uri) {
+  void _onUri(Uri uri) async {
     if (uri.toString().startsWith(SoundcloudAuth.redirectUri)) {
-      final String? code = uri.queryParameters['code'];
-      if (code != null && code.isNotEmpty) {
-        _soundcloudAuth.exchangeCodeForToken(code);
-      } else {
-        throw ('no code found in redirect');
+      final code = uri.queryParameters['code'];
+      if (code != null) {
+        await _soundcloudAuth.exchangeCodeForToken(code);
+
+        final token = await _soundcloudAuth.getAccessToken();
+        if (token == null) {
+          return;
+        }
+
+        final tracks = await SoundcloudService().fetchUserTracks(token);
+        setState(() {
+          userTrackList = tracks;
+          isSoundcloudConnected = !isSoundcloudConnected;
+        });
+        if (userTrackList.isNotEmpty) {
+          debugPrint(userTrackList.first.title);
+        }
       }
     }
   }
@@ -1047,11 +1046,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
     return Center(
       child: IconButton(
         onPressed: () async {
-          await _soundcloudAuth.authenticate().whenComplete(
-            () => setState(() {
-              isSoundcloudConnected = !isSoundcloudConnected;
-            }),
-          );
+          await _soundcloudAuth.authenticate();
         },
         icon: Image.asset('assets/images/btn-connect-l.png'),
       ),

@@ -22,11 +22,13 @@ class SoundcloudService {
   static const String clientId = SoundcloudAuth.clientId;
 
   Future<List<SoundcloudTrack>> fetchUserTracks(String accessToken) async {
-    final url = Uri.parse(
-      'https://api.soundcloud.com/me/tracks?oauth_token=$accessToken',
+    final url = Uri.parse('https://api.soundcloud.com/me/tracks');
+
+    final response = await http.get(
+      url,
+      headers: {'Authorization': 'Bearer $accessToken'},
     );
 
-    final response = await http.get(url);
     if (response.statusCode == 200) {
       final List<dynamic> list = json.decode(response.body);
       return list.map((json) => SoundcloudTrack.fromJson(json)).toList();
