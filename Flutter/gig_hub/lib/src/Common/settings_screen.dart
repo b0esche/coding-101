@@ -361,7 +361,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 },
                 child: const Text("delete account"),
               ),
-              FilledButton(onPressed: _onLogout, child: const Text("log out")),
+              FilledButton(
+                onPressed: () {
+                  _onLogout();
+                  Navigator.of(context).pop();
+                },
+                child: const Text("log out"),
+              ),
               Align(
                 alignment: Alignment.bottomRight,
                 child: Padding(

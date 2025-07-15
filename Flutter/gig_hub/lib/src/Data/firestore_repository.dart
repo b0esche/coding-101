@@ -239,41 +239,23 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) throw Exception("no user logged in");
 
-    const int maxRetries = 5;
-    const Duration retryDelay = Duration(milliseconds: 300);
-    DocumentSnapshot<Map<String, dynamic>>? doc;
+    final doc =
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
 
-    for (int attempt = 0; attempt < maxRetries; attempt++) {
-      doc =
-          await FirebaseFirestore.instance
-              .collection('users')
-              .doc(user.uid)
-              .get();
-
-      if (doc.exists && doc.data() != null) {
-        break;
-      }
-
-      await Future.delayed(retryDelay);
-    }
-
-    if (doc == null || !doc.exists || doc.data() == null) {
+    if (!doc.exists || doc.data() == null) {
       throw Exception("failed to load user data");
     }
 
     final data = doc.data()!;
-    final type = data['type'] as String?;
 
-    switch (type) {
-      case 'dj':
-        return DJ.fromJson(user.uid, data);
-      case 'booker':
-        return Booker.fromJson(user.uid, data);
-      case 'guest':
-        return Guest.fromJson(user.uid, data);
-      default:
-        throw Exception("unknown user type: $type");
-    }
+    // Falls Typ über Konstruktor bekannt ist, z.B. immer DJ:
+    return DJ.fromJson(user.uid, data);
+
+    // Oder falls du eine Map mit Typen hast und den Typ extern übergibst,
+    // musst du diese Logik entsprechend anpassen.
   }
 
   @override

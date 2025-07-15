@@ -1,6 +1,7 @@
 import 'dart:convert';
-import 'package:gig_hub/src/Features/auth/soundcloud_authentication.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SoundcloudTrack {
   final int id;
@@ -13,15 +14,24 @@ class SoundcloudTrack {
     return SoundcloudTrack(
       id: json['id'],
       title: json['title'] ?? '',
-      streamUrl: json['stream_url'],
+      streamUrl: json['uri'],
     );
   }
 }
 
 class SoundcloudService {
-  static const String clientId = SoundcloudAuth.clientId;
+  final _storage = const FlutterSecureStorage();
 
-  Future<List<SoundcloudTrack>> fetchUserTracks(String accessToken) async {
+  Future<String> _getAccessToken() async {
+    final token = await _storage.read(key: 'access_token');
+    if (token == null) {
+      throw Exception('no access token found, user must authenticate first!');
+    }
+    return token;
+  }
+
+  Future<List<SoundcloudTrack>> fetchUserTracks() async {
+    final accessToken = await _getAccessToken();
     final url = Uri.parse('https://api.soundcloud.com/me/tracks');
 
     final response = await http.get(
@@ -31,30 +41,52 @@ class SoundcloudService {
 
     if (response.statusCode == 200) {
       final List<dynamic> list = json.decode(response.body);
+      debugPrint(response.body);
       return list.map((json) => SoundcloudTrack.fromJson(json)).toList();
     } else {
       throw Exception('failed to load tracks: ${response.statusCode}');
     }
   }
 
-  Future<String> getPublicStreamUrl(int trackId) async {
-    final url = Uri.parse(
-      'https://api.soundcloud.com/tracks/$trackId/stream?client_id=$clientId',
+  Future<String> getPublicStreamUrl(String uri) async {
+    final accessToken = await _getAccessToken();
+    final trackUrl = Uri.parse(uri);
+
+    final trackResponse = await http.get(
+      trackUrl,
+      headers: {'Authorization': 'Bearer $accessToken'},
     );
 
-    final response = await http.head(url);
+    // if (trackResponse.statusCode != 200) {
+    //   throw Exception('Failed to get track info: ${trackResponse.statusCode}');
+    // }
 
-    if (response.statusCode == 302) {
-      final redirectUrl = response.headers['location'];
-      if (redirectUrl != null) {
-        return redirectUrl;
-      } else {
-        throw Exception('no redirect location found for stream URL.');
-      }
-    } else if (response.statusCode == 200) {
-      return url.toString();
-    } else {
-      throw Exception('failed to get stream URL: ${response.statusCode}');
+    final json = jsonDecode(trackResponse.body);
+    debugPrint('🎧 Track JSON: $json');
+    final transcodings = json['media']?['transcodings'] as List<dynamic>?;
+
+    if (transcodings == null || transcodings.isEmpty) {
+      return '';
+      // throw Exception('No transcodings available for this track.');
     }
+
+    final progressiveStream = transcodings.firstWhere(
+      (t) => t['format']['protocol'] == 'progressive',
+      orElse: () => transcodings.first,
+    );
+
+    final streamRequestUrl = Uri.parse(progressiveStream['url']);
+
+    final streamResponse = await http.get(
+      streamRequestUrl,
+      headers: {'Authorization': 'Bearer $accessToken'},
+    );
+
+    // if (streamResponse.statusCode != 200) {
+    //   throw Exception('Failed to get stream URL: ${streamResponse.statusCode}');
+    // }
+
+    final streamJson = jsonDecode(streamResponse.body);
+    return streamJson['url'];
   }
 }

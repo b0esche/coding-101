@@ -1,5 +1,3 @@
-// lib/main.dart
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:gig_hub/firebase_options.dart';
@@ -22,6 +20,5 @@ void main() async {
 
   final DatabaseRepository repo = FirestoreDatabaseRepository();
   final AuthRepository auth = FirebaseAuthRepository();
-
   runApp(App(repo: repo, auth: auth));
 }

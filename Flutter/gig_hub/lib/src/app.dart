@@ -1,11 +1,7 @@
 import 'package:gig_hub/src/Common/main_screen.dart';
-import 'package:gig_hub/src/Common/settings_screen.dart';
 import 'package:gig_hub/src/Data/app_imports.dart';
 import 'package:gig_hub/src/Data/auth_repository.dart';
 import 'package:gig_hub/src/Features/auth/sign_in_screen.dart';
-import 'package:gig_hub/src/Features/profile/dj/presentation/profile_screen_dj.dart';
-import 'package:gig_hub/src/Features/profile/booker/presentation/profile_screen_booker.dart';
-import 'package:gig_hub/src/Features/chat/presentation/chat_list_screen.dart';
 import 'package:gig_hub/src/Theme/app_theme.dart';
 
 class App extends StatelessWidget {
@@ -16,20 +12,32 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: auth.authStateChanges(),
-      builder: (context, snapshot) {
-        return MaterialApp(
-          key: Key(snapshot.data?.uid ?? 'no-user'),
-          debugShowCheckedModeBanner: false,
-          themeMode: ThemeMode.light,
-          theme: AppTheme.lightTheme,
-          darkTheme: AppTheme.darkTheme,
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      themeMode: ThemeMode.light,
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      home: StreamBuilder(
+        stream: auth.authStateChanges(),
+        builder: (context, authSnap) {
+          if (authSnap.connectionState == ConnectionState.waiting) {
+            return Scaffold(
+              backgroundColor: Palette.primalBlack,
+              body: Center(
+                child: CircularProgressIndicator(color: Palette.forgedGold),
+              ),
+            );
+          }
 
-          home: StreamBuilder(
-            stream: auth.authStateChanges(),
-            builder: (context, authSnap) {
-              if (authSnap.connectionState == ConnectionState.waiting) {
+          final fbUser = authSnap.data;
+          if (fbUser == null) {
+            return LoginScreen(repo: repo, auth: auth);
+          }
+
+          return FutureBuilder<AppUser>(
+            future: repo.getCurrentUser(),
+            builder: (context, userSnap) {
+              if (userSnap.connectionState == ConnectionState.waiting) {
                 return Scaffold(
                   backgroundColor: Palette.primalBlack,
                   body: Center(
@@ -37,119 +45,26 @@ class App extends StatelessWidget {
                   ),
                 );
               }
-              final fbUser = authSnap.data;
-              if (fbUser == null) {
+
+              if (userSnap.hasError || userSnap.data == null) {
                 return LoginScreen(repo: repo, auth: auth);
               }
-
-              return FutureBuilder<AppUser>(
-                future: repo.getCurrentUser(),
-                builder: (context, userSnap) {
-                  if (userSnap.connectionState == ConnectionState.waiting) {
-                    return Scaffold(
-                      backgroundColor: Palette.primalBlack,
-                      body: Center(
-                        child: CircularProgressIndicator(
-                          color: Palette.forgedGold,
-                        ),
-                      ),
-                    );
-                  }
-
-                  final appUser = userSnap.data;
-
-                  return MainScreen(
-                    repo: repo,
-                    auth: auth,
-                    initialUser: appUser,
-                  );
-                },
+              if (authSnap.connectionState == ConnectionState.done) {
+                return MainScreen(
+                  repo: repo,
+                  auth: auth,
+                  initialUser: userSnap.data!,
+                );
+              }
+              return MainScreen(
+                repo: repo,
+                auth: auth,
+                initialUser: userSnap.data!,
               );
             },
-          ),
-
-          onGenerateRoute: (settings) {
-            switch (settings.name) {
-              case ProfileScreenDJ.routeName:
-                final args = settings.arguments;
-                if (args is ProfileScreenDJArgs) {
-                  return MaterialPageRoute(
-                    builder:
-                        (context) => ProfileScreenDJ(
-                          currentUser: args.currentUser,
-                          dj: args.dj,
-                          repo: args.repo,
-                          showChatButton: args.showChatButton,
-                          showEditButton: args.showEditButton,
-                          showFavoriteIcon: args.showChatButton,
-                        ),
-                  );
-                }
-                return _errorRoute("Couldn’t find DJ profile!");
-
-              case ProfileScreenBooker.routeName:
-                final args = settings.arguments;
-                if (args is ProfileScreenBookerArgs) {
-                  return MaterialPageRoute(
-                    builder:
-                        (context) => ProfileScreenBooker(
-                          booker: args.booker,
-                          repo: args.repo,
-                          showEditButton: args.showEditButton,
-                        ),
-                  );
-                }
-                return _errorRoute("Couldn’t find booker profile!");
-
-              case ChatScreen.routeName:
-                final args = settings.arguments;
-                if (args is ChatScreenArgs) {
-                  return MaterialPageRoute(
-                    builder:
-                        (context) => ChatScreen(
-                          chatPartner: args.chatPartner,
-                          repo: args.repo,
-                          currentUser: args.currentUser,
-                        ),
-                  );
-                }
-                return _errorRoute("Couldn’t load chat!");
-
-              case ChatListScreen.routeName:
-                final args = settings.arguments;
-                if (args is ChatListScreenArgs) {
-                  return MaterialPageRoute(
-                    builder:
-                        (context) => ChatListScreen(
-                          repo: args.repo,
-                          currentUser: args.currentUser,
-                        ),
-                  );
-                }
-                return _errorRoute("Couldn’t load chats!");
-
-              default:
-                return null;
-            }
-          },
-
-          routes: {
-            '/settings': (context) => SettingsScreen(repo: repo, auth: auth),
-          },
-        );
-      },
-    );
-  }
-
-  MaterialPageRoute _errorRoute(String message) {
-    return MaterialPageRoute(
-      builder:
-          (context) => Scaffold(
-            backgroundColor: Palette.primalBlack,
-            body: Center(
-              child: Text(message, style: const TextStyle(color: Colors.white)),
-            ),
-          ),
+          );
+        },
+      ),
     );
   }
 }

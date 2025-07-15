@@ -3,6 +3,7 @@ import "dart:io";
 
 import "package:app_links/app_links.dart";
 import "package:firebase_auth/firebase_auth.dart";
+import "package:gig_hub/src/Common/main_screen.dart";
 import "package:gig_hub/src/Data/auth_repository.dart";
 import "package:gig_hub/src/Features/auth/soundcloud_authentication.dart";
 import "package:gig_hub/src/Features/auth/soundcloud_service.dart";
@@ -35,8 +36,6 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
   late final TextEditingController _bpmController;
   late final TextEditingController _aboutController;
   late final TextEditingController _infoController;
-  late final TextEditingController _soundcloudControllerOne;
-  late final TextEditingController _soundcloudControllerTwo;
   final FocusNode _locationFocusNode = FocusNode();
   String? headUrl;
   String? _locationError;
@@ -54,6 +53,8 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
   StreamSubscription<Uri>? _sub;
 
   List<SoundcloudTrack> userTrackList = [];
+  SoundcloudTrack? selectedTrackOne;
+  SoundcloudTrack? selectedTrackTwo;
 
   @override
   void initState() {
@@ -66,8 +67,6 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
     _bpmController = TextEditingController(text: 'your tempo');
     _aboutController = TextEditingController();
     _infoController = TextEditingController();
-    _soundcloudControllerOne = TextEditingController();
-    _soundcloudControllerTwo = TextEditingController();
 
     _locationFocusNode.addListener(_onLocationFocusChange);
 
@@ -92,7 +91,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
           return;
         }
 
-        final tracks = await SoundcloudService().fetchUserTracks(token);
+        final tracks = await SoundcloudService().fetchUserTracks();
         setState(() {
           userTrackList = tracks;
           isSoundcloudConnected = !isSoundcloudConnected;
@@ -553,7 +552,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 36),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -610,7 +609,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 40),
+                      const SizedBox(height: 60),
                       Center(
                         child: Wrap(
                           spacing: 16,
@@ -632,13 +631,18 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                               ),
                               child: GestureDetector(
                                 onTap: _showGenreDialog,
-                                child: const GenreBubble(genre: " add genres "),
+                                child: GenreBubble(
+                                  genre:
+                                      (genres == null)
+                                          ? " add genres "
+                                          : " edit genres ",
+                                ),
                               ),
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(height: 48),
+                      SizedBox(height: !isSoundcloudConnected ? 72 : 48),
                       IndexedStack(
                         index: isSoundcloudConnected ? 0 : 1,
                         children: [
@@ -799,50 +803,86 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                   bpmMax?.isNotEmpty == true &&
                                   _nameController.text.isNotEmpty) {
                                 try {
+                                  debugPrint('→ Creating Firebase user');
                                   await widget.auth
                                       .createUserWithEmailAndPassword(
                                         widget.email,
                                         widget.pw,
-                                      )
-                                      .then((_) async {
-                                        final userId =
-                                            FirebaseAuth
-                                                .instance
-                                                .currentUser
-                                                ?.uid;
+                                      );
 
-                                        if (userId == null) {
-                                          throw Exception(
-                                            "request error after profile initialization.",
-                                          );
-                                        }
+                                  debugPrint('→ Firebase user created');
+                                  final firebaseUser =
+                                      FirebaseAuth.instance.currentUser;
+                                  if (firebaseUser == null) {
+                                    throw Exception(
+                                      "User wurde nicht korrekt bei Firebase Auth angelegt",
+                                    );
+                                  }
 
-                                        final dj = DJ(
-                                          id: userId,
-                                          genres: genres!,
-                                          headImageUrl: headUrl!,
-                                          avatarImageUrl:
-                                              'https://picsum.photos/100',
-                                          bpm: [
-                                            int.parse(bpmMin!),
-                                            int.parse(bpmMax!),
-                                          ],
-                                          about: _aboutController.text,
-                                          streamingUrls: [
-                                            _soundcloudControllerOne.text,
-                                            _soundcloudControllerTwo.text,
-                                          ],
-                                          mediaImageUrls: mediaUrl ?? [],
-                                          info: _infoController.text,
-                                          name: _nameController.text,
-                                          userRating: 0,
-                                          city: _locationController.text,
-                                          favoriteUIds: [],
-                                        );
+                                  debugPrint('→ Building DJ object');
+                                  final service = SoundcloudService();
+                                  String? trackOneUrl =
+                                      selectedTrackOne != null
+                                          ? await service.getPublicStreamUrl(
+                                            selectedTrackOne!.streamUrl!,
+                                          )
+                                          : null;
+                                  String? trackTwoUrl =
+                                      selectedTrackTwo != null
+                                          ? await service.getPublicStreamUrl(
+                                            selectedTrackTwo!.streamUrl!,
+                                          )
+                                          : null;
 
-                                        await repo.createDJ(dj);
-                                      });
-                                } catch (e) {
+                                  debugPrint('→ Creating DJ instance');
+                                  final dj = DJ(
+                                    id: firebaseUser.uid,
+                                    genres: genres!,
+                                    headImageUrl: headUrl!,
+                                    avatarImageUrl: 'https://picsum.photos/100',
+                                    bpm: [
+                                      int.parse(bpmMin!),
+                                      int.parse(bpmMax!),
+                                    ],
+                                    about: _aboutController.text,
+                                    streamingUrls: [
+                                      if (trackOneUrl != null) trackOneUrl,
+                                      if (trackOneUrl == null &&
+                                          selectedTrackOne?.streamUrl != null)
+                                        selectedTrackOne!.streamUrl!,
+                                      if (trackTwoUrl != null) trackTwoUrl,
+                                      if (trackTwoUrl == null &&
+                                          selectedTrackTwo?.streamUrl != null)
+                                        selectedTrackTwo!.streamUrl!,
+                                      // Fallback, falls trotzdem keine URL da ist
+                                      if ((trackOneUrl == null &&
+                                              selectedTrackOne?.streamUrl ==
+                                                  null) ||
+                                          (trackTwoUrl == null &&
+                                              selectedTrackTwo?.streamUrl ==
+                                                  null))
+                                        'https://soundcloud.com/',
+                                      'https://soundcloud.com/s',
+                                    ],
+                                    mediaImageUrls: mediaUrl ?? [],
+                                    info: _infoController.text,
+                                    name: _nameController.text,
+                                    userRating: 0,
+                                    city: _locationController.text,
+                                    favoriteUIds: [],
+                                  );
+
+                                  debugPrint('→ Saving DJ to Firestore');
+                                  await repo.createDJ(dj);
+
+                                  debugPrint(
+                                    '→ Profile successfully created ✅',
+                                  );
+                                } catch (e, stack) {
+                                  debugPrint(
+                                    '❌ ERROR during profile creation: $e',
+                                  );
+                                  debugPrint(stack.toString());
                                   if (!context.mounted) return;
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
@@ -855,6 +895,19 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                     ),
                                   );
                                 }
+                                final current =
+                                    await widget.repo.getCurrentUser();
+                                if (!context.mounted) return;
+                                Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) => MainScreen(
+                                          repo: repo,
+                                          auth: widget.auth,
+                                          initialUser: current,
+                                        ),
+                                  ),
+                                );
                               }
                             },
                             style: ButtonStyle(
@@ -910,138 +963,6 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
     );
   }
 
-  Column soundcloudFields() {
-    return Column(
-      children: [
-        Column(
-          spacing: 8,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              "first SoundCloud set link", // TODO: artist info von soundcloud api fetchen
-              style: GoogleFonts.sometypeMono(
-                textStyle: TextStyle(
-                  color: Palette.glazedWhite,
-                  fontWeight: FontWeight.w600,
-                  decoration: TextDecoration.underline,
-                  decorationColor: Palette.glazedWhite,
-                  decorationStyle: TextDecorationStyle.dotted,
-                  decorationThickness: 2,
-                ),
-              ),
-            ),
-            Center(
-              child: Container(
-                width: 260,
-                height: 48,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Palette.glazedWhite, width: 1),
-                  borderRadius: BorderRadius.circular(8),
-                  color: Palette.glazedWhite.o(0.2),
-                ),
-                child: TextFormField(
-                  style: TextStyle(
-                    color: Palette.glazedWhite,
-                    fontSize: 10,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  controller: _soundcloudControllerOne,
-                  validator: soundcloudValidator,
-                  autovalidateMode: AutovalidateMode.onUnfocus,
-
-                  decoration: InputDecoration(
-                    prefixIcon:
-                        _soundcloudControllerOne.text.isEmpty
-                            ? null
-                            : RemoveButton(
-                              soundcloudController: _soundcloudControllerOne,
-                            ),
-
-                    suffixIcon: PasteButton(
-                      soundcloudController: _soundcloudControllerOne,
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Palette.forgedGold,
-                        width: 3,
-                      ),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: Palette.forgedGold),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: 24),
-        Column(
-          spacing: 8,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              "second SoundCloud set link", // TODO: artist info von soundcloud api fetchen
-              style: GoogleFonts.sometypeMono(
-                textStyle: TextStyle(
-                  color: Palette.glazedWhite,
-                  fontWeight: FontWeight.w600,
-                  decoration: TextDecoration.underline,
-                  decorationColor: Palette.glazedWhite,
-                  decorationStyle: TextDecorationStyle.dotted,
-                  decorationThickness: 2,
-                ),
-              ),
-            ),
-            Center(
-              child: Container(
-                width: 260,
-                height: 48,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Palette.glazedWhite, width: 1),
-                  borderRadius: BorderRadius.circular(8),
-                  color: Palette.glazedWhite.o(0.2),
-                ),
-                child: TextFormField(
-                  style: TextStyle(
-                    color: Palette.glazedWhite,
-                    fontSize: 10,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  controller: _soundcloudControllerTwo,
-                  validator: soundcloudValidator,
-                  autovalidateMode: AutovalidateMode.onUnfocus,
-                  decoration: InputDecoration(
-                    prefixIcon:
-                        _soundcloudControllerTwo.text.isEmpty
-                            ? null
-                            : RemoveButton(
-                              soundcloudController: _soundcloudControllerTwo,
-                            ),
-                    suffixIcon: PasteButton(
-                      soundcloudController: _soundcloudControllerTwo,
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Palette.forgedGold,
-                        width: 3,
-                      ),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: Palette.forgedGold),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
   Widget connectToSoundcloudButton() {
     return Center(
       child: IconButton(
@@ -1049,6 +970,92 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
           await _soundcloudAuth.authenticate();
         },
         icon: Image.asset('assets/images/btn-connect-l.png'),
+      ),
+    );
+  }
+
+  Column soundcloudFields() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        _buildTrackDropdown(
+          label: "first SoundCloud set",
+          selectedTrack: selectedTrackOne,
+          onChanged: (track) => setState(() => selectedTrackOne = track),
+        ),
+        const SizedBox(height: 36),
+        _buildTrackDropdown(
+          label: "second SoundCloud set",
+          selectedTrack: selectedTrackTwo,
+          onChanged: (track) => setState(() => selectedTrackTwo = track),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTrackDropdown({
+    required String label,
+    required SoundcloudTrack? selectedTrack,
+    required Function(SoundcloudTrack?) onChanged,
+  }) {
+    return Center(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            label,
+            style: GoogleFonts.sometypeMono(
+              textStyle: TextStyle(
+                color: Palette.glazedWhite,
+                fontWeight: FontWeight.w600,
+                decoration: TextDecoration.underline,
+                decorationColor: Palette.glazedWhite,
+                decorationStyle: TextDecorationStyle.dotted,
+                decorationThickness: 2,
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Container(
+            width: 260,
+            height: 48,
+            decoration: BoxDecoration(
+              border: Border.all(color: Palette.glazedWhite, width: 1),
+              borderRadius: BorderRadius.circular(8),
+              color: Palette.glazedWhite.o(0.2),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<SoundcloudTrack>(
+                borderRadius: BorderRadius.circular(8),
+                dropdownColor: Palette.primalBlack.o(0.85),
+                iconEnabledColor: Palette.glazedWhite,
+                value: selectedTrack,
+                isExpanded: true,
+                hint: Text(
+                  'select track',
+                  style: TextStyle(color: Palette.glazedWhite, fontSize: 11),
+                ),
+                style: TextStyle(color: Palette.glazedWhite, fontSize: 11),
+                items:
+                    userTrackList.map((track) {
+                      return DropdownMenuItem<SoundcloudTrack>(
+                        value: track,
+                        child: Text(
+                          track.title,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Palette.concreteGrey,
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                onChanged: onChanged,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
