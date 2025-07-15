@@ -107,12 +107,12 @@ class CustomNavBar extends StatelessWidget {
                     );
                     return;
                   }
-                  Navigator.pushNamed(
+                  Navigator.push(
                     context,
-                    ChatListScreen.routeName,
-                    arguments: ChatListScreenArgs(
-                      db: db,
-                      currentUser: currentUser,
+                    MaterialPageRoute(
+                      builder:
+                          (context) =>
+                              ChatListScreen(db: db, currentUser: currentUser),
                     ),
                   );
                 },

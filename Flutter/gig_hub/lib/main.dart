@@ -17,7 +17,6 @@ void main() async {
   Hive.openBox('favoritesBox');
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await dotenv.load(fileName: ".env");
-
   final DatabaseRepository db = FirestoreDatabaseRepository();
   final AuthRepository auth = FirebaseAuthRepository();
   runApp(App(db: db, auth: auth));

@@ -269,8 +269,18 @@ class _MainScreenState extends State<MainScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 4),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(12),
+                          bottomRight: Radius.circular(12),
+                        ),
+                        border: Border(
+                          bottom: BorderSide(color: Palette.forgedGold),
+                          right: BorderSide(color: Palette.forgedGold),
+                          top: BorderSide(color: Palette.forgedGold),
+                        ),
+                      ),
                       child: IconButton(
                         onPressed: () async {
                           List<DJ> favs = await db.getFavoriteDJs(
@@ -281,13 +291,16 @@ class _MainScreenState extends State<MainScreen> {
                           });
                         },
                         icon: Icon(
-                          Icons.favorite,
+                          Icons.favorite_rounded,
                           color: Palette.glazedWhite,
-                          size: 22,
+                          size: 23,
                         ),
                         style: ButtonStyle(
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           splashFactory: NoSplash.splashFactory,
+                          padding: WidgetStatePropertyAll(
+                            EdgeInsets.only(top: 12, bottom: 12, right: 4),
+                          ),
                         ),
                       ),
                     ),
@@ -342,7 +355,7 @@ class _MainScreenState extends State<MainScreen> {
                       onExpandedChanged: _toggleExpanded,
                     ),
                   ),
-                SizedBox(height: 8),
+                SizedBox(height: 12),
                 Expanded(
                   child:
                       _isLoading
