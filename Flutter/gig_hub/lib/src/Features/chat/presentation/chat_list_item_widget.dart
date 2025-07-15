@@ -8,14 +8,14 @@ import 'package:google_fonts/google_fonts.dart';
 
 class ChatListItemWidget extends StatelessWidget {
   final ChatListItem chatListItem;
-  final DatabaseRepository repo;
+  final DatabaseRepository db;
   final AppUser currentUser;
   final VoidCallback? onTap;
 
   const ChatListItemWidget({
     super.key,
     required this.chatListItem,
-    required this.repo,
+    required this.db,
     required this.currentUser,
     this.onTap,
   });

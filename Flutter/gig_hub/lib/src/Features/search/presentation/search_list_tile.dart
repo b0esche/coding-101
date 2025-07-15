@@ -17,7 +17,7 @@ class SearchListTile extends StatefulWidget {
   final List<int> bpm;
   final AppUser currentUser;
   final double? rating;
-  final dynamic repo;
+  final dynamic db;
 
   const SearchListTile({
     required this.user,
@@ -29,7 +29,7 @@ class SearchListTile extends StatefulWidget {
     required this.bpm,
     super.key,
     required this.rating,
-    required this.repo,
+    required this.db,
     required this.currentUser,
   });
 
@@ -311,7 +311,7 @@ class _SearchListTileState extends State<SearchListTile> {
                                             builder:
                                                 (context) => ProfileScreenDJ(
                                                   dj: widget.user,
-                                                  repo: widget.repo,
+                                                  db: widget.db,
                                                   showChatButton: true,
                                                   showEditButton: true,
                                                   showFavoriteIcon: true,

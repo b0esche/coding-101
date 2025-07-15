@@ -49,6 +49,7 @@ class SoundcloudService {
   }
 
   Future<String> getPublicStreamUrl(String uri) async {
+    final clientId = '5myDaCOr1DPDiVQfmR0kAc0Sp2D36ww5';
     final accessToken = await _getAccessToken();
     final trackUrl = Uri.parse(uri);
 
@@ -57,17 +58,27 @@ class SoundcloudService {
       headers: {'Authorization': 'Bearer $accessToken'},
     );
 
-    // if (trackResponse.statusCode != 200) {
-    //   throw Exception('Failed to get track info: ${trackResponse.statusCode}');
-    // }
+    if (trackResponse.statusCode != 200) {
+      debugPrint('⚠️ Failed to fetch track info: ${trackResponse.statusCode}');
+      return '';
+    }
 
     final json = jsonDecode(trackResponse.body);
     debugPrint('🎧 Track JSON: $json');
-    final transcodings = json['media']?['transcodings'] as List<dynamic>?;
 
+    // 1. Versuch: stream_url direkt
+    final streamUrl = json['stream_url'];
+    if (streamUrl != null && streamUrl.toString().isNotEmpty) {
+      final fullUrl = '$streamUrl?client_id=$clientId';
+      debugPrint('✅ Using direct stream_url');
+      return fullUrl;
+    }
+
+    // 2. Fallback: transcodings
+    final transcodings = json['media']?['transcodings'] as List<dynamic>?;
     if (transcodings == null || transcodings.isEmpty) {
+      debugPrint('❌ No transcodings available');
       return '';
-      // throw Exception('No transcodings available for this track.');
     }
 
     final progressiveStream = transcodings.firstWhere(
@@ -75,18 +86,29 @@ class SoundcloudService {
       orElse: () => transcodings.first,
     );
 
-    final streamRequestUrl = Uri.parse(progressiveStream['url']);
+    final streamRequestUrl = Uri.parse(
+      '${progressiveStream['url']}?client_id=$clientId',
+    );
 
     final streamResponse = await http.get(
       streamRequestUrl,
       headers: {'Authorization': 'Bearer $accessToken'},
     );
 
-    // if (streamResponse.statusCode != 200) {
-    //   throw Exception('Failed to get stream URL: ${streamResponse.statusCode}');
-    // }
+    if (streamResponse.statusCode != 200) {
+      debugPrint('❌ Failed to get stream URL from transcodings');
+      return '';
+    }
 
     final streamJson = jsonDecode(streamResponse.body);
-    return streamJson['url'];
+    final fallbackUrl = streamJson['url'];
+
+    if (fallbackUrl == null || fallbackUrl.toString().isEmpty) {
+      debugPrint('❌ Final fallback stream URL is empty');
+      return '';
+    }
+
+    debugPrint('✅ Using fallback transcoding stream_url');
+    return fallbackUrl;
   }
 }

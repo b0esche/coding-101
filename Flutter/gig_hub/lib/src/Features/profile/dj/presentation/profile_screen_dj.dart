@@ -9,13 +9,13 @@ import "../../../../Data/app_imports.dart" as http;
 
 class ProfileScreenDJArgs {
   final DJ dj;
-  final DatabaseRepository repo;
+  final DatabaseRepository db;
   final bool showChatButton, showEditButton, showFavoriteIcon;
   final AppUser currentUser;
 
   ProfileScreenDJArgs({
     required this.dj,
-    required this.repo,
+    required this.db,
     required this.currentUser,
     required this.showChatButton,
     required this.showEditButton,
@@ -27,13 +27,13 @@ class ProfileScreenDJ extends StatefulWidget {
   static const routeName = '/profileDj';
 
   final DJ dj;
-  final dynamic repo;
+  final dynamic db;
   final bool showChatButton, showEditButton, showFavoriteIcon;
   final AppUser currentUser;
   const ProfileScreenDJ({
     super.key,
     required this.dj,
-    required this.repo,
+    required this.db,
     required this.currentUser,
     required this.showChatButton,
     required this.showEditButton,
@@ -252,7 +252,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                       ChatScreen.routeName,
                       arguments: ChatScreenArgs(
                         chatPartner: widget.dj,
-                        repo: widget.repo,
+                        db: widget.db,
                         currentUser: widget.currentUser,
                       ),
                     );
@@ -1232,7 +1232,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                             child:
                                 !widget.showEditButton
                                     ? OutlinedButton(
-                                      onPressed: () {
+                                      onPressed: () async {
                                         if (editMode &&
                                             _formKey.currentState!.validate()) {
                                           !editMode
@@ -1245,13 +1245,11 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                               _aboutController.text;
                                           widget.dj.info = _infoController.text;
                                           widget.dj.name = _nameController.text;
-                                          widget.dj.streamingUrls.add(
-                                            _soundcloudControllerOne.text,
-                                          );
+                                          widget.dj.streamingUrls[0] =
+                                              _soundcloudControllerOne.text;
 
-                                          widget.dj.streamingUrls.add(
-                                            _soundcloudControllerTwo.text,
-                                          );
+                                          widget.dj.streamingUrls[1] =
+                                              _soundcloudControllerTwo.text;
 
                                           final bpmText =
                                               _bpmController.text.trim();
@@ -1279,6 +1277,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                           }
 
                                           setState(() => editMode = !editMode);
+                                          await widget.db.updateDJ(widget.dj);
                                         } else if (!editMode) {
                                           PlayerController().stopAllPlayers();
                                           setState(() => editMode = !editMode);

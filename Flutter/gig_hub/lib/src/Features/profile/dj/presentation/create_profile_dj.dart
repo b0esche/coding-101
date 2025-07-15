@@ -12,13 +12,13 @@ import "../../../../Data/app_imports.dart";
 import "../../../../Data/app_imports.dart" as http;
 
 class CreateProfileScreenDJ extends StatefulWidget {
-  final DatabaseRepository repo;
+  final DatabaseRepository db;
   final AuthRepository auth;
   final String email;
   final String pw;
   const CreateProfileScreenDJ({
     super.key,
-    required this.repo,
+    required this.db,
     required this.auth,
     required this.email,
     required this.pw,
@@ -60,7 +60,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
   void initState() {
     super.initState();
 
-    repo = widget.repo;
+    repo = widget.db;
 
     _nameController = TextEditingController(text: 'your name');
     _locationController = TextEditingController(text: 'your city');
@@ -861,8 +861,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                           (trackTwoUrl == null &&
                                               selectedTrackTwo?.streamUrl ==
                                                   null))
-                                        'https://soundcloud.com/',
-                                      'https://soundcloud.com/s',
+                                        'https://soundcloud.com/s',
                                     ],
                                     mediaImageUrls: mediaUrl ?? [],
                                     info: _infoController.text,
@@ -896,13 +895,13 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                   );
                                 }
                                 final current =
-                                    await widget.repo.getCurrentUser();
+                                    await widget.db.getCurrentUser();
                                 if (!context.mounted) return;
                                 Navigator.of(context).pushReplacement(
                                   MaterialPageRoute(
                                     builder:
                                         (context) => MainScreen(
-                                          repo: repo,
+                                          db: widget.db,
                                           auth: widget.auth,
                                           initialUser: current,
                                         ),

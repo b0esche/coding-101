@@ -5,10 +5,10 @@ import 'package:gig_hub/src/Features/auth/sign_in_screen.dart';
 import 'package:gig_hub/src/Theme/app_theme.dart';
 
 class App extends StatelessWidget {
-  final DatabaseRepository repo;
+  final DatabaseRepository db;
   final AuthRepository auth;
 
-  const App({super.key, required this.repo, required this.auth});
+  const App({super.key, required this.db, required this.auth});
 
   @override
   Widget build(BuildContext context) {
@@ -31,11 +31,11 @@ class App extends StatelessWidget {
 
           final fbUser = authSnap.data;
           if (fbUser == null) {
-            return LoginScreen(repo: repo, auth: auth);
+            return LoginScreen(db: db, auth: auth);
           }
 
           return FutureBuilder<AppUser>(
-            future: repo.getCurrentUser(),
+            future: db.getCurrentUser(),
             builder: (context, userSnap) {
               if (userSnap.connectionState == ConnectionState.waiting) {
                 return Scaffold(
@@ -47,17 +47,17 @@ class App extends StatelessWidget {
               }
 
               if (userSnap.hasError || userSnap.data == null) {
-                return LoginScreen(repo: repo, auth: auth);
+                return LoginScreen(db: db, auth: auth);
               }
               if (authSnap.connectionState == ConnectionState.done) {
                 return MainScreen(
-                  repo: repo,
+                  db: db,
                   auth: auth,
                   initialUser: userSnap.data!,
                 );
               }
               return MainScreen(
-                repo: repo,
+                db: db,
                 auth: auth,
                 initialUser: userSnap.data!,
               );

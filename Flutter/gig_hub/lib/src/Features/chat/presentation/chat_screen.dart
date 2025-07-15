@@ -8,12 +8,12 @@ import 'package:google_fonts/google_fonts.dart';
 
 class ChatScreenArgs {
   final AppUser chatPartner;
-  final DatabaseRepository repo;
+  final DatabaseRepository db;
   final AppUser currentUser;
 
   ChatScreenArgs({
     required this.chatPartner,
-    required this.repo,
+    required this.db,
     required this.currentUser,
   });
 }
@@ -22,13 +22,13 @@ class ChatScreen extends StatefulWidget {
   static const routeName = '/chat';
 
   final AppUser chatPartner;
-  final DatabaseRepository repo;
+  final DatabaseRepository db;
   final AppUser currentUser;
 
   const ChatScreen({
     super.key,
     required this.chatPartner,
-    required this.repo,
+    required this.db,
     required this.currentUser,
   });
 
@@ -64,7 +64,7 @@ class ChatScreenState extends State<ChatScreen> {
       read: false,
     );
 
-    await widget.repo.sendMessage(newMessage);
+    await widget.db.sendMessage(newMessage);
     _controller.clear();
     _scrollToBottomDelayed();
   }
@@ -104,7 +104,7 @@ class ChatScreenState extends State<ChatScreen> {
                       builder:
                           (_) => ProfileScreenDJ(
                             dj: widget.chatPartner as DJ,
-                            repo: widget.repo,
+                            db: widget.db,
                             showChatButton: false,
                             showEditButton: true,
                             showFavoriteIcon: true,
@@ -146,7 +146,7 @@ class ChatScreenState extends State<ChatScreen> {
         children: [
           Expanded(
             child: StreamBuilder<List<ChatMessage>>(
-              stream: widget.repo.getMessagesStream(
+              stream: widget.db.getMessagesStream(
                 widget.currentUser.id,
                 widget.chatPartner.id,
               ),

@@ -26,6 +26,7 @@ abstract class DatabaseRepository {
     List<String>? genres,
     List<int>? bpmRange,
   });
+  Future<List<DJ>> getFavoriteDJs(String userId);
 
   // chat ###
   Future<void> sendMessage(ChatMessage message);

@@ -9,9 +9,9 @@ import 'package:shimmer/shimmer.dart';
 import '../../Data/app_imports.dart' as http;
 
 class LoginScreen extends StatefulWidget {
-  final DatabaseRepository repo;
+  final DatabaseRepository db;
   final AuthRepository auth;
-  const LoginScreen({super.key, required this.repo, required this.auth});
+  const LoginScreen({super.key, required this.db, required this.auth});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -207,7 +207,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               isScrollControlled: true,
                               builder: (BuildContext context) {
                                 return SignUpSheet(
-                                  repo: widget.repo,
+                                  db: widget.db,
                                   auth: widget.auth,
                                 );
                               },
@@ -525,13 +525,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         final guestUser = Guest(id: uid);
 
-                        await widget.repo.createGuest(guestUser);
+                        await widget.db.createGuest(guestUser);
                         if (!context.mounted) return;
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
                             builder:
                                 (context) => MainScreen(
-                                  repo: widget.repo,
+                                  db: widget.db,
                                   auth: widget.auth,
                                   initialUser: guestUser,
                                 ),

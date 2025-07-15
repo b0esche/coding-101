@@ -8,13 +8,13 @@ import "../../../../Data/app_imports.dart";
 import "../../../../Data/app_imports.dart" as http;
 
 class CreateProfileScreenBooker extends StatefulWidget {
-  final DatabaseRepository repo;
+  final DatabaseRepository db;
   final AuthRepository auth;
   final String email;
   final String pw;
   const CreateProfileScreenBooker({
     super.key,
-    required this.repo,
+    required this.db,
     required this.auth,
     required this.email,
     required this.pw,
@@ -26,7 +26,7 @@ class CreateProfileScreenBooker extends StatefulWidget {
 }
 
 class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
-  DatabaseRepository repo = FirestoreDatabaseRepository();
+  DatabaseRepository db = FirestoreDatabaseRepository();
   final _formKey = GlobalKey<FormState>();
   late final _nameController = TextEditingController();
   late final _locationController = TextEditingController(text: 'your city');
@@ -663,7 +663,7 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                                     info: _infoController.text,
                                     mediaImageUrls: mediaUrl ?? [],
                                   );
-                                  await repo.createBooker(booker);
+                                  await db.createBooker(booker);
                                 } catch (e) {
                                   if (!context.mounted) return;
                                   ScaffoldMessenger.of(context).showSnackBar(

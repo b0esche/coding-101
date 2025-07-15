@@ -12,12 +12,12 @@ import 'package:pinch_zoom/pinch_zoom.dart';
 
 class ProfileScreenBookerArgs {
   final Booker booker;
-  final DatabaseRepository repo;
+  final DatabaseRepository db;
   final bool showEditButton;
 
   ProfileScreenBookerArgs({
     required this.booker,
-    required this.repo,
+    required this.db,
     required this.showEditButton,
   });
 }
@@ -26,13 +26,13 @@ class ProfileScreenBooker extends StatefulWidget {
   static const routeName = '/profileBooker';
 
   final Booker booker;
-  final dynamic repo;
+  final dynamic db;
   final bool showEditButton;
 
   const ProfileScreenBooker({
     super.key,
     required this.booker,
-    required this.repo,
+    required this.db,
     required this.showEditButton,
   });
 

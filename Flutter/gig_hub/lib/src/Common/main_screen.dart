@@ -13,11 +13,11 @@ import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 class MainScreen extends StatefulWidget {
   const MainScreen({
     super.key,
-    required this.repo,
+    required this.db,
     required this.auth,
     required this.initialUser,
   });
-  final DatabaseRepository repo;
+  final DatabaseRepository db;
   final AuthRepository auth;
   final AppUser? initialUser;
 
@@ -32,7 +32,7 @@ class _MainScreenState extends State<MainScreen> {
   List<DJ> _usersDJ = [];
   List<DJ> _sortedUsersDJ = [];
   AppUser? _loggedInUser;
-  late DatabaseRepository _repo;
+  late DatabaseRepository db;
 
   List<int>? _currentSearchBpmRange;
   List<String>? _currentSearchGenres;
@@ -40,13 +40,13 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-    _repo = widget.repo;
+    db = widget.db;
     _loggedInUser = widget.initialUser;
     _fetchDJs();
   }
 
   Future<void> _fetchDJs() async {
-    final users = await _repo.getDJs();
+    final users = await db.getDJs();
     setState(() {
       _usersDJ = users;
       _sortedUsersDJ = List.from(_usersDJ);
@@ -196,7 +196,7 @@ class _MainScreenState extends State<MainScreen> {
                                   MaterialPageRoute(
                                     builder:
                                         (context) => SettingsScreen(
-                                          repo: widget.repo,
+                                          db: widget.db,
                                           auth: widget.auth,
                                         ),
                                     fullscreenDialog: true,
@@ -265,10 +265,33 @@ class _MainScreenState extends State<MainScreen> {
                     },
                   ),
                 ),
-                SizedBox(height: 8),
+                SizedBox(height: 4),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4),
+                      child: IconButton(
+                        onPressed: () async {
+                          List<DJ> favs = await db.getFavoriteDJs(
+                            _loggedInUser!.id,
+                          );
+                          setState(() {
+                            _sortedUsersDJ = favs;
+                          });
+                        },
+                        icon: Icon(
+                          Icons.favorite,
+                          color: Palette.glazedWhite,
+                          size: 22,
+                        ),
+                        style: ButtonStyle(
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          splashFactory: NoSplash.splashFactory,
+                        ),
+                      ),
+                    ),
+                    Spacer(),
                     GestureDetector(
                       onTap:
                           () => setState(() {
@@ -343,7 +366,7 @@ class _MainScreenState extends State<MainScreen> {
                                       _sortedUsersDJ[index];
                                   return SearchListTile(
                                     currentUser: widget.initialUser!,
-                                    repo: _repo,
+                                    db: db,
                                     user: currentUserDJ,
                                     name: currentUserDJ.name,
                                     genres: currentUserDJ.genres,
@@ -396,7 +419,7 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ),
         bottomNavigationBar: CustomNavBar(
-          repo: widget.repo,
+          db: widget.db,
           auth: widget.auth,
           currentUser: _loggedInUser!,
         ),

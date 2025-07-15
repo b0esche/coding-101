@@ -7,12 +7,12 @@ import 'package:gig_hub/src/Features/profile/dj/presentation/profile_screen_dj.d
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 
 class CustomNavBar extends StatelessWidget {
-  final DatabaseRepository repo;
+  final DatabaseRepository db;
   final AuthRepository auth;
   final AppUser currentUser;
   const CustomNavBar({
     super.key,
-    required this.repo,
+    required this.db,
     required this.auth,
     required this.currentUser,
   });
@@ -53,7 +53,7 @@ class CustomNavBar extends StatelessWidget {
                             (context) => ProfileScreenDJ(
                               currentUser: currentUser,
                               dj: currentUser as DJ,
-                              repo: repo,
+                              db: db,
                               showChatButton: false,
                               showEditButton: false,
                               showFavoriteIcon: false,
@@ -66,7 +66,7 @@ class CustomNavBar extends StatelessWidget {
                         builder:
                             (context) => ProfileScreenBooker(
                               booker: currentUser as Booker,
-                              repo: repo,
+                              db: db,
 
                               showEditButton: false,
                             ),
@@ -102,7 +102,7 @@ class CustomNavBar extends StatelessWidget {
                       context: context,
                       isScrollControlled: true,
                       builder: (BuildContext context) {
-                        return SignUpSheet(repo: repo, auth: auth);
+                        return SignUpSheet(db: db, auth: auth);
                       },
                     );
                     return;
@@ -111,7 +111,7 @@ class CustomNavBar extends StatelessWidget {
                     context,
                     ChatListScreen.routeName,
                     arguments: ChatListScreenArgs(
-                      repo: repo,
+                      db: db,
                       currentUser: currentUser,
                     ),
                   );

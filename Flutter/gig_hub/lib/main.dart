@@ -18,7 +18,7 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await dotenv.load(fileName: ".env");
 
-  final DatabaseRepository repo = FirestoreDatabaseRepository();
+  final DatabaseRepository db = FirestoreDatabaseRepository();
   final AuthRepository auth = FirebaseAuthRepository();
-  runApp(App(repo: repo, auth: auth));
+  runApp(App(db: db, auth: auth));
 }

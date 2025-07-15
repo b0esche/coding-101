@@ -7,10 +7,10 @@ import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:gig_hub/src/Features/chat/presentation/chat_screen.dart';
 
 class ChatListScreenArgs {
-  final DatabaseRepository repo;
+  final DatabaseRepository db;
   final AppUser currentUser;
 
-  ChatListScreenArgs({required this.repo, required this.currentUser});
+  ChatListScreenArgs({required this.db, required this.currentUser});
 }
 
 class ChatListScreen extends StatefulWidget {
@@ -18,11 +18,11 @@ class ChatListScreen extends StatefulWidget {
 
   const ChatListScreen({
     super.key,
-    required this.repo,
+    required this.db,
     required this.currentUser,
   });
 
-  final DatabaseRepository repo;
+  final DatabaseRepository db;
   final AppUser currentUser;
 
   @override
@@ -42,7 +42,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
 
   Future<void> _loadRecentChats() async {
     try {
-      final recentMessages = await widget.repo.getChats(widget.currentUser.id);
+      final recentMessages = await widget.db.getChats(widget.currentUser.id);
 
       final List<ChatListItem> items = [];
       for (final msg in recentMessages) {
@@ -51,7 +51,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                 ? msg.receiverId
                 : msg.senderId;
 
-        final partnerUser = await widget.repo.getUserById(partnerId);
+        final partnerUser = await widget.db.getUserById(partnerId);
 
         items.add(ChatListItem(user: partnerUser, recent: msg));
       }
@@ -118,7 +118,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                   final chatItem = _chatListItems[idx];
                   return ChatListItemWidget(
                     chatListItem: chatItem,
-                    repo: widget.repo,
+                    db: widget.db,
                     currentUser: widget.currentUser,
                     onTap: () {
                       Navigator.pushNamed(
@@ -126,7 +126,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                         ChatScreen.routeName,
                         arguments: ChatScreenArgs(
                           chatPartner: chatItem.user,
-                          repo: widget.repo,
+                          db: widget.db,
                           currentUser: widget.currentUser,
                         ),
                       );

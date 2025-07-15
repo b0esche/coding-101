@@ -7,9 +7,9 @@ import 'package:gig_hub/src/Features/profile/dj/presentation/create_profile_dj.d
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 
 class SignUpSheet extends StatefulWidget {
-  final DatabaseRepository repo;
+  final DatabaseRepository db;
   final AuthRepository auth;
-  const SignUpSheet({super.key, required this.repo, required this.auth});
+  const SignUpSheet({super.key, required this.db, required this.auth});
 
   @override
   State<SignUpSheet> createState() => _SignUpSheetState();
@@ -218,7 +218,7 @@ class _SignUpSheetState extends State<SignUpSheet> {
                           MaterialPageRoute(
                             builder:
                                 (context) => CreateProfileScreenDJ(
-                                  repo: widget.repo,
+                                  db: widget.db,
                                   auth: widget.auth,
                                   email: _emailController.text,
                                   pw: _passwordController.text,
@@ -230,7 +230,7 @@ class _SignUpSheetState extends State<SignUpSheet> {
                           MaterialPageRoute(
                             builder:
                                 (context) => CreateProfileScreenBooker(
-                                  repo: widget.repo,
+                                  db: widget.db,
                                   auth: widget.auth,
                                   email: _emailController.text,
                                   pw: _passwordController.text,

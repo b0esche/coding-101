@@ -5,9 +5,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class SettingsScreen extends StatefulWidget {
   final AuthRepository auth;
-  final DatabaseRepository repo;
+  final DatabaseRepository db;
 
-  const SettingsScreen({super.key, required this.repo, required this.auth});
+  const SettingsScreen({super.key, required this.db, required this.auth});
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
@@ -26,7 +26,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _loadCurrentUser() async {
-    final user = await widget.repo.getCurrentUser();
+    final user = await widget.db.getCurrentUser();
     setState(() {
       _user = user;
       _emailController.text = FirebaseAuth.instance.currentUser?.email ?? '';
@@ -45,7 +45,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           (_user as Booker).avatarImageUrl = picked.path;
         }
       });
-      await widget.repo.updateUser(_user!);
+      await widget.db.updateUser(_user!);
     }
   }
 
