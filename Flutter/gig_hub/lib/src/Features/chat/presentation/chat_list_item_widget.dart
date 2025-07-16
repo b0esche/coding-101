@@ -1,6 +1,5 @@
 // gig_hub/src/Features/chat/presentation/chat_list_item_widget.dart
 import 'package:flutter/material.dart';
-import 'package:gig_hub/src/Data/database_repository.dart';
 import 'package:gig_hub/src/Data/users.dart';
 import 'package:gig_hub/src/Features/chat/domain/chat_list_item.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
@@ -8,14 +7,14 @@ import 'package:google_fonts/google_fonts.dart';
 
 class ChatListItemWidget extends StatelessWidget {
   final ChatListItem chatListItem;
-  final DatabaseRepository db;
+
   final AppUser currentUser;
   final VoidCallback? onTap;
 
   const ChatListItemWidget({
     super.key,
     required this.chatListItem,
-    required this.db,
+
     required this.currentUser,
     this.onTap,
   });

@@ -3,15 +3,15 @@ import 'package:gig_hub/src/Data/app_imports.dart';
 import 'package:gig_hub/src/Data/auth_repository.dart';
 import 'package:gig_hub/src/Features/auth/sign_in_screen.dart';
 import 'package:gig_hub/src/Theme/app_theme.dart';
+import 'package:provider/provider.dart';
 
 class App extends StatelessWidget {
-  final DatabaseRepository db;
-  final AuthRepository auth;
-
-  const App({super.key, required this.db, required this.auth});
+  const App({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final auth = context.watch<AuthRepository>();
+    final db = context.watch<DatabaseRepository>();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.light,
@@ -31,7 +31,7 @@ class App extends StatelessWidget {
 
           final fbUser = authSnap.data;
           if (fbUser == null) {
-            return LoginScreen(db: db, auth: auth);
+            return LoginScreen();
           }
 
           return FutureBuilder<AppUser>(
@@ -47,20 +47,12 @@ class App extends StatelessWidget {
               }
 
               if (userSnap.hasError || userSnap.data == null) {
-                return LoginScreen(db: db, auth: auth);
+                return LoginScreen();
               }
               if (authSnap.connectionState == ConnectionState.done) {
-                return MainScreen(
-                  db: db,
-                  auth: auth,
-                  initialUser: userSnap.data!,
-                );
+                return MainScreen(initialUser: userSnap.data!);
               }
-              return MainScreen(
-                db: db,
-                auth: auth,
-                initialUser: userSnap.data!,
-              );
+              return MainScreen(initialUser: userSnap.data!);
             },
           );
         },

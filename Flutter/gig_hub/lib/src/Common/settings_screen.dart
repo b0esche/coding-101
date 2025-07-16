@@ -2,12 +2,11 @@ import 'dart:io';
 import 'package:gig_hub/src/Data/app_imports.dart';
 import 'package:gig_hub/src/Data/auth_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:gig_hub/src/Data/firestore_repository.dart';
+import 'package:provider/provider.dart';
 
 class SettingsScreen extends StatefulWidget {
-  final AuthRepository auth;
-  final DatabaseRepository db;
-
-  const SettingsScreen({super.key, required this.db, required this.auth});
+  const SettingsScreen({super.key});
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
@@ -18,6 +17,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   XFile? _pickedImage;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
+  final db = FirestoreDatabaseRepository();
 
   @override
   void initState() {
@@ -26,7 +26,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _loadCurrentUser() async {
-    final user = await widget.db.getCurrentUser();
+    final user = await db.getCurrentUser();
     setState(() {
       _user = user;
       _emailController.text = FirebaseAuth.instance.currentUser?.email ?? '';
@@ -45,7 +45,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           (_user as Booker).avatarImageUrl = picked.path;
         }
       });
-      await widget.db.updateUser(_user!);
+      await db.updateUser(_user!);
     }
   }
 
@@ -209,12 +209,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
-  Future<void> _onLogout() async {
-    await widget.auth.signOut();
-  }
-
   @override
   Widget build(BuildContext context) {
+    final auth = context.watch<AuthRepository>();
     if (_user == null) {
       return Scaffold(
         backgroundColor: Palette.primalBlack,
@@ -363,7 +360,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               FilledButton(
                 onPressed: () {
-                  _onLogout();
+                  auth.signOut();
                   Navigator.of(context).pop();
                 },
                 child: const Text("log out"),

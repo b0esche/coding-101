@@ -4,14 +4,13 @@ import 'package:gig_hub/src/Data/app_imports.dart';
 import 'package:gig_hub/src/Data/auth_repository.dart';
 import 'package:gig_hub/src/Features/auth/sign_up_bottomsheet.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../Data/app_imports.dart' as http;
 
 class LoginScreen extends StatefulWidget {
-  final DatabaseRepository db;
-  final AuthRepository auth;
-  const LoginScreen({super.key, required this.db, required this.auth});
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -24,78 +23,10 @@ class _LoginScreenState extends State<LoginScreen> {
   Set<String> selected = {'dj'};
   bool _isObscured = true;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   initUniLinks();
-  //   listenForRedirect();
-  // }
-
-  // void initUniLinks() {
-  //   uriLinkStream.listen((Uri? uri) {
-  //     if (uri != null && uri.scheme == 'gighub') {
-  //       final authCode = uri.queryParameters['code'];
-  //       if (authCode != null) {
-  //         // Hier kannst du das Token mit dem code anfordern
-  //         print('Authorization code: $authCode');
-  //       }
-  //     }
-  //   });
-  // }
-
-  // Future<void> launchSoundCloudLogin() async {
-  //   final authUrl = Uri.parse(
-  //     '$authEndpoint'
-  //     '?client_id=$clientId'
-  //     '&redirect_uri=$redirectUri'
-  //     '&response_type=code'
-  //     '&scope=non-expiring',
-  //   );
-
-  //   if (await canLaunchUrl(authUrl)) {
-  //     await launchUrl(authUrl, mode: LaunchMode.externalApplication);
-  //   } else {
-  //     throw 'Could not launch $authUrl';
-  //   }
-  // }
-
-  // void listenForRedirect() {
-  //   uriLinkStream.listen((Uri? uri) {
-  //     if (uri != null && uri.scheme == 'gighub') {
-  //       final code = uri.queryParameters['code'];
-  //       if (code != null) {
-  //         print('✅ Authorization Code erhalten: $code');
-  //         exchangeCodeForToken(code);
-  //       }
-  //     }
-  //   });
-  // }
-
-  // Future<void> exchangeCodeForToken(String code) async {
-  //   final response = await http.post(
-  //     Uri.parse(tokenEndpoint),
-  //     body: {
-  //       'client_id': clientId,
-  //       'client_secret': clientSecret,
-  //       'grant_type': 'authorization_code',
-  //       'redirect_uri': redirectUri,
-  //       'code': code,
-  //     },
-  //   );
-
-  //   if (response.statusCode == 200) {
-  //     final data = jsonDecode(response.body);
-  //     final accessToken = data['access_token'];
-  //     print('🎉 Access Token: $accessToken');
-
-  //     // Optional: Speichern (z. B. mit shared_preferences) & API aufrufen
-  //   } else {
-  //     print('❌ Fehler beim Token-Austausch: ${response.body}');
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
+    final auth = context.watch<AuthRepository>();
+    final db = context.watch<DatabaseRepository>();
     return Scaffold(
       backgroundColor: Palette.primalBlack,
       body: Padding(
@@ -206,10 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               context: context,
                               isScrollControlled: true,
                               builder: (BuildContext context) {
-                                return SignUpSheet(
-                                  db: widget.db,
-                                  auth: widget.auth,
-                                );
+                                return SignUpSheet();
                               },
                             );
                           },
@@ -356,7 +284,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         onPressed: () async {
                           try {
-                            await widget.auth.signInWithEmailAndPassword(
+                            await auth.signInWithEmailAndPassword(
                               _loginEmailController.text,
                               _loginPasswordController.text,
                             );
@@ -430,7 +358,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       IconButton(
                         onPressed: () async {
                           try {
-                            await widget.auth.signInWithGoogle();
+                            await auth.signInWithGoogle();
                           } catch (e) {
                             if (!context.mounted) return;
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -454,7 +382,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       IconButton(
                         onPressed: () async {
                           try {
-                            await widget.auth.signInWithFacebook();
+                            await auth.signInWithFacebook();
                           } catch (e) {
                             if (!context.mounted) return;
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -525,16 +453,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         final guestUser = Guest(id: uid);
 
-                        await widget.db.createGuest(guestUser);
+                        await db.createGuest(guestUser);
                         if (!context.mounted) return;
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
                             builder:
-                                (context) => MainScreen(
-                                  db: widget.db,
-                                  auth: widget.auth,
-                                  initialUser: guestUser,
-                                ),
+                                (context) => MainScreen(initialUser: guestUser),
                           ),
                         );
                       },

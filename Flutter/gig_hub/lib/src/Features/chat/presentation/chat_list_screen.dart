@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gig_hub/src/Data/database_repository.dart';
+import 'package:gig_hub/src/Data/firestore_repository.dart';
 import 'package:gig_hub/src/Data/users.dart';
 import 'package:gig_hub/src/Features/chat/domain/chat_list_item.dart';
 import 'package:gig_hub/src/Features/chat/presentation/chat_list_item_widget.dart';
@@ -7,22 +7,14 @@ import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:gig_hub/src/Features/chat/presentation/chat_screen.dart';
 
 class ChatListScreenArgs {
-  final DatabaseRepository db;
   final AppUser currentUser;
 
-  ChatListScreenArgs({required this.db, required this.currentUser});
+  ChatListScreenArgs({required this.currentUser});
 }
 
 class ChatListScreen extends StatefulWidget {
-  static const routeName = '/chatList';
+  const ChatListScreen({super.key, required this.currentUser});
 
-  const ChatListScreen({
-    super.key,
-    required this.db,
-    required this.currentUser,
-  });
-
-  final DatabaseRepository db;
   final AppUser currentUser;
 
   @override
@@ -33,6 +25,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
   List<ChatListItem> _chatListItems = [];
   bool _isLoading = true;
   bool _hasError = false;
+  final db = FirestoreDatabaseRepository();
 
   @override
   void initState() {
@@ -42,7 +35,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
 
   Future<void> _loadRecentChats() async {
     try {
-      final recentMessages = await widget.db.getChats(widget.currentUser.id);
+      final recentMessages = await db.getChats(widget.currentUser.id);
 
       final List<ChatListItem> items = [];
       for (final msg in recentMessages) {
@@ -51,7 +44,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                 ? msg.receiverId
                 : msg.senderId;
 
-        final partnerUser = await widget.db.getUserById(partnerId);
+        final partnerUser = await db.getUserById(partnerId);
 
         items.add(ChatListItem(user: partnerUser, recent: msg));
       }
@@ -118,16 +111,18 @@ class _ChatListScreenState extends State<ChatListScreen> {
                   final chatItem = _chatListItems[idx];
                   return ChatListItemWidget(
                     chatListItem: chatItem,
-                    db: widget.db,
+
                     currentUser: widget.currentUser,
                     onTap: () {
-                      Navigator.pushNamed(
+                      Navigator.push(
                         context,
-                        ChatScreen.routeName,
-                        arguments: ChatScreenArgs(
-                          chatPartner: chatItem.user,
-                          db: widget.db,
-                          currentUser: widget.currentUser,
+                        MaterialPageRoute(
+                          builder:
+                              (context) => ChatScreen(
+                                chatPartner: chatItem.user,
+
+                                currentUser: widget.currentUser,
+                              ),
                         ),
                       );
                     },

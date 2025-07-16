@@ -2,20 +2,17 @@ import "dart:io";
 
 import "package:firebase_auth/firebase_auth.dart";
 import "package:gig_hub/src/Data/auth_repository.dart";
-import "package:gig_hub/src/Data/firestore_repository.dart";
+import "package:provider/provider.dart";
 
 import "../../../../Data/app_imports.dart";
 import "../../../../Data/app_imports.dart" as http;
 
 class CreateProfileScreenBooker extends StatefulWidget {
-  final DatabaseRepository db;
-  final AuthRepository auth;
   final String email;
   final String pw;
   const CreateProfileScreenBooker({
     super.key,
-    required this.db,
-    required this.auth,
+
     required this.email,
     required this.pw,
   });
@@ -26,7 +23,6 @@ class CreateProfileScreenBooker extends StatefulWidget {
 }
 
 class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
-  DatabaseRepository db = FirestoreDatabaseRepository();
   final _formKey = GlobalKey<FormState>();
   late final _nameController = TextEditingController();
   late final _locationController = TextEditingController(text: 'your city');
@@ -139,6 +135,8 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
 
   @override
   Widget build(BuildContext context) {
+    final auth = context.watch<AuthRepository>();
+    final db = context.watch<DatabaseRepository>();
     return Scaffold(
       backgroundColor: Palette.primalBlack,
       body: Form(
@@ -643,11 +641,10 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                               if (headUrl!.isNotEmpty &&
                                   _nameController.text.isNotEmpty) {
                                 try {
-                                  await widget.auth
-                                      .createUserWithEmailAndPassword(
-                                        widget.email,
-                                        widget.pw,
-                                      );
+                                  await auth.createUserWithEmailAndPassword(
+                                    widget.email,
+                                    widget.pw,
+                                  );
                                   final userId =
                                       FirebaseAuth.instance.currentUser?.uid;
                                   if (userId == null) {

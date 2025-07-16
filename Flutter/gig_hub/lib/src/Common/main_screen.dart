@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gig_hub/src/Common/custom_nav_bar.dart';
 import 'package:gig_hub/src/Common/settings_screen.dart';
-import 'package:gig_hub/src/Data/auth_repository.dart';
+import 'package:gig_hub/src/Data/firestore_repository.dart';
 import 'package:gig_hub/src/Features/search/presentation/search_function_card.dart';
 import 'package:gig_hub/src/Features/search/presentation/search_list_tile.dart';
 import 'package:gig_hub/src/Data/users.dart';
@@ -9,16 +9,11 @@ import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:gig_hub/src/Features/search/presentation/sort_button.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
+import 'package:provider/provider.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({
-    super.key,
-    required this.db,
-    required this.auth,
-    required this.initialUser,
-  });
-  final DatabaseRepository db;
-  final AuthRepository auth;
+  const MainScreen({super.key, required this.initialUser});
+
   final AppUser? initialUser;
 
   @override
@@ -32,15 +27,15 @@ class _MainScreenState extends State<MainScreen> {
   List<DJ> _usersDJ = [];
   List<DJ> _sortedUsersDJ = [];
   AppUser? _loggedInUser;
-  late DatabaseRepository db;
 
   List<int>? _currentSearchBpmRange;
   List<String>? _currentSearchGenres;
+  final db = FirestoreDatabaseRepository();
 
   @override
   void initState() {
     super.initState();
-    db = widget.db;
+
     _loggedInUser = widget.initialUser;
     _fetchDJs();
   }
@@ -171,6 +166,7 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final db = context.watch<DatabaseRepository>();
     return PopScope(
       canPop: false,
       child: Scaffold(
@@ -194,11 +190,7 @@ class _MainScreenState extends State<MainScreen> {
                                 if (_loggedInUser == null) return;
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
-                                    builder:
-                                        (context) => SettingsScreen(
-                                          db: widget.db,
-                                          auth: widget.auth,
-                                        ),
+                                    builder: (context) => SettingsScreen(),
                                     fullscreenDialog: true,
                                   ),
                                 );
@@ -379,7 +371,7 @@ class _MainScreenState extends State<MainScreen> {
                                       _sortedUsersDJ[index];
                                   return SearchListTile(
                                     currentUser: widget.initialUser!,
-                                    db: db,
+
                                     user: currentUserDJ,
                                     name: currentUserDJ.name,
                                     genres: currentUserDJ.genres,
@@ -431,11 +423,7 @@ class _MainScreenState extends State<MainScreen> {
             ),
           ),
         ),
-        bottomNavigationBar: CustomNavBar(
-          db: widget.db,
-          auth: widget.auth,
-          currentUser: _loggedInUser!,
-        ),
+        bottomNavigationBar: CustomNavBar(currentUser: _loggedInUser!),
       ),
     );
   }

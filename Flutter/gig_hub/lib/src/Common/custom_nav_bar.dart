@@ -1,24 +1,18 @@
 import 'package:gig_hub/src/Data/app_imports.dart';
-import 'package:gig_hub/src/Data/auth_repository.dart';
 import 'package:gig_hub/src/Features/auth/sign_up_bottomsheet.dart';
 import 'package:gig_hub/src/Features/chat/presentation/chat_list_screen.dart';
 import 'package:gig_hub/src/Features/profile/booker/presentation/profile_screen_booker.dart';
 import 'package:gig_hub/src/Features/profile/dj/presentation/profile_screen_dj.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
+import 'package:provider/provider.dart';
 
 class CustomNavBar extends StatelessWidget {
-  final DatabaseRepository db;
-  final AuthRepository auth;
   final AppUser currentUser;
-  const CustomNavBar({
-    super.key,
-    required this.db,
-    required this.auth,
-    required this.currentUser,
-  });
+  const CustomNavBar({super.key, required this.currentUser});
 
   @override
   Widget build(BuildContext context) {
+    final db = context.watch<DatabaseRepository>();
     return Padding(
       padding: EdgeInsetsGeometry.only(
         bottom: 36,
@@ -53,7 +47,7 @@ class CustomNavBar extends StatelessWidget {
                             (context) => ProfileScreenDJ(
                               currentUser: currentUser,
                               dj: currentUser as DJ,
-                              db: db,
+
                               showChatButton: false,
                               showEditButton: false,
                               showFavoriteIcon: false,
@@ -102,7 +96,7 @@ class CustomNavBar extends StatelessWidget {
                       context: context,
                       isScrollControlled: true,
                       builder: (BuildContext context) {
-                        return SignUpSheet(db: db, auth: auth);
+                        return SignUpSheet();
                       },
                     );
                     return;
@@ -111,8 +105,7 @@ class CustomNavBar extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder:
-                          (context) =>
-                              ChatListScreen(db: db, currentUser: currentUser),
+                          (context) => ChatListScreen(currentUser: currentUser),
                     ),
                   );
                 },

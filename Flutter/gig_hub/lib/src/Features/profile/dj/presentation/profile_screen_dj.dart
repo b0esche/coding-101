@@ -3,6 +3,7 @@ import "dart:io";
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:hive_flutter/hive_flutter.dart";
 import "package:liquid_glass_renderer/liquid_glass_renderer.dart";
+import "package:provider/provider.dart";
 
 import "../../../../Data/app_imports.dart";
 import "../../../../Data/app_imports.dart" as http;
@@ -27,13 +28,13 @@ class ProfileScreenDJ extends StatefulWidget {
   static const routeName = '/profileDj';
 
   final DJ dj;
-  final dynamic db;
+
   final bool showChatButton, showEditButton, showFavoriteIcon;
   final AppUser currentUser;
   const ProfileScreenDJ({
     super.key,
     required this.dj,
-    required this.db,
+
     required this.currentUser,
     required this.showChatButton,
     required this.showEditButton,
@@ -231,6 +232,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
 
   @override
   Widget build(BuildContext context) {
+    final db = context.watch<DatabaseRepository>();
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
         PlayerController().stopAllPlayers().whenComplete(
@@ -247,13 +249,15 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                         (widget.currentUser as DJ).id == widget.dj.id))
                 ? FloatingActionButton(
                   onPressed: () {
-                    Navigator.pushNamed(
+                    Navigator.push(
                       context,
-                      ChatScreen.routeName,
-                      arguments: ChatScreenArgs(
-                        chatPartner: widget.dj,
-                        db: widget.db,
-                        currentUser: widget.currentUser,
+                      MaterialPageRoute(
+                        builder:
+                            (context) => ChatScreen(
+                              chatPartner: widget.dj,
+
+                              currentUser: widget.currentUser,
+                            ),
                       ),
                     );
                   },
@@ -872,9 +876,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     AudioPlayerWidget(
-                                      audioUrl:
-                                          // widget.dj.set1Url TODO: über die eingegebene URL die Audiodaten von Soundcloud API fetchen
-                                          'https://samplelib.com/lib/preview/mp3/sample-9s.mp3',
+                                      audioUrl: widget.dj.streamingUrls.first,
                                       playerController: _playerControllerOne,
                                     ),
                                     const SizedBox(width: 2),
@@ -971,9 +973,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     AudioPlayerWidget(
-                                      audioUrl:
-                                          //TODO: über die eingegebene URL die Audiodaten von Soundcloud API fetchen
-                                          'https://samplelib.com/lib/preview/mp3/sample-12s.mp3',
+                                      audioUrl: widget.dj.streamingUrls.last,
                                       playerController: _playerControllerTwo,
                                     ),
                                     const SizedBox(width: 2),
@@ -1277,7 +1277,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                           }
 
                                           setState(() => editMode = !editMode);
-                                          await widget.db.updateDJ(widget.dj);
+                                          await db.updateDJ(widget.dj);
                                         } else if (!editMode) {
                                           PlayerController().stopAllPlayers();
                                           setState(() => editMode = !editMode);

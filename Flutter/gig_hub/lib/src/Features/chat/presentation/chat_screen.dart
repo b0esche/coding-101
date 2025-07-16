@@ -5,30 +5,25 @@ import 'package:gig_hub/src/Features/chat/domain/chat_message.dart';
 import 'package:gig_hub/src/Features/profile/dj/presentation/profile_screen_dj.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 class ChatScreenArgs {
   final AppUser chatPartner;
-  final DatabaseRepository db;
+
   final AppUser currentUser;
 
-  ChatScreenArgs({
-    required this.chatPartner,
-    required this.db,
-    required this.currentUser,
-  });
+  ChatScreenArgs({required this.chatPartner, required this.currentUser});
 }
 
 class ChatScreen extends StatefulWidget {
-  static const routeName = '/chat';
-
   final AppUser chatPartner;
-  final DatabaseRepository db;
+
   final AppUser currentUser;
 
   const ChatScreen({
     super.key,
     required this.chatPartner,
-    required this.db,
+
     required this.currentUser,
   });
 
@@ -51,36 +46,37 @@ class ChatScreenState extends State<ChatScreen> {
     super.dispose();
   }
 
-  Future<void> _sendMessage() async {
-    final text = _controller.text.trim();
-    if (text.isEmpty) return;
+  // Future<void> _sendMessage() async {
+  //   final text = _controller.text.trim();
+  //   if (text.isEmpty) return;
 
-    final newMessage = ChatMessage(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      senderId: widget.currentUser.id,
-      receiverId: widget.chatPartner.id,
-      message: text,
-      timestamp: DateTime.now(),
-      read: false,
-    );
+  //   final newMessage = ChatMessage(
+  //     id: DateTime.now().millisecondsSinceEpoch.toString(),
+  //     senderId: widget.currentUser.id,
+  //     receiverId: widget.chatPartner.id,
+  //     message: text,
+  //     timestamp: DateTime.now(),
+  //     read: false,
+  //   );
 
-    await widget.db.sendMessage(newMessage);
-    _controller.clear();
-    _scrollToBottomDelayed();
-  }
+  //   await db.sendMessage(newMessage);
+  //   _controller.clear();
+  //   _scrollToBottomDelayed();
+  // }
 
-  void _scrollToBottomDelayed() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Future.delayed(const Duration(milliseconds: 100), () {
-        if (_scrollController.hasClients) {
-          _scrollController.jumpTo(_scrollController.position.minScrollExtent);
-        }
-      });
-    });
-  }
+  // void _scrollToBottomDelayed() {
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     Future.delayed(const Duration(milliseconds: 100), () {
+  //       if (_scrollController.hasClients) {
+  //         _scrollController.jumpTo(_scrollController.position.minScrollExtent);
+  //       }
+  //     });
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
+    final db = context.watch<DatabaseRepository>();
     final partnerAvatarUrl = getPartnerAvatarUrl();
 
     return Scaffold(
@@ -104,7 +100,7 @@ class ChatScreenState extends State<ChatScreen> {
                       builder:
                           (_) => ProfileScreenDJ(
                             dj: widget.chatPartner as DJ,
-                            db: widget.db,
+
                             showChatButton: false,
                             showEditButton: true,
                             showFavoriteIcon: true,
@@ -146,7 +142,7 @@ class ChatScreenState extends State<ChatScreen> {
         children: [
           Expanded(
             child: StreamBuilder<List<ChatMessage>>(
-              stream: widget.db.getMessagesStream(
+              stream: db.getMessagesStream(
                 widget.currentUser.id,
                 widget.chatPartner.id,
               ),
@@ -246,6 +242,7 @@ class ChatScreenState extends State<ChatScreen> {
   }
 
   Widget _buildMessageInput() {
+    final db = context.watch<DatabaseRepository>();
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 8, 8, 12),
       child: Container(
@@ -276,7 +273,8 @@ class ChatScreenState extends State<ChatScreen> {
                     border: InputBorder.none,
                     contentPadding: const EdgeInsets.symmetric(vertical: 10),
                   ),
-                  onSubmitted: (_) => _sendMessage(),
+                  onSubmitted:
+                      (_) => db.sendMessage(_controller.text as ChatMessage),
                 ),
               ),
             ),
@@ -287,7 +285,7 @@ class ChatScreenState extends State<ChatScreen> {
                 color: Palette.forgedGold,
                 size: 28,
               ),
-              onPressed: _sendMessage,
+              onPressed: () => db.sendMessage(_controller.text as ChatMessage),
             ),
           ],
         ),

@@ -10,6 +10,7 @@ import 'package:gig_hub/src/app.dart';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,5 +20,13 @@ void main() async {
   await dotenv.load(fileName: ".env");
   final DatabaseRepository db = FirestoreDatabaseRepository();
   final AuthRepository auth = FirebaseAuthRepository();
-  runApp(App(db: db, auth: auth));
+  runApp(
+    MultiProvider(
+      providers: [
+        Provider(create: (context) => db),
+        Provider(create: (context) => auth),
+      ],
+      child: App(),
+    ),
+  );
 }

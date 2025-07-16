@@ -7,19 +7,17 @@ import "package:gig_hub/src/Common/main_screen.dart";
 import "package:gig_hub/src/Data/auth_repository.dart";
 import "package:gig_hub/src/Features/auth/soundcloud_authentication.dart";
 import "package:gig_hub/src/Features/auth/soundcloud_service.dart";
+import "package:provider/provider.dart";
 
 import "../../../../Data/app_imports.dart";
 import "../../../../Data/app_imports.dart" as http;
 
 class CreateProfileScreenDJ extends StatefulWidget {
-  final DatabaseRepository db;
-  final AuthRepository auth;
   final String email;
   final String pw;
   const CreateProfileScreenDJ({
     super.key,
-    required this.db,
-    required this.auth,
+
     required this.email,
     required this.pw,
   });
@@ -29,7 +27,6 @@ class CreateProfileScreenDJ extends StatefulWidget {
 }
 
 class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
-  late final DatabaseRepository repo;
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nameController;
   late final TextEditingController _locationController;
@@ -59,8 +56,6 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
   @override
   void initState() {
     super.initState();
-
-    repo = widget.db;
 
     _nameController = TextEditingController(text: 'your name');
     _locationController = TextEditingController(text: 'your city');
@@ -226,6 +221,8 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
 
   @override
   Widget build(BuildContext context) {
+    final auth = context.watch<AuthRepository>();
+    final db = context.watch<DatabaseRepository>();
     return Scaffold(
       backgroundColor: Palette.primalBlack,
       body: Form(
@@ -803,23 +800,14 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                   bpmMax?.isNotEmpty == true &&
                                   _nameController.text.isNotEmpty) {
                                 try {
-                                  debugPrint('→ Creating Firebase user');
-                                  await widget.auth
-                                      .createUserWithEmailAndPassword(
-                                        widget.email,
-                                        widget.pw,
-                                      );
+                                  await auth.createUserWithEmailAndPassword(
+                                    widget.email,
+                                    widget.pw,
+                                  );
 
-                                  debugPrint('→ Firebase user created');
                                   final firebaseUser =
                                       FirebaseAuth.instance.currentUser;
-                                  if (firebaseUser == null) {
-                                    throw Exception(
-                                      "User wurde nicht korrekt bei Firebase Auth angelegt",
-                                    );
-                                  }
 
-                                  debugPrint('→ Building DJ object');
                                   final service = SoundcloudService();
                                   String? trackOneUrl =
                                       selectedTrackOne != null
@@ -834,9 +822,8 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                           )
                                           : null;
 
-                                  debugPrint('→ Creating DJ instance');
                                   final dj = DJ(
-                                    id: firebaseUser.uid,
+                                    id: firebaseUser!.uid,
                                     genres: genres!,
                                     headImageUrl: headUrl!,
                                     avatarImageUrl: 'https://picsum.photos/100',
@@ -854,14 +841,13 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                       if (trackTwoUrl == null &&
                                           selectedTrackTwo?.streamUrl != null)
                                         selectedTrackTwo!.streamUrl!,
-                                      // Fallback, falls trotzdem keine URL da ist
                                       if ((trackOneUrl == null &&
                                               selectedTrackOne?.streamUrl ==
                                                   null) ||
                                           (trackTwoUrl == null &&
                                               selectedTrackTwo?.streamUrl ==
                                                   null))
-                                        'https://soundcloud.com/s',
+                                        'https://soundcloud.com/',
                                     ],
                                     mediaImageUrls: mediaUrl ?? [],
                                     info: _infoController.text,
@@ -871,17 +857,8 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                     favoriteUIds: [],
                                   );
 
-                                  debugPrint('→ Saving DJ to Firestore');
-                                  await repo.createDJ(dj);
-
-                                  debugPrint(
-                                    '→ Profile successfully created ✅',
-                                  );
-                                } catch (e, stack) {
-                                  debugPrint(
-                                    '❌ ERROR during profile creation: $e',
-                                  );
-                                  debugPrint(stack.toString());
+                                  await db.createDJ(dj);
+                                } catch (e) {
                                   if (!context.mounted) return;
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
@@ -894,17 +871,13 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                     ),
                                   );
                                 }
-                                final current =
-                                    await widget.db.getCurrentUser();
+                                final current = await db.getCurrentUser();
                                 if (!context.mounted) return;
                                 Navigator.of(context).pushReplacement(
                                   MaterialPageRoute(
                                     builder:
-                                        (context) => MainScreen(
-                                          db: widget.db,
-                                          auth: widget.auth,
-                                          initialUser: current,
-                                        ),
+                                        (context) =>
+                                            MainScreen(initialUser: current),
                                   ),
                                 );
                               }
