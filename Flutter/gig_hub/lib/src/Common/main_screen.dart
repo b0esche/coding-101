@@ -305,7 +305,7 @@ class _MainScreenState extends State<MainScreen> {
                         icon: Icon(
                           Icons.favorite_rounded,
                           color: Palette.glazedWhite,
-                          size: 23,
+                          size: 22,
                         ),
                         style: ButtonStyle(
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,

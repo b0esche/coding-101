@@ -106,16 +106,15 @@ class GenreBubble extends StatelessWidget {
           glassContainsChild: true,
           settings: LiquidGlassSettings(
             blur: 1,
-            chromaticAberration: 6,
-            refractiveIndex: 1.2,
-            thickness: 6,
+            refractiveIndex: 1,
+            thickness: 12,
             lightIntensity: 8,
           ),
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: Palette.shadowGrey, width: 0.85),
-              color: Palette.gigGrey.o(0.8),
+              color: Palette.gigGrey.o(0.35),
               boxShadow: [
                 BoxShadow(
                   offset: Offset(0.8, 0.8),

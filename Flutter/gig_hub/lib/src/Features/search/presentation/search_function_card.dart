@@ -185,6 +185,7 @@ class _SearchFunctionCardState extends State<SearchFunctionCard> {
                                   const SizedBox(width: 85),
                                   ElevatedButton(
                                     onPressed: _search,
+
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Palette.shadowGrey,
                                       splashFactory: NoSplash.splashFactory,
@@ -198,7 +199,7 @@ class _SearchFunctionCardState extends State<SearchFunctionCard> {
                                           width: 1.5,
                                         ),
                                       ),
-                                      elevation: 3,
+                                      elevation: 4,
                                     ),
                                     child: Text(
                                       "search",
@@ -253,8 +254,8 @@ class _SearchFunctionCardState extends State<SearchFunctionCard> {
                                         ),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: Palette.gigGrey,
-                                            blurRadius: 4,
+                                            color: Palette.gigGrey.o(0.65),
+                                            blurRadius: 2,
                                             offset: const Offset(0.5, 2),
                                           ),
                                         ],
