@@ -110,12 +110,18 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
 
   @override
   Future<List<DJ>> getDJs() async {
+    final currentUser = await getCurrentUser();
+
     final snapshot =
         await _firestore
             .collection('users')
             .where('type', isEqualTo: 'dj')
             .get();
-    return snapshot.docs.map((doc) => DJ.fromJson(doc.id, doc.data())).toList();
+
+    return snapshot.docs
+        .where((doc) => doc.id != currentUser.id)
+        .map((doc) => DJ.fromJson(doc.id, doc.data()))
+        .toList();
   }
 
   @override
