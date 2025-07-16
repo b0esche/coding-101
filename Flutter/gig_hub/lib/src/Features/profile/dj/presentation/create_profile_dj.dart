@@ -3,8 +3,8 @@ import "dart:io";
 
 import "package:app_links/app_links.dart";
 import "package:firebase_auth/firebase_auth.dart";
+import "package:firebase_storage/firebase_storage.dart";
 import "package:gig_hub/src/Common/main_screen.dart";
-import "package:gig_hub/src/Data/auth_repository.dart";
 import "package:gig_hub/src/Features/auth/soundcloud_authentication.dart";
 import "package:gig_hub/src/Features/auth/soundcloud_service.dart";
 import "package:provider/provider.dart";
@@ -221,7 +221,6 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
 
   @override
   Widget build(BuildContext context) {
-    final auth = context.watch<AuthRepository>();
     final db = context.watch<DatabaseRepository>();
     return Scaffold(
       backgroundColor: Palette.primalBlack,
@@ -800,13 +799,57 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                   bpmMax?.isNotEmpty == true &&
                                   _nameController.text.isNotEmpty) {
                                 try {
-                                  await auth.createUserWithEmailAndPassword(
-                                    widget.email,
-                                    widget.pw,
-                                  );
+                                  final UserCredential userCredential =
+                                      await FirebaseAuth.instance
+                                          .createUserWithEmailAndPassword(
+                                            email: widget.email,
+                                            password: widget.pw,
+                                          );
+                                  final User? firebaseUser =
+                                      userCredential.user;
+                                  if (firebaseUser == null) {
+                                    throw Exception("User creation failed");
+                                  }
 
-                                  final firebaseUser =
-                                      FirebaseAuth.instance.currentUser;
+                                  String uploadedHeadImageUrl = headUrl!;
+                                  if (!headUrl!.startsWith('http')) {
+                                    final headFile = File(headUrl!);
+                                    final headStorageRef = FirebaseStorage
+                                        .instance
+                                        .ref()
+                                        .child(
+                                          'head_images/${firebaseUser.uid}.jpg',
+                                        );
+                                    await headStorageRef.putFile(headFile);
+                                    uploadedHeadImageUrl =
+                                        await headStorageRef.getDownloadURL();
+                                  }
+
+                                  List<String> uploadedMediaUrls = [];
+                                  if (mediaUrl != null &&
+                                      mediaUrl!.isNotEmpty) {
+                                    for (int i = 0; i < mediaUrl!.length; i++) {
+                                      final mediaPath = mediaUrl![i];
+                                      if (mediaPath.startsWith('http')) {
+                                        uploadedMediaUrls.add(mediaPath);
+                                      } else {
+                                        final mediaFile = File(mediaPath);
+                                        final mediaStorageRef = FirebaseStorage
+                                            .instance
+                                            .ref()
+                                            .child(
+                                              'media_images/${firebaseUser.uid}_$i.jpg',
+                                            );
+                                        await mediaStorageRef.putFile(
+                                          mediaFile,
+                                        );
+                                        final downloadUrl =
+                                            await mediaStorageRef
+                                                .getDownloadURL();
+                                        uploadedMediaUrls.add(downloadUrl);
+                                      }
+                                    }
+                                  }
 
                                   final service = SoundcloudService();
                                   String? trackOneUrl =
@@ -823,9 +866,9 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                           : null;
 
                                   final dj = DJ(
-                                    id: firebaseUser!.uid,
+                                    id: firebaseUser.uid,
                                     genres: genres!,
-                                    headImageUrl: headUrl!,
+                                    headImageUrl: uploadedHeadImageUrl,
                                     avatarImageUrl: 'https://picsum.photos/100',
                                     bpm: [
                                       int.parse(bpmMin!),
@@ -849,7 +892,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                                   null))
                                         'https://soundcloud.com/',
                                     ],
-                                    mediaImageUrls: mediaUrl ?? [],
+                                    mediaImageUrls: uploadedMediaUrls,
                                     info: _infoController.text,
                                     name: _nameController.text,
                                     userRating: 0,
@@ -858,7 +901,22 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                   );
 
                                   await db.createDJ(dj);
-                                } catch (e) {
+
+                                  final currentUser = await db.getCurrentUser();
+                                  if (!context.mounted) return;
+                                  Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) => MainScreen(
+                                            initialUser: currentUser,
+                                          ),
+                                    ),
+                                  );
+                                } catch (e, stack) {
+                                  debugPrint(
+                                    'Error during user creation/profile setup: $e',
+                                  );
+                                  debugPrint('$stack');
                                   if (!context.mounted) return;
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
@@ -871,15 +929,6 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                     ),
                                   );
                                 }
-                                final current = await db.getCurrentUser();
-                                if (!context.mounted) return;
-                                Navigator.of(context).pushReplacement(
-                                  MaterialPageRoute(
-                                    builder:
-                                        (context) =>
-                                            MainScreen(initialUser: current),
-                                  ),
-                                );
                               }
                             },
                             style: ButtonStyle(

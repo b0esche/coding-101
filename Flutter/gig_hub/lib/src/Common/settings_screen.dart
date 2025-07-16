@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:gig_hub/src/Data/app_imports.dart';
 import 'package:gig_hub/src/Data/auth_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -36,16 +37,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _pickNewImage() async {
     final picker = ImagePicker();
     final picked = await picker.pickImage(source: ImageSource.gallery);
+
     if (picked != null && _user != null) {
-      setState(() {
-        _pickedImage = picked;
-        if (_user is DJ) {
-          (_user as DJ).avatarImageUrl = picked.path;
-        } else if (_user is Booker) {
-          (_user as Booker).avatarImageUrl = picked.path;
-        }
-      });
-      await db.updateUser(_user!);
+      final file = File(picked.path);
+      final storageRef = FirebaseStorage.instance.ref().child(
+        'avatars/${_user!.id}.jpg',
+      );
+
+      try {
+        final uploadTask = await storageRef.putFile(file);
+        final downloadUrl = await uploadTask.ref.getDownloadURL();
+
+        setState(() {
+          _pickedImage = picked;
+
+          if (_user is DJ) {
+            (_user as DJ).avatarImageUrl = downloadUrl;
+          } else if (_user is Booker) {
+            (_user as Booker).avatarImageUrl = downloadUrl;
+          }
+        });
+
+        await db.updateUser(_user!);
+      } catch (e) {
+        debugPrint('❌ Fehler beim Hochladen oder Speichern: $e');
+      }
     }
   }
 

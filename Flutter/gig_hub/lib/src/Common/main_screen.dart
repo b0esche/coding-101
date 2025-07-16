@@ -279,6 +279,7 @@ class _MainScreenState extends State<MainScreen> {
                 SizedBox(height: 4),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Container(
                       decoration: BoxDecoration(

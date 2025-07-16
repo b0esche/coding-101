@@ -41,7 +41,6 @@ class SoundcloudService {
 
     if (response.statusCode == 200) {
       final List<dynamic> list = json.decode(response.body);
-      debugPrint(response.body);
       return list.map((json) => SoundcloudTrack.fromJson(json)).toList();
     } else {
       throw Exception('failed to load tracks: ${response.statusCode}');
@@ -59,25 +58,20 @@ class SoundcloudService {
     );
 
     if (trackResponse.statusCode != 200) {
-      debugPrint('⚠️ Failed to fetch track info: ${trackResponse.statusCode}');
+      debugPrint('failed to fetch track info: ${trackResponse.statusCode}');
       return '';
     }
 
     final json = jsonDecode(trackResponse.body);
-    debugPrint('🎧 Track JSON: $json');
 
-    // 1. Versuch: stream_url direkt
     final streamUrl = json['stream_url'];
     if (streamUrl != null && streamUrl.toString().isNotEmpty) {
       final fullUrl = '$streamUrl?client_id=$clientId';
-      debugPrint('✅ Using direct stream_url');
       return fullUrl;
     }
 
-    // 2. Fallback: transcodings
     final transcodings = json['media']?['transcodings'] as List<dynamic>?;
     if (transcodings == null || transcodings.isEmpty) {
-      debugPrint('❌ No transcodings available');
       return '';
     }
 
@@ -96,7 +90,7 @@ class SoundcloudService {
     );
 
     if (streamResponse.statusCode != 200) {
-      debugPrint('❌ Failed to get stream URL from transcodings');
+      debugPrint('failed to get stream URL from transcodings');
       return '';
     }
 
@@ -104,11 +98,11 @@ class SoundcloudService {
     final fallbackUrl = streamJson['url'];
 
     if (fallbackUrl == null || fallbackUrl.toString().isEmpty) {
-      debugPrint('❌ Final fallback stream URL is empty');
+      debugPrint('final fallback stream URL is empty');
       return '';
     }
 
-    debugPrint('✅ Using fallback transcoding stream_url');
+    debugPrint('using fallback transcoding stream_url');
     return fallbackUrl;
   }
 }
