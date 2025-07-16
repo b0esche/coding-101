@@ -68,6 +68,7 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
       'mediaImageUrls': dj.mediaImageUrls,
       'favoriteUIds': dj.favoriteUIds,
     });
+    notifyListeners();
   }
 
   @override
@@ -331,5 +332,6 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
     } else if (user is Guest) {
       await updateGuest(user);
     }
+    notifyListeners();
   }
 }

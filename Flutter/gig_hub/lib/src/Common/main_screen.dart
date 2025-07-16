@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:gig_hub/src/Common/custom_nav_bar.dart';
 import 'package:gig_hub/src/Common/settings_screen.dart';
@@ -26,17 +28,17 @@ class _MainScreenState extends State<MainScreen> {
   String _selectedSortOption = '';
   List<DJ> _usersDJ = [];
   List<DJ> _sortedUsersDJ = [];
-  AppUser? _loggedInUser;
 
   List<int>? _currentSearchBpmRange;
   List<String>? _currentSearchGenres;
   final db = FirestoreDatabaseRepository();
 
+  AppUser? _loggedInUser;
+
   @override
   void initState() {
     super.initState();
-
-    _loggedInUser = widget.initialUser;
+    _loadLoggedInUser();
     _fetchDJs();
   }
 
@@ -164,9 +166,27 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+  Future<void> _loadLoggedInUser() async {
+    final db = context.read<DatabaseRepository>();
+    final user = await db.getCurrentUser();
+
+    setState(() {
+      _loggedInUser = user;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final db = context.watch<DatabaseRepository>();
+    final currentUser = _loggedInUser;
+    final avatarImageProvider =
+        (currentUser is DJ)
+            ? (File(currentUser.avatarUrl).existsSync()
+                    ? FileImage(File(currentUser.avatarUrl))
+                    : NetworkImage(currentUser.avatarUrl))
+                as ImageProvider
+            : const NetworkImage("https://picsum.photos/100");
+
     return PopScope(
       canPop: false,
       child: Scaffold(
@@ -181,19 +201,21 @@ class _MainScreenState extends State<MainScreen> {
                     height: 130,
                     child: Stack(
                       children: [
-                        if (_loggedInUser is! Guest)
+                        if (currentUser is! Guest)
                           Positioned(
                             top: 8,
                             right: 0,
                             child: GestureDetector(
                               onTap: () {
-                                if (_loggedInUser == null) return;
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => SettingsScreen(),
-                                    fullscreenDialog: true,
-                                  ),
-                                );
+                                if (currentUser == null) return;
+                                Navigator.of(context)
+                                    .push(
+                                      MaterialPageRoute(
+                                        builder: (context) => SettingsScreen(),
+                                        fullscreenDialog: true,
+                                      ),
+                                    )
+                                    .then((_) => _loadLoggedInUser());
                               },
                               child: Container(
                                 decoration: BoxDecoration(
@@ -205,10 +227,7 @@ class _MainScreenState extends State<MainScreen> {
                                 ),
                                 child: CircleAvatar(
                                   radius: 32,
-                                  backgroundImage: NetworkImage(
-                                    _loggedInUser?.avatarUrl ??
-                                        "https://picsum.photos/100",
-                                  ),
+                                  backgroundImage: avatarImageProvider,
                                 ),
                               ),
                             ),
@@ -276,7 +295,7 @@ class _MainScreenState extends State<MainScreen> {
                       child: IconButton(
                         onPressed: () async {
                           List<DJ> favs = await db.getFavoriteDJs(
-                            _loggedInUser!.id,
+                            currentUser!.id,
                           );
                           setState(() {
                             _sortedUsersDJ = favs;
@@ -375,9 +394,8 @@ class _MainScreenState extends State<MainScreen> {
                                     user: currentUserDJ,
                                     name: currentUserDJ.name,
                                     genres: currentUserDJ.genres,
-                                    image: NetworkImage(
-                                      currentUserDJ.avatarImageUrl,
-                                    ),
+                                    imagePath: currentUserDJ.avatarImageUrl,
+
                                     about: currentUserDJ.about,
                                     location: currentUserDJ.city,
                                     bpm: currentUserDJ.bpm,
@@ -423,7 +441,10 @@ class _MainScreenState extends State<MainScreen> {
             ),
           ),
         ),
-        bottomNavigationBar: CustomNavBar(currentUser: _loggedInUser!),
+        bottomNavigationBar: CustomNavBar(
+          currentUser:
+              currentUser ?? Guest(id: '', favoriteUIds: []) as AppUser,
+        ),
       ),
     );
   }

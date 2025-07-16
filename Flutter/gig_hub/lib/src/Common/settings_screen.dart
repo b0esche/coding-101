@@ -250,6 +250,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 alignment: Alignment.topLeft,
                 child: IconButton(
                   onPressed: () => Navigator.of(context).pop(),
+
                   icon: const Icon(Icons.chevron_left_rounded, size: 36),
                   color: Palette.glazedWhite,
                 ),

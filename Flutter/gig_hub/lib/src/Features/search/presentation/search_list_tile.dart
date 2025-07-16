@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:gig_hub/src/Data/app_imports.dart';
 import 'package:gig_hub/src/Features/profile/dj/presentation/profile_screen_dj.dart';
@@ -7,7 +9,7 @@ class SearchListTile extends StatefulWidget {
   final DJ user;
   final String name;
   final List<String> genres;
-  final NetworkImage image;
+  final String imagePath;
   final String about;
   final String location;
   final List<int> bpm;
@@ -18,7 +20,7 @@ class SearchListTile extends StatefulWidget {
     required this.user,
     required this.name,
     required this.genres,
-    required this.image,
+    required this.imagePath,
     required this.about,
     required this.location,
     required this.bpm,
@@ -82,7 +84,10 @@ class _SearchListTileState extends State<SearchListTile> {
                     ),
                   ),
                   child: CircleAvatar(
-                    backgroundImage: widget.image,
+                    backgroundImage:
+                        widget.imagePath.startsWith('http')
+                            ? NetworkImage(widget.imagePath)
+                            : FileImage(File(widget.imagePath)),
                     radius: 32,
                   ),
                 ),

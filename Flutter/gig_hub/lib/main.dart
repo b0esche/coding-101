@@ -23,7 +23,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        Provider(create: (context) => db),
+        ChangeNotifierProvider<DatabaseRepository>(create: (_) => db),
         Provider(create: (context) => auth),
       ],
       child: App(),
