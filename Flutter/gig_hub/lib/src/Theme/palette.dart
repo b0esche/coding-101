@@ -10,6 +10,7 @@ abstract class Palette {
   static final Color alarmRed = const Color.fromARGB(255, 235, 72, 72);
   static final Color okGreen = const Color.fromARGB(255, 25, 255, 144);
   static final Color balisticBlue = const Color.fromARGB(255, 64, 112, 245);
+  static final Color favoriteRed = const Color.fromARGB(255, 238, 82, 71);
 }
 
 extension ColorOpacity on Color {

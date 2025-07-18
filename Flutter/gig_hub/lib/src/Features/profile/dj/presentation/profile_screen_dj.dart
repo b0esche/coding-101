@@ -383,7 +383,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                   : Icons.favorite_border,
                               color:
                                   isFavorite
-                                      ? const Color.fromARGB(255, 238, 82, 71)
+                                      ? Palette.favoriteRed
                                       : Palette.glazedWhite,
                               size: 22,
                             ),
@@ -568,14 +568,14 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                   padding: const EdgeInsets.all(6.0),
                                   child: Row(
                                     children: [
-                                      const Icon(Icons.place, size: 20),
+                                      const Icon(Icons.place, size: 18),
                                       const SizedBox(width: 4),
                                       !editMode
                                           ? Text(
                                             widget.dj.city,
                                             style: TextStyle(
                                               fontSize: 14,
-                                              fontWeight: FontWeight.w500,
+                                              fontWeight: FontWeight.w700,
                                               color: Palette.primalBlack,
                                             ),
                                           )
@@ -656,7 +656,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                             '${widget.dj.bpm.first}-${widget.dj.bpm.last} bpm',
                                             style: TextStyle(
                                               fontSize: 14,
-                                              fontWeight: FontWeight.w500,
+                                              fontWeight: FontWeight.w700,
                                               color: Palette.primalBlack,
                                             ),
                                           )

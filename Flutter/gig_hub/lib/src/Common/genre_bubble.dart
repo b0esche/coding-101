@@ -133,9 +133,9 @@ class GenreBubble extends StatelessWidget {
                   textStyle: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
-                    color: Palette.glazedWhite,
+                    color: Palette.shadowGrey,
                     decoration: TextDecoration.underline,
-                    decorationColor: Palette.glazedWhite.o(0.35),
+                    decorationColor: Palette.shadowGrey.o(0.35),
                     decorationThickness: 1.2,
                   ),
                 ),

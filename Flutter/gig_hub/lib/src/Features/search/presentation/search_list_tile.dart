@@ -107,7 +107,7 @@ class _SearchListTileState extends State<SearchListTile> {
                                 textStyle: TextStyle(
                                   decoration: TextDecoration.underline,
                                   decorationColor: Palette.primalBlack.o(0.2),
-                                  wordSpacing: -4,
+                                  wordSpacing: -6,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 20,
                                   overflow:
