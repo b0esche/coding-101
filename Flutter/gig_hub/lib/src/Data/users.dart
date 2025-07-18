@@ -46,7 +46,11 @@ class DJ extends AppUser {
 
   final double userRating;
 
-  final List<String> mediaImageUrls, favoriteUIds, genres, streamingUrls;
+  final List<String> mediaImageUrls,
+      favoriteUIds,
+      genres,
+      streamingUrls,
+      trackTitles;
 
   List<int> bpm;
 
@@ -61,6 +65,7 @@ class DJ extends AppUser {
     required this.genres,
     required this.bpm,
     required this.streamingUrls,
+    required this.trackTitles,
     this.userRating = 0.0,
     this.mediaImageUrls = const [],
     this.favoriteUIds = const [],
@@ -77,6 +82,7 @@ class DJ extends AppUser {
     'genres': genres,
     'bpm': bpm,
     'streamingUrls': streamingUrls,
+    'trackTitles': trackTitles,
     'userRating': userRating,
     'mediaImageUrls': mediaImageUrls,
     'favoriteUIds': favoriteUIds,
@@ -93,6 +99,7 @@ class DJ extends AppUser {
     genres: List<String>.from(json['genres'] ?? []),
     bpm: List<int>.from(json['bpm'] ?? []),
     streamingUrls: List<String>.from(json['streamingUrls'] ?? []),
+    trackTitles: List<String>.from(json['trackTitles'] ?? []),
     userRating: (json['userRating'] ?? 0.0).toDouble(),
     mediaImageUrls: List<String>.from(json['mediaImageUrls'] ?? []),
     favoriteUIds: List<String>.from(json['favoriteUIds'] ?? []),

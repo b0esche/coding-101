@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:crypto/crypto.dart';
 import 'package:http/http.dart' as http;
@@ -85,7 +86,54 @@ class SoundcloudAuth {
   }
 
   Future<String?> getAccessToken() async {
-    final token = await _secureStorage.read(key: 'access_token');
-    return token;
+    final accessToken = await _secureStorage.read(key: 'access_token');
+
+    if (accessToken != null && accessToken.isNotEmpty) {
+      return accessToken;
+    }
+
+    final refreshToken = await _secureStorage.read(key: 'refresh_token');
+
+    if (refreshToken != null && refreshToken.isNotEmpty) {
+      try {
+        final response = await http.post(
+          Uri.parse(tokenEndpoint),
+          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+          body: {
+            'client_id': clientId,
+            'client_secret': clientSecret,
+            'grant_type': 'refresh_token',
+            'refresh_token': refreshToken,
+          },
+        );
+
+        final data = json.decode(response.body);
+
+        if (response.statusCode == 200) {
+          final newAccessToken = data['access_token'];
+          final newRefreshToken = data['refresh_token'];
+
+          await _secureStorage.write(
+            key: 'access_token',
+            value: newAccessToken,
+          );
+          if (newRefreshToken != null) {
+            await _secureStorage.write(
+              key: 'refresh_token',
+              value: newRefreshToken,
+            );
+          }
+
+          return newAccessToken;
+        } else {
+          debugPrint('❌ Failed to refresh token: ${response.body}');
+        }
+      } catch (e) {
+        debugPrint('❌ Exception during token refresh: $e');
+      }
+    }
+
+    // Kein gültiger Token, kein Refresh möglich
+    return null;
   }
 }

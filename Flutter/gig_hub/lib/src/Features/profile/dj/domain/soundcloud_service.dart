@@ -47,62 +47,49 @@ class SoundcloudService {
     }
   }
 
-  Future<String> getPublicStreamUrl(String uri) async {
-    final clientId = '5myDaCOr1DPDiVQfmR0kAc0Sp2D36ww5';
+  Future<String> getPublicStreamUrl(String trackUri) async {
     final accessToken = await _getAccessToken();
-    final trackUrl = Uri.parse(uri);
+    final client = http.Client();
 
-    final trackResponse = await http.get(
-      trackUrl,
-      headers: {'Authorization': 'Bearer $accessToken'},
-    );
+    try {
+      final uri = Uri.parse(trackUri);
+      final urn = uri.pathSegments.last;
 
-    if (trackResponse.statusCode != 200) {
-      debugPrint('failed to fetch track info: ${trackResponse.statusCode}');
+      final parts = urn.split(':');
+      final trackId = parts.last;
+
+      final streamsUrl = Uri.https(
+        'api.soundcloud.com',
+        '/tracks/$trackId/streams',
+      );
+
+      final response = await client.get(
+        streamsUrl,
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+        },
+      );
+
+      if (response.statusCode != 200) {
+        debugPrint('❌ Failed to get streams: ${response.statusCode}');
+        return '';
+      }
+
+      final data = jsonDecode(response.body);
+      final streamUrl = data['http_mp3_128_url'];
+
+      if (streamUrl != null && streamUrl.toString().isNotEmpty) {
+        return streamUrl;
+      }
+
+      debugPrint('⚠️ No valid stream URL found in response');
       return '';
-    }
-
-    final json = jsonDecode(trackResponse.body);
-
-    final streamUrl = json['stream_url'];
-    if (streamUrl != null && streamUrl.toString().isNotEmpty) {
-      final fullUrl = '$streamUrl?client_id=$clientId';
-      return fullUrl;
-    }
-
-    final transcodings = json['media']?['transcodings'] as List<dynamic>?;
-    if (transcodings == null || transcodings.isEmpty) {
+    } catch (e) {
+      debugPrint('❌ Exception in getPublicStreamUrl: $e');
       return '';
+    } finally {
+      client.close();
     }
-
-    final progressiveStream = transcodings.firstWhere(
-      (t) => t['format']['protocol'] == 'progressive',
-      orElse: () => transcodings.first,
-    );
-
-    final streamRequestUrl = Uri.parse(
-      '${progressiveStream['url']}?client_id=$clientId',
-    );
-
-    final streamResponse = await http.get(
-      streamRequestUrl,
-      headers: {'Authorization': 'Bearer $accessToken'},
-    );
-
-    if (streamResponse.statusCode != 200) {
-      debugPrint('failed to get stream URL from transcodings');
-      return '';
-    }
-
-    final streamJson = jsonDecode(streamResponse.body);
-    final fallbackUrl = streamJson['url'];
-
-    if (fallbackUrl == null || fallbackUrl.toString().isEmpty) {
-      debugPrint('final fallback stream URL is empty');
-      return '';
-    }
-
-    debugPrint('using fallback transcoding stream_url');
-    return fallbackUrl;
   }
 }

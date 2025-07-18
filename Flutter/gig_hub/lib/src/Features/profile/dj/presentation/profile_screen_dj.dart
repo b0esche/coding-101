@@ -859,7 +859,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              "first SoundCloud set link", // TODO: artist info von soundcloud api fetchen
+                              widget.dj.trackTitles.first,
                               style: GoogleFonts.sometypeMono(
                                 textStyle: TextStyle(
                                   color: Palette.glazedWhite,
@@ -950,13 +950,13 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                 ),
                           ],
                         ),
-                        SizedBox(height: !editMode ? 4 : 24),
+                        SizedBox(height: 24),
                         Column(
                           spacing: !editMode ? 0 : 8,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              "second SoundCloud set link", // TODO: artist info von soundcloud api fetchen
+                              widget.dj.trackTitles.last,
                               style: GoogleFonts.sometypeMono(
                                 textStyle: TextStyle(
                                   color: Palette.glazedWhite,
