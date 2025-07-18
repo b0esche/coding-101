@@ -1,37 +1,38 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
+import 'package:gig_hub/src/Features/profile/dj/domain/soundcloud_authentication.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SoundcloudTrack {
   final int id;
   final String title;
   final String? streamUrl;
+  final String permalinkUrl;
+  final bool streamable;
 
-  SoundcloudTrack({required this.id, required this.title, this.streamUrl});
+  SoundcloudTrack({
+    required this.id,
+    required this.title,
+    required this.streamable,
+    required this.permalinkUrl,
+    this.streamUrl,
+  });
 
   factory SoundcloudTrack.fromJson(Map<String, dynamic> json) {
     return SoundcloudTrack(
       id: json['id'],
       title: json['title'] ?? '',
+      streamable: json['streamable'],
       streamUrl: json['uri'],
+      permalinkUrl: json['permalink_url'],
     );
   }
 }
 
 class SoundcloudService {
-  final _storage = const FlutterSecureStorage();
-
-  Future<String> _getAccessToken() async {
-    final token = await _storage.read(key: 'access_token');
-    if (token == null) {
-      throw Exception('no access token found, user must authenticate first!');
-    }
-    return token;
-  }
-
+  final auth = SoundcloudAuth();
   Future<List<SoundcloudTrack>> fetchUserTracks() async {
-    final accessToken = await _getAccessToken();
+    final accessToken = await auth.getAccessToken();
     final url = Uri.parse('https://api.soundcloud.com/me/tracks');
 
     final response = await http.get(
@@ -39,16 +40,60 @@ class SoundcloudService {
       headers: {'Authorization': 'Bearer $accessToken'},
     );
 
-    if (response.statusCode == 200) {
-      final List<dynamic> list = json.decode(response.body);
-      return list.map((json) => SoundcloudTrack.fromJson(json)).toList();
-    } else {
+    if (response.statusCode != 200) {
       throw Exception('failed to load tracks: ${response.statusCode}');
+    }
+
+    final List<dynamic> list = json.decode(response.body);
+    final List<SoundcloudTrack> tracks = [];
+
+    for (final raw in list) {
+      final track = SoundcloudTrack.fromJson(raw);
+      if (track.streamable) {
+        if (track.permalinkUrl.isEmpty) {
+          final details = await _fetchTrackDetails(track.id, accessToken!);
+          tracks.add(
+            SoundcloudTrack(
+              id: track.id,
+              title: track.title,
+              streamable: track.streamable,
+              streamUrl: track.streamUrl,
+              permalinkUrl: details['permalink_url'],
+            ),
+          );
+        } else {
+          tracks.add(track);
+        }
+      }
+    }
+    return tracks;
+  }
+
+  Future<Map<String, dynamic>> _fetchTrackDetails(
+    int id,
+    String accessToken,
+  ) async {
+    final trackUrl = Uri.parse('https://api.soundcloud.com/tracks/$id');
+    final response = await http.get(
+      trackUrl,
+      headers: {
+        'Authorization': 'Bearer $accessToken',
+        'Accept': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      debugPrint(
+        '❌ Fehler beim Nachladen von Track $id: ${response.statusCode}',
+      );
+      return {};
     }
   }
 
   Future<String> getPublicStreamUrl(String trackUri) async {
-    final accessToken = await _getAccessToken();
+    final accessToken = await auth.getAccessToken();
     final client = http.Client();
 
     try {

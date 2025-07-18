@@ -91,9 +91,6 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
           userTrackList = tracks;
           isSoundcloudConnected = !isSoundcloudConnected;
         });
-        if (userTrackList.isNotEmpty) {
-          debugPrint(userTrackList.first.title);
-        }
       }
     }
   }
@@ -219,9 +216,19 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
     return null;
   }
 
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     final db = context.watch<DatabaseRepository>();
+    if (isLoading) {
+      return Scaffold(
+        backgroundColor: Palette.primalBlack,
+        body: Center(
+          child: CircularProgressIndicator(color: Palette.forgedGold),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: Palette.primalBlack,
       body: Form(
@@ -792,6 +799,9 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                           height: 100,
                           child: OutlinedButton(
                             onPressed: () async {
+                              setState(() {
+                                isLoading = true;
+                              });
                               FocusManager.instance.primaryFocus?.unfocus();
 
                               if (headUrl?.isNotEmpty == true &&
@@ -851,20 +861,6 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                     }
                                   }
 
-                                  final service = SoundcloudService();
-                                  String? trackOneUrl =
-                                      selectedTrackOne != null
-                                          ? await service.getPublicStreamUrl(
-                                            selectedTrackOne!.streamUrl!,
-                                          )
-                                          : null;
-                                  String? trackTwoUrl =
-                                      selectedTrackTwo != null
-                                          ? await service.getPublicStreamUrl(
-                                            selectedTrackTwo!.streamUrl!,
-                                          )
-                                          : null;
-
                                   final dj = DJ(
                                     id: firebaseUser.uid,
                                     genres: genres!,
@@ -876,25 +872,18 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                     ],
                                     about: _aboutController.text,
                                     streamingUrls: [
-                                      if (trackOneUrl != null) trackOneUrl,
-                                      if (trackOneUrl == null &&
-                                          selectedTrackOne?.streamUrl != null)
+                                      if (selectedTrackOne?.streamUrl != null)
                                         selectedTrackOne!.streamUrl!,
-                                      if (trackTwoUrl != null) trackTwoUrl,
-                                      if (trackTwoUrl == null &&
-                                          selectedTrackTwo?.streamUrl != null)
+                                      if (selectedTrackTwo?.streamUrl != null)
                                         selectedTrackTwo!.streamUrl!,
-                                      if ((trackOneUrl == null &&
-                                              selectedTrackOne?.streamUrl ==
-                                                  null) ||
-                                          (trackTwoUrl == null &&
-                                              selectedTrackTwo?.streamUrl ==
-                                                  null))
-                                        'https://soundcloud.com/',
                                     ],
                                     trackTitles: [
                                       selectedTrackOne!.title,
                                       selectedTrackTwo!.title,
+                                    ],
+                                    trackUrls: [
+                                      selectedTrackOne!.permalinkUrl,
+                                      selectedTrackTwo!.permalinkUrl,
                                     ],
                                     mediaImageUrls: uploadedMediaUrls,
                                     info: _infoController.text,
@@ -908,6 +897,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
 
                                   final currentUser = await db.getCurrentUser();
                                   if (!context.mounted) return;
+
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
                                       builder:

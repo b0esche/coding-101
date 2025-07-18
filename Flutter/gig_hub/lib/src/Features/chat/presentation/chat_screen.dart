@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
+import 'package:gig_hub/src/Data/firestore_repository.dart';
 import 'package:gig_hub/src/Data/users.dart';
 import 'package:gig_hub/src/Features/chat/domain/chat_message.dart';
 import 'package:gig_hub/src/Features/profile/dj/presentation/profile_screen_dj.dart';
@@ -34,7 +35,7 @@ class ChatScreen extends StatefulWidget {
 class ChatScreenState extends State<ChatScreen> {
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-
+  final db = FirestoreDatabaseRepository();
   String getPartnerAvatarUrl() {
     return widget.chatPartner.avatarUrl;
   }
@@ -46,33 +47,33 @@ class ChatScreenState extends State<ChatScreen> {
     super.dispose();
   }
 
-  // Future<void> _sendMessage() async {
-  //   final text = _controller.text.trim();
-  //   if (text.isEmpty) return;
+  Future<void> _sendMessage() async {
+    final text = _controller.text.trim();
+    if (text.isEmpty) return;
 
-  //   final newMessage = ChatMessage(
-  //     id: DateTime.now().millisecondsSinceEpoch.toString(),
-  //     senderId: widget.currentUser.id,
-  //     receiverId: widget.chatPartner.id,
-  //     message: text,
-  //     timestamp: DateTime.now(),
-  //     read: false,
-  //   );
+    final newMessage = ChatMessage(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      senderId: widget.currentUser.id,
+      receiverId: widget.chatPartner.id,
+      message: text,
+      timestamp: DateTime.now(),
+      read: false,
+    );
 
-  //   await db.sendMessage(newMessage);
-  //   _controller.clear();
-  //   _scrollToBottomDelayed();
-  // }
+    await db.sendMessage(newMessage);
+    _controller.clear();
+    _scrollToBottomDelayed();
+  }
 
-  // void _scrollToBottomDelayed() {
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     Future.delayed(const Duration(milliseconds: 100), () {
-  //       if (_scrollController.hasClients) {
-  //         _scrollController.jumpTo(_scrollController.position.minScrollExtent);
-  //       }
-  //     });
-  //   });
-  // }
+  void _scrollToBottomDelayed() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(milliseconds: 100), () {
+        if (_scrollController.hasClients) {
+          _scrollController.jumpTo(_scrollController.position.minScrollExtent);
+        }
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -242,7 +243,6 @@ class ChatScreenState extends State<ChatScreen> {
   }
 
   Widget _buildMessageInput() {
-    final db = context.watch<DatabaseRepository>();
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 8, 8, 12),
       child: Container(
@@ -273,8 +273,7 @@ class ChatScreenState extends State<ChatScreen> {
                     border: InputBorder.none,
                     contentPadding: const EdgeInsets.symmetric(vertical: 10),
                   ),
-                  onSubmitted:
-                      (_) => db.sendMessage(_controller.text as ChatMessage),
+                  onSubmitted: (_) => _sendMessage(),
                 ),
               ),
             ),
@@ -285,7 +284,7 @@ class ChatScreenState extends State<ChatScreen> {
                 color: Palette.forgedGold,
                 size: 28,
               ),
-              onPressed: () => db.sendMessage(_controller.text as ChatMessage),
+              onPressed: () => _sendMessage(),
             ),
           ],
         ),

@@ -131,7 +131,7 @@ class GenreBubble extends StatelessWidget {
                 genre,
                 style: GoogleFonts.sometypeMono(
                   textStyle: TextStyle(
-                    fontSize: 11.5,
+                    fontSize: 12,
                     fontWeight: FontWeight.w700,
                     color: Palette.glazedWhite,
                     decoration: TextDecoration.underline,

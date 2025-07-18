@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gig_hub/src/Data/app_imports.dart';
 import 'package:gig_hub/src/Features/chat/domain/chat_message.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
 class FirestoreDatabaseRepository extends DatabaseRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -126,44 +125,22 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
 
   @override
   Future<List<DJ>> getFavoriteDJs(String userId) async {
-    final box = Hive.box('favoritesBox');
+    final userDoc = await _firestore.collection('users').doc(userId).get();
+    final data = userDoc.data();
 
-    List<String>? favoriteIds = box.get('favoriteUIds')?.cast<String>();
+    final favoriteIds = List<String>.from(data?['favoriteUIds'] ?? []);
 
-    if (favoriteIds == null || favoriteIds.isEmpty) {
-      final userDoc = await _firestore.collection('users').doc(userId).get();
-      final data = userDoc.data();
-
-      if (data == null || (data['favoriteUIds'] is! List)) {
-        return [];
-      }
-
-      favoriteIds = List<String>.from(data['favoriteUIds']);
-
-      await box.put('favoriteUIds', favoriteIds);
-    }
-
-    if (favoriteIds.isEmpty) return [];
-
-    final chunkSize = 10;
     final List<DJ> favoriteDJs = [];
 
-    for (var i = 0; i < favoriteIds.length; i += chunkSize) {
-      final chunk = favoriteIds.sublist(
-        i,
-        i + chunkSize > favoriteIds.length ? favoriteIds.length : i + chunkSize,
-      );
+    for (final id in favoriteIds) {
+      final doc = await _firestore.collection('users').doc(id).get();
 
-      final snapshot =
-          await _firestore
-              .collection('users')
-              .where(FieldPath.documentId, whereIn: chunk)
-              .where('type', isEqualTo: 'dj')
-              .get();
-
-      favoriteDJs.addAll(
-        snapshot.docs.map((doc) => DJ.fromJson(doc.id, doc.data())),
-      );
+      if (doc.exists) {
+        final type = doc.data()?['type'];
+        if (type?.toString().toLowerCase() == 'dj') {
+          favoriteDJs.add(DJ.fromJson(doc.id, doc.data()!));
+        }
+      }
     }
 
     return favoriteDJs;

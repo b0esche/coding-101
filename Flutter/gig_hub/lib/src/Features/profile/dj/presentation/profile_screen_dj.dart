@@ -4,6 +4,7 @@ import "package:cloud_firestore/cloud_firestore.dart";
 import "package:hive_flutter/hive_flutter.dart";
 import "package:liquid_glass_renderer/liquid_glass_renderer.dart";
 import "package:provider/provider.dart";
+import "package:url_launcher/url_launcher_string.dart";
 
 import "../../../../Data/app_imports.dart";
 import "../../../../Data/app_imports.dart" as http;
@@ -114,8 +115,6 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
     _locationController.dispose();
     _bpmController.dispose();
     _aboutController.dispose();
-    // _soundcloudControllerOne.dispose();
-    // _soundcloudControllerTwo.dispose();
     _infoController.dispose();
 
     super.dispose();
@@ -235,9 +234,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
     final db = context.watch<DatabaseRepository>();
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
-        PlayerController().stopAllPlayers().whenComplete(
-          () => PlayerController().dispose(),
-        );
+        PlayerController().stopAllPlayers();
       },
       canPop: true,
       child: Scaffold(
@@ -337,16 +334,11 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                       padding: const EdgeInsets.all(2.0),
                       child: IconButton(
                         onPressed: () {
-                          PlayerController()
-                              .stopAllPlayers()
-                              .whenComplete(() {
-                                PlayerController().dispose();
-                              })
-                              .whenComplete(() {
-                                if (context.mounted) {
-                                  Navigator.of(context).pop();
-                                }
-                              });
+                          PlayerController().stopAllPlayers().whenComplete(() {
+                            if (context.mounted) {
+                              Navigator.of(context).pop();
+                            }
+                          });
                         },
                         icon: Icon(
                           Icons.chevron_left,
@@ -814,7 +806,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                 ),
                           ],
                         ),
-                        const SizedBox(height: 32),
+                        const SizedBox(height: 36),
                         Center(
                           child: Wrap(
                             spacing: 16,
@@ -853,21 +845,25 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                     ],
                           ),
                         ),
-                        const SizedBox(height: 28),
+                        const SizedBox(height: 36),
                         Column(
                           spacing: !editMode ? 0 : 8,
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              widget.dj.trackTitles.first,
+                              (widget.dj.trackTitles.isNotEmpty)
+                                  ? widget.dj.trackTitles.first
+                                  : 'first Track',
                               style: GoogleFonts.sometypeMono(
                                 textStyle: TextStyle(
+                                  wordSpacing: -3,
                                   color: Palette.glazedWhite,
                                   fontWeight: FontWeight.w600,
                                   decoration: TextDecoration.underline,
                                   decorationColor: Palette.glazedWhite,
                                   decorationStyle: TextDecorationStyle.dotted,
                                   decorationThickness: 2,
+                                  fontSize: 15,
                                 ),
                               ),
                             ),
@@ -882,9 +878,9 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                     const SizedBox(width: 2),
                                     IconButton(
                                       onPressed: () {
-                                        debugPrint(
-                                          "soundcloud öffnen",
-                                        ); // TODO: soundcloud link über browser oder app öffnen
+                                        launchUrlString(
+                                          widget.dj.trackUrls.first,
+                                        );
                                       },
                                       icon: SvgPicture.asset(
                                         'assets/icons/soundcloud.svg',
@@ -950,13 +946,15 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                 ),
                           ],
                         ),
-                        SizedBox(height: 24),
+                        SizedBox(height: 36),
                         Column(
                           spacing: !editMode ? 0 : 8,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              widget.dj.trackTitles.last,
+                              (widget.dj.trackTitles.last.isNotEmpty)
+                                  ? widget.dj.trackTitles.last
+                                  : 'second track',
                               style: GoogleFonts.sometypeMono(
                                 textStyle: TextStyle(
                                   color: Palette.glazedWhite,
@@ -965,6 +963,8 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                   decorationColor: Palette.glazedWhite,
                                   decorationStyle: TextDecorationStyle.dotted,
                                   decorationThickness: 2,
+                                  wordSpacing: -3,
+                                  fontSize: 15,
                                 ),
                               ),
                             ),
@@ -979,8 +979,8 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                     const SizedBox(width: 2),
                                     IconButton(
                                       onPressed: () {
-                                        debugPrint(
-                                          "soundcloud öffnen", // TODO: soundcloud link über browser oder app öffnen
+                                        launchUrlString(
+                                          widget.dj.trackUrls.last,
                                         );
                                       },
                                       icon: SvgPicture.asset(
