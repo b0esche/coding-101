@@ -197,25 +197,6 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
     }
   }
 
-  String? soundcloudValidator(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'enter url to your set on soundcloud';
-    }
-
-    final uri = Uri.tryParse(value);
-    if (uri == null ||
-        !uri.hasAbsolutePath ||
-        !(uri.isScheme('http') || uri.isScheme('https'))) {
-      return 'invalid url';
-    }
-
-    if (!value.contains('soundcloud.com')) {
-      return 'invalid url';
-    }
-
-    return null;
-  }
-
   bool isLoading = false;
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,9 @@
+import "dart:async";
 import "dart:io";
 
 import "package:cloud_firestore/cloud_firestore.dart";
+import "package:gig_hub/src/Features/profile/dj/domain/soundcloud_authentication.dart";
+import "package:gig_hub/src/Features/profile/dj/domain/soundcloud_service.dart";
 import "package:hive_flutter/hive_flutter.dart";
 import "package:liquid_glass_renderer/liquid_glass_renderer.dart";
 import "package:provider/provider.dart";
@@ -87,6 +90,13 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
   late final TextEditingController _infoController = TextEditingController(
     text: widget.dj.info,
   );
+
+  final SoundcloudAuth _soundcloudAuth = SoundcloudAuth();
+
+  List<SoundcloudTrack> userTrackList = [];
+  SoundcloudTrack? selectedTrackOne;
+  SoundcloudTrack? selectedTrackTwo;
+
   @override
   void initState() {
     super.initState();
@@ -95,6 +105,22 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
     _playerControllerTwo = PlayerController();
 
     _locationFocusNode.addListener(_onLocationFocusChange);
+
+    _loadTracksIfAvailable();
+  }
+
+  Future<void> _loadTracksIfAvailable() async {
+    final token = await _soundcloudAuth.getAccessToken();
+    if (token == null) {
+      debugPrint("⚠️ Kein gültiger AccessToken gefunden.");
+      return;
+    }
+
+    final tracks = await SoundcloudService().fetchUserTracks();
+    if (!mounted) return;
+    setState(() {
+      userTrackList = tracks;
+    });
   }
 
   void _onLocationFocusChange() {
@@ -116,27 +142,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
     _bpmController.dispose();
     _aboutController.dispose();
     _infoController.dispose();
-
     super.dispose();
-  }
-
-  String? soundcloudValidator(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'enter url to your set on soundcloud';
-    }
-
-    final uri = Uri.tryParse(value);
-    if (uri == null ||
-        !uri.hasAbsolutePath ||
-        !(uri.isScheme('http') || uri.isScheme('https'))) {
-      return 'invalid url';
-    }
-
-    if (!value.contains('soundcloud.com')) {
-      return 'invalid url';
-    }
-
-    return null;
   }
 
   Future<void> _validateCity(String value) async {
@@ -850,23 +856,26 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                           spacing: !editMode ? 0 : 8,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text(
-                              (widget.dj.trackTitles.isNotEmpty)
-                                  ? widget.dj.trackTitles.first
-                                  : 'first Track',
-                              style: GoogleFonts.sometypeMono(
-                                textStyle: TextStyle(
-                                  wordSpacing: -3,
-                                  color: Palette.glazedWhite,
-                                  fontWeight: FontWeight.w600,
-                                  decoration: TextDecoration.underline,
-                                  decorationColor: Palette.glazedWhite,
-                                  decorationStyle: TextDecorationStyle.dotted,
-                                  decorationThickness: 2,
-                                  fontSize: 15,
-                                ),
-                              ),
-                            ),
+                            !editMode
+                                ? Text(
+                                  (widget.dj.trackTitles.isNotEmpty)
+                                      ? widget.dj.trackTitles.first
+                                      : 'first Track',
+                                  style: GoogleFonts.sometypeMono(
+                                    textStyle: TextStyle(
+                                      wordSpacing: -3,
+                                      color: Palette.glazedWhite,
+                                      fontWeight: FontWeight.w600,
+                                      decoration: TextDecoration.underline,
+                                      decorationColor: Palette.glazedWhite,
+                                      decorationStyle:
+                                          TextDecorationStyle.dotted,
+                                      decorationThickness: 2,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                )
+                                : SizedBox.shrink(),
                             !editMode
                                 ? Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
@@ -888,62 +897,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                     ),
                                   ],
                                 )
-                                : Center(
-                                  child: Container(
-                                    width: 260,
-                                    height: 48,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: Palette.glazedWhite,
-                                        width: 1,
-                                      ),
-                                      borderRadius: BorderRadius.circular(8),
-                                      color: Palette.glazedWhite.o(0.2),
-                                    ),
-                                    child: TextFormField(
-                                      style: TextStyle(
-                                        color: Palette.glazedWhite,
-                                        fontSize: 10,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      controller: _soundcloudControllerOne,
-                                      validator: soundcloudValidator,
-                                      autovalidateMode:
-                                          AutovalidateMode.onUnfocus,
-
-                                      decoration: InputDecoration(
-                                        prefixIcon:
-                                            _soundcloudControllerOne
-                                                    .text
-                                                    .isEmpty
-                                                ? null
-                                                : RemoveButton(
-                                                  soundcloudController:
-                                                      _soundcloudControllerOne,
-                                                ),
-
-                                        suffixIcon: PasteButton(
-                                          soundcloudController:
-                                              _soundcloudControllerOne,
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                            color: Palette.forgedGold,
-                                            width: 3,
-                                          ),
-                                        ),
-                                        border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                          borderSide: BorderSide(
-                                            color: Palette.forgedGold,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                                : soundcloudFields(),
                           ],
                         ),
                         SizedBox(height: 36),
@@ -951,23 +905,26 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                           spacing: !editMode ? 0 : 8,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Text(
-                              (widget.dj.trackTitles.last.isNotEmpty)
-                                  ? widget.dj.trackTitles.last
-                                  : 'second track',
-                              style: GoogleFonts.sometypeMono(
-                                textStyle: TextStyle(
-                                  color: Palette.glazedWhite,
-                                  fontWeight: FontWeight.w600,
-                                  decoration: TextDecoration.underline,
-                                  decorationColor: Palette.glazedWhite,
-                                  decorationStyle: TextDecorationStyle.dotted,
-                                  decorationThickness: 2,
-                                  wordSpacing: -3,
-                                  fontSize: 15,
-                                ),
-                              ),
-                            ),
+                            !editMode
+                                ? Text(
+                                  (widget.dj.trackTitles.last.isNotEmpty)
+                                      ? widget.dj.trackTitles.last
+                                      : 'second track',
+                                  style: GoogleFonts.sometypeMono(
+                                    textStyle: TextStyle(
+                                      color: Palette.glazedWhite,
+                                      fontWeight: FontWeight.w600,
+                                      decoration: TextDecoration.underline,
+                                      decorationColor: Palette.glazedWhite,
+                                      decorationStyle:
+                                          TextDecorationStyle.dotted,
+                                      decorationThickness: 2,
+                                      wordSpacing: -3,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                )
+                                : SizedBox.shrink(),
                             !editMode
                                 ? Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
@@ -989,60 +946,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                     ),
                                   ],
                                 )
-                                : Center(
-                                  child: Container(
-                                    width: 260,
-                                    height: 48,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: Palette.glazedWhite,
-                                        width: 1,
-                                      ),
-                                      borderRadius: BorderRadius.circular(8),
-                                      color: Palette.glazedWhite.o(0.2),
-                                    ),
-                                    child: TextFormField(
-                                      style: TextStyle(
-                                        color: Palette.glazedWhite,
-                                        fontSize: 10,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      controller: _soundcloudControllerTwo,
-                                      validator: soundcloudValidator,
-                                      autovalidateMode:
-                                          AutovalidateMode.onUnfocus,
-                                      decoration: InputDecoration(
-                                        prefixIcon:
-                                            _soundcloudControllerTwo
-                                                    .text
-                                                    .isEmpty
-                                                ? null
-                                                : RemoveButton(
-                                                  soundcloudController:
-                                                      _soundcloudControllerTwo,
-                                                ),
-                                        suffixIcon: PasteButton(
-                                          soundcloudController:
-                                              _soundcloudControllerTwo,
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                            color: Palette.forgedGold,
-                                            width: 3,
-                                          ),
-                                        ),
-                                        border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                          borderSide: BorderSide(
-                                            color: Palette.forgedGold,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                                : SizedBox.shrink(),
                           ],
                         ),
                         SizedBox(height: 36),
@@ -1344,6 +1248,92 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Column soundcloudFields() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        _buildTrackDropdown(
+          label: "first SoundCloud set",
+          selectedTrack: selectedTrackOne,
+          onChanged: (track) => setState(() => selectedTrackOne = track),
+        ),
+        const SizedBox(height: 36),
+        _buildTrackDropdown(
+          label: "second SoundCloud set",
+          selectedTrack: selectedTrackTwo,
+          onChanged: (track) => setState(() => selectedTrackTwo = track),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTrackDropdown({
+    required String label,
+    required SoundcloudTrack? selectedTrack,
+    required Function(SoundcloudTrack?) onChanged,
+  }) {
+    return Center(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            label,
+            style: GoogleFonts.sometypeMono(
+              textStyle: TextStyle(
+                color: Palette.glazedWhite,
+                fontWeight: FontWeight.w600,
+                decoration: TextDecoration.underline,
+                decorationColor: Palette.glazedWhite,
+                decorationStyle: TextDecorationStyle.dotted,
+                decorationThickness: 2,
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Container(
+            width: 260,
+            height: 48,
+            decoration: BoxDecoration(
+              border: Border.all(color: Palette.glazedWhite, width: 1),
+              borderRadius: BorderRadius.circular(8),
+              color: Palette.glazedWhite.o(0.2),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<SoundcloudTrack>(
+                borderRadius: BorderRadius.circular(8),
+                dropdownColor: Palette.primalBlack.o(0.85),
+                iconEnabledColor: Palette.glazedWhite,
+                value: selectedTrack,
+                isExpanded: true,
+                hint: Text(
+                  'select track',
+                  style: TextStyle(color: Palette.glazedWhite, fontSize: 11),
+                ),
+                style: TextStyle(color: Palette.glazedWhite, fontSize: 11),
+                items:
+                    userTrackList.map((track) {
+                      return DropdownMenuItem<SoundcloudTrack>(
+                        value: track,
+                        child: Text(
+                          track.title,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Palette.concreteGrey,
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                onChanged: onChanged,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
