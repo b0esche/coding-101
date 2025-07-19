@@ -96,9 +96,9 @@ class _SearchFunctionCardState extends State<SearchFunctionCard> {
     super.dispose();
   }
 
-  bool isSearchCardCollapsed = true;
-  bool showSearchContent = false;
-  bool isSearchCardAnimating = true;
+  bool isSearchCardCollapsed = false;
+  bool showSearchContent = true;
+  bool isSearchCardAnimating = false;
   @override
   Widget build(BuildContext context) {
     return RepaintBoundary(
