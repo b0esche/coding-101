@@ -19,6 +19,8 @@ class SoundcloudAuth {
 
   Future<void> authenticate() async {
     _codeVerifier = _generateCodeVerifier();
+    await _secureStorage.write(key: 'code_verifier', value: _codeVerifier!);
+
     final codeChallenge = _generateCodeChallenge(_codeVerifier!);
 
     final authUrl = Uri.parse(authEndpoint).replace(
@@ -40,7 +42,11 @@ class SoundcloudAuth {
   }
 
   Future<void> exchangeCodeForToken(String code) async {
-    if (_codeVerifier == null) return;
+    _codeVerifier ??= await _secureStorage.read(key: 'code_verifier');
+
+    if (_codeVerifier == null) {
+      return;
+    }
 
     try {
       final response = await http.post(
@@ -61,16 +67,18 @@ class SoundcloudAuth {
       if (response.statusCode == 200) {
         final accessToken = data['access_token'];
         final refreshToken = data['refresh_token'];
+
         await _secureStorage.write(key: 'access_token', value: accessToken);
         if (refreshToken != null) {
           await _secureStorage.write(key: 'refresh_token', value: refreshToken);
         }
       } else {
-        debugPrint('❌ Failed to exchange code: ${response.body}');
+        debugPrint('❌ Fehler beim Token-Exchange: ${response.body}');
       }
     } catch (e) {
-      debugPrint('❌ Exception during token exchange: $e');
+      debugPrint('❌ Exception beim Token-Exchange: $e');
     }
+    await _secureStorage.delete(key: 'code_verifier');
   }
 
   Future<String?> getAccessToken() async {

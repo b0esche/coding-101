@@ -1107,7 +1107,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                   ),
                                   onPressed: () async {
                                     List<XFile> medias = await ImagePicker()
-                                        .pickMultiImage(limit: 10);
+                                        .pickMultiImage(limit: 5);
                                     List<String> mediaUrls =
                                         medias
                                             .map((element) => element.path)

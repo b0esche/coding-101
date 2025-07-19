@@ -281,7 +281,18 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
 
     final data = doc.data()!;
 
-    return DJ.fromJson(user.uid, data);
+    final type = data['type'] as String? ?? 'guest';
+
+    switch (type) {
+      case 'dj':
+        return DJ.fromJson(user.uid, data);
+      case 'booker':
+        return Booker.fromJson(user.uid, data);
+      case 'guest':
+        return Guest.fromJson(user.uid, data);
+      default:
+        throw Exception("Unknown user type: $type");
+    }
   }
 
   @override

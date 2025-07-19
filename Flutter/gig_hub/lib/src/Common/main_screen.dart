@@ -1,15 +1,19 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:gig_hub/src/Common/custom_nav_bar.dart';
 import 'package:gig_hub/src/Common/settings_screen.dart';
 import 'package:gig_hub/src/Data/firestore_repository.dart';
+import 'package:gig_hub/src/Features/profile/dj/domain/soundcloud_authentication.dart';
 import 'package:gig_hub/src/Features/search/presentation/search_function_card.dart';
 import 'package:gig_hub/src/Features/search/presentation/search_list_tile.dart';
 import 'package:gig_hub/src/Data/users.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:gig_hub/src/Features/search/presentation/sort_button.dart';
 import 'package:gig_hub/src/Data/database_repository.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 import 'package:provider/provider.dart';
 
@@ -35,11 +39,109 @@ class _MainScreenState extends State<MainScreen> {
 
   AppUser? _loggedInUser;
 
+  late AppLinks _appLinks;
+  StreamSubscription<Uri>? _sub;
+  final SoundcloudAuth _soundcloudAuth = SoundcloudAuth();
+
   @override
   void initState() {
     super.initState();
+    _appLinks = AppLinks();
+    _initDeepLinks();
     _loadLoggedInUser();
     _fetchDJs();
+    _checkGuestAndShowDialog();
+  }
+
+  void _initDeepLinks() {
+    _sub = _appLinks.uriLinkStream.listen((uri) {
+      _onUri(uri);
+    }, onError: (err) => debugPrint('link stream error: $err'));
+  }
+
+  void _onUri(Uri uri) async {
+    if (uri.toString().startsWith(SoundcloudAuth.redirectUri)) {
+      final code = uri.queryParameters['code'];
+      if (code != null) {
+        await _soundcloudAuth.exchangeCodeForToken(code);
+        final token = await _soundcloudAuth.getAccessToken();
+        debugPrint("✅ Got token after redirect: $token");
+      }
+    }
+  }
+
+  Timer? _soundcloudTokenCheckTimer;
+
+  void _checkGuestAndShowDialog() async {
+    final token = await _soundcloudAuth.getAccessToken();
+
+    if (widget.initialUser is Guest && token == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          useRootNavigator: true,
+          builder:
+              (context) => AlertDialog(
+                backgroundColor: Palette.primalBlack.o(0.95),
+                surfaceTintColor: Palette.forgedGold,
+                title: Center(
+                  child: Text(
+                    "welcome to Gig Hub!",
+                    style: GoogleFonts.sometypeMono(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Palette.forgedGold,
+                    ),
+                  ),
+                ),
+                content: Text(
+                  "connect your SoundCloud to enter:",
+                  maxLines: 1,
+                  style: GoogleFonts.sometypeMono(
+                    fontSize: 14,
+                    color: Palette.shadowGrey.o(0.9),
+                  ),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                actions: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8, bottom: 6),
+                    child: connectToSoundcloudButton(),
+                  ),
+                ],
+              ),
+        );
+      });
+    }
+  }
+
+  Widget connectToSoundcloudButton() {
+    return Center(
+      child: IconButton(
+        onPressed: () {
+          SoundcloudAuth()
+              .authenticate()
+              .whenComplete(() {
+                if (!mounted) return;
+                Navigator.of(context, rootNavigator: true).pop();
+              })
+              .then((value) => _soundcloudAuth.getAccessToken());
+        },
+        icon: Image.asset('assets/images/btn-connect-l.png'),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _soundcloudTokenCheckTimer?.cancel();
+    _sub?.cancel();
+    super.dispose();
   }
 
   Future<void> _fetchDJs() async {
@@ -305,7 +407,7 @@ class _MainScreenState extends State<MainScreen> {
                         icon: Icon(
                           Icons.favorite_rounded,
                           color: Palette.glazedWhite,
-                          size: 22,
+                          size: 21,
                         ),
                         style: ButtonStyle(
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
