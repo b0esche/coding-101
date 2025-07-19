@@ -107,7 +107,7 @@ class GenreBubble extends StatelessWidget {
           settings: LiquidGlassSettings(
             blur: 1,
             refractiveIndex: 1,
-            thickness: 12,
+            thickness: 10,
             lightIntensity: 8,
           ),
           child: Container(
@@ -115,15 +115,6 @@ class GenreBubble extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: Palette.shadowGrey, width: 0.85),
               color: Palette.gigGrey.o(0.35),
-              boxShadow: [
-                BoxShadow(
-                  offset: Offset(0.8, 0.8),
-                  color: Palette.gigGrey.o(0.8),
-                  blurStyle: BlurStyle.inner,
-                  spreadRadius: 0.8,
-                  blurRadius: 16,
-                ),
-              ],
             ),
             child: Padding(
               padding: const EdgeInsets.all(4),

@@ -270,7 +270,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                     ),
                     child: const Padding(
                       padding: EdgeInsets.all(14.0),
-                      child: Icon(Icons.chat_outlined),
+                      child: Icon(Icons.question_answer_outlined),
                     ),
                   ),
                 )
@@ -568,7 +568,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                   padding: const EdgeInsets.all(6.0),
                                   child: Row(
                                     children: [
-                                      const Icon(Icons.place, size: 18),
+                                      const Icon(Icons.location_pin, size: 17),
                                       const SizedBox(width: 4),
                                       !editMode
                                           ? Text(

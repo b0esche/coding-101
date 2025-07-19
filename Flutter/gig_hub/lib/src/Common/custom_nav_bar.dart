@@ -109,7 +109,10 @@ class CustomNavBar extends StatelessWidget {
                     ),
                   );
                 },
-                icon: Icon(Icons.messenger_outline, color: Palette.glazedWhite),
+                icon: Icon(
+                  Icons.question_answer_outlined,
+                  color: Palette.glazedWhite,
+                ),
               ),
               VerticalDivider(color: Palette.primalBlack),
               Padding(

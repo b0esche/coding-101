@@ -3,6 +3,7 @@ import 'package:gig_hub/src/Data/database_repository.dart';
 import 'package:gig_hub/src/Data/firestore_repository.dart';
 import 'package:gig_hub/src/Data/users.dart';
 import 'package:gig_hub/src/Features/chat/domain/chat_message.dart';
+import 'package:gig_hub/src/Features/profile/booker/presentation/profile_screen_booker.dart';
 import 'package:gig_hub/src/Features/profile/dj/presentation/profile_screen_dj.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -82,7 +83,7 @@ class ChatScreenState extends State<ChatScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 96,
+        toolbarHeight: 108,
         backgroundColor: Palette.glazedWhite,
         elevation: 1,
         iconTheme: IconThemeData(color: Palette.primalBlack),
@@ -98,15 +99,23 @@ class ChatScreenState extends State<ChatScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder:
-                          (_) => ProfileScreenDJ(
+                      builder: (_) {
+                        if (widget.chatPartner is DJ) {
+                          return ProfileScreenDJ(
                             dj: widget.chatPartner as DJ,
-
                             showChatButton: false,
                             showEditButton: true,
                             showFavoriteIcon: true,
                             currentUser: widget.currentUser,
-                          ),
+                          );
+                        } else {
+                          return ProfileScreenBooker(
+                            booker: widget.chatPartner as Booker,
+                            showEditButton: true,
+                            db: db,
+                          );
+                        }
+                      },
                     ),
                   );
                 },
@@ -116,27 +125,30 @@ class ChatScreenState extends State<ChatScreen> {
                           ? NetworkImage(partnerAvatarUrl)
                           : const AssetImage('assets/images/default_avatar.jpg')
                               as ImageProvider<Object>,
-                  radius: 38,
+                  radius: 42,
                 ),
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: 16),
             SizedBox(
               width: 222,
               child: Text(
                 widget.chatPartner.displayName,
+                maxLines: 2,
                 style: GoogleFonts.sometypeMono(
                   textStyle: TextStyle(
                     overflow: TextOverflow.ellipsis,
                     color: Palette.primalBlack,
                     fontWeight: FontWeight.w500,
-                    fontSize: 20,
+                    fontSize: 22,
                   ),
                 ),
               ),
             ),
           ],
         ),
+        leadingWidth: 32,
+        actions: [],
       ),
       backgroundColor: Palette.primalBlack.o(0.95),
       body: Column(
@@ -208,11 +220,14 @@ class ChatScreenState extends State<ChatScreen> {
                                 ),
                               ],
                             ),
-                            child: Text(
-                              message.message,
-                              style: TextStyle(
-                                color: Palette.primalBlack,
-                                fontSize: 15,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 2, bottom: 2),
+                              child: Text(
+                                message.message,
+                                style: TextStyle(
+                                  color: Palette.primalBlack,
+                                  fontSize: 15,
+                                ),
                               ),
                             ),
                           ),
