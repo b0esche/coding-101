@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:gig_hub/src/Data/firestore_repository.dart';
 import 'package:gig_hub/src/Data/users.dart';
 import 'package:gig_hub/src/Features/chat/domain/chat_list_item.dart';
@@ -22,7 +23,7 @@ class ChatListScreen extends StatefulWidget {
 }
 
 class _ChatListScreenState extends State<ChatListScreen> {
-  List<ChatListItem> _chatListItems = [];
+  List<dynamic> _chatEntries = [];
   bool _isLoading = true;
   bool _hasError = false;
   final db = FirestoreDatabaseRepository();
@@ -51,9 +52,28 @@ class _ChatListScreenState extends State<ChatListScreen> {
 
       items.sort((a, b) => b.recent.timestamp.compareTo(a.recent.timestamp));
 
+      final List<dynamic> entries = [];
+
+      DateTime? lastDate;
+
+      for (final item in items) {
+        final itemDate = DateTime(
+          item.recent.timestamp.year,
+          item.recent.timestamp.month,
+          item.recent.timestamp.day,
+        );
+
+        if (lastDate == null || itemDate.isBefore(lastDate)) {
+          entries.add(itemDate);
+          lastDate = itemDate;
+        }
+
+        entries.add(item);
+      }
+
       if (mounted) {
         setState(() {
-          _chatListItems = items;
+          _chatEntries = entries;
           _hasError = false;
           _isLoading = false;
         });
@@ -97,7 +117,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                   style: TextStyle(color: Palette.glazedWhite),
                 ),
               )
-              : _chatListItems.isEmpty
+              : _chatEntries.isEmpty
               ? Center(
                 child: Text(
                   'no chats. start now!',
@@ -106,27 +126,52 @@ class _ChatListScreenState extends State<ChatListScreen> {
               )
               : ListView.builder(
                 padding: const EdgeInsets.all(12),
-                itemCount: _chatListItems.length,
+                itemCount: _chatEntries.length,
                 itemBuilder: (context, idx) {
-                  final chatItem = _chatListItems[idx];
-                  return ChatListItemWidget(
-                    chatListItem: chatItem,
+                  final entry = _chatEntries[idx];
 
-                    currentUser: widget.currentUser,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder:
-                              (context) => ChatScreen(
-                                chatPartner: chatItem.user,
-
-                                currentUser: widget.currentUser,
-                              ),
+                  if (entry is DateTime) {
+                    final isToday =
+                        DateTime.now().difference(entry).inDays == 0;
+                    final formattedDate =
+                        isToday
+                            ? 'Today'
+                            : DateFormat('MMM dd, yyyy').format(entry);
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Center(
+                        child: Text(
+                          formattedDate,
+                          style: TextStyle(
+                            color: Palette.glazedWhite.o(0.6),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                      );
-                    },
-                  );
+                      ),
+                    );
+                  }
+
+                  if (entry is ChatListItem) {
+                    return ChatListItemWidget(
+                      chatListItem: entry,
+                      currentUser: widget.currentUser,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) => ChatScreen(
+                                  chatPartner: entry.user,
+                                  currentUser: widget.currentUser,
+                                ),
+                          ),
+                        );
+                      },
+                    );
+                  }
+
+                  return const SizedBox.shrink();
                 },
               ),
     );

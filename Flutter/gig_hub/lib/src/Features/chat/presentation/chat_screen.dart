@@ -11,7 +11,6 @@ import 'package:provider/provider.dart';
 
 class ChatScreenArgs {
   final AppUser chatPartner;
-
   final AppUser currentUser;
 
   ChatScreenArgs({required this.chatPartner, required this.currentUser});
@@ -19,13 +18,11 @@ class ChatScreenArgs {
 
 class ChatScreen extends StatefulWidget {
   final AppUser chatPartner;
-
   final AppUser currentUser;
 
   const ChatScreen({
     super.key,
     required this.chatPartner,
-
     required this.currentUser,
   });
 
@@ -37,9 +34,8 @@ class ChatScreenState extends State<ChatScreen> {
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final db = FirestoreDatabaseRepository();
-  String getPartnerAvatarUrl() {
-    return widget.chatPartner.avatarUrl;
-  }
+
+  String getPartnerAvatarUrl() => widget.chatPartner.avatarUrl;
 
   @override
   void dispose() {
@@ -148,7 +144,6 @@ class ChatScreenState extends State<ChatScreen> {
           ],
         ),
         leadingWidth: 32,
-        actions: [],
       ),
       backgroundColor: Palette.primalBlack.o(0.95),
       body: Column(
@@ -168,7 +163,27 @@ class ChatScreenState extends State<ChatScreen> {
                   return const Center(child: Text("start talking!"));
                 }
 
-                final messages = snapshot.data!;
+                final rawMessages = snapshot.data!;
+                rawMessages.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+
+                final List<dynamic> messageItems = [];
+                DateTime? lastDate;
+
+                for (final msg in rawMessages) {
+                  final msgDate = DateTime(
+                    msg.timestamp.year,
+                    msg.timestamp.month,
+                    msg.timestamp.day,
+                  );
+
+                  if (lastDate == null || msgDate.isAfter(lastDate)) {
+                    messageItems.add(msgDate);
+                    lastDate = msgDate;
+                  }
+
+                  messageItems.add(msg);
+                }
+
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   if (_scrollController.hasClients) {
                     _scrollController.jumpTo(
@@ -181,9 +196,34 @@ class ChatScreenState extends State<ChatScreen> {
                   controller: _scrollController,
                   reverse: true,
                   padding: const EdgeInsets.all(16),
-                  itemCount: messages.length,
+                  itemCount: messageItems.length,
                   itemBuilder: (context, index) {
-                    final message = messages[messages.length - 1 - index];
+                    final item = messageItems[messageItems.length - 1 - index];
+
+                    if (item is DateTime) {
+                      final isToday =
+                          DateTime.now().difference(item).inDays == 0;
+                      final dateText =
+                          isToday
+                              ? 'Today'
+                              : '${item.day.toString().padLeft(2, '0')}.${item.month.toString().padLeft(2, '0')}.${item.year}';
+
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        child: Center(
+                          child: Text(
+                            dateText,
+                            style: TextStyle(
+                              color: Palette.glazedWhite.o(0.6),
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+
+                    final ChatMessage message = item;
                     final isMe = message.senderId == widget.currentUser.id;
 
                     return Align(
