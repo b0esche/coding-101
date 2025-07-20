@@ -29,7 +29,7 @@ dependencies:
   liquid_glass_renderer: ^0.1.1-dev.9
   firebase_core: ^3.14.0
   firebase_auth: ^5.6.0
-  google_sign_in: ^7.1.0
+  google_sign_in: ^7.1.1
   flutter_facebook_auth: ^7.1.2
   cloud_firestore: ^5.6.11
   hive_flutter: ^1.1.0

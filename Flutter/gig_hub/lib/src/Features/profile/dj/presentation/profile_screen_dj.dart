@@ -132,9 +132,6 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
     _locationFocusNode.removeListener(_onLocationFocusChange);
     _locationFocusNode.dispose();
 
-    _playerControllerOne.dispose();
-    _playerControllerTwo.dispose();
-
     _nameController.dispose();
     _locationController.dispose();
     _bpmController.dispose();
