@@ -847,7 +847,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                     genres: genres!,
                                     headImageUrl: uploadedHeadImageUrl,
                                     avatarImageUrl:
-                                        'gs://gig-hub-8ac24.firebasestorage.app/default/default_avatar.jpg',
+                                        'https://firebasestorage.googleapis.com/v0/b/gig-hub-8ac24.firebasestorage.app/o/default%2Fdefault_avatar.jpg?alt=media&token=3998cdef-f4b1-4211-99c8-cd8a8b6ecc98',
                                     bpm: [
                                       int.parse(bpmMin!),
                                       int.parse(bpmMax!),
