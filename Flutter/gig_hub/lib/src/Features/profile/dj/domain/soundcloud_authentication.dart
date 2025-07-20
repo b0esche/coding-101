@@ -100,7 +100,6 @@ class SoundcloudAuth {
       );
       return response.statusCode == 200;
     } catch (e) {
-      debugPrint('❌ Token validation error: $e');
       return false;
     }
   }

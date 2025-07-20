@@ -2,6 +2,7 @@ import "dart:async";
 import "dart:io";
 
 import "package:cloud_firestore/cloud_firestore.dart";
+import "package:firebase_storage/firebase_storage.dart";
 import "package:gig_hub/src/Features/profile/dj/domain/soundcloud_authentication.dart";
 import "package:gig_hub/src/Features/profile/dj/domain/soundcloud_service.dart";
 import "package:hive_flutter/hive_flutter.dart";
@@ -83,10 +84,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
   late final TextEditingController _aboutController = TextEditingController(
     text: widget.dj.about,
   );
-  late final TextEditingController _soundcloudControllerOne =
-      TextEditingController(text: widget.dj.streamingUrls.first);
-  late final TextEditingController _soundcloudControllerTwo =
-      TextEditingController(text: widget.dj.streamingUrls.last);
+
   late final TextEditingController _infoController = TextEditingController(
     text: widget.dj.info,
   );
@@ -1138,7 +1136,26 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                     ? OutlinedButton(
                                       onPressed: () async {
                                         if (editMode &&
-                                            _formKey.currentState!.validate()) {
+                                            (selectedTrackOne == null ||
+                                                selectedTrackTwo == null)) {
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              backgroundColor:
+                                                  Palette.forgedGold,
+                                              content: Center(
+                                                child: Text(
+                                                  'select 2 soundcloud tracks to save your profile!',
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                        if (editMode &&
+                                            _formKey.currentState!.validate() &&
+                                            (selectedTrackOne != null &&
+                                                selectedTrackTwo != null)) {
                                           !editMode
                                               ? PlayerController()
                                                   .stopAllPlayers()
@@ -1149,11 +1166,27 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                               _aboutController.text;
                                           widget.dj.info = _infoController.text;
                                           widget.dj.name = _nameController.text;
-                                          widget.dj.streamingUrls[0] =
-                                              _soundcloudControllerOne.text;
 
-                                          widget.dj.streamingUrls[1] =
-                                              _soundcloudControllerTwo.text;
+                                          widget.dj.streamingUrls = [
+                                            if (selectedTrackOne?.streamUrl !=
+                                                null)
+                                              selectedTrackOne!.streamUrl!,
+                                            if (selectedTrackTwo?.streamUrl !=
+                                                null)
+                                              selectedTrackTwo!.streamUrl!,
+                                          ];
+
+                                          widget.dj.trackTitles = [
+                                            selectedTrackOne?.title ?? '',
+                                            selectedTrackTwo?.title ?? '',
+                                          ];
+
+                                          widget.dj.trackUrls = [
+                                            selectedTrackOne?.permalinkUrl ??
+                                                '',
+                                            selectedTrackTwo?.permalinkUrl ??
+                                                '',
+                                          ];
 
                                           final bpmText =
                                               _bpmController.text.trim();
@@ -1161,23 +1194,75 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                               .split(' ')
                                               .first
                                               .split('-');
-
                                           if (bpmParts.length == 2) {
-                                            widget.dj.bpm.first =
-                                                int.tryParse(
-                                                  bpmParts[0].trim(),
-                                                ) ??
-                                                0;
-                                            widget.dj.bpm.last =
-                                                int.tryParse(
-                                                  bpmParts[1].trim(),
-                                                ) ??
-                                                0;
+                                            widget.dj.bpm = [
+                                              int.tryParse(
+                                                    bpmParts[0].trim(),
+                                                  ) ??
+                                                  0,
+                                              int.tryParse(
+                                                    bpmParts[1].trim(),
+                                                  ) ??
+                                                  0,
+                                            ];
                                           }
 
                                           if (_locationError == null) {
                                             widget.dj.city =
                                                 _locationController.text;
+                                          }
+
+                                          if (!widget.dj.headImageUrl
+                                              .startsWith('http')) {
+                                            final headFile = File(
+                                              widget.dj.headImageUrl,
+                                            );
+                                            final headStorageRef = FirebaseStorage
+                                                .instance
+                                                .ref()
+                                                .child(
+                                                  'head_images/${widget.dj.id}.jpg',
+                                                );
+                                            await headStorageRef.putFile(
+                                              headFile,
+                                            );
+                                            widget.dj.headImageUrl =
+                                                await headStorageRef
+                                                    .getDownloadURL();
+                                          }
+
+                                          if (widget.dj.mediaImageUrls.any(
+                                            (path) => !path.startsWith('http'),
+                                          )) {
+                                            List<String> newUrls = [];
+                                            for (
+                                              int i = 0;
+                                              i <
+                                                  widget
+                                                      .dj
+                                                      .mediaImageUrls
+                                                      .length;
+                                              i++
+                                            ) {
+                                              final path =
+                                                  widget.dj.mediaImageUrls[i];
+                                              if (path.startsWith('http')) {
+                                                newUrls.add(path);
+                                              } else {
+                                                final file = File(path);
+                                                final ref = FirebaseStorage
+                                                    .instance
+                                                    .ref()
+                                                    .child(
+                                                      'media_images/${widget.dj.id}_$i.jpg',
+                                                    );
+                                                await ref.putFile(file);
+                                                final downloadUrl =
+                                                    await ref.getDownloadURL();
+                                                newUrls.add(downloadUrl);
+                                              }
+                                            }
+                                            widget.dj.mediaImageUrls = newUrls;
                                           }
 
                                           setState(() => editMode = !editMode);

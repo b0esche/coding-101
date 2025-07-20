@@ -46,7 +46,7 @@ class DJ extends AppUser {
 
   final double userRating;
 
-  final List<String> mediaImageUrls,
+  List<String> mediaImageUrls,
       favoriteUIds,
       genres,
       streamingUrls,
