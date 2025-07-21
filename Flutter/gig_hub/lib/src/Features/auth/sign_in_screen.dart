@@ -20,6 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _loginEmailController = TextEditingController();
   final TextEditingController _loginPasswordController =
       TextEditingController();
+  late final TextEditingController emailController = TextEditingController();
   Set<String> selected = {'dj'};
   bool _isObscured = true;
 
@@ -220,27 +221,70 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(height: 8),
                     TextButton(
                       onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            dismissDirection: DismissDirection.horizontal,
-                            behavior: SnackBarBehavior.floating,
-                            backgroundColor: Palette.gigGrey.o(0.8),
-                            elevation: 2,
-                            showCloseIcon: true,
-                            closeIconColor: Palette.glazedWhite.o(0.3),
-                            margin: EdgeInsets.fromLTRB(24, 0, 24, 0),
-                            shape: BeveledRectangleBorder(
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            content: Text(
-                              "Pech",
-                              style: TextStyle(
-                                color: Palette.glazedWhite,
-                                fontWeight: FontWeight.w500,
+                        showDialog(
+                          context: context,
+                          builder:
+                              (context) => AlertDialog(
+                                backgroundColor: Palette.forgedGold,
+
+                                title: Center(
+                                  child: Text(
+                                    'type in your email',
+                                    style: GoogleFonts.sometypeMono(
+                                      textStyle: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                content: TextFormField(
+                                  keyboardType: TextInputType.emailAddress,
+                                  controller: emailController,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(),
+                                  ),
+                                ),
+                                actions: [
+                                  ElevatedButton(
+                                    onPressed: () async {
+                                      await auth.sendPasswordResetEmail(
+                                        emailController.text,
+                                      );
+                                      if (!context.mounted) return;
+                                      Navigator.pop(context);
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          backgroundColor: Palette.forgedGold,
+                                          content: Center(
+                                            child: Text(
+                                              'reset link sent',
+                                              style: TextStyle(fontSize: 16),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: Text(
+                                      'send password reset link',
+                                      style: TextStyle(
+                                        color: Palette.primalBlack,
+                                      ),
+                                    ),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: Text(
+                                      'cancel',
+                                      style: TextStyle(
+                                        color: Palette.primalBlack,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                            duration: Duration(seconds: 4),
-                          ),
                         );
                       },
                       child: Text(
