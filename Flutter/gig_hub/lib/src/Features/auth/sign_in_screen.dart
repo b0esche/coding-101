@@ -1,11 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:gig_hub/src/Common/main_screen.dart';
 import 'package:gig_hub/src/Data/app_imports.dart';
-import 'package:gig_hub/src/Data/auth_repository.dart';
-import 'package:gig_hub/src/Features/auth/sign_up_bottomsheet.dart';
-import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
-import 'package:provider/provider.dart';
-import 'package:shimmer/shimmer.dart';
 
 import '../../Data/app_imports.dart' as http;
 
@@ -242,13 +235,18 @@ class _LoginScreenState extends State<LoginScreen> {
                                   keyboardType: TextInputType.emailAddress,
                                   controller: emailController,
                                   decoration: InputDecoration(
-                                    border: OutlineInputBorder(),
+                                    border: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Palette.primalBlack,
+                                      ),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
                                   ),
                                 ),
                                 actions: [
                                   ElevatedButton(
-                                    onPressed: () async {
-                                      await auth.sendPasswordResetEmail(
+                                    onPressed: () {
+                                      auth.sendPasswordResetEmail(
                                         emailController.text,
                                       );
                                       if (!context.mounted) return;

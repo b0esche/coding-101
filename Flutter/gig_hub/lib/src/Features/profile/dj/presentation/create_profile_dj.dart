@@ -1,14 +1,3 @@
-import "dart:async";
-import "dart:io";
-
-import "package:app_links/app_links.dart";
-import "package:firebase_auth/firebase_auth.dart";
-import "package:firebase_storage/firebase_storage.dart";
-import "package:gig_hub/src/Common/main_screen.dart";
-import "package:gig_hub/src/Features/profile/dj/domain/soundcloud_authentication.dart";
-import "package:gig_hub/src/Features/profile/dj/domain/soundcloud_service.dart";
-import "package:provider/provider.dart";
-
 import "../../../../Data/app_imports.dart";
 import "../../../../Data/app_imports.dart" as http;
 

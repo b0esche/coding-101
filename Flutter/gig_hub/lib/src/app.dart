@@ -1,9 +1,4 @@
-import 'package:gig_hub/src/Common/main_screen.dart';
 import 'package:gig_hub/src/Data/app_imports.dart';
-import 'package:gig_hub/src/Data/auth_repository.dart';
-import 'package:gig_hub/src/Features/auth/sign_in_screen.dart';
-import 'package:gig_hub/src/Theme/app_theme.dart';
-import 'package:provider/provider.dart';
 
 class App extends StatelessWidget {
   const App({super.key});

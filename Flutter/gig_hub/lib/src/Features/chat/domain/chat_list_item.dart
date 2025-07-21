@@ -1,6 +1,4 @@
-// gig_hub/src/Features/chat/domain/chat_list_item.dart
-import 'package:gig_hub/src/Data/users.dart';
-import 'package:gig_hub/src/Features/chat/domain/chat_message.dart';
+import '../../../Data/app_imports.dart';
 
 class ChatListItem {
   final AppUser user;

@@ -1,14 +1,5 @@
-import 'dart:io';
-
-import 'package:flutter/material.dart';
-import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
-import 'package:gig_hub/src/Data/users.dart';
+import 'package:gig_hub/src/Data/app_imports.dart' hide UserStarRating;
 import 'package:gig_hub/src/Features/profile/booker/presentation/star_rating_booker.dart';
-import 'package:gig_hub/src/Theme/palette.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:gig_hub/src/Data/database_repository.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:pinch_zoom/pinch_zoom.dart';
 
 class ProfileScreenBookerArgs {
   final Booker booker;

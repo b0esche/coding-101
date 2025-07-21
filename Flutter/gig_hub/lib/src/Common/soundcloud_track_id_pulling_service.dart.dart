@@ -1,9 +1,6 @@
-import 'dart:convert';
-
-import 'package:flutter/material.dart';
-import 'package:gig_hub/src/Features/profile/dj/domain/soundcloud_authentication.dart';
-import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:http/http.dart' as http;
+
+import '../Data/app_imports.dart';
 
 class SoundcloudTrackIdScreen extends StatefulWidget {
   const SoundcloudTrackIdScreen({super.key});

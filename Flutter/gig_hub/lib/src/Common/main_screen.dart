@@ -1,21 +1,4 @@
-import 'dart:async';
-import 'dart:io';
-
-import 'package:app_links/app_links.dart';
-import 'package:flutter/material.dart';
-import 'package:gig_hub/src/Common/custom_nav_bar.dart';
-import 'package:gig_hub/src/Common/settings_screen.dart';
-import 'package:gig_hub/src/Data/firestore_repository.dart';
-import 'package:gig_hub/src/Features/profile/dj/domain/soundcloud_authentication.dart';
-import 'package:gig_hub/src/Features/search/presentation/search_function_card.dart';
-import 'package:gig_hub/src/Features/search/presentation/search_list_tile.dart';
-import 'package:gig_hub/src/Data/users.dart';
-import 'package:gig_hub/src/Theme/palette.dart';
-import 'package:gig_hub/src/Features/search/presentation/sort_button.dart';
-import 'package:gig_hub/src/Data/database_repository.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
-import 'package:provider/provider.dart';
+import '../Data/app_imports.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key, required this.initialUser});

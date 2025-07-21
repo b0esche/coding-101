@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_rating_stars/flutter_rating_stars.dart';
-import 'package:gig_hub/src/Features/profile/booker/presentation/profile_screen_booker.dart';
-import 'package:gig_hub/src/Theme/palette.dart';
+import 'package:gig_hub/src/Data/app_imports.dart';
 
 class UserStarRating extends StatelessWidget {
   const UserStarRating({super.key, required this.widget});

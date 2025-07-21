@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:gig_hub/src/Theme/palette.dart';
+import '../../../Data/app_imports.dart';
 
 class SortButtonsWidget extends StatelessWidget {
   const SortButtonsWidget({

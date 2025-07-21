@@ -1,4 +1,4 @@
-import 'package:audio_waveforms/audio_waveforms.dart';
+import 'package:gig_hub/src/Data/app_imports.dart';
 
 class AudioManager {
   static final AudioManager _instance = AudioManager._internal();

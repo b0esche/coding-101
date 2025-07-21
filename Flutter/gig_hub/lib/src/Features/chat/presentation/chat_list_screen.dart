@@ -1,11 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:gig_hub/src/Data/firestore_repository.dart';
-import 'package:gig_hub/src/Data/users.dart';
-import 'package:gig_hub/src/Features/chat/domain/chat_list_item.dart';
-import 'package:gig_hub/src/Features/chat/presentation/chat_list_item_widget.dart';
-import 'package:gig_hub/src/Theme/palette.dart';
-import 'package:gig_hub/src/Features/chat/presentation/chat_screen.dart';
+
+import '../../../Data/app_imports.dart';
 
 class ChatListScreenArgs {
   final AppUser currentUser;

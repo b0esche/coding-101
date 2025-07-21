@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:gig_hub/src/Data/app_imports.dart';
 
 abstract class Palette {
   static final Color primalBlack = const Color.fromARGB(255, 33, 33, 33);

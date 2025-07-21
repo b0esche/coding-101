@@ -1,9 +1,5 @@
-import 'dart:async';
-import 'dart:convert';
-import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:gig_hub/src/Theme/palette.dart';
-import 'package:gig_hub/src/Features/search/presentation/custom_form_field.dart';
+import 'package:gig_hub/src/Data/app_imports.dart';
+
 import 'package:http/http.dart' as http;
 
 class LocationAutocompleteField extends StatefulWidget {

@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:gig_hub/src/Common/genre_bubble.dart';
-import 'package:gig_hub/src/Theme/palette.dart';
-import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
+import 'package:gig_hub/src/Data/app_imports.dart';
 
 class GenreSelectionDialog extends StatefulWidget {
   final List<String> initialSelectedGenres;

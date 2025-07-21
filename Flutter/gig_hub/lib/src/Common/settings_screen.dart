@@ -1,10 +1,4 @@
-import 'dart:io';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:gig_hub/src/Data/app_imports.dart';
-import 'package:gig_hub/src/Data/auth_repository.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:gig_hub/src/Data/firestore_repository.dart';
-import 'package:provider/provider.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -413,6 +407,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 onPressed: () {
                   auth.signOut();
                   Navigator.of(context).pop();
+                  if (!context.mounted) {
+                    return;
+                  } else {
+                    Navigator.pop(context);
+                  }
                 },
                 child: const Text("log out"),
               ),

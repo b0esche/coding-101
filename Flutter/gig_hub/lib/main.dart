@@ -1,16 +1,4 @@
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
-import 'package:gig_hub/firebase_options.dart';
-import 'package:gig_hub/src/Data/auth_repository.dart';
-import 'package:gig_hub/src/Data/database_repository.dart';
-import 'package:gig_hub/src/Data/firebase_auth_repository.dart';
-import 'package:gig_hub/src/Data/firestore_repository.dart';
-
-import 'package:gig_hub/src/app.dart';
-
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:provider/provider.dart';
+import 'package:gig_hub/src/Data/app_imports.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -1,10 +1,5 @@
 import 'package:gig_hub/src/Data/app_imports.dart';
 
-import 'package:gig_hub/src/Features/profile/booker/presentation/create_profile_screen_booker.dart';
-import 'package:gig_hub/src/Features/profile/dj/presentation/create_profile_dj.dart';
-
-import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
-
 class SignUpSheet extends StatefulWidget {
   const SignUpSheet({super.key});
 

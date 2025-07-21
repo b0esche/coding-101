@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:gig_hub/src/Theme/palette.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
+import '../Data/app_imports.dart';
 
 List<String> genres = [
   // TECHNO & HARTE SPIELARTEN

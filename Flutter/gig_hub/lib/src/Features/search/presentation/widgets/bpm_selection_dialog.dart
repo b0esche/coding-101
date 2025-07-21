@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:gig_hub/src/Theme/palette.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
+import 'package:gig_hub/src/Data/app_imports.dart';
 
 class BpmSelectionDialog extends StatefulWidget {
   final List<int>? intialSelectedBpm;

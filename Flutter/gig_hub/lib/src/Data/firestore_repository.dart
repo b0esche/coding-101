@@ -1,7 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gig_hub/src/Data/app_imports.dart';
-import 'package:gig_hub/src/Features/chat/domain/chat_message.dart';
 
 class FirestoreDatabaseRepository extends DatabaseRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;

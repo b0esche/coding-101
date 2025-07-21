@@ -1,7 +1,5 @@
 import 'package:gig_hub/src/Data/app_imports.dart';
 
-import '../Features/chat/domain/chat_message.dart';
-
 abstract class DatabaseRepository with ChangeNotifier {
   // create user ###
   Future<void> createGuest(Guest guest);

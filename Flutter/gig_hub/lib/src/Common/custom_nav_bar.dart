@@ -1,10 +1,4 @@
 import 'package:gig_hub/src/Data/app_imports.dart';
-import 'package:gig_hub/src/Features/auth/sign_up_bottomsheet.dart';
-import 'package:gig_hub/src/Features/chat/presentation/chat_list_screen.dart';
-import 'package:gig_hub/src/Features/profile/booker/presentation/profile_screen_booker.dart';
-import 'package:gig_hub/src/Features/profile/dj/presentation/profile_screen_dj.dart';
-import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
-import 'package:provider/provider.dart';
 
 class CustomNavBar extends StatelessWidget {
   final AppUser currentUser;

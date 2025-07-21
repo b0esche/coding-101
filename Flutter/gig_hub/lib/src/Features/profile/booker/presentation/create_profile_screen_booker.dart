@@ -1,9 +1,3 @@
-import "dart:io";
-
-import "package:firebase_auth/firebase_auth.dart";
-import "package:gig_hub/src/Data/auth_repository.dart";
-import "package:provider/provider.dart";
-
 import "../../../../Data/app_imports.dart";
 import "../../../../Data/app_imports.dart" as http;
 
