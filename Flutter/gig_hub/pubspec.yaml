@@ -33,7 +33,6 @@ dependencies:
   flutter_facebook_auth: ^7.1.2
   cloud_firestore: ^5.6.11
   hive_flutter: ^1.1.0
-  flutter_appauth: ^6.0.6
   flutter_secure_storage: ^9.2.4
   crypto: ^3.0.6
   provider: ^6.1.5
@@ -48,11 +47,9 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/gighub_logo.png
-    - assets/images/default_avatar.jpg
     - assets/icons/
-    - .env
     - assets/images/
+    - .env
 
 flutter_launcher_icons:
   android: "launcher_icon"
