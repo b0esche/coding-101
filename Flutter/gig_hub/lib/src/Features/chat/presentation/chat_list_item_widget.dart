@@ -36,7 +36,7 @@ class ChatListItemWidget extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 8),
+        padding: const EdgeInsets.symmetric(vertical: 8),
         child: Container(
           decoration: BoxDecoration(
             color: Palette.glazedWhite.o(0.9),
@@ -51,9 +51,9 @@ class ChatListItemWidget extends StatelessWidget {
           ),
           padding: const EdgeInsets.only(
             top: 10,
-            left: 10,
-            right: 10,
-            bottom: 11.5,
+            left: 12,
+            right: 12,
+            bottom: 10,
           ),
           child: Row(
             children: [
@@ -124,6 +124,7 @@ class ChatListItemWidget extends StatelessWidget {
                         ),
                       ),
                     ),
+                    SizedBox(height: 16),
                   ],
                 ),
               ),

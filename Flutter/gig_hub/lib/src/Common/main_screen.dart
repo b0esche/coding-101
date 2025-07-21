@@ -30,25 +30,38 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
 
-    _appLinks = AppLinks();
-    _initDeepLinks();
-    _checkGuestAndShowDialog();
-    _loadLoggedInUser();
-
-    _fetchDJs();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _appLinks = AppLinks();
+      _initDeepLinks();
+      _checkGuestAndShowDialog();
+      _loadLoggedInUser();
+      _fetchDJs();
+    });
   }
 
   void _initDeepLinks() {
-    _sub = _appLinks.uriLinkStream.listen((uri) {
-      _onUri(uri);
-    }, onError: (err) => throw Exception('link stream error: $err'));
+    _sub?.cancel();
+    _sub = _appLinks.uriLinkStream.listen(
+      (uri) {
+        if (!mounted) return;
+        _onUri(uri);
+      },
+      onError: (err) {
+        if (!mounted) return;
+        throw Exception('link stream error: $err');
+      },
+      cancelOnError: true,
+    );
   }
 
   void _onUri(Uri uri) async {
+    if (!mounted) return;
     if (uri.toString().startsWith(SoundcloudAuth.redirectUri)) {
       final code = uri.queryParameters['code'];
       if (code != null) {
         await _soundcloudAuth.exchangeCodeForToken(code);
+        if (!mounted) return;
       }
     }
   }

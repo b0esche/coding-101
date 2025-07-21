@@ -161,7 +161,9 @@ class _ChatListScreenState extends State<ChatListScreen> {
                                   currentUser: widget.currentUser,
                                 ),
                           ),
-                        );
+                        ).then((_) {
+                          _loadRecentChats();
+                        });
                       },
                     );
                   }

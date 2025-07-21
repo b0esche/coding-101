@@ -29,6 +29,11 @@ class ChatScreenState extends State<ChatScreen> {
   String getPartnerAvatarUrl() => widget.chatPartner.avatarUrl;
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     _scrollController.dispose();
@@ -224,6 +229,7 @@ class ChatScreenState extends State<ChatScreen> {
                         children: [
                           Container(
                             constraints: BoxConstraints(
+                              minWidth: 96,
                               maxWidth:
                                   MediaQuery.of(context).size.width * 0.75,
                             ),

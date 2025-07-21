@@ -126,7 +126,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
                   AudioFileWaveforms(
                     size: const Size(260, 85),
                     playerController: _playerController,
-                    waveformType: WaveformType.fitWidth,
+                    waveformType: WaveformType.long,
                     animationCurve: Curves.easeInOutBack,
                     animationDuration: Duration(milliseconds: 1200),
                     playerWaveStyle: PlayerWaveStyle(
