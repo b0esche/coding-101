@@ -120,8 +120,10 @@ class GenreBubble extends StatelessWidget {
               padding: const EdgeInsets.all(4),
               child: Text(
                 genre,
+
                 style: GoogleFonts.sometypeMono(
                   textStyle: TextStyle(
+                    wordSpacing: -4,
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
                     color: Palette.shadowGrey,

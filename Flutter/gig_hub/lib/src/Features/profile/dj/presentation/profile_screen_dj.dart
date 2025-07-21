@@ -52,8 +52,9 @@ class ProfileScreenDJ extends StatefulWidget {
 
 class _ProfileScreenDJState extends State<ProfileScreenDJ> {
   int index = 0;
-
   bool editMode = false;
+  Timer? _debounceTimer;
+
   bool get isFavorite {
     final id = widget.dj.id;
 
@@ -84,7 +85,6 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
   late final TextEditingController _aboutController = TextEditingController(
     text: widget.dj.about,
   );
-
   late final TextEditingController _infoController = TextEditingController(
     text: widget.dj.info,
   );
@@ -103,34 +103,18 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
     _playerControllerTwo = PlayerController();
 
     _locationFocusNode.addListener(_onLocationFocusChange);
+    _locationController.addListener(_onLocationChanged);
 
     _loadTracksIfAvailable();
   }
 
-  Future<void> _loadTracksIfAvailable() async {
-    final token = await _soundcloudAuth.getAccessToken();
-    if (token == null) {
-      debugPrint("⚠️ Kein gültiger AccessToken gefunden.");
-      return;
-    }
-
-    final tracks = await SoundcloudService().fetchUserTracks();
-    if (!mounted) return;
-    setState(() {
-      userTrackList = tracks;
-    });
-  }
-
-  void _onLocationFocusChange() {
-    if (!_locationFocusNode.hasFocus) {
-      _validateCity(_locationController.text);
-    }
-  }
-
   @override
   void dispose() {
+    _debounceTimer?.cancel();
     _locationFocusNode.removeListener(_onLocationFocusChange);
     _locationFocusNode.dispose();
+
+    _locationController.removeListener(_onLocationChanged);
 
     _nameController.dispose();
     _locationController.dispose();
@@ -138,6 +122,27 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
     _aboutController.dispose();
     _infoController.dispose();
     super.dispose();
+  }
+
+  void _onLocationChanged() {
+    final input = _locationController.text.trim();
+
+    _debounceTimer?.cancel();
+    if (input.isEmpty) {
+      setState(() => _locationError = ' ');
+      _formKey.currentState?.validate();
+      return;
+    }
+
+    _debounceTimer = Timer(const Duration(milliseconds: 350), () {
+      _validateCity(input);
+    });
+  }
+
+  void _onLocationFocusChange() {
+    if (!_locationFocusNode.hasFocus) {
+      _validateCity(_locationController.text);
+    }
   }
 
   Future<void> _validateCity(String value) async {
@@ -211,6 +216,20 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
         _formKey.currentState?.validate();
       }
     }
+  }
+
+  Future<void> _loadTracksIfAvailable() async {
+    final token = await _soundcloudAuth.getAccessToken();
+    if (token == null) {
+      debugPrint("⚠️ Kein gültiger AccessToken gefunden.");
+      return;
+    }
+
+    final tracks = await SoundcloudService().fetchUserTracks();
+    if (!mounted) return;
+    setState(() {
+      userTrackList = tracks;
+    });
   }
 
   Future<void> _showGenreDialog() async {
@@ -569,7 +588,10 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                   padding: const EdgeInsets.all(6.0),
                                   child: Row(
                                     children: [
-                                      const Icon(Icons.location_pin, size: 17),
+                                      const Icon(
+                                        Icons.location_pin,
+                                        size: 15.5,
+                                      ),
                                       const SizedBox(width: 4),
                                       !editMode
                                           ? Text(

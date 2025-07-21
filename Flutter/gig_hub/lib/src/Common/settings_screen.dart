@@ -371,7 +371,41 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               FilledButton(
                 onPressed: () {
-                  // TODO: delete account logic
+                  showDialog(
+                    context: context,
+                    builder:
+                        (context) => AlertDialog(
+                          backgroundColor: Palette.forgedGold,
+
+                          title: Center(
+                            child: Text(
+                              'are you sure?',
+                              style: GoogleFonts.sometypeMono(
+                                textStyle: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ),
+                          actions: [
+                            ElevatedButton(
+                              onPressed: () => auth.deleteUser(),
+                              child: Text(
+                                'delete account',
+                                style: TextStyle(color: Palette.primalBlack),
+                              ),
+                            ),
+                            ElevatedButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: Text(
+                                'cancel',
+                                style: TextStyle(color: Palette.primalBlack),
+                              ),
+                            ),
+                          ],
+                        ),
+                  );
                 },
                 child: const Text("delete account"),
               ),
