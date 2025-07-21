@@ -1,18 +1,15 @@
-import 'dart:async';
-import 'dart:convert';
-import 'dart:math';
-import 'package:flutter/foundation.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:crypto/crypto.dart';
+import 'package:gig_hub/src/Data/app_imports.dart';
 import 'package:http/http.dart' as http;
-import 'package:url_launcher/url_launcher.dart';
 
 class SoundcloudAuth {
-  static const String clientId = '5myDaCOr1DPDiVQfmR0kAc0Sp2D36ww5';
-  static const String clientSecret = 'JCnARmRDVok6HGx70LzRTLUZtTAWoYi4';
-  static const String redirectUri = 'gighub://callback';
-  static const String authEndpoint = 'https://soundcloud.com/connect';
-  static const String tokenEndpoint = 'https://api.soundcloud.com/oauth2/token';
+  static final String clientId = dotenv.env['SOUNDCLOUD_CLIENT_ID'] ?? '';
+  static final String clientSecret =
+      dotenv.env['SOUNDCLOUD_CLIENT_SECRET'] ?? '';
+  static final String redirectUri = dotenv.env['SOUNDCLOUD_REDIRECT_URI'] ?? '';
+  static final String authEndpoint =
+      dotenv.env['SOUNDCLOUD_AUTH_ENDPOINT'] ?? '';
+  static final String tokenEndpoint =
+      dotenv.env['SOUNDCLOUD_TOKEN_ENDPOINT'] ?? '';
 
   final _secureStorage = FlutterSecureStorage();
   String? _codeVerifier;
