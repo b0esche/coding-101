@@ -1,13 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:gig_hub/src/Data/firestore_repository.dart';
-import 'package:gig_hub/src/Data/users.dart';
-import 'package:gig_hub/src/Features/search/presentation/custom_form_field.dart';
-import 'package:gig_hub/src/Features/search/presentation/widgets/bpm_selection_dialog.dart';
-import 'package:gig_hub/src/Features/search/presentation/widgets/genre_selection_dialog.dart';
-import 'package:gig_hub/src/Features/search/presentation/widgets/location_picker.dart';
-import 'package:gig_hub/src/Theme/palette.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
+import 'package:gig_hub/src/Data/app_imports.dart';
 
 class SearchFunctionCard extends StatefulWidget {
   final void Function(List<DJ>) onSearchResults;

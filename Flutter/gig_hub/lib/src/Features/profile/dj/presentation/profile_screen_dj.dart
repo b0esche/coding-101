@@ -1,15 +1,3 @@
-import "dart:async";
-import "dart:io";
-
-import "package:cloud_firestore/cloud_firestore.dart";
-import "package:firebase_storage/firebase_storage.dart";
-import "package:gig_hub/src/Features/profile/dj/domain/soundcloud_authentication.dart";
-import "package:gig_hub/src/Features/profile/dj/domain/soundcloud_service.dart";
-import "package:hive_flutter/hive_flutter.dart";
-import "package:liquid_glass_renderer/liquid_glass_renderer.dart";
-import "package:provider/provider.dart";
-import "package:url_launcher/url_launcher_string.dart";
-
 import "../../../../Data/app_imports.dart";
 import "../../../../Data/app_imports.dart" as http;
 
@@ -199,29 +187,29 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
           }
         });
       } else {
-        debugPrint(
-          'Google Places API Error: ${data['status']} - ${data['error_message']}',
-        );
         setState(() {
           _locationError = ' ';
           if (editMode) {
             _formKey.currentState?.validate();
           }
         });
+        throw Exception(
+          'google places api error: ${data['status']} - ${data['error_message']}',
+        );
       }
     } catch (e) {
-      debugPrint('Network error during city validation: $e');
       setState(() => _locationError = ' ');
       if (editMode) {
         _formKey.currentState?.validate();
       }
+      throw Exception('network error during city validation: $e');
     }
   }
 
   Future<void> _loadTracksIfAvailable() async {
     final token = await _soundcloudAuth.getAccessToken();
     if (token == null) {
-      debugPrint("⚠️ Kein gültiger AccessToken gefunden.");
+      Exception("no valid access token found");
       return;
     }
 

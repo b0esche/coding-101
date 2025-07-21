@@ -58,7 +58,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
       );
 
       if (publicUrl.isEmpty) {
-        throw Exception('📛 Ungültige oder leere Audiodatei vom Server.');
+        throw Exception('invalid audio file from server');
       }
 
       final dir = await getTemporaryDirectory();
@@ -74,7 +74,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
       if (!mounted) return;
       setState(() => _isLoading = false);
     } catch (e) {
-      debugPrint('❌ Fehler beim Laden des Audio-Players: $e');
+      throw Exception('error while loading player: $e');
     }
   }
 

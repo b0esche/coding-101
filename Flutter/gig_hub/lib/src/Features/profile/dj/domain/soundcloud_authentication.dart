@@ -34,7 +34,7 @@ class SoundcloudAuth {
     if (await canLaunchUrl(authUrl)) {
       await launchUrl(authUrl, mode: LaunchMode.externalApplication);
     } else {
-      throw Exception('Could not launch SoundCloud login URL.');
+      throw Exception('could not launch SoundCloud login url.');
     }
   }
 
@@ -70,10 +70,10 @@ class SoundcloudAuth {
           await _secureStorage.write(key: 'refresh_token', value: refreshToken);
         }
       } else {
-        debugPrint('❌ Fehler beim Token-Exchange: ${response.body}');
+        throw Exception('error on token exchange: ${response.body}');
       }
     } catch (e) {
-      debugPrint('❌ Exception beim Token-Exchange: $e');
+      throw Exception('exception on token exchange: $e');
     }
     await _secureStorage.delete(key: 'code_verifier');
   }
@@ -134,11 +134,10 @@ class SoundcloudAuth {
 
         return newAccessToken;
       } else {
-        debugPrint('❌ Failed to refresh token: ${response.body}');
         await _clearTokens();
       }
     } catch (e) {
-      debugPrint('❌ Exception during token refresh: $e');
+      throw Exception('exception during token refresh: $e');
     }
 
     return null;

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:gig_hub/src/Features/profile/dj/domain/soundcloud_authentication.dart';
 import 'package:http/http.dart' as http;
 
@@ -85,9 +84,6 @@ class SoundcloudService {
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     } else {
-      debugPrint(
-        '❌ Fehler beim Nachladen von Track $id: ${response.statusCode}',
-      );
       return {};
     }
   }
@@ -117,7 +113,6 @@ class SoundcloudService {
       );
 
       if (response.statusCode != 200) {
-        debugPrint('❌ Failed to get streams: ${response.statusCode}');
         return '';
       }
 
@@ -128,11 +123,9 @@ class SoundcloudService {
         return streamUrl;
       }
 
-      debugPrint('⚠️ No valid stream URL found in response');
       return '';
     } catch (e) {
-      debugPrint('❌ Exception in getPublicStreamUrl: $e');
-      return '';
+      throw Exception(e.toString());
     } finally {
       client.close();
     }

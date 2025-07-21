@@ -4,15 +4,15 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   Hive.openBox('favoritesBox');
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await dotenv.load(fileName: ".env");
-  final DatabaseRepository db = FirestoreDatabaseRepository();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   final AuthRepository auth = FirebaseAuthRepository();
+  final DatabaseRepository db = FirestoreDatabaseRepository();
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider<DatabaseRepository>(create: (_) => db),
         Provider(create: (context) => auth),
+        ChangeNotifierProvider<DatabaseRepository>(create: (_) => db),
       ],
       child: App(),
     ),

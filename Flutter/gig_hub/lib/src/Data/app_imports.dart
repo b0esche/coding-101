@@ -55,7 +55,6 @@ export 'package:gig_hub/src/Features/profile/booker/presentation/profile_screen_
 export 'package:gig_hub/src/Features/profile/dj/presentation/create_profile_dj.dart';
 export 'package:gig_hub/src/Features/profile/dj/presentation/profile_screen_dj.dart';
 export 'package:gig_hub/src/Features/profile/dj/presentation/audio_player.dart';
-export 'package:gig_hub/src/Features/profile/dj/presentation/inputfield_buttons.dart';
 export 'package:gig_hub/src/Features/profile/dj/presentation/star_rating_dj.dart';
 export 'package:gig_hub/src/Features/search/presentation/search_function_card.dart';
 export 'package:gig_hub/src/Features/search/presentation/search_list_tile.dart';

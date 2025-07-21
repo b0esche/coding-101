@@ -61,7 +61,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
   void _initDeepLinks() {
     _sub = _appLinks.uriLinkStream.listen((uri) {
       _onUri(uri);
-    }, onError: (err) => debugPrint('link stream error: $err'));
+    }, onError: (err) => throw Exception('link stream error: $err'));
   }
 
   void _onUri(Uri uri) async {
@@ -155,20 +155,20 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
           _formKey.currentState?.validate();
         });
       } else {
-        debugPrint(
-          'Google Places API Error: ${data['status']} - ${data['error_message']}',
-        );
         setState(() {
           _locationError = ' ';
           _formKey.currentState?.validate();
         });
+        throw Exception(
+          'google places api error: ${data['status']} - ${data['error_message']}',
+        );
       }
     } catch (e) {
-      debugPrint('Network error during city validation: $e');
       setState(() {
         _locationError = ' ';
         _formKey.currentState?.validate();
       });
+      throw Exception('network error during city validation: $e');
     }
   }
 
