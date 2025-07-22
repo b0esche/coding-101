@@ -83,6 +83,8 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
   SoundcloudTrack? selectedTrackOne;
   SoundcloudTrack? selectedTrackTwo;
 
+  bool isUploading = false;
+
   @override
   void initState() {
     super.initState();
@@ -1192,15 +1194,20 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                             ),
                                           );
                                         }
+                                        !editMode
+                                            ? PlayerController()
+                                                .stopAllPlayers()
+                                            : PlayerController()
+                                                .overrideAudioSession;
                                         if (editMode &&
                                             _formKey.currentState!.validate() &&
                                             (selectedTrackOne != null &&
                                                 selectedTrackTwo != null)) {
-                                          !editMode
-                                              ? PlayerController()
-                                                  .stopAllPlayers()
-                                              : PlayerController()
-                                                  .overrideAudioSession;
+                                          if (editMode) {
+                                            setState(() {
+                                              isUploading = !isUploading;
+                                            });
+                                          }
 
                                           widget.dj.about =
                                               _aboutController.text;
@@ -1305,7 +1312,10 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                             widget.dj.mediaImageUrls = newUrls;
                                           }
 
-                                          setState(() => editMode = !editMode);
+                                          setState(() {
+                                            isUploading = !isUploading;
+                                            editMode = !editMode;
+                                          });
                                           await db.updateDJ(widget.dj);
                                         } else if (!editMode) {
                                           PlayerController().stopAllPlayers();
@@ -1333,23 +1343,39 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                             spacing: 4,
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
-                                              Text(
-                                                !editMode
-                                                    ? "edit profile"
-                                                    : "done",
-                                                style: GoogleFonts.sometypeMono(
-                                                  textStyle: TextStyle(
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 13,
-                                                    color: Palette.glazedWhite,
-                                                    decoration:
-                                                        TextDecoration
-                                                            .underline,
-                                                    decorationColor:
-                                                        Palette.glazedWhite,
+                                              !isUploading
+                                                  ? Text(
+                                                    !editMode
+                                                        ? "edit profile"
+                                                        : "done",
+                                                    style:
+                                                        GoogleFonts.sometypeMono(
+                                                          textStyle: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            fontSize: 13,
+                                                            color:
+                                                                Palette
+                                                                    .glazedWhite,
+                                                            decoration:
+                                                                TextDecoration
+                                                                    .underline,
+                                                            decorationColor:
+                                                                Palette
+                                                                    .glazedWhite,
+                                                          ),
+                                                        ),
+                                                  )
+                                                  : SizedBox.square(
+                                                    dimension: 20,
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                          color:
+                                                              Palette
+                                                                  .forgedGold,
+                                                          strokeWidth: 2,
+                                                        ),
                                                   ),
-                                                ),
-                                              ),
                                               Icon(
                                                 !editMode
                                                     ? Icons.edit
