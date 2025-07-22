@@ -1,7 +1,4 @@
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:gig_hub/src/Data/app_imports.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:uuid/uuid.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -441,8 +438,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Navigator.of(context).pop();
                   if (!context.mounted) {
                     return;
-                  } else {
-                    Navigator.pop(context);
                   }
                 },
                 child: const Text("log out"),
