@@ -100,9 +100,6 @@ PODS:
     - GoogleUtilities/Environment (~> 8.1)
     - GTMSessionFetcher/Core (< 5.0, >= 3.4)
   - Flutter (1.0.0)
-  - flutter_appauth (0.0.1):
-    - AppAuth (= 1.7.4)
-    - Flutter
   - flutter_facebook_auth (7.1.2):
     - FBSDKLoginKit (~> 18.0.0)
     - Flutter
@@ -189,7 +186,6 @@ DEPENDENCIES:
   - firebase_storage (from `.symlinks/plugins/firebase_storage/ios`)
   - FirebaseFirestore (from `https://github.com/invertase/firestore-ios-sdk-frameworks.git`, tag `11.15.0`)
   - Flutter (from `Flutter`)
-  - flutter_appauth (from `.symlinks/plugins/flutter_appauth/ios`)
   - flutter_facebook_auth (from `.symlinks/plugins/flutter_facebook_auth/ios`)
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - flutter_native_splash (from `.symlinks/plugins/flutter_native_splash/ios`)
@@ -254,8 +250,6 @@ EXTERNAL SOURCES:
     :tag: 11.15.0
   Flutter:
     :path: Flutter
-  flutter_appauth:
-    :path: ".symlinks/plugins/flutter_appauth/ios"
   flutter_facebook_auth:
     :path: ".symlinks/plugins/flutter_facebook_auth/ios"
   flutter_keyboard_visibility:
@@ -314,7 +308,6 @@ SPEC CHECKSUMS:
   FirebaseSharedSwift: e17c654ef1f1a616b0b33054e663ad1035c8fd40
   FirebaseStorage: 50fc9ee147392943e492467db6b52759b0447037
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_appauth: b951036a3b715d9e38fe5c0e2eb9aded58383984
   flutter_facebook_auth: d97dc09216aebd99d7ac52360186a630f67bdf18
   flutter_keyboard_visibility: 4625131e43015dbbe759d9b20daaf77e0e3f6619
   flutter_native_splash: c32d145d68aeda5502d5f543ee38c192065986cf

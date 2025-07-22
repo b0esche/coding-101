@@ -14,14 +14,7 @@ class ChatListItemWidget extends StatelessWidget {
   });
 
   String _formatTimestamp(DateTime timestamp) {
-    final now = DateTime.now();
-    final difference = now.difference(timestamp);
-
-    if (difference.inHours >= 24) {
-      return '24h+';
-    } else {
-      return DateFormat.Hm().format(timestamp);
-    }
+    return DateFormat.Hm().format(timestamp);
   }
 
   @override

@@ -338,7 +338,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 backgroundColor: Palette.forgedGold,
                                 content: Center(
                                   child: Text(
-                                    "invalid credentials!",
+                                    "invalid password or email!",
                                     style: TextStyle(fontSize: 16),
                                   ),
                                 ),

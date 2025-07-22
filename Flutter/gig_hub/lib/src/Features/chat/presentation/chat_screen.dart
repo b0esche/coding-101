@@ -258,7 +258,7 @@ class ChatScreenState extends State<ChatScreen> {
                               ],
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.only(top: 2, bottom: 2),
+                              padding: const EdgeInsets.only(top: 4, bottom: 2),
                               child: Text(
                                 message.message,
                                 style: TextStyle(
@@ -269,8 +269,8 @@ class ChatScreenState extends State<ChatScreen> {
                             ),
                           ),
                           Positioned(
-                            top: 5,
-                            right: 12,
+                            top: 8,
+                            right: 10,
                             child: Text(
                               '${message.timestamp.hour.toString().padLeft(2, '0')}:${message.timestamp.minute.toString().padLeft(2, '0')}',
                               style: TextStyle(

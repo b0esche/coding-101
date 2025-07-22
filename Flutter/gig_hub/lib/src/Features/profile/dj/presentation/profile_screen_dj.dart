@@ -361,6 +361,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                         color: Palette.shadowGrey,
                         style: const ButtonStyle(
                           tapTargetSize: MaterialTapTargetSize.padded,
+                          splashFactory: NoSplash.splashFactory,
                         ),
                       ),
                     ),
@@ -375,10 +376,10 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                           decoration: BoxDecoration(
                             border: Border.all(
                               width: 0.5,
-                              color: Palette.gigGrey.o(0.65),
+                              color: Palette.gigGrey.o(0.85),
                             ),
                             shape: BoxShape.circle,
-                            color: Palette.primalBlack.o(0.35),
+                            color: Palette.primalBlack.o(0.5),
                           ),
                           child: IconButton(
                             style: ButtonStyle(
