@@ -1,4 +1,7 @@
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:gig_hub/src/Data/app_imports.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:uuid/uuid.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -28,18 +31,47 @@ class _SettingsScreenState extends State<SettingsScreen> {
     });
   }
 
+  Future<File> compressImage(File file) async {
+    final tempDir = await getTemporaryDirectory();
+    final targetPath = '${tempDir.path}/${const Uuid().v4()}.jpg';
+
+    final compressedBytes = await FlutterImageCompress.compressWithFile(
+      file.path,
+      quality: 70,
+      format: CompressFormat.jpeg,
+    );
+
+    if (compressedBytes == null) {
+      throw Exception('❌ Image compression failed');
+    }
+
+    final compressedFile = File(targetPath);
+    await compressedFile.writeAsBytes(compressedBytes);
+
+    return compressedFile;
+  }
+
   Future<void> _pickNewImage() async {
     final picker = ImagePicker();
     final picked = await picker.pickImage(source: ImageSource.gallery);
 
     if (picked != null && _user != null) {
-      final file = File(picked.path);
+      final originalFile = File(picked.path);
+      final compressedFile = await compressImage(originalFile);
+
       final storageRef = FirebaseStorage.instance.ref().child(
         'avatars/${_user!.id}.jpg',
       );
 
       try {
-        final uploadTask = await storageRef.putFile(file);
+        final uploadTask = await storageRef.putFile(
+          compressedFile,
+          SettableMetadata(
+            contentType: 'image/jpeg',
+            customMetadata: {'ownerId': _user!.id},
+          ),
+        );
+
         final downloadUrl = await uploadTask.ref.getDownloadURL();
 
         setState(() {
