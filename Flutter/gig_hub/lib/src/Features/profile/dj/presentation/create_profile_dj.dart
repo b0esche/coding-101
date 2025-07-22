@@ -84,6 +84,26 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
     }
   }
 
+  Future<File> compressImage(File file) async {
+    final tempDir = await getTemporaryDirectory();
+    final targetPath = '${tempDir.path}/${const Uuid().v4()}.jpg';
+
+    final compressedBytes = await FlutterImageCompress.compressWithFile(
+      file.path,
+      quality: 70,
+      format: CompressFormat.jpeg,
+    );
+
+    if (compressedBytes == null) {
+      throw Exception('image compression failed');
+    }
+
+    final compressedFile = File(targetPath);
+    await compressedFile.writeAsBytes(compressedBytes);
+
+    return compressedFile;
+  }
+
   @override
   void dispose() {
     _locationFocusNode.removeListener(_onLocationFocusChange);
@@ -232,11 +252,18 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                       splashFactory: NoSplash.splashFactory,
                     ),
                     onPressed: () async {
-                      final XFile? newUserHeadUrl = await ImagePicker()
-                          .pickImage(source: ImageSource.gallery);
-                      if (newUserHeadUrl != null) {
+                      final XFile? picked = await ImagePicker().pickImage(
+                        source: ImageSource.gallery,
+                      );
+
+                      if (picked != null) {
+                        final File originalFile = File(picked.path);
+                        final File compressedFile = await compressImage(
+                          originalFile,
+                        );
+
                         setState(() {
-                          headUrl = newUserHeadUrl.path;
+                          headUrl = compressedFile.path;
                         });
                       }
                     },
@@ -671,15 +698,26 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                   tapTargetSize: MaterialTapTargetSize.padded,
                                 ),
                                 onPressed: () async {
-                                  List<XFile> medias = await ImagePicker()
-                                      .pickMultiImage(limit: 5);
-                                  List<String> newMediaUrls =
-                                      medias
-                                          .map((element) => element.path)
-                                          .toList();
-                                  setState(() {
-                                    mediaUrl = newMediaUrls;
-                                  });
+                                  final picker = ImagePicker();
+                                  final medias = await picker.pickMultiImage(
+                                    limit: 5,
+                                  );
+
+                                  if (medias.isNotEmpty) {
+                                    List<String> newMediaUrls = [];
+
+                                    for (XFile xfile in medias) {
+                                      File originalFile = File(xfile.path);
+                                      File compressedFile = await compressImage(
+                                        originalFile,
+                                      );
+                                      newMediaUrls.add(compressedFile.path);
+                                    }
+
+                                    setState(() {
+                                      mediaUrl = newMediaUrls;
+                                    });
+                                  }
                                 },
                                 icon: Icon(
                                   Icons.file_upload_rounded,

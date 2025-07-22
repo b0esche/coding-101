@@ -96,6 +96,26 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
     _loadTracksIfAvailable();
   }
 
+  Future<File> compressImage(File file) async {
+    final tempDir = await getTemporaryDirectory();
+    final targetPath = '${tempDir.path}/${const Uuid().v4()}.jpg';
+
+    final compressedBytes = await FlutterImageCompress.compressWithFile(
+      file.path,
+      quality: 70,
+      format: CompressFormat.jpeg,
+    );
+
+    if (compressedBytes == null) {
+      throw Exception('image compression failed');
+    }
+
+    final compressedFile = File(targetPath);
+    await compressedFile.writeAsBytes(compressedBytes);
+
+    return compressedFile;
+  }
+
   @override
   void dispose() {
     _debounceTimer?.cancel();
@@ -320,11 +340,18 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                             splashFactory: NoSplash.splashFactory,
                           ),
                           onPressed: () async {
-                            final XFile? newMedia = await ImagePicker()
-                                .pickImage(source: ImageSource.gallery);
-                            if (newMedia != null) {
+                            final XFile? picked = await ImagePicker().pickImage(
+                              source: ImageSource.gallery,
+                            );
+
+                            if (picked != null) {
+                              final File originalFile = File(picked.path);
+                              final File compressedFile = await compressImage(
+                                originalFile,
+                              );
+
                               setState(() {
-                                widget.dj.headImageUrl = newMedia.path;
+                                widget.dj.headImageUrl = compressedFile.path;
                               });
                             }
                           },
@@ -1018,10 +1045,15 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                   onPressed: () async {
                                     List<XFile> medias = await ImagePicker()
                                         .pickMultiImage(limit: 5);
-                                    List<String> mediaUrls =
-                                        medias
-                                            .map((element) => element.path)
-                                            .toList();
+                                    List<String> newMediaUrls = [];
+                                    for (XFile xfile in medias) {
+                                      File originalFile = File(xfile.path);
+                                      File compressedFile = await compressImage(
+                                        originalFile,
+                                      );
+                                      newMediaUrls.add(compressedFile.path);
+                                    }
+                                    List<String> mediaUrls = newMediaUrls;
                                     setState(() {
                                       widget.dj.mediaImageUrls.addAll(
                                         mediaUrls,

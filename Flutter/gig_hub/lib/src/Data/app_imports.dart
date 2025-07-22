@@ -63,3 +63,6 @@ export 'package:gig_hub/src/Features/search/presentation/custom_form_field.dart'
 export 'package:gig_hub/src/Features/search/presentation/widgets/location_picker.dart';
 export 'package:gig_hub/src/Features/search/presentation/widgets/bpm_selection_dialog.dart';
 export 'package:gig_hub/src/Features/search/presentation/widgets/genre_selection_dialog.dart';
+export "package:flutter_image_compress/flutter_image_compress.dart";
+export "package:path_provider/path_provider.dart";
+export "package:uuid/uuid.dart";
