@@ -42,7 +42,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
 
     if (compressedBytes == null) {
-      throw Exception('❌ Image compression failed');
+      throw Exception('image compression failed');
     }
 
     final compressedFile = File(targetPath);
@@ -86,7 +86,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
         await db.updateUser(_user!);
       } catch (e) {
-        debugPrint('❌ Fehler beim Hochladen oder Speichern: $e');
+        throw Exception('error while uploading: $e');
       }
     }
   }
