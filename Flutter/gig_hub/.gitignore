@@ -36,7 +36,7 @@ firebase.json
 .pub/
 /build/
 /lib/src/Common/soundcloud_track_id_pulling_service.dart.dart
-/android/app/google-services.json
+/android/app/src/google-services.json
 /ios/Runner/GoogleService-Info.plist
 
 # Symbolication related
