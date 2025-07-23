@@ -62,9 +62,11 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Need permission to access your camera to take a new image.</string>
+	<string>Need permission to access your camera to take new images.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Need permission to upload images to your profile.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Need persmission to access your microphone.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

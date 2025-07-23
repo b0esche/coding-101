@@ -7,20 +7,12 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:753984654569:android:0dec776f88ab40a734f478",
+        "mobilesdk_app_id": "1:753984654569:android:f7e9b222eb84e7e234f478",
         "android_client_info": {
           "package_name": "com.example.gig_hub"
         }
       },
       "oauth_client": [
-        {
-          "client_id": "753984654569-4rqmmfs1lqcre7aj8lrt7149j6ncq2ek.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.gig_hub",
-            "certificate_hash": "605d147a16392c3ee306d5c42e1afa7b704d2256"
-          }
-        },
         {
           "client_id": "753984654569-b13kjdjur7pjm9an46f3qt0aj36qdps6.apps.googleusercontent.com",
           "client_type": 3
@@ -39,10 +31,10 @@
               "client_type": 3
             },
             {
-              "client_id": "753984654569-9da6clav6eamkjt0l2b27mehkl2l1spj.apps.googleusercontent.com",
+              "client_id": "753984654569-49vkjnsevln5u2c5ss6fspapm9lc0jar.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.gigHub"
+                "bundle_id": "com.b0esche.gigHub"
               }
             }
           ]
