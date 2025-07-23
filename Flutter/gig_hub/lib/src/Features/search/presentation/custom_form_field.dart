@@ -34,7 +34,7 @@ class CustomFormField extends StatelessWidget {
             fontWeight: FontWeight.w700,
             fontSize: 16,
             overflow: TextOverflow.ellipsis,
-            wordSpacing: -2,
+            wordSpacing: -4,
           ),
         ),
         decoration: InputDecoration(

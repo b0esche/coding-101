@@ -241,7 +241,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
         SnackBar(
           backgroundColor: Palette.forgedGold,
           content: Center(
-            child: Text("reset email sent!", style: TextStyle(fontSize: 16)),
+            child: Text(
+              "follow the link in your emails to reset your password!",
+            ),
           ),
         ),
       );
@@ -413,7 +415,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ),
                           actions: [
                             ElevatedButton(
-                              onPressed: () => auth.deleteUser(),
+                              onPressed: () async {
+                                await auth.deleteUser();
+                                if (!context.mounted) return;
+                                if (mounted) {
+                                  Navigator.of(context).pop();
+                                  // TODO: noch ein pop oder zum login screen
+                                }
+                              },
                               child: Text(
                                 'delete account',
                                 style: TextStyle(color: Palette.primalBlack),

@@ -62,39 +62,42 @@ class _GenreSelectionDialogState extends State<GenreSelectionDialog> {
                           }
                         });
                       },
-                      child: ListTile(
-                        title: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              genre,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: Palette.primalBlack,
+                      child: SizedBox(
+                        height: 60,
+                        child: ListTile(
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                genre,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: Palette.primalBlack,
+                                ),
                               ),
-                            ),
-                            IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  if (isSelected) {
-                                    selectedGenres.remove(genre);
-                                    _showLimitWarning = false;
-                                  } else if (selectedGenres.length < 5) {
-                                    selectedGenres.add(genre);
-                                    _showLimitWarning = false;
-                                  } else {
-                                    _showLimitWarning = true;
-                                  }
-                                });
-                              },
-                              icon: Icon(
-                                isSelected
-                                    ? Icons.check_circle
-                                    : Icons.circle_outlined,
-                                color: Palette.primalBlack.o(0.9),
+                              IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    if (isSelected) {
+                                      selectedGenres.remove(genre);
+                                      _showLimitWarning = false;
+                                    } else if (selectedGenres.length < 5) {
+                                      selectedGenres.add(genre);
+                                      _showLimitWarning = false;
+                                    } else {
+                                      _showLimitWarning = true;
+                                    }
+                                  });
+                                },
+                                icon: Icon(
+                                  isSelected
+                                      ? Icons.check_circle
+                                      : Icons.circle_outlined,
+                                  color: Palette.primalBlack.o(0.65),
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     );
