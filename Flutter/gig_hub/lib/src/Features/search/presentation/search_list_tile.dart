@@ -294,7 +294,7 @@ class _SearchListTileState extends State<SearchListTile> {
                                           widget.about,
                                           maxLines: 4,
                                           softWrap: true,
-                                          overflow: TextOverflow.visible,
+                                          overflow: TextOverflow.ellipsis,
                                           style: TextStyle(fontSize: 14.5),
                                         ),
                                       ),

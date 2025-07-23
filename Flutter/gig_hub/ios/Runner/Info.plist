@@ -1,99 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-  <dict>
-    <key>CFBundleDevelopmentRegion</key>
-    <string>$(DEVELOPMENT_LANGUAGE)</string>
-    <key>CFBundleDisplayName</key>
-    <string>Gig Hub</string>
-    <key>CFBundleExecutable</key>
-    <string>$(EXECUTABLE_NAME)</string>
-    <key>CFBundleIdentifier</key>
-    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-    <key>CFBundleInfoDictionaryVersion</key>
-    <string>6.0</string>
-    <key>CFBundleName</key>
-    <string>GigHub</string>
-    <key>CFBundlePackageType</key>
-    <string>APPL</string>
-    <key>CFBundleShortVersionString</key>
-    <string>$(FLUTTER_BUILD_NAME)</string>
-    <key>CFBundleSignature</key>
-    <string>????</string>
-    <key>CFBundleVersion</key>
-    <string>$(FLUTTER_BUILD_NUMBER)</string>
-    <key>LSRequiresIPhoneOS</key>
-    <true/>
-    <key>UILaunchStoryboardName</key>
-    <string>LaunchScreen</string>
-    <key>UIMainStoryboardFile</key>
-    <string>Main</string>
-    <key>UISupportedInterfaceOrientations</key>
-    <array>
-      <string>UIInterfaceOrientationPortrait</string>
-    </array>
-    <key>UISupportedInterfaceOrientations~ipad</key>
-    <array>
-      <string>UIInterfaceOrientationPortrait</string>
-      <string>UIInterfaceOrientationPortraitUpsideDown</string>
-      <string>UIInterfaceOrientationLandscapeLeft</string>
-      <string>UIInterfaceOrientationLandscapeRight</string>
-    </array>
-    <key>CADisableMinimumFrameDurationOnPhone</key>
-    <true/>
-    <key>UIApplicationSupportsIndirectInputEvents</key>
-    <true/>
-    <key>UIStatusBarHidden</key>
-    <false/>
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>Need permission to upload images to your profile.</string>
-    <key>NSCameraUsageDescription</key>
-    <string>Need permission to access your camera to take a new image.</string>
-    <key>ITSAppUsesNonExemptEncryption</key>
-    <false/>
-
-    <!-- ⚠️ URL Schemes für OAuth-Redirects -->
-    <key>CFBundleURLTypes</key>
-    <array>
-      <!-- GIG HUB SoundCloud / Custom Redirect -->
-      <dict>
-        <key>CFBundleURLName</key>
-        <string>com.gighub.soundcloud</string>
-        <key>CFBundleURLSchemes</key>
-        <array>
-          <string>gighub</string>
-        </array>
-      </dict>
-
-      <!-- Google URL-Scheme -->
-      <dict>
-        <key>CFBundleTypeRole</key>
-        <string>Editor</string>
-        <key>CFBundleURLSchemes</key>
-        <array>
-          <string>com.googleusercontent.apps.753984654569-9da6clav6eamkjt0l2b27mehkl2l1spj</string>
-        </array>
-      </dict>
-
-      <!-- Facebook URL-Scheme -->
-      <dict>
-        <key>CFBundleURLSchemes</key>
-        <array>
-          <string>fb24351049274489890</string>
-        </array>
-      </dict>
-    </array>
-
-    <!-- Google Client -->
-    <key>GIDClientID</key>
-    <string>753984654569-9da6clav6eamkjt0l2b27mehkl2l1spj.apps.googleusercontent.com</string>
-
-    <!-- Facebook Keys -->
-    <key>FacebookAppID</key>
-    <string>24351049274489890</string>
-    <key>FacebookClientToken</key>
-    <string>6b51d6e23be656eb0ae5c486d5384037</string>
-    <key>FacebookDisplayName</key>
-    <string>Gig Hub</string>
-  </dict>
+<dict>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDisplayName</key>
+	<string>Gig Hub</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>GigHub</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(FLUTTER_BUILD_NAME)</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.gighub.soundcloud</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>gighub</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.753984654569-9da6clav6eamkjt0l2b27mehkl2l1spj</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb24351049274489890</string>
+			</array>
+		</dict>
+	</array>
+	<key>CFBundleVersion</key>
+	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>FacebookAppID</key>
+	<string>24351049274489890</string>
+	<key>FacebookClientToken</key>
+	<string>6b51d6e23be656eb0ae5c486d5384037</string>
+	<key>FacebookDisplayName</key>
+	<string>Gig Hub</string>
+	<key>GIDClientID</key>
+	<string>753984654569-9da6clav6eamkjt0l2b27mehkl2l1spj.apps.googleusercontent.com</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Need permission to access your camera to take a new image.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Need permission to upload images to your profile.</string>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIMainStoryboardFile</key>
+	<string>Main</string>
+	<key>UIStatusBarHidden</key>
+	<false/>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+</dict>
 </plist>
