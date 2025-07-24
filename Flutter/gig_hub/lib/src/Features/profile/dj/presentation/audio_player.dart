@@ -22,8 +22,10 @@ class AudioPlayerWidget extends StatefulWidget {
   State<AudioPlayerWidget> createState() => _AudioPlayerWidgetState();
 }
 
-class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
+class _AudioPlayerWidgetState extends State<AudioPlayerWidget>
+    with TickerProviderStateMixin {
   late PlayerController _playerController;
+  late AnimationController _controller;
 
   bool _isLoading = true;
   bool _isPlaying = false;
@@ -35,6 +37,11 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
   @override
   void initState() {
     super.initState();
+
+    _controller = AnimationController(
+      duration: Duration(milliseconds: 650),
+      vsync: this,
+    );
 
     _playerController = widget.playerController;
 
@@ -83,6 +90,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
     _stateSub.cancel();
     _completeSub.cancel();
     _playerController.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -103,42 +111,74 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
   Widget build(BuildContext context) {
     return Container(
       color: Palette.primalBlack,
-      padding: const EdgeInsets.all(4),
+      padding: const EdgeInsets.only(top: 4, bottom: 4, right: 4),
       child:
           _isLoading
               ? Center(
-                child: SizedBox.square(
-                  dimension: 28,
-                  child: CircularProgressIndicator(
-                    color: Palette.forgedGold,
-                    strokeWidth: 2,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 12, bottom: 8),
+                  child: SizedBox.square(
+                    dimension: 28,
+                    child: CircularProgressIndicator(
+                      color: Palette.forgedGold,
+                      strokeWidth: 2,
+                    ),
                   ),
                 ),
               )
               : Row(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  IconButton(
-                    iconSize: 48,
-                    icon: Icon(
-                      _isPlaying ? Icons.pause_circle : Icons.play_circle,
-                      color: Palette.glazedWhite,
+                  GestureDetector(
+                    onTap: () async {
+                      await _togglePlayPause();
+                      if (_playerController.playerState.isPlaying) {
+                        _controller.forward();
+                      } else {
+                        _controller.reverse();
+                      }
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 12),
+                      child: Container(
+                        padding: EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Palette.shadowGrey.o(0.65),
+                            width: 1.65,
+                          ),
+                        ),
+                        child: AnimatedIcon(
+                          icon: AnimatedIcons.play_pause,
+                          progress: _controller,
+                          size: 28,
+                          color: Palette.forgedGold,
+                        ),
+                      ),
                     ),
-                    onPressed: _togglePlayPause,
                   ),
-                  AudioFileWaveforms(
-                    size: const Size(260, 85),
-                    playerController: _playerController,
-                    waveformType: WaveformType.long,
-                    animationCurve: Curves.easeInOutBack,
-                    animationDuration: Duration(milliseconds: 1200),
-                    playerWaveStyle: PlayerWaveStyle(
-                      fixedWaveColor: Palette.gigGrey.o(0.65),
-                      liveWaveColor: Palette.forgedGold,
-                      spacing: 4,
-                      waveThickness: 2,
-                      scaleFactor: 75,
-                      waveCap: StrokeCap.butt,
+                  SizedBox(
+                    width: 280,
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: AudioFileWaveforms(
+                        size: Size(360, 85),
+                        playerController: _playerController,
+                        waveformType: WaveformType.fitWidth,
+                        animationCurve: Curves.easeInOutBack,
+                        animationDuration: Duration(milliseconds: 1200),
+                        playerWaveStyle: PlayerWaveStyle(
+                          fixedWaveColor: Palette.gigGrey.o(0.65),
+                          liveWaveColor: Palette.forgedGold,
+                          spacing: 3.65,
+                          scrollScale: 1.35,
+                          waveThickness: 2,
+                          scaleFactor: 85,
+                          waveCap: StrokeCap.butt,
+                          seekLineColor: Palette.glazedWhite.o(0.85),
+                        ),
+                      ),
                     ),
                   ),
                 ],

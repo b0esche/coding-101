@@ -896,6 +896,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                   (widget.dj.trackTitles.isNotEmpty)
                                       ? widget.dj.trackTitles.first
                                       : 'first Track',
+                                  textAlign: TextAlign.center,
                                   style: GoogleFonts.sometypeMono(
                                     textStyle: TextStyle(
                                       wordSpacing: -3,
@@ -911,6 +912,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                   ),
                                 )
                                 : SizedBox.shrink(),
+                            SizedBox(height: 8),
                             !editMode
                                 ? Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
@@ -919,8 +921,11 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                       audioUrl: widget.dj.streamingUrls.first,
                                       playerController: _playerControllerOne,
                                     ),
-                                    const SizedBox(width: 2),
                                     IconButton(
+                                      style: ButtonStyle(
+                                        tapTargetSize:
+                                            MaterialTapTargetSize.shrinkWrap,
+                                      ),
                                       onPressed: () {
                                         launchUrlString(
                                           widget.dj.trackUrls.first,
@@ -945,6 +950,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                   (widget.dj.trackTitles.last.isNotEmpty)
                                       ? widget.dj.trackTitles.last
                                       : 'second track',
+                                  textAlign: TextAlign.center,
                                   style: GoogleFonts.sometypeMono(
                                     textStyle: TextStyle(
                                       color: Palette.glazedWhite,
@@ -960,6 +966,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                   ),
                                 )
                                 : SizedBox.shrink(),
+                            SizedBox(height: 8),
                             !editMode
                                 ? Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
@@ -968,8 +975,11 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                       audioUrl: widget.dj.streamingUrls.last,
                                       playerController: _playerControllerTwo,
                                     ),
-                                    const SizedBox(width: 2),
                                     IconButton(
+                                      style: ButtonStyle(
+                                        tapTargetSize:
+                                            MaterialTapTargetSize.shrinkWrap,
+                                      ),
                                       onPressed: () {
                                         launchUrlString(
                                           widget.dj.trackUrls.last,

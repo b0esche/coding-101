@@ -34,7 +34,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     final compressedBytes = await FlutterImageCompress.compressWithFile(
       file.path,
-      quality: 70,
+      quality: 60,
       format: CompressFormat.jpeg,
     );
 
@@ -435,7 +435,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 if (!context.mounted) return;
                                 if (mounted) {
                                   Navigator.of(context).pop();
-                                  // TODO: noch ein pop oder zum login screen
+                                  Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                      builder: (context) => LoginScreen(),
+                                    ),
+                                  );
                                 }
                               },
                               child: Text(
@@ -461,12 +465,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   backgroundColor: WidgetStateProperty.all(Palette.shadowGrey),
                   splashFactory: NoSplash.splashFactory,
                 ),
-                onPressed: () {
-                  auth.signOut();
-                  Navigator.of(context).pop();
+                onPressed: () async {
+                  await auth.signOut();
                   if (!context.mounted) {
                     return;
                   }
+                  Navigator.of(context).pop();
                 },
                 child: const Text("log out"),
               ),
