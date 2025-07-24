@@ -195,41 +195,44 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
   }
 
   @override
-  Future<List<ChatMessage>> getChats(String userId) async {
-    final querySnapshot =
-        await _firestore
-            .collection('chats')
-            .where('participants', arrayContains: userId)
-            .get();
+  Stream<List<ChatMessage>> getChatsStream(String userId) {
+    return _firestore
+        .collection('chats')
+        .where('participants', arrayContains: userId)
+        .snapshots()
+        .map((querySnapshot) {
+          List<ChatMessage> allMessages = [];
 
-    List<ChatMessage> allMessages = [];
+          for (var doc in querySnapshot.docs) {
+            final data = doc.data();
 
-    for (var doc in querySnapshot.docs) {
-      final data = doc.data();
+            final chatId = doc.id;
+            final lastMessage = data['lastMessage'] as String? ?? '';
+            final timestamp = (data['lastTimestamp'] as Timestamp?)?.toDate();
+            final participants = List<String>.from(data['participants'] ?? []);
+            final senderId = data['lastSenderId'] as String? ?? userId;
 
-      final chatId = doc.id;
-      final lastMessage = data['lastMessage'] as String? ?? '';
-      final timestamp = (data['lastTimestamp'] as Timestamp?)?.toDate();
-      final participants = List<String>.from(data['participants'] ?? []);
-      final senderId = data['lastSenderId'] as String? ?? userId;
+            final receiverId = participants.firstWhere(
+              (id) => id != userId,
+              orElse: () => '',
+            );
 
-      final receiverId = participants.firstWhere((id) => id != userId);
+            if (receiverId.isEmpty || timestamp == null) continue;
 
-      if (receiverId.isEmpty) continue;
+            allMessages.add(
+              ChatMessage(
+                id: chatId,
+                senderId: senderId,
+                receiverId: receiverId,
+                message: lastMessage,
+                timestamp: timestamp,
+                read: false,
+              ),
+            );
+          }
 
-      allMessages.add(
-        ChatMessage(
-          id: chatId,
-          senderId: senderId,
-          receiverId: receiverId,
-          message: lastMessage,
-          timestamp: timestamp!,
-          read: false,
-        ),
-      );
-    }
-
-    return allMessages;
+          return allMessages;
+        });
   }
 
   @override

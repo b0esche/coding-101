@@ -29,7 +29,7 @@ abstract class DatabaseRepository with ChangeNotifier {
 
   // chat ###
   Future<void> sendMessage(ChatMessage message);
-  Future<List<ChatMessage>> getChats(String userId);
+  Stream<List<ChatMessage>> getChatsStream(String userId);
   String getChatId(String uid1, String uid2);
   Stream<List<ChatMessage>> getMessagesStream(
     String senderId,

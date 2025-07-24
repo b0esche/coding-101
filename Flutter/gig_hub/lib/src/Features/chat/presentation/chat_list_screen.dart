@@ -18,71 +18,46 @@ class ChatListScreen extends StatefulWidget {
 }
 
 class _ChatListScreenState extends State<ChatListScreen> {
-  List<dynamic> _chatEntries = [];
-  bool _isLoading = true;
-  bool _hasError = false;
   final db = FirestoreDatabaseRepository();
 
   @override
   void initState() {
     super.initState();
-    _loadRecentChats();
   }
 
-  Future<void> _loadRecentChats() async {
-    try {
-      final recentMessages = await db.getChats(widget.currentUser.id);
+  Future<List<dynamic>> _buildChatEntries(
+    List<ChatMessage> recentMessages,
+  ) async {
+    final List<ChatListItem> items = [];
 
-      final List<ChatListItem> items = [];
-      for (final msg in recentMessages) {
-        final partnerId =
-            msg.senderId == widget.currentUser.id
-                ? msg.receiverId
-                : msg.senderId;
-
-        final partnerUser = await db.getUserById(partnerId);
-
-        items.add(ChatListItem(user: partnerUser, recent: msg));
-      }
-
-      items.sort((a, b) => b.recent.timestamp.compareTo(a.recent.timestamp));
-
-      final List<dynamic> entries = [];
-
-      DateTime? lastDate;
-
-      for (final item in items) {
-        final itemDate = DateTime(
-          item.recent.timestamp.year,
-          item.recent.timestamp.month,
-          item.recent.timestamp.day,
-        );
-
-        if (lastDate == null || itemDate.isBefore(lastDate)) {
-          entries.add(itemDate);
-          lastDate = itemDate;
-        }
-
-        entries.add(item);
-      }
-
-      if (mounted) {
-        setState(() {
-          _chatEntries = entries;
-          _hasError = false;
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      debugPrint('$e');
-
-      if (mounted) {
-        setState(() {
-          _hasError = true;
-          _isLoading = false;
-        });
-      }
+    for (final msg in recentMessages) {
+      final partnerId =
+          msg.senderId == widget.currentUser.id ? msg.receiverId : msg.senderId;
+      final partnerUser = await db.getUserById(partnerId);
+      items.add(ChatListItem(user: partnerUser, recent: msg));
     }
+
+    items.sort((a, b) => b.recent.timestamp.compareTo(a.recent.timestamp));
+
+    final List<dynamic> entries = [];
+    DateTime? lastDate;
+
+    for (final item in items) {
+      final itemDate = DateTime(
+        item.recent.timestamp.year,
+        item.recent.timestamp.month,
+        item.recent.timestamp.day,
+      );
+
+      if (lastDate == null || itemDate.isBefore(lastDate)) {
+        entries.add(itemDate);
+        lastDate = itemDate;
+      }
+
+      entries.add(item);
+    }
+
+    return entries;
   }
 
   @override
@@ -100,33 +75,51 @@ class _ChatListScreenState extends State<ChatListScreen> {
         iconTheme: IconThemeData(color: Palette.glazedWhite),
         titleTextStyle: TextStyle(color: Palette.glazedWhite, fontSize: 20),
       ),
-      body:
-          _isLoading
-              ? Center(
-                child: CircularProgressIndicator(
-                  color: Palette.forgedGold,
-                  strokeWidth: 1.65,
-                ),
-              )
-              : _hasError
-              ? Center(
-                child: Text(
-                  'couldn\'t load chats',
-                  style: TextStyle(color: Palette.glazedWhite),
-                ),
-              )
-              : _chatEntries.isEmpty
-              ? Center(
-                child: Text(
-                  'no chats. start now!',
-                  style: TextStyle(color: Palette.glazedWhite, fontSize: 16),
-                ),
-              )
-              : ListView.builder(
+      body: StreamBuilder<List<ChatMessage>>(
+        stream: db.getChatsStream(widget.currentUser.id),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(
+                color: Palette.forgedGold,
+                strokeWidth: 1.65,
+              ),
+            );
+          }
+
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                'couldn\'t load chats',
+                style: TextStyle(color: Palette.glazedWhite),
+              ),
+            );
+          }
+
+          final recentMessages = snapshot.data ?? [];
+
+          if (recentMessages.isEmpty) {
+            return Center(
+              child: Text(
+                'no chats. start now!',
+                style: TextStyle(color: Palette.glazedWhite, fontSize: 16),
+              ),
+            );
+          }
+
+          return FutureBuilder<List<dynamic>>(
+            future: _buildChatEntries(recentMessages),
+            builder: (context, asyncSnapshot) {
+              if (!asyncSnapshot.hasData) {
+                return const SizedBox.shrink();
+              }
+
+              final chatEntries = asyncSnapshot.data!;
+              return ListView.builder(
                 padding: const EdgeInsets.all(12),
-                itemCount: _chatEntries.length,
+                itemCount: chatEntries.length,
                 itemBuilder: (context, idx) {
-                  final entry = _chatEntries[idx];
+                  final entry = chatEntries[idx];
 
                   if (entry is DateTime) {
                     final isToday =
@@ -135,6 +128,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                         isToday
                             ? 'Today'
                             : DateFormat('MMM dd, yyyy').format(entry);
+
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Center(
@@ -159,21 +153,23 @@ class _ChatListScreenState extends State<ChatListScreen> {
                           context,
                           MaterialPageRoute(
                             builder:
-                                (context) => ChatScreen(
+                                (_) => ChatScreen(
                                   chatPartner: entry.user,
                                   currentUser: widget.currentUser,
                                 ),
                           ),
-                        ).then((_) {
-                          _loadRecentChats();
-                        });
+                        );
                       },
                     );
                   }
 
                   return const SizedBox.shrink();
                 },
-              ),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }
