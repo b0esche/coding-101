@@ -283,24 +283,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
         backgroundColor: Palette.primalBlack,
         body: Center(
           child: Column(
-            spacing: 20,
-            mainAxisSize: MainAxisSize.min,
+            spacing: 16,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const SizedBox(height: 24),
+              SizedBox(height: 2),
               Align(
                 alignment: Alignment.topLeft,
                 child: IconButton(
                   onPressed: () => Navigator.of(context).pop(),
-
                   icon: const Icon(Icons.chevron_left_rounded, size: 36),
                   color: Palette.glazedWhite,
+                  style: ButtonStyle(
+                    tapTargetSize: MaterialTapTargetSize.padded,
+                    splashFactory: NoSplash.splashFactory,
+                  ),
                 ),
               ),
-              Hero(
-                tag: context,
-                child: Image.asset("assets/images/gighub_logo.png"),
+              SizedBox(
+                height: 122,
+                child: Image.asset("assets/images/icon_full.png"),
               ),
-              const SizedBox(height: 24),
               if (hasAvatar && avatarProvider != null)
                 Stack(
                   children: [
@@ -313,7 +315,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                       ),
                       child: CircleAvatar(
-                        radius: 64,
+                        radius: 54,
                         backgroundImage: avatarProvider,
                       ),
                     ),
@@ -343,7 +345,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ],
                 ),
-              const SizedBox(height: 4),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -387,78 +388,96 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ],
               ),
-              FilledButton(
-                style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(Palette.shadowGrey),
-                  splashFactory: NoSplash.splashFactory,
+              SizedBox(
+                height: 32,
+                width: 168,
+                child: FilledButton(
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all(
+                      Palette.shadowGrey,
+                    ),
+                    splashFactory: NoSplash.splashFactory,
+                  ),
+                  onPressed: _onResetPassword,
+                  child: const Text("change password"),
                 ),
-                onPressed: _onResetPassword,
-                child: const Text("change password"),
               ),
-              FilledButton(
-                style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(Palette.shadowGrey),
-                  splashFactory: NoSplash.splashFactory,
+              SizedBox(
+                height: 32,
+                width: 168,
+                child: FilledButton(
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all(
+                      Palette.shadowGrey,
+                    ),
+                    splashFactory: NoSplash.splashFactory,
+                  ),
+                  onPressed: () {
+                    // TODO: blocked users page
+                  },
+                  child: const Text("blocked users"),
                 ),
-                onPressed: () {
-                  // TODO: blocked users page
-                },
-                child: const Text("blocked users"),
               ),
-              FilledButton(
-                style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(Palette.shadowGrey),
-                  splashFactory: NoSplash.splashFactory,
-                ),
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder:
-                        (context) => AlertDialog(
-                          backgroundColor: Palette.forgedGold,
+              SizedBox(
+                height: 32,
+                width: 168,
+                child: FilledButton(
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all(
+                      Palette.shadowGrey,
+                    ),
+                    splashFactory: NoSplash.splashFactory,
+                  ),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder:
+                          (context) => AlertDialog(
+                            backgroundColor: Palette.forgedGold,
 
-                          title: Center(
-                            child: Text(
-                              'are you sure?',
-                              style: GoogleFonts.sometypeMono(
-                                textStyle: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600,
+                            title: Center(
+                              child: Text(
+                                'are you sure?',
+                                style: GoogleFonts.sometypeMono(
+                                  textStyle: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                               ),
                             ),
+                            actions: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  auth.deleteUser();
+                                  if (!context.mounted) return;
+                                  if (mounted) {
+                                    Navigator.of(context).pop();
+                                    Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(
+                                        builder: (context) => LoginScreen(),
+                                      ),
+                                    );
+                                  }
+                                },
+                                child: Text(
+                                  'delete account',
+                                  style: TextStyle(color: Palette.primalBlack),
+                                ),
+                              ),
+                              ElevatedButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: Text(
+                                  'cancel',
+                                  style: TextStyle(color: Palette.primalBlack),
+                                ),
+                              ),
+                            ],
                           ),
-                          actions: [
-                            ElevatedButton(
-                              onPressed: () {
-                                auth.deleteUser();
-                                if (!context.mounted) return;
-                                if (mounted) {
-                                  Navigator.of(context).pop();
-                                  Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(
-                                      builder: (context) => LoginScreen(),
-                                    ),
-                                  );
-                                }
-                              },
-                              child: Text(
-                                'delete account',
-                                style: TextStyle(color: Palette.primalBlack),
-                              ),
-                            ),
-                            ElevatedButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: Text(
-                                'cancel',
-                                style: TextStyle(color: Palette.primalBlack),
-                              ),
-                            ),
-                          ],
-                        ),
-                  );
-                },
-                child: const Text("delete account"),
+                    );
+                  },
+                  child: const Text("delete account"),
+                ),
               ),
               FilledButton(
                 style: ButtonStyle(

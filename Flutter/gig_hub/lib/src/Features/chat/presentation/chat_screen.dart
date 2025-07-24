@@ -171,7 +171,7 @@ class ChatScreenState extends State<ChatScreen> {
             ),
             const SizedBox(width: 16),
             SizedBox(
-              width: 222,
+              width: 208,
               child: Text(
                 widget.chatPartner.displayName,
                 maxLines: 2,

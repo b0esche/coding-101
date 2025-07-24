@@ -27,7 +27,6 @@ export 'package:url_launcher/url_launcher_string.dart';
 export 'package:image_picker/image_picker.dart';
 export 'package:crypto/crypto.dart';
 export 'package:app_links/app_links.dart';
-export 'package:hive_flutter/hive_flutter.dart';
 export 'package:gig_hub/firebase_options.dart';
 export 'package:gig_hub/src/app.dart';
 export 'package:gig_hub/src/Theme/app_theme.dart';

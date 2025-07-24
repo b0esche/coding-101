@@ -1,3 +1,4 @@
+import 'package:device_preview/device_preview.dart';
 import 'package:gig_hub/src/Data/app_imports.dart';
 
 class App extends StatelessWidget {
@@ -8,6 +9,7 @@ class App extends StatelessWidget {
     final auth = context.watch<AuthRepository>();
     final db = context.watch<DatabaseRepository>();
     return MaterialApp(
+      builder: DevicePreview.appBuilder,
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.light,
       theme: AppTheme.lightTheme,

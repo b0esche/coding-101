@@ -69,6 +69,8 @@ class _SearchListTileState extends State<SearchListTile> {
           children: [
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Container(
                   decoration: BoxDecoration(
@@ -93,9 +95,11 @@ class _SearchListTileState extends State<SearchListTile> {
                     children: [
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+
                         children: [
                           SizedBox(
-                            width: 190,
+                            width: 166,
                             child: Text(
                               widget.name,
                               style: GoogleFonts.sometypeMono(

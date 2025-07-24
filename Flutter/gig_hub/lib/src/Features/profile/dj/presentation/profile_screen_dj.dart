@@ -428,7 +428,6 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                             onPressed: () async {
                               final String targetId = widget.dj.id;
                               final String userId = widget.currentUser.id;
-                              final myFavoritesBox = Hive.box('favoritesBox');
                               final userDocRef = FirebaseFirestore.instance
                                   .collection('users')
                                   .doc(userId);
@@ -443,7 +442,6 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                     targetId,
                                   ]),
                                 });
-                                myFavoritesBox.put(targetId, targetId);
 
                                 if (widget.currentUser is Guest) {
                                   (widget.currentUser as Guest).favoriteUIds
@@ -462,7 +460,6 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                     targetId,
                                   ]),
                                 });
-                                myFavoritesBox.delete(targetId);
 
                                 if (widget.currentUser is Guest) {
                                   (widget.currentUser as Guest).favoriteUIds

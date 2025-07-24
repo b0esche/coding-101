@@ -27,18 +27,14 @@ class _LoginScreenState extends State<LoginScreen> {
         padding: const EdgeInsets.all(8.0),
         child: Center(
           child: Column(
-            spacing: 8,
+            spacing: 16,
             children: [
-              SizedBox(height: 52),
+              SizedBox(height: 12),
               SizedBox(
-                height: 110,
-                width: 110,
-                child: Hero(
-                  tag: context,
-                  child: Image.asset('assets/images/gighub_logo.png'),
-                ),
+                height: 132,
+                width: 132,
+                child: Image.asset('assets/images/icon_full.png'),
               ),
-              SizedBox(height: 8),
               SizedBox(
                 height: 48,
                 width: 270,
@@ -108,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 8),
+              SizedBox(height: 2),
               SizedBox(
                 width: 310,
                 child: Column(
@@ -211,7 +207,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 8),
                     TextButton(
                       onPressed: () {
                         showDialog(
@@ -288,6 +283,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Text(
                         "forgot your password?",
                         style: TextStyle(
+                          fontSize: 12,
                           color: Palette.glazedWhite.o(0.7),
                           decoration: TextDecoration.underline,
                           decorationColor: Palette.glazedWhite.o(0.7),
@@ -351,7 +347,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           style: GoogleFonts.sometypeMono(
                             textStyle: TextStyle(
                               color: Palette.glazedWhite,
-                              fontSize: 18,
+                              fontSize: 16,
                               fontWeight: FontWeight.bold,
                               wordSpacing: -8,
                             ),
@@ -362,7 +358,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ],
                 ),
               ),
-              SizedBox(height: 8),
+              SizedBox(height: 4),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -380,9 +376,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: 2),
               SizedBox(
-                height: 72,
+                height: 68,
                 width: 300,
                 child: Center(
                   child: Row(
@@ -449,9 +444,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 8),
               Divider(color: Palette.glazedWhite.o(0.5)),
-              SizedBox(height: 20),
+              SizedBox(height: 16),
               LiquidGlass(
                 shape: LiquidRoundedRectangle(
                   borderRadius: Radius.circular(16),
