@@ -363,6 +363,7 @@ class ChatScreenState extends State<ChatScreen> {
               child: Padding(
                 padding: const EdgeInsets.only(left: 16),
                 child: TextField(
+                  showCursor: false,
                   textInputAction: TextInputAction.send,
                   controller: _controller,
                   minLines: 1,
