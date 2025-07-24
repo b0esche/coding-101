@@ -347,13 +347,11 @@ class _MainScreenState extends State<MainScreen> {
                         Align(
                           alignment: Alignment.center,
                           child: SizedBox(
-                            height: 130,
-                            width: 130,
+                            height: 160,
+                            width: 160,
                             child: Hero(
                               tag: context,
-                              child: Image.asset(
-                                'assets/images/gighub_logo.png',
-                              ),
+                              child: Image.asset('assets/images/icon_full.png'),
                             ),
                           ),
                         ),

@@ -42,7 +42,6 @@ class ChatScreenState extends State<ChatScreen> {
   Future<void> _initEncryption() async {
     final keyString = dotenv.env['ENCRYPTION_KEY'];
     if (keyString == null || keyString.length != 32) {
-      debugPrint('encryption key is missing or invalid!');
       return;
     }
 
@@ -100,7 +99,6 @@ class ChatScreenState extends State<ChatScreen> {
 
         return _encrypter.decrypt64(encryptedData, iv: iv);
       } catch (e) {
-        debugPrint('decryption failed: $e');
         return '[decoding error]';
       }
     }
