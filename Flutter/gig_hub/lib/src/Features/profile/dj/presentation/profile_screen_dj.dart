@@ -404,7 +404,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                         child: Container(
                           decoration: BoxDecoration(
                             border: Border.all(
-                              width: 0.5,
+                              width: 0.65,
                               color: Palette.gigGrey.o(0.85),
                             ),
                             shape: BoxShape.circle,

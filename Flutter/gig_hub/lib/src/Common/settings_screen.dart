@@ -321,6 +321,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       bottom: 0,
                       right: 0,
                       child: IconButton(
+                        style: ButtonStyle(
+                          splashFactory: NoSplash.splashFactory,
+                        ),
                         onPressed: _pickNewImage,
                         icon: Icon(
                           Icons.upload_file_rounded,
@@ -385,16 +388,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ],
               ),
               FilledButton(
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all(Palette.shadowGrey),
+                  splashFactory: NoSplash.splashFactory,
+                ),
                 onPressed: _onResetPassword,
-                child: const Text("reset password"),
+                child: const Text("change password"),
               ),
               FilledButton(
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all(Palette.shadowGrey),
+                  splashFactory: NoSplash.splashFactory,
+                ),
                 onPressed: () {
                   // TODO: blocked users page
                 },
                 child: const Text("blocked users"),
               ),
               FilledButton(
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all(Palette.shadowGrey),
+                  splashFactory: NoSplash.splashFactory,
+                ),
                 onPressed: () {
                   showDialog(
                     context: context,
@@ -415,8 +430,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ),
                           actions: [
                             ElevatedButton(
-                              onPressed: () async {
-                                await auth.deleteUser();
+                              onPressed: () {
+                                auth.deleteUser();
                                 if (!context.mounted) return;
                                 if (mounted) {
                                   Navigator.of(context).pop();
@@ -442,6 +457,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 child: const Text("delete account"),
               ),
               FilledButton(
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all(Palette.shadowGrey),
+                  splashFactory: NoSplash.splashFactory,
+                ),
                 onPressed: () {
                   auth.signOut();
                   Navigator.of(context).pop();

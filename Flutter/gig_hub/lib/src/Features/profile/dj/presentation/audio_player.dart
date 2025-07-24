@@ -107,9 +107,12 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
       child:
           _isLoading
               ? Center(
-                child: CircularProgressIndicator(
-                  color: Palette.forgedGold,
-                  strokeWidth: 2,
+                child: SizedBox.square(
+                  dimension: 28,
+                  child: CircularProgressIndicator(
+                    color: Palette.forgedGold,
+                    strokeWidth: 2,
+                  ),
                 ),
               )
               : Row(

@@ -19,7 +19,10 @@ class App extends StatelessWidget {
             return Scaffold(
               backgroundColor: Palette.primalBlack,
               body: Center(
-                child: CircularProgressIndicator(color: Palette.forgedGold),
+                child: CircularProgressIndicator(
+                  color: Palette.forgedGold,
+                  strokeWidth: 1.65,
+                ),
               ),
             );
           }
@@ -36,7 +39,10 @@ class App extends StatelessWidget {
                 return Scaffold(
                   backgroundColor: Palette.primalBlack,
                   body: Center(
-                    child: CircularProgressIndicator(color: Palette.forgedGold),
+                    child: CircularProgressIndicator(
+                      color: Palette.forgedGold,
+                      strokeWidth: 1.65,
+                    ),
                   ),
                 );
               }

@@ -103,7 +103,10 @@ class _ChatListScreenState extends State<ChatListScreen> {
       body:
           _isLoading
               ? Center(
-                child: CircularProgressIndicator(color: Palette.forgedGold),
+                child: CircularProgressIndicator(
+                  color: Palette.forgedGold,
+                  strokeWidth: 1.65,
+                ),
               )
               : _hasError
               ? Center(

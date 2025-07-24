@@ -1,4 +1,5 @@
 import '../../../Data/app_imports.dart';
+import 'package:encrypt/encrypt.dart' as encrypt;
 
 class ChatScreenArgs {
   final AppUser chatPartner;
@@ -27,10 +28,30 @@ class ChatScreenState extends State<ChatScreen> {
   final db = FirestoreDatabaseRepository();
 
   String getPartnerAvatarUrl() => widget.chatPartner.avatarUrl;
+  late encrypt.Encrypter _encrypter;
+  late encrypt.Key _aesKey;
+
+  bool _encryptionReady = false;
 
   @override
   void initState() {
     super.initState();
+    _initEncryption();
+  }
+
+  Future<void> _initEncryption() async {
+    final keyString = dotenv.env['ENCRYPTION_KEY'];
+    if (keyString == null || keyString.length != 32) {
+      debugPrint('encryption key is missing or invalid!');
+      return;
+    }
+
+    _aesKey = encrypt.Key.fromUtf8(keyString);
+    _encrypter = encrypt.Encrypter(encrypt.AES(_aesKey));
+
+    setState(() {
+      _encryptionReady = true;
+    });
   }
 
   @override
@@ -41,14 +62,20 @@ class ChatScreenState extends State<ChatScreen> {
   }
 
   Future<void> _sendMessage() async {
+    if (!_encryptionReady) return;
     final text = _controller.text.trim();
     if (text.isEmpty) return;
+
+    final iv = encrypt.IV.fromLength(16);
+    final encrypted = _encrypter.encrypt(text, iv: iv);
+
+    final encryptedText = 'enc::${iv.base64}:${encrypted.base64}';
 
     final newMessage = ChatMessage(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       senderId: widget.currentUser.id,
       receiverId: widget.chatPartner.id,
-      message: text,
+      message: encryptedText,
       timestamp: DateTime.now(),
       read: false,
     );
@@ -56,6 +83,29 @@ class ChatScreenState extends State<ChatScreen> {
     await db.sendMessage(newMessage);
     _controller.clear();
     _scrollToBottomDelayed();
+  }
+
+  String _decryptMessage(String text) {
+    if (!_encryptionReady) return '[loading key...]';
+
+    if (text.startsWith('enc::')) {
+      try {
+        final encryptedPart = text.substring(5);
+
+        final parts = encryptedPart.split(':');
+        if (parts.length != 2) return '[invalid format]';
+
+        final iv = encrypt.IV.fromBase64(parts[0]);
+        final encryptedData = parts[1];
+
+        return _encrypter.decrypt64(encryptedData, iv: iv);
+      } catch (e) {
+        debugPrint('decryption failed: $e');
+        return '[decoding error]';
+      }
+    }
+
+    return text;
   }
 
   void _scrollToBottomDelayed() {
@@ -260,7 +310,7 @@ class ChatScreenState extends State<ChatScreen> {
                             child: Padding(
                               padding: const EdgeInsets.only(top: 4, bottom: 2),
                               child: Text(
-                                message.message,
+                                _decryptMessage(message.message),
                                 style: TextStyle(
                                   color: Palette.primalBlack,
                                   fontSize: 15,
@@ -315,6 +365,7 @@ class ChatScreenState extends State<ChatScreen> {
               child: Padding(
                 padding: const EdgeInsets.only(left: 16),
                 child: TextField(
+                  textInputAction: TextInputAction.send,
                   controller: _controller,
                   minLines: 1,
                   maxLines: 4,

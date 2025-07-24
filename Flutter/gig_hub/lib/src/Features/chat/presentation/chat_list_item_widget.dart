@@ -1,5 +1,6 @@
 import 'package:gig_hub/src/Data/app_imports.dart';
 import 'package:intl/intl.dart';
+import 'package:encrypt/encrypt.dart' as encrypt;
 
 class ChatListItemWidget extends StatelessWidget {
   final ChatListItem chatListItem;
@@ -17,11 +18,38 @@ class ChatListItemWidget extends StatelessWidget {
     return DateFormat.Hm().format(timestamp);
   }
 
+  String _decryptPreview(String text) {
+    final keyString = dotenv.env['ENCRYPTION_KEY'];
+    if (keyString == null || keyString.length != 32) {
+      return '[key error]';
+    }
+
+    if (!text.startsWith('enc::')) {
+      return text;
+    }
+
+    try {
+      final key = encrypt.Key.fromUtf8(keyString);
+      final encrypter = encrypt.Encrypter(encrypt.AES(key));
+
+      final parts = text.substring(5).split(':');
+      if (parts.length != 2) return '[format error]';
+
+      final iv = encrypt.IV.fromBase64(parts[0]);
+      final encryptedData = parts[1];
+
+      return encrypter.decrypt64(encryptedData, iv: iv);
+    } catch (e) {
+      return '[decoding error]';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final avatarUrl = chatListItem.user.avatarUrl;
     final userName = chatListItem.user.displayName;
-    final lastMessage = chatListItem.recent.message;
+
+    final lastMessage = _decryptPreview(chatListItem.recent.message);
     final lastStamp = chatListItem.recent.timestamp;
     final formattedTime = _formatTimestamp(lastStamp);
 
@@ -61,11 +89,7 @@ class ChatListItemWidget extends StatelessWidget {
                 ),
                 child: CircleAvatar(
                   radius: 38,
-                  backgroundImage:
-                      avatarUrl.isNotEmpty
-                          ? NetworkImage(avatarUrl)
-                          : const AssetImage('assets/images/default_avatar.jpg')
-                              as ImageProvider<Object>,
+                  backgroundImage: NetworkImage(avatarUrl),
                 ),
               ),
 
