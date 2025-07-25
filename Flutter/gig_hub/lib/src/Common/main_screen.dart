@@ -88,6 +88,7 @@ class _MainScreenState extends State<MainScreen> {
                               widget.initialUser is Booker
                           ? "welcome to Gig Hub!"
                           : "lost connection to SoundCloud!",
+                      textAlign: TextAlign.center,
                       style: GoogleFonts.sometypeMono(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -99,7 +100,7 @@ class _MainScreenState extends State<MainScreen> {
                     "connect your SoundCloud to continue:",
                     maxLines: 1,
                     style: GoogleFonts.sometypeMono(
-                      fontSize: 14,
+                      fontSize: 13,
                       color: Palette.shadowGrey.o(0.9),
                     ),
                   ),

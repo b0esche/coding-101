@@ -18,7 +18,7 @@ class CreateProfileScreenBooker extends StatefulWidget {
 
 class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
   final _formKey = GlobalKey<FormState>();
-  late final _nameController = TextEditingController();
+  late final _nameController = TextEditingController(text: 'your name');
   late final _locationController = TextEditingController(text: 'your city');
 
   late final _aboutController = TextEditingController();
@@ -52,6 +52,26 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
     _locationController.dispose();
 
     super.dispose();
+  }
+
+  Future<File> compressImage(File file) async {
+    final tempDir = await getTemporaryDirectory();
+    final targetPath = '${tempDir.path}/${const Uuid().v4()}.jpg';
+
+    final compressedBytes = await FlutterImageCompress.compressWithFile(
+      file.path,
+      quality: 70,
+      format: CompressFormat.jpeg,
+    );
+
+    if (compressedBytes == null) {
+      throw Exception('image compression failed');
+    }
+
+    final compressedFile = File(targetPath);
+    await compressedFile.writeAsBytes(compressedBytes);
+
+    return compressedFile;
   }
 
   void _onLocationFocusChange() {
@@ -129,10 +149,19 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
     }
   }
 
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
-    final auth = context.watch<AuthRepository>();
     final db = context.watch<DatabaseRepository>();
+    if (isLoading) {
+      return Scaffold(
+        backgroundColor: Palette.primalBlack,
+        body: Center(
+          child: CircularProgressIndicator(color: Palette.forgedGold),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: Palette.primalBlack,
       body: Form(
@@ -670,32 +699,91 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                           height: 100,
                           child: OutlinedButton(
                             onPressed: () async {
+                              setState(() {
+                                isLoading = true;
+                              });
                               FocusManager.instance.primaryFocus?.unfocus();
                               if (headUrl!.isNotEmpty &&
+                                  _aboutController.text.isNotEmpty &&
+                                  _infoController.text.isNotEmpty &&
+                                  _locationController.text.isNotEmpty &&
                                   _nameController.text.isNotEmpty) {
                                 try {
-                                  await auth.createUserWithEmailAndPassword(
-                                    widget.email,
-                                    widget.pw,
-                                  );
-                                  final userId =
-                                      FirebaseAuth.instance.currentUser?.uid;
-                                  if (userId == null) {
-                                    throw Exception('Fehler');
+                                  final UserCredential userCredential =
+                                      await FirebaseAuth.instance
+                                          .createUserWithEmailAndPassword(
+                                            email: widget.email,
+                                            password: widget.pw,
+                                          );
+                                  final User? firebaseUser =
+                                      userCredential.user;
+                                  if (firebaseUser == null) {
+                                    throw Exception("user creation failed");
                                   }
+                                  String uploadedHeadImageUrl = headUrl!;
+                                  if (!headUrl!.startsWith('http')) {
+                                    final headFile = File(headUrl!);
+                                    final headStorageRef = FirebaseStorage
+                                        .instance
+                                        .ref()
+                                        .child(
+                                          'head_images/${firebaseUser.uid}.jpg',
+                                        );
+                                    await headStorageRef.putFile(headFile);
+                                    uploadedHeadImageUrl =
+                                        await headStorageRef.getDownloadURL();
+                                  }
+
+                                  List<String> uploadedMediaUrls = [];
+                                  if (mediaUrl != null &&
+                                      mediaUrl!.isNotEmpty) {
+                                    for (int i = 0; i < mediaUrl!.length; i++) {
+                                      final mediaPath = mediaUrl![i];
+                                      if (mediaPath.startsWith('http')) {
+                                        uploadedMediaUrls.add(mediaPath);
+                                      } else {
+                                        final mediaFile = File(mediaPath);
+                                        final mediaStorageRef = FirebaseStorage
+                                            .instance
+                                            .ref()
+                                            .child(
+                                              'media_images/${firebaseUser.uid}_$i.jpg',
+                                            );
+                                        await mediaStorageRef.putFile(
+                                          mediaFile,
+                                        );
+                                        final downloadUrl =
+                                            await mediaStorageRef
+                                                .getDownloadURL();
+                                        uploadedMediaUrls.add(downloadUrl);
+                                      }
+                                    }
+                                  }
+
                                   final booker = Booker(
-                                    id: userId,
+                                    id: firebaseUser.uid,
                                     avatarImageUrl:
                                         'https://firebasestorage.googleapis.com/v0/b/gig-hub-8ac24.firebasestorage.app/o/default%2Fdefault_avatar.jpg?alt=media&token=3998cdef-f4b1-4211-99c8-cd8a8b6ecc98',
-                                    headImageUrl: headUrl!,
+                                    headImageUrl: uploadedHeadImageUrl,
                                     name: _nameController.text,
                                     city: _locationController.text,
                                     about: _aboutController.text,
                                     info: _infoController.text,
                                     category: _selectedCategory,
-                                    mediaImageUrls: mediaUrl ?? [],
+                                    mediaImageUrls: uploadedMediaUrls,
                                   );
                                   await db.createBooker(booker);
+                                  final currentUser = await db.getCurrentUser();
+                                  if (!context.mounted) return;
+
+                                  Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) => MainScreen(
+                                            initialUser: currentUser,
+                                          ),
+                                    ),
+                                  );
                                 } catch (e) {
                                   if (!context.mounted) return;
                                   ScaffoldMessenger.of(context).showSnackBar(

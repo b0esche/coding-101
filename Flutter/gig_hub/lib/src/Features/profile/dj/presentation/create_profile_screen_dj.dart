@@ -815,6 +815,9 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                               if (headUrl?.isNotEmpty == true &&
                                   bpmMin?.isNotEmpty == true &&
                                   bpmMax?.isNotEmpty == true &&
+                                  _infoController.text.isNotEmpty &&
+                                  _aboutController.text.isNotEmpty &&
+                                  _locationController.text.isNotEmpty &&
                                   _nameController.text.isNotEmpty) {
                                 try {
                                   final UserCredential userCredential =
@@ -826,7 +829,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                   final User? firebaseUser =
                                       userCredential.user;
                                   if (firebaseUser == null) {
-                                    throw Exception("User creation failed");
+                                    throw Exception("user creation failed");
                                   }
 
                                   String uploadedHeadImageUrl = headUrl!;
@@ -915,11 +918,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                           ),
                                     ),
                                   );
-                                } catch (e, stack) {
-                                  debugPrint(
-                                    'Error during user creation/profile setup: $e',
-                                  );
-                                  debugPrint('$stack');
+                                } catch (e) {
                                   if (!context.mounted) return;
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(

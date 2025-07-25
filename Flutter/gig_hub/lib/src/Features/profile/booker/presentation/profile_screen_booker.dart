@@ -245,7 +245,7 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                               padding: const EdgeInsets.all(6.0),
                               child: Row(
                                 children: [
-                                  const Icon(Icons.place, size: 20),
+                                  const Icon(Icons.location_pin, size: 18),
                                   const SizedBox(width: 4),
                                   Text(
                                     widget.booker.city,

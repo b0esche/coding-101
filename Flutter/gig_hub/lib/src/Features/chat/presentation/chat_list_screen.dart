@@ -31,10 +31,18 @@ class _ChatListScreenState extends State<ChatListScreen> {
     final List<ChatListItem> items = [];
 
     for (final msg in recentMessages) {
-      final partnerId =
-          msg.senderId == widget.currentUser.id ? msg.receiverId : msg.senderId;
-      final partnerUser = await db.getUserById(partnerId);
-      items.add(ChatListItem(user: partnerUser, recent: msg));
+      try {
+        final partnerId =
+            msg.senderId == widget.currentUser.id
+                ? msg.receiverId
+                : msg.senderId;
+
+        final partnerUser = await db.getUserById(partnerId);
+
+        items.add(ChatListItem(user: partnerUser, recent: msg));
+      } catch (e) {
+        continue;
+      }
     }
 
     items.sort((a, b) => b.recent.timestamp.compareTo(a.recent.timestamp));
