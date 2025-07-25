@@ -77,9 +77,17 @@ class FirebaseAuthRepository implements AuthRepository {
   // sign out all ###
   @override
   Future<void> signOut() async {
-    await FirebaseAuth.instance.signOut();
-    await GoogleSignIn.instance.signOut();
-    await FacebookAuth.instance.logOut();
+    try {
+      await FirebaseAuth.instance.signOut();
+    } catch (_) {}
+
+    try {
+      await GoogleSignIn.instance.signOut();
+    } catch (_) {}
+
+    try {
+      await FacebookAuth.instance.logOut();
+    } catch (_) {}
   }
 
   // delete user and sign out

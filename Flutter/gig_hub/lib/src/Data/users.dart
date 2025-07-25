@@ -111,7 +111,7 @@ class DJ extends AppUser {
 }
 
 class Booker extends AppUser {
-  String name, city, about, info, headImageUrl, avatarImageUrl;
+  String name, city, about, info, category, headImageUrl, avatarImageUrl;
 
   final double userRating;
 
@@ -125,6 +125,7 @@ class Booker extends AppUser {
     required this.city,
     required this.about,
     required this.info,
+    required this.category,
     this.userRating = 0.0,
     this.mediaImageUrls = const [],
     this.favoriteUIds = const [],
@@ -138,6 +139,7 @@ class Booker extends AppUser {
     'city': city,
     'about': about,
     'info': info,
+    'category': category,
     'userRating': userRating,
     'mediaImageUrls': mediaImageUrls,
     'favoriteUIds': favoriteUIds,
@@ -151,6 +153,7 @@ class Booker extends AppUser {
     city: json['city'],
     about: json['about'],
     info: json['info'],
+    category: json['category'],
     userRating: (json['userRating'] ?? 0.0).toDouble(),
     mediaImageUrls: List<String>.from(json['mediaImageUrls'] ?? []),
     favoriteUIds: List<String>.from(json['favoriteUIds'] ?? []),

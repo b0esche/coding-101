@@ -69,7 +69,7 @@ class _MainScreenState extends State<MainScreen> {
   void _checkGuestAndShowDialog() async {
     final token = await _soundcloudAuth.getAccessToken();
 
-    if (widget.initialUser is Guest && token == null || token == null) {
+    if ((widget.initialUser is Guest && token == null) || (token == null)) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Future.delayed(Duration.zero, () {
           if (!mounted) return;
@@ -84,7 +84,8 @@ class _MainScreenState extends State<MainScreen> {
                   surfaceTintColor: Palette.forgedGold,
                   title: Center(
                     child: Text(
-                      widget.initialUser is Guest
+                      widget.initialUser is Guest ||
+                              widget.initialUser is Booker
                           ? "welcome to Gig Hub!"
                           : "lost connection to SoundCloud!",
                       style: GoogleFonts.sometypeMono(

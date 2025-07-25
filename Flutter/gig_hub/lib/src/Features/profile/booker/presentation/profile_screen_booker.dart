@@ -274,7 +274,7 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                                   ),
                                   const SizedBox(width: 4),
                                   Text(
-                                    widget.booker.name,
+                                    widget.booker.category,
                                     style: TextStyle(
                                       fontSize: 14,
                                       color: Palette.primalBlack,

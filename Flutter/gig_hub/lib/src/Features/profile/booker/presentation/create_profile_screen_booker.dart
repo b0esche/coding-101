@@ -31,6 +31,8 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
   String? about;
   String? info;
 
+  String _selectedCategory = 'Club';
+
   List<String>? mediaUrl = [];
   int index = 0;
 
@@ -388,19 +390,64 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                                   ),
                                   const SizedBox(width: 4),
                                   SizedBox(
-                                    width: 100,
+                                    width: 120,
                                     height: 24,
-                                    child: TextFormField(
-                                      textAlign: TextAlign.center,
-                                      onTap: () async {},
-                                      style: TextStyle(
-                                        color: Palette.glazedWhite,
-                                        fontSize: 10,
+                                    child: DropdownButtonFormField<String>(
+                                      iconEnabledColor: Palette.glazedWhite.o(
+                                        0.85,
                                       ),
-
+                                      borderRadius: BorderRadius.circular(8),
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'please select a category';
+                                        }
+                                        return null;
+                                      },
+                                      value: _selectedCategory,
+                                      items:
+                                          [
+                                                'Club',
+                                                'Event',
+                                                'Outdoor Event',
+                                                'Bar',
+                                                'Pop-Up',
+                                                'Collective',
+                                                'Festival',
+                                              ]
+                                              .map(
+                                                (cat) => DropdownMenuItem(
+                                                  value: cat,
+                                                  child: Text(
+                                                    cat,
+                                                    style: TextStyle(
+                                                      color:
+                                                          Palette.glazedWhite,
+                                                      fontSize: 11,
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
+                                              .toList(),
+                                      onChanged: (val) {
+                                        if (val != null) {
+                                          setState(() {
+                                            _selectedCategory = val;
+                                          });
+                                        }
+                                      },
+                                      dropdownColor: Palette.gigGrey.o(0.9),
                                       decoration: InputDecoration(
-                                        contentPadding: EdgeInsets.only(
-                                          bottom: 12,
+                                        contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                          vertical: 0,
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                          borderSide: BorderSide(
+                                            color: Palette.glazedWhite,
+                                          ),
                                         ),
                                         focusedBorder: OutlineInputBorder(
                                           borderRadius: BorderRadius.circular(
@@ -409,14 +456,6 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                                           borderSide: BorderSide(
                                             color: Palette.forgedGold,
                                             width: 2,
-                                          ),
-                                        ),
-                                        enabledBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                          borderSide: BorderSide(
-                                            color: Palette.glazedWhite,
                                           ),
                                         ),
                                       ),
@@ -653,6 +692,7 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                                     city: _locationController.text,
                                     about: _aboutController.text,
                                     info: _infoController.text,
+                                    category: _selectedCategory,
                                     mediaImageUrls: mediaUrl ?? [],
                                   );
                                   await db.createBooker(booker);
