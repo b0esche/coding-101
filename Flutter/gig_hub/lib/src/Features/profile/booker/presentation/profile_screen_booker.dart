@@ -1,4 +1,5 @@
 import 'package:gig_hub/src/Data/app_imports.dart' hide UserStarRating;
+import 'package:http/http.dart' as http;
 import 'package:gig_hub/src/Features/profile/booker/presentation/star_rating_booker.dart';
 
 class ProfileScreenBookerArgs {
@@ -37,15 +38,85 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
   bool editMode = false;
 
   final _formKey = GlobalKey<FormState>();
-  late final TextEditingController _infoController = TextEditingController();
-  late final TextEditingController _aboutController = TextEditingController();
-  late final TextEditingController _nameController = TextEditingController();
+  late final TextEditingController _infoController = TextEditingController(
+    text: widget.booker.info,
+  );
+  late final TextEditingController _aboutController = TextEditingController(
+    text: widget.booker.about,
+  );
+  late final TextEditingController _nameController = TextEditingController(
+    text: widget.booker.name,
+  );
+  late final TextEditingController _locationController = TextEditingController(
+    text: widget.booker.city,
+  );
+  String? _locationError;
+
   @override
   void dispose() {
     _infoController.dispose();
     _aboutController.dispose();
     _nameController.dispose();
+    _locationController.dispose();
     super.dispose();
+  }
+
+  Future<void> validateCityInput() async {
+    final apiKey = dotenv.env['GOOGLE_API_KEY'];
+    final trimmedValue = _locationController.text.trim();
+    if (trimmedValue.isEmpty) {
+      setState(() => _locationError = ' ');
+      _formKey.currentState?.validate();
+      return;
+    }
+    final query = Uri.encodeComponent(trimmedValue);
+    final url = Uri.parse(
+      'https://maps.googleapis.com/maps/api/place/autocomplete/json'
+      '?input=$query&types=(cities)&language=en&key=$apiKey',
+    );
+    setState(() {
+      _locationError = null;
+    });
+    try {
+      final response = await http.get(url);
+      final data = jsonDecode(response.body);
+      bool isValidCityFound = false;
+      if (response.statusCode == 200 && data['status'] == 'OK') {
+        final predictions = data['predictions'] as List;
+        if (predictions.isNotEmpty) {
+          for (var prediction in predictions) {
+            final String mainText =
+                prediction['structured_formatting']['main_text']
+                    ?.toString()
+                    .trim() ??
+                '';
+            final List types = prediction['types'] ?? [];
+            if (mainText.toLowerCase() == trimmedValue.toLowerCase() &&
+                (types.contains('locality') ||
+                    types.contains('administrative_area_level_3') ||
+                    types.contains('political'))) {
+              isValidCityFound = true;
+              break;
+            }
+          }
+        }
+        setState(() {
+          _locationError = isValidCityFound ? null : ' ';
+          widget.booker.city = trimmedValue;
+          _formKey.currentState?.validate();
+        });
+      } else {
+        setState(() {
+          _locationError = ' ';
+          _formKey.currentState?.validate();
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _locationError = ' ';
+        _formKey.currentState?.validate();
+      });
+    }
   }
 
   @override
@@ -189,7 +260,7 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                                   },
                                   style: TextStyle(
                                     color: Palette.glazedWhite,
-                                    fontSize: 12,
+                                    fontSize: 14,
                                   ),
                                   controller: _nameController,
                                   decoration: InputDecoration(
@@ -211,7 +282,7 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                     ),
                   ),
                 ),
-                UserStarRating(widget: widget),
+                !editMode ? UserStarRating(widget: widget) : SizedBox.shrink(),
                 Positioned(
                   right: 0,
                   left: 0,
@@ -255,7 +326,50 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                                           color: Palette.primalBlack,
                                         ),
                                       )
-                                      : Placeholder(),
+                                      : SizedBox(
+                                        width: 136,
+                                        height: 24,
+                                        child: TextFormField(
+                                          onEditingComplete: validateCityInput,
+                                          style: TextStyle(
+                                            color: Palette.glazedWhite,
+                                            fontSize: 14,
+                                          ),
+                                          controller: _locationController,
+                                          decoration: InputDecoration(
+                                            contentPadding: EdgeInsets.only(
+                                              bottom: 12,
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              borderSide: BorderSide(
+                                                color: Palette.forgedGold,
+                                                width: 2,
+                                              ),
+                                            ),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              borderSide: BorderSide(
+                                                color: Palette.glazedWhite,
+                                              ),
+                                            ),
+                                            errorBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              borderSide: BorderSide(
+                                                color: Palette.alarmRed,
+                                              ),
+                                            ),
+                                            errorText: _locationError,
+                                            errorStyle: TextStyle(
+                                              fontSize: 0,
+                                              height: 0,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                                 ],
                               ),
                             ),
@@ -283,7 +397,71 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                                           color: Palette.primalBlack,
                                         ),
                                       )
-                                      : Placeholder(),
+                                      : SizedBox(
+                                        width: 136,
+                                        height: 24,
+                                        child: DropdownButtonFormField<String>(
+                                          value:
+                                              widget.booker.category.isNotEmpty
+                                                  ? widget.booker.category
+                                                  : 'Club',
+                                          items:
+                                              [
+                                                    'Club',
+                                                    'Event',
+                                                    'Outdoor Event',
+                                                    'Bar',
+                                                    'Pop-Up',
+                                                    'Collective',
+                                                    'Festival',
+                                                  ]
+                                                  .map(
+                                                    (cat) => DropdownMenuItem(
+                                                      value: cat,
+                                                      child: Text(
+                                                        cat,
+                                                        style: TextStyle(
+                                                          color:
+                                                              Palette
+                                                                  .glazedWhite,
+                                                          fontSize: 13,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  )
+                                                  .toList(),
+                                          onChanged: (val) {
+                                            if (val != null) {
+                                              setState(() {
+                                                widget.booker.category = val;
+                                              });
+                                            }
+                                          },
+                                          dropdownColor: Palette.gigGrey.o(0.9),
+                                          decoration: InputDecoration(
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                  horizontal: 8,
+                                                  vertical: 0,
+                                                ),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              borderSide: BorderSide(
+                                                color: Palette.glazedWhite,
+                                              ),
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              borderSide: BorderSide(
+                                                color: Palette.forgedGold,
+                                                width: 2,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                                 ],
                               ),
                             ),
@@ -316,7 +494,6 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                                     widget.booker.about,
                                     style: TextStyle(
                                       color: Palette.primalBlack,
-                                      fontSize: 14,
                                     ),
                                   ),
                                 ),
@@ -342,7 +519,6 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                                   maxLength: 250,
                                   style: TextStyle(
                                     color: Palette.glazedWhite,
-                                    fontSize: 14,
                                     overflow: TextOverflow.visible,
                                   ),
                                   controller: _aboutController,
@@ -461,7 +637,6 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                                     widget.booker.info,
                                     style: TextStyle(
                                       color: Palette.primalBlack,
-                                      fontSize: 14,
                                     ),
                                   ),
                                 ),
@@ -488,7 +663,6 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
 
                                   style: TextStyle(
                                     color: Palette.glazedWhite,
-                                    fontSize: 14,
                                     overflow: TextOverflow.visible,
                                   ),
                                   controller: _infoController,
@@ -517,7 +691,96 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                           child:
                               !widget.showEditButton
                                   ? OutlinedButton(
-                                    onPressed: () {
+                                    onPressed: () async {
+                                      if (editMode &&
+                                          _formKey.currentState!.validate()) {
+                                        widget.booker.about =
+                                            _aboutController.text;
+                                        widget.booker.info =
+                                            _infoController.text;
+                                        widget.booker.name =
+                                            _nameController.text;
+                                        if (_locationError == null) {
+                                          widget.booker.city =
+                                              _locationController.text;
+                                        }
+
+                                        if (!widget.booker.headImageUrl
+                                            .startsWith('http')) {
+                                          final headFile = File(
+                                            widget.booker.headImageUrl,
+                                          );
+                                          final headStorageRef = FirebaseStorage
+                                              .instance
+                                              .ref()
+                                              .child(
+                                                'booker_head_images/${widget.booker.id}.jpg',
+                                              );
+                                          await headStorageRef.putFile(
+                                            headFile,
+                                          );
+                                          widget.booker.headImageUrl =
+                                              await headStorageRef
+                                                  .getDownloadURL();
+                                        }
+
+                                        if (widget.booker.mediaImageUrls.any(
+                                          (path) => !path.startsWith('http'),
+                                        )) {
+                                          List<String> newUrls = [];
+                                          for (
+                                            int i = 0;
+                                            i <
+                                                widget
+                                                    .booker
+                                                    .mediaImageUrls
+                                                    .length;
+                                            i++
+                                          ) {
+                                            final path =
+                                                widget.booker.mediaImageUrls[i];
+                                            if (path.startsWith('http')) {
+                                              newUrls.add(path);
+                                            } else {
+                                              final file = File(path);
+                                              final ref = FirebaseStorage
+                                                  .instance
+                                                  .ref()
+                                                  .child(
+                                                    'booker_media_images/${widget.booker.id}_$i.jpg',
+                                                  );
+                                              await ref.putFile(file);
+                                              final downloadUrl =
+                                                  await ref.getDownloadURL();
+                                              newUrls.add(downloadUrl);
+                                            }
+                                          }
+                                          widget.booker.mediaImageUrls =
+                                              newUrls;
+                                        }
+
+                                        try {
+                                          await widget.db.updateBooker(
+                                            widget.booker,
+                                          );
+                                        } catch (e) {
+                                          if (context.mounted) {
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              SnackBar(
+                                                backgroundColor:
+                                                    Palette.forgedGold,
+                                                content: Center(
+                                                  child: Text(
+                                                    'error: ${e.toString()}',
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                        }
+                                      }
                                       setState(() {
                                         editMode = !editMode;
                                       });

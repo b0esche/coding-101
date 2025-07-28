@@ -77,6 +77,7 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
       'headImageUrl': booker.headImageUrl,
       'avatarImageUrl': booker.avatarImageUrl,
       'mediaImageUrls': booker.mediaImageUrls,
+      'category': booker.category,
       'favoriteUIds': booker.favoriteUIds,
     });
   }

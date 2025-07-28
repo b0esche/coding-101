@@ -122,7 +122,7 @@ class Booker extends AppUser {
 
   final int ratingCount;
 
-  final List<String> mediaImageUrls, favoriteUIds;
+  List<String> mediaImageUrls, favoriteUIds;
 
   Booker({
     required super.id,

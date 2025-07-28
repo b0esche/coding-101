@@ -771,6 +771,8 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                                     info: _infoController.text,
                                     category: _selectedCategory,
                                     mediaImageUrls: uploadedMediaUrls,
+                                    avgRating: 0.0,
+                                    ratingCount: 0,
                                   );
                                   await db.createBooker(booker);
                                   final currentUser = await db.getCurrentUser();
