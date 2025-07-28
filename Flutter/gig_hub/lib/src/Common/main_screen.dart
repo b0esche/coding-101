@@ -513,7 +513,7 @@ class _MainScreenState extends State<MainScreen> {
                                     location: currentUserDJ.city,
                                     bpm: currentUserDJ.bpm,
 
-                                    rating: currentUserDJ.userRating,
+                                    rating: currentUserDJ.avgRating,
                                   );
                                 },
                               ),

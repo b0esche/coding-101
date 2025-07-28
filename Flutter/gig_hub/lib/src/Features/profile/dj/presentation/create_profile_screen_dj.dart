@@ -900,7 +900,8 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                     mediaImageUrls: uploadedMediaUrls,
                                     info: _infoController.text,
                                     name: _nameController.text,
-                                    userRating: 0,
+                                    avgRating: 0,
+                                    ratingCount: 0,
                                     city: _locationController.text,
                                     favoriteUIds: [],
                                   );

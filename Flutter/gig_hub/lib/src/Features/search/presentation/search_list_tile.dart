@@ -101,7 +101,7 @@ class _SearchListTileState extends State<SearchListTile> {
 
                         children: [
                           SizedBox(
-                            width: 166,
+                            width: 186,
                             child: Text(
                               widget.name,
                               style: GoogleFonts.sometypeMono(

@@ -26,7 +26,7 @@ class UserStarRating extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.only(left: 2, top: 2, bottom: 2),
           child: RatingStars(
-            value: widget.booker.userRating,
+            value: widget.booker.avgRating,
             starBuilder:
                 (index, color) => Icon(Icons.star, color: color, size: 18),
             starCount: 5,

@@ -44,7 +44,9 @@ class Guest extends AppUser {
 class DJ extends AppUser {
   String name, city, about, info, headImageUrl, avatarImageUrl;
 
-  final double userRating;
+  final double avgRating;
+
+  final int ratingCount;
 
   List<String> mediaImageUrls,
       favoriteUIds,
@@ -68,7 +70,8 @@ class DJ extends AppUser {
     required this.streamingUrls,
     required this.trackTitles,
     required this.trackUrls,
-    this.userRating = 0.0,
+    this.avgRating = 0.0,
+    this.ratingCount = 0,
     this.mediaImageUrls = const [],
     this.favoriteUIds = const [],
   }) : super(type: UserType.dj);
@@ -86,7 +89,8 @@ class DJ extends AppUser {
     'streamingUrls': streamingUrls,
     'trackTitles': trackTitles,
     'trackUrls': trackUrls,
-    'userRating': userRating,
+    'avgRating': avgRating,
+    'ratingCount': ratingCount,
     'mediaImageUrls': mediaImageUrls,
     'favoriteUIds': favoriteUIds,
   };
@@ -104,7 +108,8 @@ class DJ extends AppUser {
     streamingUrls: List<String>.from(json['streamingUrls'] ?? []),
     trackTitles: List<String>.from(json['trackTitles'] ?? []),
     trackUrls: List<String>.from(json['trackUrls']),
-    userRating: (json['userRating'] ?? 0.0).toDouble(),
+    avgRating: (json['avgRating'] ?? 0.0).toDouble(),
+    ratingCount: (json['ratingCount'] ?? 0) as int,
     mediaImageUrls: List<String>.from(json['mediaImageUrls'] ?? []),
     favoriteUIds: List<String>.from(json['favoriteUIds'] ?? []),
   );
@@ -113,7 +118,9 @@ class DJ extends AppUser {
 class Booker extends AppUser {
   String name, city, about, info, category, headImageUrl, avatarImageUrl;
 
-  final double userRating;
+  final double avgRating;
+
+  final int ratingCount;
 
   final List<String> mediaImageUrls, favoriteUIds;
 
@@ -126,7 +133,8 @@ class Booker extends AppUser {
     required this.about,
     required this.info,
     required this.category,
-    this.userRating = 0.0,
+    this.avgRating = 0.0,
+    this.ratingCount = 0,
     this.mediaImageUrls = const [],
     this.favoriteUIds = const [],
   }) : super(type: UserType.booker);
@@ -140,7 +148,8 @@ class Booker extends AppUser {
     'about': about,
     'info': info,
     'category': category,
-    'userRating': userRating,
+    'avgRating': avgRating,
+    'ratingCount': ratingCount,
     'mediaImageUrls': mediaImageUrls,
     'favoriteUIds': favoriteUIds,
   };
@@ -154,7 +163,8 @@ class Booker extends AppUser {
     about: json['about'],
     info: json['info'],
     category: json['category'],
-    userRating: (json['userRating'] ?? 0.0).toDouble(),
+    avgRating: (json['avgRating'] ?? 0.0).toDouble(),
+    ratingCount: (json['ratingCount'] ?? 0) as int,
     mediaImageUrls: List<String>.from(json['mediaImageUrls'] ?? []),
     favoriteUIds: List<String>.from(json['favoriteUIds'] ?? []),
   );

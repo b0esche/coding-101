@@ -247,13 +247,15 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                                 children: [
                                   const Icon(Icons.location_pin, size: 18),
                                   const SizedBox(width: 4),
-                                  Text(
-                                    widget.booker.city,
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Palette.primalBlack,
-                                    ),
-                                  ),
+                                  !editMode
+                                      ? Text(
+                                        widget.booker.city,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Palette.primalBlack,
+                                        ),
+                                      )
+                                      : Placeholder(),
                                 ],
                               ),
                             ),
@@ -273,13 +275,15 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                                     size: 22,
                                   ),
                                   const SizedBox(width: 4),
-                                  Text(
-                                    widget.booker.category,
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Palette.primalBlack,
-                                    ),
-                                  ),
+                                  !editMode
+                                      ? Text(
+                                        widget.booker.category,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Palette.primalBlack,
+                                        ),
+                                      )
+                                      : Placeholder(),
                                 ],
                               ),
                             ),
