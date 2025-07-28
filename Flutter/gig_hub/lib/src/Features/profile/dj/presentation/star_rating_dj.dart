@@ -36,13 +36,14 @@ class _UserStarRatingState extends State<UserStarRating> {
         ratingCount = result.data['ratingCount'] ?? ratingCount;
       });
       if (mounted) {
+        final ratingInt = value.toInt();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             backgroundColor: Palette.forgedGold,
             duration: Duration(milliseconds: 1050),
             content: Center(
               child: Text(
-                'rating of $value submitted!',
+                'rating of $ratingInt stars submitted!',
                 style: TextStyle(fontSize: 16),
               ),
             ),
@@ -77,7 +78,7 @@ class _UserStarRatingState extends State<UserStarRating> {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: 140,
+      top: 130,
       right: 0,
       child: Container(
         decoration: BoxDecoration(
@@ -97,13 +98,13 @@ class _UserStarRatingState extends State<UserStarRating> {
           child: RatingStars(
             value: currentRating,
             starBuilder:
-                (index, color) => Icon(Icons.star, color: color, size: 18),
+                (index, color) => Icon(Icons.star, color: color, size: 21),
             starCount: 5,
             maxValue: 5,
             axis: Axis.vertical,
             angle: 15,
             starSpacing: 0,
-            starSize: 18,
+            starSize: 21,
             valueLabelVisibility: false,
             animationDuration: const Duration(milliseconds: 350),
             starOffColor: Palette.shadowGrey,
