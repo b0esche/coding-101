@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:gig_hub/src/Features/profile/dj/domain/audio_manager.dart';
@@ -20,6 +21,14 @@ class AudioPlayerWidget extends StatefulWidget {
 
   @override
   State<AudioPlayerWidget> createState() => _AudioPlayerWidgetState();
+
+  static Future<Uint8List> downloadAudioBytes(String publicUrl) async {
+    final response = await http.get(Uri.parse(publicUrl));
+    if (response.statusCode != 200) {
+      throw Exception('Failed to download audio');
+    }
+    return response.bodyBytes;
+  }
 }
 
 class _AudioPlayerWidgetState extends State<AudioPlayerWidget>
@@ -58,7 +67,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget>
 
   Future<void> _init() async {
     try {
-      String urlToStream = widget.audioUrl;
+      final urlToStream = widget.audioUrl;
 
       final publicUrl = await SoundcloudService().getPublicStreamUrl(
         urlToStream,
@@ -68,16 +77,21 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget>
         throw Exception('invalid audio file from server');
       }
 
+      final bytes = await compute(
+        AudioPlayerWidget.downloadAudioBytes,
+        publicUrl,
+      );
+
       final dir = await getTemporaryDirectory();
       final file = File('${dir.path}/${publicUrl.hashCode}.mp3');
 
-      final bytes = (await http.get(Uri.parse(publicUrl))).bodyBytes;
       await file.writeAsBytes(bytes);
 
       await _playerController.preparePlayer(
         path: file.path,
         shouldExtractWaveform: true,
       );
+
       if (!mounted) return;
       setState(() => _isLoading = false);
     } catch (e) {
@@ -163,7 +177,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget>
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
                       child: AudioFileWaveforms(
-                        size: Size(360, 85),
+                        size: Size(370, 85),
                         playerController: _playerController,
                         waveformType: WaveformType.fitWidth,
                         animationCurve: Curves.easeInOutBack,
@@ -172,11 +186,9 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget>
                           fixedWaveColor: Palette.gigGrey.o(0.65),
                           liveWaveColor: Palette.forgedGold,
                           spacing: 3.65,
-                          // scrollScale: 1.35,
                           waveThickness: 2.65,
                           scaleFactor: 85,
                           waveCap: StrokeCap.butt,
-                          // seekLineColor: Palette.glazedWhite.o(0.85),
                         ),
                       ),
                     ),
