@@ -39,15 +39,31 @@ class _UserStarRatingState extends State<UserStarRating> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             backgroundColor: Palette.forgedGold,
-            duration: Duration(milliseconds: 950),
+            duration: Duration(milliseconds: 1050),
             content: Center(
-              child: Text('rating submitted!', style: TextStyle(fontSize: 16)),
+              child: Text(
+                'rating of $value submitted!',
+                style: TextStyle(fontSize: 16),
+              ),
             ),
           ),
         );
       }
     } catch (e) {
-      debugPrint('request error: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Palette.forgedGold,
+            duration: Duration(milliseconds: 1050),
+            content: Center(
+              child: Text(
+                'error submitting rating: $e',
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
+          ),
+        );
+      }
     }
   }
 
