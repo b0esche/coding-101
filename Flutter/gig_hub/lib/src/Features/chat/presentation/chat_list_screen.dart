@@ -156,7 +156,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                     return ChatListItemWidget(
                       chatListItem: entry,
                       currentUser: widget.currentUser,
-                      onTap: () {
+                      onTap: () async {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -167,6 +167,18 @@ class _ChatListScreenState extends State<ChatListScreen> {
                                 ),
                           ),
                         );
+                        if (entry.recent.read == false &&
+                            entry.recent.senderId != widget.currentUser.id) {
+                          setState(() {
+                            entry.recent.read = true;
+                          });
+                          await db.markMessageAsRead(
+                            entry.recent.id,
+                            widget.currentUser.id,
+                            entry.user.id,
+                            widget.currentUser.id,
+                          );
+                        }
                       },
                     );
                   }

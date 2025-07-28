@@ -6,7 +6,7 @@ class ChatMessage {
   final String receiverId;
   final String message;
   final DateTime timestamp;
-  final bool read;
+  bool read;
 
   ChatMessage({
     required this.id,

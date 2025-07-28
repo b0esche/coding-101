@@ -192,6 +192,8 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
       'lastMessage': newMessage.message,
       'lastTimestamp': FieldValue.serverTimestamp(),
       'participants': [message.senderId, message.receiverId],
+      'lastMessageId': newMessage.id,
+      'lastSenderId': newMessage.senderId,
     }, SetOptions(merge: true));
   }
 
@@ -201,12 +203,11 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
         .collection('chats')
         .where('participants', arrayContains: userId)
         .snapshots()
-        .map((querySnapshot) {
+        .asyncMap((querySnapshot) async {
           List<ChatMessage> allMessages = [];
 
           for (var doc in querySnapshot.docs) {
             final data = doc.data();
-
             final chatId = doc.id;
             final lastMessage = data['lastMessage'] as String? ?? '';
             final timestamp = (data['lastTimestamp'] as Timestamp?)?.toDate();
@@ -220,14 +221,32 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
 
             if (receiverId.isEmpty || timestamp == null) continue;
 
+            final messagesQuery =
+                await _firestore
+                    .collection('chats')
+                    .doc(chatId)
+                    .collection('messages')
+                    .orderBy('timestamp', descending: true)
+                    .limit(1)
+                    .get();
+
+            String messageId = chatId;
+            bool read = false;
+            if (messagesQuery.docs.isNotEmpty) {
+              final lastMsgDoc = messagesQuery.docs.first;
+              final lastMsgData = lastMsgDoc.data();
+              messageId = lastMsgDoc.id;
+              read = lastMsgData['read'] ?? false;
+            }
+
             allMessages.add(
               ChatMessage(
-                id: chatId,
+                id: messageId,
                 senderId: senderId,
                 receiverId: receiverId,
                 message: lastMessage,
                 timestamp: timestamp,
-                read: false,
+                read: read,
               ),
             );
           }
@@ -258,6 +277,24 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
   }
 
   /// UTILS ###
+
+  Future<void> markMessageAsRead(
+    String messageId,
+    String senderId,
+    String receiverId,
+    String currentUserId,
+  ) async {
+    final chatId = getChatId(senderId, receiverId);
+    final messageRef = _firestore
+        .collection('chats')
+        .doc(chatId)
+        .collection('messages')
+        .doc(messageId);
+    final msgDoc = await messageRef.get();
+    if (msgDoc.exists) {
+      await messageRef.update({'read': true});
+    } else {}
+  }
 
   @override
   String getChatId(String uid1, String uid2) {

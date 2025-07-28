@@ -540,7 +540,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                     },
                                     style: TextStyle(
                                       color: Palette.glazedWhite,
-                                      fontSize: 12,
+                                      fontSize: 15,
                                     ),
                                     controller: _nameController,
                                     decoration: InputDecoration(
@@ -562,7 +562,9 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                       ),
                     ),
                   ),
-                  UserStarRating(widget: widget),
+                  !editMode
+                      ? UserStarRating(widget: widget)
+                      : SizedBox.shrink(),
                   Positioned(
                     right: 0,
                     left: 0,
@@ -603,9 +605,10 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                   padding: const EdgeInsets.all(6.0),
                                   child: Row(
                                     children: [
-                                      const Icon(
+                                      Icon(
                                         Icons.location_pin,
-                                        size: 15.5,
+                                        size: 17,
+                                        color: Palette.primalBlack,
                                       ),
                                       const SizedBox(width: 4),
                                       !editMode
@@ -618,8 +621,8 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                             ),
                                           )
                                           : Container(
-                                            width: 100,
-                                            height: 24,
+                                            width: 136,
+                                            height: 32,
                                             decoration: BoxDecoration(
                                               border: Border.all(
                                                 color: Palette.glazedWhite,
@@ -631,8 +634,8 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                             ),
                                             child: TextFormField(
                                               style: TextStyle(
+                                                fontSize: 14,
                                                 color: Palette.glazedWhite,
-                                                fontSize: 11,
                                               ),
                                               controller: _locationController,
                                               focusNode: _locationFocusNode,
@@ -687,7 +690,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                   padding: const EdgeInsets.all(6.0),
                                   child: Row(
                                     children: [
-                                      const Icon(Icons.speed, size: 20),
+                                      const Icon(Icons.speed, size: 22),
                                       const SizedBox(width: 4),
                                       !editMode
                                           ? Text(
@@ -699,8 +702,8 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                             ),
                                           )
                                           : Container(
-                                            width: 100,
-                                            height: 24,
+                                            width: 136,
+                                            height: 32,
                                             decoration: BoxDecoration(
                                               border: Border.all(
                                                 color: Palette.glazedWhite,
@@ -742,7 +745,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                               },
                                               style: TextStyle(
                                                 color: Palette.glazedWhite,
-                                                fontSize: 11,
+                                                fontSize: 14,
                                               ),
                                               controller: _bpmController,
                                               decoration: InputDecoration(
@@ -1444,6 +1447,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
             label,
             style: GoogleFonts.sometypeMono(
               textStyle: TextStyle(
+                fontSize: 15,
                 color: Palette.glazedWhite,
                 fontWeight: FontWeight.w600,
                 decoration: TextDecoration.underline,
@@ -1455,8 +1459,8 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
           ),
           const SizedBox(height: 8),
           Container(
-            width: 260,
-            height: 48,
+            width: 298,
+            height: 60,
             decoration: BoxDecoration(
               border: Border.all(color: Palette.glazedWhite, width: 1),
               borderRadius: BorderRadius.circular(8),
@@ -1472,9 +1476,9 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                 isExpanded: true,
                 hint: Text(
                   'select track',
-                  style: TextStyle(color: Palette.glazedWhite, fontSize: 11),
+                  style: TextStyle(color: Palette.glazedWhite, fontSize: 14),
                 ),
-                style: TextStyle(color: Palette.glazedWhite, fontSize: 11),
+                style: TextStyle(color: Palette.glazedWhite, fontSize: 14),
                 items:
                     userTrackList.map((track) {
                       return DropdownMenuItem<SoundcloudTrack>(
@@ -1483,7 +1487,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                           track.title,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            fontSize: 11,
+                            fontSize: 12,
                             color: Palette.concreteGrey,
                           ),
                         ),
