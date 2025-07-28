@@ -612,7 +612,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                           ? Text(
                                             widget.dj.city,
                                             style: TextStyle(
-                                              fontSize: 14,
+                                              fontSize: 15,
                                               fontWeight: FontWeight.w700,
                                               color: Palette.primalBlack,
                                             ),
@@ -632,7 +632,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                             child: TextFormField(
                                               style: TextStyle(
                                                 color: Palette.glazedWhite,
-                                                fontSize: 10,
+                                                fontSize: 11,
                                               ),
                                               controller: _locationController,
                                               focusNode: _locationFocusNode,
@@ -693,7 +693,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                           ? Text(
                                             '${widget.dj.bpm.first}-${widget.dj.bpm.last} bpm',
                                             style: TextStyle(
-                                              fontSize: 14,
+                                              fontSize: 15,
                                               fontWeight: FontWeight.w700,
                                               color: Palette.primalBlack,
                                             ),
@@ -742,7 +742,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                               },
                                               style: TextStyle(
                                                 color: Palette.glazedWhite,
-                                                fontSize: 10,
+                                                fontSize: 11,
                                               ),
                                               controller: _bpmController,
                                               decoration: InputDecoration(
@@ -781,6 +781,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                 textStyle: TextStyle(
                                   color: Palette.glazedWhite,
                                   fontWeight: FontWeight.w600,
+                                  fontSize: 15,
                                 ),
                               ),
                             ),
@@ -904,7 +905,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                       decorationStyle:
                                           TextDecorationStyle.dotted,
                                       decorationThickness: 2,
-                                      fontSize: 15,
+                                      fontSize: 16,
                                     ),
                                   ),
                                 )
@@ -958,7 +959,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                           TextDecorationStyle.dotted,
                                       decorationThickness: 2,
                                       wordSpacing: -3,
-                                      fontSize: 15,
+                                      fontSize: 16,
                                     ),
                                   ),
                                 )
@@ -1112,6 +1113,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                 textStyle: TextStyle(
                                   color: Palette.glazedWhite,
                                   fontWeight: FontWeight.w600,
+                                  fontSize: 15,
                                 ),
                               ),
                             ),
@@ -1360,7 +1362,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                                           textStyle: TextStyle(
                                                             fontWeight:
                                                                 FontWeight.w600,
-                                                            fontSize: 13,
+                                                            fontSize: 14,
                                                             color:
                                                                 Palette
                                                                     .glazedWhite,

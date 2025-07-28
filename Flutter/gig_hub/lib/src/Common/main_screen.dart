@@ -290,13 +290,6 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     final db = context.watch<DatabaseRepository>();
     final currentUser = _loggedInUser;
-    final avatarImageProvider =
-        (currentUser is DJ)
-            ? (File(currentUser.avatarUrl).existsSync()
-                    ? FileImage(File(currentUser.avatarUrl))
-                    : NetworkImage(currentUser.avatarUrl))
-                as ImageProvider
-            : const NetworkImage("https://picsum.photos/100");
 
     return PopScope(
       canPop: false,
@@ -339,9 +332,15 @@ class _MainScreenState extends State<MainScreen> {
                                     width: 1.4,
                                   ),
                                 ),
-                                child: CircleAvatar(
-                                  radius: 32,
-                                  backgroundImage: avatarImageProvider,
+                                child: ClipOval(
+                                  child: FadeInImage.assetNetwork(
+                                    placeholder:
+                                        'assets/images/default_avatar.jpg',
+                                    image: widget.initialUser!.avatarUrl,
+                                    height: 68,
+                                    width: 68,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
                             ),

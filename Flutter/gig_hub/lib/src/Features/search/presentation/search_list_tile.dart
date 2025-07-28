@@ -77,15 +77,17 @@ class _SearchListTileState extends State<SearchListTile> {
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: Palette.primalBlack.o(0.35),
-                      width: 1.35,
+                      width: 1.65,
                     ),
                   ),
-                  child: CircleAvatar(
-                    backgroundImage:
-                        widget.imagePath.startsWith('http')
-                            ? NetworkImage(widget.imagePath)
-                            : FileImage(File(widget.imagePath)),
-                    radius: 32,
+                  child: ClipOval(
+                    child: FadeInImage.assetNetwork(
+                      image: widget.imagePath,
+                      placeholder: 'assets/images/default_avatar.jpg',
+                      height: 70,
+                      width: 70,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -107,6 +109,7 @@ class _SearchListTileState extends State<SearchListTile> {
                                   decoration: TextDecoration.underline,
                                   decorationColor: Palette.primalBlack.o(0.2),
                                   wordSpacing: -6,
+                                  letterSpacing: -0.25,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 20,
                                   overflow:

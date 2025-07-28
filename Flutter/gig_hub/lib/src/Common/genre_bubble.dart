@@ -20,11 +20,16 @@ List<String> genres = [
   "Tekk",
   "Hardtekk",
   "Bounce",
+  "Hardstyle",
+  "Rawstyle",
+  "Jumpstyle",
+  "Hard Bounce",
   "Terror",
   "Gabber",
-  "Frenchcore",
   "Hardcore",
   "Happy Hardcore",
+  "Frenchcore",
+  "Hard Bass",
   "Uptempo",
   "Hitech",
   "Raggatek",
@@ -117,7 +122,6 @@ class GenreBubble extends StatelessWidget {
               padding: const EdgeInsets.all(4),
               child: Text(
                 genre,
-
                 style: GoogleFonts.sometypeMono(
                   textStyle: TextStyle(
                     wordSpacing: -4,

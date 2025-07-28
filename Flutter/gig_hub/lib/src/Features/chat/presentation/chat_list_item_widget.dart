@@ -87,9 +87,14 @@ class ChatListItemWidget extends StatelessWidget {
                     width: 1.4,
                   ),
                 ),
-                child: CircleAvatar(
-                  radius: 38,
-                  backgroundImage: NetworkImage(avatarUrl),
+                child: ClipOval(
+                  child: FadeInImage.assetNetwork(
+                    placeholder: 'assets/images/default_avatar.jpg',
+                    image: avatarUrl,
+                    height: 80,
+                    width: 80,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
 
@@ -118,7 +123,7 @@ class ChatListItemWidget extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                             style: GoogleFonts.sometypeMono(
                               textStyle: TextStyle(
-                                fontSize: 18.5,
+                                fontSize: 18,
                                 fontWeight: FontWeight.w700,
                                 color: Palette.primalBlack,
                               ),
