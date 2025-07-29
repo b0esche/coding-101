@@ -1,4 +1,4 @@
-import '../Data/app_imports.dart';
+import '../../Data/app_imports.dart';
 
 List<String> genres = [
   // TECHNO & HARTE SPIELARTEN

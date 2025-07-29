@@ -1,4 +1,4 @@
-import '../Data/app_imports.dart';
+import '../../Data/app_imports.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key, required this.initialUser});
