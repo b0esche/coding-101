@@ -1,3 +1,8 @@
+import 'package:gig_hub/src/Features/profile/dj/presentation/widgets/location_display.dart';
+import 'package:gig_hub/src/Features/profile/dj/presentation/widgets/bpm_display.dart';
+import 'package:gig_hub/src/Features/profile/dj/presentation/widgets/location_input_field.dart';
+import 'package:gig_hub/src/Features/profile/dj/presentation/widgets/about_box.dart';
+import 'package:gig_hub/src/Features/profile/dj/presentation/widgets/info_box.dart';
 import 'package:gig_hub/src/Features/profile/dj/presentation/widgets/track_selection_dropdown.dart';
 import 'package:gig_hub/src/data/services/image_compression_service.dart';
 import "../../../../Data/app_imports.dart";
@@ -340,87 +345,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                   if (widget.showFavoriteIcon &&
                       !(widget.currentUser is DJ &&
                           (widget.currentUser as DJ).id == widget.dj.id))
-                    Positioned(
-                      bottom: 8,
-                      left: 8,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            width: 0.65,
-                            color: Palette.gigGrey.o(0.85),
-                          ),
-                          shape: BoxShape.circle,
-                          color: Palette.primalBlack.o(0.5),
-                        ),
-                        child: IconButton(
-                          style: ButtonStyle(
-                            splashFactory: NoSplash.splashFactory,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          ),
-                          icon: Icon(
-                            isFavorite ? Icons.favorite : Icons.favorite_border,
-                            color:
-                                isFavorite
-                                    ? Palette.favoriteRed
-                                    : Palette.glazedWhite,
-                            size: 22,
-                          ),
-                          onPressed: () async {
-                            final String targetId = widget.dj.id;
-                            final String userId = widget.currentUser.id;
-                            final userDocRef = FirebaseFirestore.instance
-                                .collection('users')
-                                .doc(userId);
-
-                            final bool newFavoriteStatus = !isFavorite;
-
-                            setState(() {});
-
-                            if (newFavoriteStatus) {
-                              await userDocRef.update({
-                                'favoriteUIds': FieldValue.arrayUnion([
-                                  targetId,
-                                ]),
-                              });
-
-                              if (widget.currentUser is Guest) {
-                                (widget.currentUser as Guest).favoriteUIds.add(
-                                  targetId,
-                                );
-                              } else if (widget.currentUser is Booker) {
-                                (widget.currentUser as Booker).favoriteUIds.add(
-                                  targetId,
-                                );
-                              } else if (widget.currentUser is DJ) {
-                                (widget.currentUser as DJ).favoriteUIds.add(
-                                  targetId,
-                                );
-                              }
-                            } else {
-                              await userDocRef.update({
-                                'favoriteUIds': FieldValue.arrayRemove([
-                                  targetId,
-                                ]),
-                              });
-
-                              if (widget.currentUser is Guest) {
-                                (widget.currentUser as Guest).favoriteUIds
-                                    .remove(targetId);
-                              } else if (widget.currentUser is Booker) {
-                                (widget.currentUser as Booker).favoriteUIds
-                                    .remove(targetId);
-                              } else if (widget.currentUser is DJ) {
-                                (widget.currentUser as DJ).favoriteUIds.remove(
-                                  targetId,
-                                );
-                              }
-                            }
-
-                            setState(() {});
-                          },
-                        ),
-                      ),
-                    ),
+                    _favoriteButton(),
                   Positioned.fill(
                     bottom: 2,
                     child: Align(
@@ -553,61 +478,13 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                       ),
                                       const SizedBox(width: 4),
                                       !editMode
-                                          ? Text(
-                                            widget.dj.city,
-                                            style: TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w700,
-                                              color: Palette.primalBlack,
-                                            ),
-                                          )
-                                          : Container(
-                                            width: 136,
-                                            height: 32,
-                                            decoration: BoxDecoration(
-                                              border: Border.all(
-                                                color: Palette.glazedWhite,
-                                                width: 1,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                              color: Palette.glazedWhite.o(0.2),
-                                            ),
-                                            child: TextFormField(
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                color: Palette.glazedWhite,
-                                              ),
-                                              controller: _locationController,
-                                              focusNode: _locationFocusNode,
-                                              validator: (value) {
-                                                return _locationError;
-                                              },
-                                              autovalidateMode:
-                                                  AutovalidateMode
-                                                      .onUserInteraction,
-                                              decoration: InputDecoration(
-                                                focusedBorder:
-                                                    OutlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                        color:
-                                                            Palette.forgedGold,
-                                                        width: 3,
-                                                      ),
-                                                    ),
-                                                border: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(8),
-                                                  borderSide: BorderSide(
-                                                    color: Palette.forgedGold,
-                                                  ),
-                                                ),
-                                                errorStyle: TextStyle(
-                                                  fontSize: 0,
-                                                  height: 0,
-                                                ),
-                                              ),
-                                            ),
+                                          ? LocationDisplay(widget: widget)
+                                          : LocationInputField(
+                                            locationController:
+                                                _locationController,
+                                            locationFocusNode:
+                                                _locationFocusNode,
+                                            locationError: _locationError,
                                           ),
                                     ],
                                   ),
@@ -634,80 +511,8 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                       const Icon(Icons.speed, size: 22),
                                       const SizedBox(width: 4),
                                       !editMode
-                                          ? Text(
-                                            '${widget.dj.bpm.first}-${widget.dj.bpm.last} bpm',
-                                            style: TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w700,
-                                              color: Palette.primalBlack,
-                                            ),
-                                          )
-                                          : Container(
-                                            width: 136,
-                                            height: 32,
-                                            decoration: BoxDecoration(
-                                              border: Border.all(
-                                                color: Palette.glazedWhite,
-                                                width: 1,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                              color: Palette.glazedWhite.o(0.2),
-                                            ),
-                                            child: TextFormField(
-                                              readOnly: true,
-                                              onTap: () async {
-                                                final result = await showDialog<
-                                                  List<int>
-                                                >(
-                                                  context: context,
-                                                  builder:
-                                                      (
-                                                        context,
-                                                      ) => BpmSelectionDialog(
-                                                        intialSelectedBpm: [
-                                                          widget.dj.bpm.first,
-                                                          widget.dj.bpm.last,
-                                                        ],
-                                                      ),
-                                                );
-
-                                                if (result != null &&
-                                                    result.length == 2) {
-                                                  setState(() {
-                                                    widget.dj.bpm.first =
-                                                        result[0];
-                                                    widget.dj.bpm.last =
-                                                        result[1];
-                                                    _bpmController.text =
-                                                        '${result[0]}-${result[1]} bpm';
-                                                  });
-                                                }
-                                              },
-                                              style: TextStyle(
-                                                color: Palette.glazedWhite,
-                                                fontSize: 14,
-                                              ),
-                                              controller: _bpmController,
-                                              decoration: InputDecoration(
-                                                focusedBorder:
-                                                    OutlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                        color:
-                                                            Palette.forgedGold,
-                                                        width: 3,
-                                                      ),
-                                                    ),
-                                                border: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(8),
-                                                  borderSide: BorderSide(
-                                                    color: Palette.forgedGold,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
+                                          ? BpmDisplay(widget: widget)
+                                          : bpmInputField(context),
                                     ],
                                   ),
                                 ),
@@ -730,23 +535,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                               ),
                             ),
                             !editMode
-                                ? Container(
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
-                                    color: Palette.shadowGrey,
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: Text(
-                                      widget.dj.about,
-                                      style: TextStyle(
-                                        color: Palette.primalBlack,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ),
-                                )
+                                ? AboutBox(widget: widget)
                                 : Container(
                                   decoration: BoxDecoration(
                                     border: Border.all(
@@ -790,44 +579,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                           ],
                         ),
                         const SizedBox(height: 36),
-                        Center(
-                          child: Wrap(
-                            spacing: 16,
-                            runSpacing: 8,
-                            children:
-                                !editMode
-                                    ? widget.dj.genres
-                                        .map(
-                                          (genreString) =>
-                                              GenreBubble(genre: genreString),
-                                        )
-                                        .toList()
-                                    : [
-                                      ...widget.dj.genres.map(
-                                        (genreString) =>
-                                            GenreBubble(genre: genreString),
-                                      ),
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                            color: Palette.forgedGold,
-                                            width: 2.7,
-                                          ),
-                                          borderRadius: BorderRadius.circular(
-                                            16,
-                                          ),
-                                        ),
-                                        child: GestureDetector(
-                                          onTap: _showGenreDialog,
-
-                                          child: const GenreBubble(
-                                            genre: " edit genres ",
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                          ),
-                        ),
+                        _buildGenreBubbles(),
                         const SizedBox(height: 36),
                         Column(
                           spacing: !editMode ? 0 : 8,
@@ -933,89 +685,8 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                         !editMode
                             ? widget.dj.mediaImageUrls.isEmpty
                                 ? SizedBox.shrink()
-                                : ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
-                                  child: ImageSlideshow(
-                                    width: double.infinity,
-                                    height: 240,
-                                    isLoop:
-                                        widget.dj.mediaImageUrls.length == 1
-                                            ? false
-                                            : true,
-                                    autoPlayInterval: 12000,
-
-                                    indicatorColor:
-                                        widget.dj.mediaImageUrls.length == 1
-                                            ? Colors.transparent
-                                            : Palette.shadowGrey,
-                                    indicatorBackgroundColor:
-                                        widget.dj.mediaImageUrls.length == 1
-                                            ? Colors.transparent
-                                            : Palette.gigGrey,
-                                    initialPage: index,
-                                    onPageChanged: (value) {
-                                      setState(() => index = value);
-                                    },
-                                    children: [
-                                      if (widget.dj.mediaImageUrls.isNotEmpty)
-                                        for (String path
-                                            in widget.dj.mediaImageUrls)
-                                          PinchZoom(
-                                            zoomEnabled: true,
-                                            maxScale: 2.5,
-                                            child:
-                                                path.startsWith('http')
-                                                    ? Image.network(
-                                                      path,
-                                                      fit: BoxFit.cover,
-                                                    )
-                                                    : Image.file(
-                                                      File(path),
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                          ),
-                                    ],
-                                  ),
-                                )
-                            : Center(
-                              child: Container(
-                                height: 160,
-                                width: 240,
-                                decoration: BoxDecoration(
-                                  border: Border.all(color: Palette.forgedGold),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: IconButton(
-                                  style: ButtonStyle(
-                                    tapTargetSize: MaterialTapTargetSize.padded,
-                                  ),
-                                  onPressed: () async {
-                                    List<XFile> medias = await ImagePicker()
-                                        .pickMultiImage(limit: 5);
-                                    List<String> newMediaUrls = [];
-                                    for (XFile xfile in medias) {
-                                      File originalFile = File(xfile.path);
-                                      File compressedFile =
-                                          await ImageCompressionService.compressImage(
-                                            originalFile,
-                                          );
-                                      newMediaUrls.add(compressedFile.path);
-                                    }
-                                    List<String> mediaUrls = newMediaUrls;
-                                    setState(() {
-                                      widget.dj.mediaImageUrls.addAll(
-                                        mediaUrls,
-                                      );
-                                    });
-                                  },
-                                  icon: Icon(
-                                    Icons.file_upload_rounded,
-                                    color: Palette.concreteGrey,
-                                    size: 48,
-                                  ),
-                                ),
-                              ),
-                            ),
+                                : imageSlideshow()
+                            : imageSlideshowEditor(),
                         SizedBox(
                           height:
                               widget.dj.mediaImageUrls.isNotEmpty ? null : 24,
@@ -1038,7 +709,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                           ),
 
                         if (widget.dj.mediaImageUrls.isNotEmpty)
-                          SizedBox(height: 36),
+                          const SizedBox(height: 36),
 
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1054,23 +725,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                               ),
                             ),
                             !editMode
-                                ? Container(
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
-                                    color: Palette.shadowGrey,
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: Text(
-                                      widget.dj.info,
-                                      style: TextStyle(
-                                        color: Palette.primalBlack,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ),
-                                )
+                                ? InfoBox(widget: widget)
                                 : Container(
                                   decoration: BoxDecoration(
                                     border: Border.all(
@@ -1115,227 +770,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                 ),
                           ],
                         ),
-                        Center(
-                          child: SizedBox(
-                            height: 100,
-                            child:
-                                !widget.showEditButton
-                                    ? OutlinedButton(
-                                      onPressed: () async {
-                                        if (editMode &&
-                                            (selectedTrackOne == null ||
-                                                selectedTrackTwo == null)) {
-                                          ScaffoldMessenger.of(
-                                            context,
-                                          ).showSnackBar(
-                                            SnackBar(
-                                              backgroundColor:
-                                                  Palette.forgedGold,
-                                              content: Center(
-                                                child: Text(
-                                                  'select 2 soundcloud tracks to save your profile!',
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        }
-                                        !editMode
-                                            ? PlayerController()
-                                                .stopAllPlayers()
-                                            : PlayerController()
-                                                .overrideAudioSession;
-                                        if (editMode &&
-                                            _formKey.currentState!.validate() &&
-                                            (selectedTrackOne != null &&
-                                                selectedTrackTwo != null)) {
-                                          if (editMode) {
-                                            setState(() {
-                                              isUploading = !isUploading;
-                                            });
-                                          }
-
-                                          widget.dj.about =
-                                              _aboutController.text;
-                                          widget.dj.info = _infoController.text;
-                                          widget.dj.name = _nameController.text;
-
-                                          widget.dj.streamingUrls = [
-                                            if (selectedTrackOne?.streamUrl !=
-                                                null)
-                                              selectedTrackOne!.streamUrl!,
-                                            if (selectedTrackTwo?.streamUrl !=
-                                                null)
-                                              selectedTrackTwo!.streamUrl!,
-                                          ];
-
-                                          widget.dj.trackTitles = [
-                                            selectedTrackOne?.title ?? '',
-                                            selectedTrackTwo?.title ?? '',
-                                          ];
-
-                                          widget.dj.trackUrls = [
-                                            selectedTrackOne?.permalinkUrl ??
-                                                '',
-                                            selectedTrackTwo?.permalinkUrl ??
-                                                '',
-                                          ];
-
-                                          final bpmText =
-                                              _bpmController.text.trim();
-                                          final bpmParts = bpmText
-                                              .split(' ')
-                                              .first
-                                              .split('-');
-                                          if (bpmParts.length == 2) {
-                                            widget.dj.bpm = [
-                                              int.tryParse(
-                                                    bpmParts[0].trim(),
-                                                  ) ??
-                                                  0,
-                                              int.tryParse(
-                                                    bpmParts[1].trim(),
-                                                  ) ??
-                                                  0,
-                                            ];
-                                          }
-
-                                          if (_locationError == null) {
-                                            widget.dj.city =
-                                                _locationController.text;
-                                          }
-
-                                          if (!widget.dj.headImageUrl
-                                              .startsWith('http')) {
-                                            final headFile = File(
-                                              widget.dj.headImageUrl,
-                                            );
-                                            final headStorageRef = FirebaseStorage
-                                                .instance
-                                                .ref()
-                                                .child(
-                                                  'head_images/${widget.dj.id}.jpg',
-                                                );
-                                            await headStorageRef.putFile(
-                                              headFile,
-                                            );
-                                            widget.dj.headImageUrl =
-                                                await headStorageRef
-                                                    .getDownloadURL();
-                                          }
-
-                                          if (widget.dj.mediaImageUrls.any(
-                                            (path) => !path.startsWith('http'),
-                                          )) {
-                                            List<String> newUrls = [];
-                                            for (
-                                              int i = 0;
-                                              i <
-                                                  widget
-                                                      .dj
-                                                      .mediaImageUrls
-                                                      .length;
-                                              i++
-                                            ) {
-                                              final path =
-                                                  widget.dj.mediaImageUrls[i];
-                                              if (path.startsWith('http')) {
-                                                newUrls.add(path);
-                                              } else {
-                                                final file = File(path);
-                                                final ref = FirebaseStorage
-                                                    .instance
-                                                    .ref()
-                                                    .child(
-                                                      'media_images/${widget.dj.id}_$i.jpg',
-                                                    );
-                                                await ref.putFile(file);
-                                                final downloadUrl =
-                                                    await ref.getDownloadURL();
-                                                newUrls.add(downloadUrl);
-                                              }
-                                            }
-                                            widget.dj.mediaImageUrls = newUrls;
-                                          }
-
-                                          setState(() {
-                                            isUploading = !isUploading;
-                                            editMode = !editMode;
-                                          });
-                                          await db.updateDJ(widget.dj);
-                                        } else if (!editMode) {
-                                          PlayerController().stopAllPlayers();
-                                          setState(() => editMode = !editMode);
-                                        }
-                                      },
-                                      style: ButtonStyle(
-                                        splashFactory: NoSplash.splashFactory,
-                                        tapTargetSize:
-                                            MaterialTapTargetSize.shrinkWrap,
-                                      ),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                            color: Palette.forgedGold,
-                                            width: 2,
-                                          ),
-                                          borderRadius: BorderRadius.circular(
-                                            16,
-                                          ),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(6.0),
-                                          child: Row(
-                                            spacing: 4,
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              !isUploading
-                                                  ? Text(
-                                                    !editMode
-                                                        ? "edit profile"
-                                                        : "done",
-                                                    style:
-                                                        GoogleFonts.sometypeMono(
-                                                          textStyle: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            fontSize: 14,
-                                                            color:
-                                                                Palette
-                                                                    .glazedWhite,
-                                                            decoration:
-                                                                TextDecoration
-                                                                    .underline,
-                                                            decorationColor:
-                                                                Palette
-                                                                    .glazedWhite,
-                                                          ),
-                                                        ),
-                                                  )
-                                                  : SizedBox.square(
-                                                    dimension: 20,
-                                                    child:
-                                                        CircularProgressIndicator(
-                                                          color:
-                                                              Palette
-                                                                  .forgedGold,
-                                                          strokeWidth: 2,
-                                                        ),
-                                                  ),
-                                              Icon(
-                                                !editMode
-                                                    ? Icons.edit
-                                                    : Icons.done,
-                                                size: 14,
-                                                color: Palette.glazedWhite,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    )
-                                    : SizedBox.shrink(),
-                          ),
-                        ),
+                        editProfileButton(context, db),
                       ],
                     ),
                   ),
@@ -1344,6 +779,380 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Positioned _favoriteButton() {
+    return Positioned(
+      bottom: 8,
+      left: 8,
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(width: 0.65, color: Palette.gigGrey.o(0.85)),
+          shape: BoxShape.circle,
+          color: Palette.primalBlack.o(0.5),
+        ),
+        child: IconButton(
+          style: ButtonStyle(
+            splashFactory: NoSplash.splashFactory,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+          icon: Icon(
+            isFavorite ? Icons.favorite : Icons.favorite_border,
+            color: isFavorite ? Palette.favoriteRed : Palette.glazedWhite,
+            size: 22,
+          ),
+          onPressed: () async {
+            final String targetId = widget.dj.id;
+            final String userId = widget.currentUser.id;
+            final userDocRef = FirebaseFirestore.instance
+                .collection('users')
+                .doc(userId);
+
+            final bool newFavoriteStatus = !isFavorite;
+
+            setState(() {});
+
+            if (newFavoriteStatus) {
+              await userDocRef.update({
+                'favoriteUIds': FieldValue.arrayUnion([targetId]),
+              });
+
+              if (widget.currentUser is Guest) {
+                (widget.currentUser as Guest).favoriteUIds.add(targetId);
+              } else if (widget.currentUser is Booker) {
+                (widget.currentUser as Booker).favoriteUIds.add(targetId);
+              } else if (widget.currentUser is DJ) {
+                (widget.currentUser as DJ).favoriteUIds.add(targetId);
+              }
+            } else {
+              await userDocRef.update({
+                'favoriteUIds': FieldValue.arrayRemove([targetId]),
+              });
+
+              if (widget.currentUser is Guest) {
+                (widget.currentUser as Guest).favoriteUIds.remove(targetId);
+              } else if (widget.currentUser is Booker) {
+                (widget.currentUser as Booker).favoriteUIds.remove(targetId);
+              } else if (widget.currentUser is DJ) {
+                (widget.currentUser as DJ).favoriteUIds.remove(targetId);
+              }
+            }
+
+            setState(() {});
+          },
+        ),
+      ),
+    );
+  }
+
+  Center editProfileButton(BuildContext context, DatabaseRepository db) {
+    return Center(
+      child: SizedBox(
+        height: 100,
+        child:
+            !widget.showEditButton
+                ? OutlinedButton(
+                  onPressed: () async {
+                    if (editMode &&
+                        (selectedTrackOne == null ||
+                            selectedTrackTwo == null)) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          backgroundColor: Palette.forgedGold,
+                          content: Center(
+                            child: Text(
+                              'select 2 soundcloud tracks to save your profile!',
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                    !editMode
+                        ? PlayerController().stopAllPlayers()
+                        : PlayerController().overrideAudioSession;
+                    if (editMode &&
+                        _formKey.currentState!.validate() &&
+                        (selectedTrackOne != null &&
+                            selectedTrackTwo != null)) {
+                      if (editMode) {
+                        setState(() {
+                          isUploading = !isUploading;
+                        });
+                      }
+
+                      widget.dj.about = _aboutController.text;
+                      widget.dj.info = _infoController.text;
+                      widget.dj.name = _nameController.text;
+
+                      widget.dj.streamingUrls = [
+                        if (selectedTrackOne?.streamUrl != null)
+                          selectedTrackOne!.streamUrl!,
+                        if (selectedTrackTwo?.streamUrl != null)
+                          selectedTrackTwo!.streamUrl!,
+                      ];
+
+                      widget.dj.trackTitles = [
+                        selectedTrackOne?.title ?? '',
+                        selectedTrackTwo?.title ?? '',
+                      ];
+
+                      widget.dj.trackUrls = [
+                        selectedTrackOne?.permalinkUrl ?? '',
+                        selectedTrackTwo?.permalinkUrl ?? '',
+                      ];
+
+                      final bpmText = _bpmController.text.trim();
+                      final bpmParts = bpmText.split(' ').first.split('-');
+                      if (bpmParts.length == 2) {
+                        widget.dj.bpm = [
+                          int.tryParse(bpmParts[0].trim()) ?? 0,
+                          int.tryParse(bpmParts[1].trim()) ?? 0,
+                        ];
+                      }
+
+                      if (_locationError == null) {
+                        widget.dj.city = _locationController.text;
+                      }
+
+                      if (!widget.dj.headImageUrl.startsWith('http')) {
+                        final headFile = File(widget.dj.headImageUrl);
+                        final headStorageRef = FirebaseStorage.instance
+                            .ref()
+                            .child('head_images/${widget.dj.id}.jpg');
+                        await headStorageRef.putFile(headFile);
+                        widget.dj.headImageUrl =
+                            await headStorageRef.getDownloadURL();
+                      }
+
+                      if (widget.dj.mediaImageUrls.any(
+                        (path) => !path.startsWith('http'),
+                      )) {
+                        List<String> newUrls = [];
+                        for (
+                          int i = 0;
+                          i < widget.dj.mediaImageUrls.length;
+                          i++
+                        ) {
+                          final path = widget.dj.mediaImageUrls[i];
+                          if (path.startsWith('http')) {
+                            newUrls.add(path);
+                          } else {
+                            final file = File(path);
+                            final ref = FirebaseStorage.instance.ref().child(
+                              'media_images/${widget.dj.id}_$i.jpg',
+                            );
+                            await ref.putFile(file);
+                            final downloadUrl = await ref.getDownloadURL();
+                            newUrls.add(downloadUrl);
+                          }
+                        }
+                        widget.dj.mediaImageUrls = newUrls;
+                      }
+
+                      setState(() {
+                        isUploading = !isUploading;
+                        editMode = !editMode;
+                      });
+                      await db.updateDJ(widget.dj);
+                    } else if (!editMode) {
+                      PlayerController().stopAllPlayers();
+                      setState(() => editMode = !editMode);
+                    }
+                  },
+                  style: ButtonStyle(
+                    splashFactory: NoSplash.splashFactory,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Palette.forgedGold, width: 2),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(6.0),
+                      child: Row(
+                        spacing: 4,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          !isUploading
+                              ? Text(
+                                !editMode ? "edit profile" : "done",
+                                style: GoogleFonts.sometypeMono(
+                                  textStyle: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                    color: Palette.glazedWhite,
+                                    decoration: TextDecoration.underline,
+                                    decorationColor: Palette.glazedWhite,
+                                  ),
+                                ),
+                              )
+                              : SizedBox.square(
+                                dimension: 20,
+                                child: CircularProgressIndicator(
+                                  color: Palette.forgedGold,
+                                  strokeWidth: 2,
+                                ),
+                              ),
+                          Icon(
+                            !editMode ? Icons.edit : Icons.done,
+                            size: 14,
+                            color: Palette.glazedWhite,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+                : SizedBox.shrink(),
+      ),
+    );
+  }
+
+  ClipRRect imageSlideshow() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: ImageSlideshow(
+        width: double.infinity,
+        height: 240,
+        isLoop: widget.dj.mediaImageUrls.length == 1 ? false : true,
+        autoPlayInterval: 12000,
+
+        indicatorColor:
+            widget.dj.mediaImageUrls.length == 1
+                ? Colors.transparent
+                : Palette.shadowGrey,
+        indicatorBackgroundColor:
+            widget.dj.mediaImageUrls.length == 1
+                ? Colors.transparent
+                : Palette.gigGrey,
+        initialPage: index,
+        onPageChanged: (value) {
+          setState(() => index = value);
+        },
+        children: [
+          if (widget.dj.mediaImageUrls.isNotEmpty)
+            for (String path in widget.dj.mediaImageUrls)
+              PinchZoom(
+                zoomEnabled: true,
+                maxScale: 2.5,
+                child:
+                    path.startsWith('http')
+                        ? Image.network(path, fit: BoxFit.cover)
+                        : Image.file(File(path), fit: BoxFit.cover),
+              ),
+        ],
+      ),
+    );
+  }
+
+  Center imageSlideshowEditor() {
+    return Center(
+      child: Container(
+        height: 160,
+        width: 240,
+        decoration: BoxDecoration(
+          border: Border.all(color: Palette.forgedGold),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: IconButton(
+          style: ButtonStyle(tapTargetSize: MaterialTapTargetSize.padded),
+          onPressed: () async {
+            List<XFile> medias = await ImagePicker().pickMultiImage(limit: 5);
+            List<String> newMediaUrls = [];
+            for (XFile xfile in medias) {
+              File originalFile = File(xfile.path);
+              File compressedFile = await ImageCompressionService.compressImage(
+                originalFile,
+              );
+              newMediaUrls.add(compressedFile.path);
+            }
+            List<String> mediaUrls = newMediaUrls;
+            setState(() {
+              widget.dj.mediaImageUrls.addAll(mediaUrls);
+            });
+          },
+          icon: Icon(
+            Icons.file_upload_rounded,
+            color: Palette.concreteGrey,
+            size: 48,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Container bpmInputField(BuildContext context) {
+    return Container(
+      width: 136,
+      height: 32,
+      decoration: BoxDecoration(
+        border: Border.all(color: Palette.glazedWhite, width: 1),
+        borderRadius: BorderRadius.circular(8),
+        color: Palette.glazedWhite.o(0.2),
+      ),
+      child: TextFormField(
+        readOnly: true,
+        onTap: () async {
+          final result = await showDialog<List<int>>(
+            context: context,
+            builder:
+                (context) => BpmSelectionDialog(
+                  intialSelectedBpm: [widget.dj.bpm.first, widget.dj.bpm.last],
+                ),
+          );
+
+          if (result != null && result.length == 2) {
+            setState(() {
+              widget.dj.bpm.first = result[0];
+              widget.dj.bpm.last = result[1];
+              _bpmController.text = '${result[0]}-${result[1]} bpm';
+            });
+          }
+        },
+        style: TextStyle(color: Palette.glazedWhite, fontSize: 14),
+        controller: _bpmController,
+        decoration: InputDecoration(
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Palette.forgedGold, width: 3),
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(color: Palette.forgedGold),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Center _buildGenreBubbles() {
+    return Center(
+      child: Wrap(
+        spacing: 16,
+        runSpacing: 8,
+        children:
+            !editMode
+                ? widget.dj.genres
+                    .map((genreString) => GenreBubble(genre: genreString))
+                    .toList()
+                : [
+                  ...widget.dj.genres.map(
+                    (genreString) => GenreBubble(genre: genreString),
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Palette.forgedGold, width: 2.7),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: GestureDetector(
+                      onTap: _showGenreDialog,
+
+                      child: const GenreBubble(genre: " edit genres "),
+                    ),
+                  ),
+                ],
       ),
     );
   }

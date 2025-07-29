@@ -1,0 +1,20 @@
+import 'package:gig_hub/src/Data/app_imports.dart';
+import 'package:gig_hub/src/Features/profile/dj/presentation/profile_screen_dj.dart';
+
+class LocationDisplay extends StatelessWidget {
+  const LocationDisplay({super.key, required this.widget});
+
+  final ProfileScreenDJ widget;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      widget.dj.city,
+      style: TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w700,
+        color: Palette.primalBlack,
+      ),
+    );
+  }
+}
