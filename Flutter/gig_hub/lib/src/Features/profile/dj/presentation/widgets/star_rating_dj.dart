@@ -51,7 +51,7 @@ class _UserStarRatingState extends State<UserStarRating> {
                 ),
                 Center(
                   child: Text(
-                    '${widget.widget.dj.name} now has $ratingCount ratings.',
+                    'total ratings: $ratingCount',
                     style: TextStyle(fontSize: 16),
                   ),
                 ),
