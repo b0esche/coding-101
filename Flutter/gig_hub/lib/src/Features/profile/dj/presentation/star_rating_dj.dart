@@ -40,12 +40,22 @@ class _UserStarRatingState extends State<UserStarRating> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             backgroundColor: Palette.forgedGold,
-            duration: Duration(milliseconds: 1050),
-            content: Center(
-              child: Text(
-                'rating of $ratingInt stars submitted!',
-                style: TextStyle(fontSize: 16),
-              ),
+            duration: Duration(milliseconds: 2950),
+            content: Column(
+              children: [
+                Center(
+                  child: Text(
+                    'rating submitted: $ratingInt stars!',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+                Center(
+                  child: Text(
+                    '${widget.widget.dj.name} now has $ratingCount ratings.',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+              ],
             ),
           ),
         );

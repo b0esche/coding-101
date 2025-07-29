@@ -41,11 +41,21 @@ class _UserStarRatingState extends State<UserStarRating> {
           SnackBar(
             backgroundColor: Palette.forgedGold,
             duration: Duration(milliseconds: 1050),
-            content: Center(
-              child: Text(
-                'rating of $ratingInt stars submitted!',
-                style: TextStyle(fontSize: 16),
-              ),
+            content: Column(
+              children: [
+                Center(
+                  child: Text(
+                    'rating submitted: $ratingInt stars!',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+                Center(
+                  child: Text(
+                    '${widget.widget.booker.name} now has $ratingCount ratings.',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+              ],
             ),
           ),
         );

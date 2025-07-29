@@ -282,7 +282,8 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                     ),
                   ),
                 ),
-                !editMode ? UserStarRating(widget: widget) : SizedBox.shrink(),
+                if (!editMode) UserStarRating(widget: widget),
+
                 Positioned(
                   right: 0,
                   left: 0,

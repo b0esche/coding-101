@@ -562,9 +562,8 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                       ),
                     ),
                   ),
-                  !editMode
-                      ? UserStarRating(widget: widget)
-                      : SizedBox.shrink(),
+                  if (!editMode) UserStarRating(widget: widget),
+
                   Positioned(
                     right: 0,
                     left: 0,
