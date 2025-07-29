@@ -1,8 +1,8 @@
 import 'package:gig_hub/src/Features/profile/dj/presentation/widgets/track_selection_dropdown.dart';
-import 'package:gig_hub/src/Services/image_compression_service.dart';
+import 'package:gig_hub/src/data/services/image_compression_service.dart';
 import "../../../../Data/app_imports.dart";
 import "../../../../Data/app_imports.dart" as http;
-import 'package:gig_hub/src/Services/places_validation_service.dart';
+import 'package:gig_hub/src/data/services/places_validation_service.dart';
 
 class ProfileScreenDJArgs {
   final DJ dj;
