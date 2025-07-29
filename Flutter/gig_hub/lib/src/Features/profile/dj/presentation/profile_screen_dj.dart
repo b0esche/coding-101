@@ -1,5 +1,8 @@
+import 'package:gig_hub/src/Features/profile/dj/presentation/track_selection_dropdown.dart';
+import 'package:gig_hub/src/Services/image_compression_service.dart';
 import "../../../../Data/app_imports.dart";
 import "../../../../Data/app_imports.dart" as http;
+import 'package:gig_hub/src/Services/places_validation_service.dart';
 
 class ProfileScreenDJArgs {
   final DJ dj;
@@ -98,26 +101,6 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
     _loadTracksIfAvailable();
   }
 
-  Future<File> compressImage(File file) async {
-    final tempDir = await getTemporaryDirectory();
-    final targetPath = '${tempDir.path}/${const Uuid().v4()}.jpg';
-
-    final compressedBytes = await FlutterImageCompress.compressWithFile(
-      file.path,
-      quality: 70,
-      format: CompressFormat.jpeg,
-    );
-
-    if (compressedBytes == null) {
-      throw Exception('image compression failed');
-    }
-
-    final compressedFile = File(targetPath);
-    await compressedFile.writeAsBytes(compressedBytes);
-
-    return compressedFile;
-  }
-
   @override
   void dispose() {
     _debounceTimer?.cancel();
@@ -156,7 +139,6 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
   }
 
   Future<void> _validateCity(String value) async {
-    final apiKey = dotenv.env['GOOGLE_API_KEY'];
     final trimmedValue = value.trim();
 
     if (trimmedValue.isEmpty) {
@@ -165,60 +147,20 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
       return;
     }
 
-    final query = Uri.encodeComponent(trimmedValue);
-    final url = Uri.parse(
-      'https://maps.googleapis.com/maps/api/place/autocomplete/json'
-      '?input=$query&types=(cities)&language=en&key=$apiKey',
-    );
-
     setState(() {
       _locationError = null;
     });
 
     try {
-      final response = await http.get(url);
-      final data = jsonDecode(response.body);
-
-      bool isValidCityFound = false;
-      if (response.statusCode == 200 && data['status'] == 'OK') {
-        final predictions = data['predictions'] as List;
-
-        if (predictions.isNotEmpty) {
-          for (var prediction in predictions) {
-            final String mainText =
-                prediction['structured_formatting']['main_text']
-                    ?.toString()
-                    .trim() ??
-                '';
-            final List types = prediction['types'] ?? [];
-
-            if (mainText.toLowerCase() == trimmedValue.toLowerCase() &&
-                (types.contains('locality') ||
-                    types.contains('administrative_area_level_3') ||
-                    types.contains('political'))) {
-              isValidCityFound = true;
-              break;
-            }
-          }
+      final isValidCityFound = await PlacesValidationService.validateCity(
+        trimmedValue,
+      );
+      setState(() {
+        _locationError = isValidCityFound ? null : ' ';
+        if (editMode) {
+          _formKey.currentState?.validate();
         }
-
-        setState(() {
-          _locationError = isValidCityFound ? null : ' ';
-          if (editMode) {
-            _formKey.currentState?.validate();
-          }
-        });
-      } else {
-        setState(() {
-          _locationError = ' ';
-          if (editMode) {
-            _formKey.currentState?.validate();
-          }
-        });
-        throw Exception(
-          'google places api error: ${data['status']} - ${data['error_message']}',
-        );
-      }
+      });
     } catch (e) {
       setState(() => _locationError = ' ');
       if (editMode) {
@@ -332,39 +274,39 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                             ),
                   ),
 
-                  editMode
-                      ? Positioned(
-                        top: 120,
-                        left: 180,
-                        child: IconButton(
-                          style: ButtonStyle(
-                            tapTargetSize: MaterialTapTargetSize.padded,
-                            splashFactory: NoSplash.splashFactory,
-                          ),
-                          onPressed: () async {
-                            final XFile? picked = await ImagePicker().pickImage(
-                              source: ImageSource.gallery,
-                            );
-
-                            if (picked != null) {
-                              final File originalFile = File(picked.path);
-                              final File compressedFile = await compressImage(
-                                originalFile,
-                              );
-
-                              setState(() {
-                                widget.dj.headImageUrl = compressedFile.path;
-                              });
-                            }
-                          },
-                          icon: Icon(
-                            Icons.file_upload_rounded,
-                            color: Palette.concreteGrey,
-                            size: 48,
-                          ),
+                  if (editMode)
+                    Positioned(
+                      top: 120,
+                      left: 180,
+                      child: IconButton(
+                        style: ButtonStyle(
+                          tapTargetSize: MaterialTapTargetSize.padded,
+                          splashFactory: NoSplash.splashFactory,
                         ),
-                      )
-                      : Positioned(child: SizedBox.shrink()),
+                        onPressed: () async {
+                          final XFile? picked = await ImagePicker().pickImage(
+                            source: ImageSource.gallery,
+                          );
+
+                          if (picked != null) {
+                            final File originalFile = File(picked.path);
+                            final File compressedFile =
+                                await ImageCompressionService.compressImage(
+                                  originalFile,
+                                );
+
+                            setState(() {
+                              widget.dj.headImageUrl = compressedFile.path;
+                            });
+                          }
+                        },
+                        icon: Icon(
+                          Icons.file_upload_rounded,
+                          color: Palette.concreteGrey,
+                          size: 48,
+                        ),
+                      ),
+                    ),
                   Positioned(
                     top: 32,
                     child: Padding(
@@ -395,90 +337,90 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                       ),
                     ),
                   ),
-                  (widget.showFavoriteIcon &&
-                          !(widget.currentUser is DJ &&
-                              (widget.currentUser as DJ).id == widget.dj.id))
-                      ? Positioned(
-                        bottom: 8,
-                        left: 8,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              width: 0.65,
-                              color: Palette.gigGrey.o(0.85),
-                            ),
-                            shape: BoxShape.circle,
-                            color: Palette.primalBlack.o(0.5),
+                  if (widget.showFavoriteIcon &&
+                      !(widget.currentUser is DJ &&
+                          (widget.currentUser as DJ).id == widget.dj.id))
+                    Positioned(
+                      bottom: 8,
+                      left: 8,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 0.65,
+                            color: Palette.gigGrey.o(0.85),
                           ),
-                          child: IconButton(
-                            style: ButtonStyle(
-                              splashFactory: NoSplash.splashFactory,
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            ),
-                            icon: Icon(
-                              isFavorite
-                                  ? Icons.favorite
-                                  : Icons.favorite_border,
-                              color:
-                                  isFavorite
-                                      ? Palette.favoriteRed
-                                      : Palette.glazedWhite,
-                              size: 22,
-                            ),
-                            onPressed: () async {
-                              final String targetId = widget.dj.id;
-                              final String userId = widget.currentUser.id;
-                              final userDocRef = FirebaseFirestore.instance
-                                  .collection('users')
-                                  .doc(userId);
-
-                              final bool newFavoriteStatus = !isFavorite;
-
-                              setState(() {});
-
-                              if (newFavoriteStatus) {
-                                await userDocRef.update({
-                                  'favoriteUIds': FieldValue.arrayUnion([
-                                    targetId,
-                                  ]),
-                                });
-
-                                if (widget.currentUser is Guest) {
-                                  (widget.currentUser as Guest).favoriteUIds
-                                      .add(targetId);
-                                } else if (widget.currentUser is Booker) {
-                                  (widget.currentUser as Booker).favoriteUIds
-                                      .add(targetId);
-                                } else if (widget.currentUser is DJ) {
-                                  (widget.currentUser as DJ).favoriteUIds.add(
-                                    targetId,
-                                  );
-                                }
-                              } else {
-                                await userDocRef.update({
-                                  'favoriteUIds': FieldValue.arrayRemove([
-                                    targetId,
-                                  ]),
-                                });
-
-                                if (widget.currentUser is Guest) {
-                                  (widget.currentUser as Guest).favoriteUIds
-                                      .remove(targetId);
-                                } else if (widget.currentUser is Booker) {
-                                  (widget.currentUser as Booker).favoriteUIds
-                                      .remove(targetId);
-                                } else if (widget.currentUser is DJ) {
-                                  (widget.currentUser as DJ).favoriteUIds
-                                      .remove(targetId);
-                                }
-                              }
-
-                              setState(() {});
-                            },
-                          ),
+                          shape: BoxShape.circle,
+                          color: Palette.primalBlack.o(0.5),
                         ),
-                      )
-                      : SizedBox.shrink(),
+                        child: IconButton(
+                          style: ButtonStyle(
+                            splashFactory: NoSplash.splashFactory,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          icon: Icon(
+                            isFavorite ? Icons.favorite : Icons.favorite_border,
+                            color:
+                                isFavorite
+                                    ? Palette.favoriteRed
+                                    : Palette.glazedWhite,
+                            size: 22,
+                          ),
+                          onPressed: () async {
+                            final String targetId = widget.dj.id;
+                            final String userId = widget.currentUser.id;
+                            final userDocRef = FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(userId);
+
+                            final bool newFavoriteStatus = !isFavorite;
+
+                            setState(() {});
+
+                            if (newFavoriteStatus) {
+                              await userDocRef.update({
+                                'favoriteUIds': FieldValue.arrayUnion([
+                                  targetId,
+                                ]),
+                              });
+
+                              if (widget.currentUser is Guest) {
+                                (widget.currentUser as Guest).favoriteUIds.add(
+                                  targetId,
+                                );
+                              } else if (widget.currentUser is Booker) {
+                                (widget.currentUser as Booker).favoriteUIds.add(
+                                  targetId,
+                                );
+                              } else if (widget.currentUser is DJ) {
+                                (widget.currentUser as DJ).favoriteUIds.add(
+                                  targetId,
+                                );
+                              }
+                            } else {
+                              await userDocRef.update({
+                                'favoriteUIds': FieldValue.arrayRemove([
+                                  targetId,
+                                ]),
+                              });
+
+                              if (widget.currentUser is Guest) {
+                                (widget.currentUser as Guest).favoriteUIds
+                                    .remove(targetId);
+                              } else if (widget.currentUser is Booker) {
+                                (widget.currentUser as Booker).favoriteUIds
+                                    .remove(targetId);
+                              } else if (widget.currentUser is DJ) {
+                                (widget.currentUser as DJ).favoriteUIds.remove(
+                                  targetId,
+                                );
+                              }
+                            }
+
+                            setState(() {});
+                          },
+                        ),
+                      ),
+                    ),
                   Positioned.fill(
                     bottom: 2,
                     child: Align(
@@ -891,28 +833,26 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                           spacing: !editMode ? 0 : 8,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            !editMode
-                                ? Text(
-                                  (widget.dj.trackTitles.isNotEmpty)
-                                      ? widget.dj.trackTitles.first
-                                      : 'first Track',
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.sometypeMono(
-                                    textStyle: TextStyle(
-                                      wordSpacing: -3,
-                                      color: Palette.glazedWhite,
-                                      fontWeight: FontWeight.w600,
-                                      decoration: TextDecoration.underline,
-                                      decorationColor: Palette.glazedWhite,
-                                      decorationStyle:
-                                          TextDecorationStyle.dotted,
-                                      decorationThickness: 2,
-                                      fontSize: 16,
-                                    ),
+                            if (!editMode)
+                              Text(
+                                (widget.dj.trackTitles.isNotEmpty)
+                                    ? widget.dj.trackTitles.first
+                                    : 'first Track',
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.sometypeMono(
+                                  textStyle: TextStyle(
+                                    wordSpacing: -3,
+                                    color: Palette.glazedWhite,
+                                    fontWeight: FontWeight.w600,
+                                    decoration: TextDecoration.underline,
+                                    decorationColor: Palette.glazedWhite,
+                                    decorationStyle: TextDecorationStyle.dotted,
+                                    decorationThickness: 2,
+                                    fontSize: 16,
                                   ),
-                                )
-                                : SizedBox.shrink(),
-                            SizedBox(height: 8),
+                                ),
+                              ),
+                            const SizedBox(height: 8),
                             !editMode
                                 ? Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
@@ -940,61 +880,56 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                 : soundcloudFields(),
                           ],
                         ),
-                        SizedBox(height: 36),
+                        const SizedBox(height: 36),
                         Column(
                           spacing: !editMode ? 0 : 8,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            !editMode
-                                ? Text(
-                                  (widget.dj.trackTitles.last.isNotEmpty)
-                                      ? widget.dj.trackTitles.last
-                                      : 'second track',
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.sometypeMono(
-                                    textStyle: TextStyle(
-                                      color: Palette.glazedWhite,
-                                      fontWeight: FontWeight.w600,
-                                      decoration: TextDecoration.underline,
-                                      decorationColor: Palette.glazedWhite,
-                                      decorationStyle:
-                                          TextDecorationStyle.dotted,
-                                      decorationThickness: 2,
-                                      wordSpacing: -3,
-                                      fontSize: 16,
+                            if (!editMode)
+                              Text(
+                                (widget.dj.trackTitles.last.isNotEmpty)
+                                    ? widget.dj.trackTitles.last
+                                    : 'second track',
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.sometypeMono(
+                                  textStyle: TextStyle(
+                                    color: Palette.glazedWhite,
+                                    fontWeight: FontWeight.w600,
+                                    decoration: TextDecoration.underline,
+                                    decorationColor: Palette.glazedWhite,
+                                    decorationStyle: TextDecorationStyle.dotted,
+                                    decorationThickness: 2,
+                                    wordSpacing: -3,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                            const SizedBox(height: 8),
+                            if (!editMode)
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  AudioPlayerWidget(
+                                    audioUrl: widget.dj.streamingUrls.last,
+                                    playerController: _playerControllerTwo,
+                                  ),
+                                  IconButton(
+                                    style: ButtonStyle(
+                                      tapTargetSize:
+                                          MaterialTapTargetSize.shrinkWrap,
+                                    ),
+                                    onPressed: () {
+                                      launchUrlString(widget.dj.trackUrls.last);
+                                    },
+                                    icon: SvgPicture.asset(
+                                      'assets/icons/soundcloud.svg',
                                     ),
                                   ),
-                                )
-                                : SizedBox.shrink(),
-                            SizedBox(height: 8),
-                            !editMode
-                                ? Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    AudioPlayerWidget(
-                                      audioUrl: widget.dj.streamingUrls.last,
-                                      playerController: _playerControllerTwo,
-                                    ),
-                                    IconButton(
-                                      style: ButtonStyle(
-                                        tapTargetSize:
-                                            MaterialTapTargetSize.shrinkWrap,
-                                      ),
-                                      onPressed: () {
-                                        launchUrlString(
-                                          widget.dj.trackUrls.last,
-                                        );
-                                      },
-                                      icon: SvgPicture.asset(
-                                        'assets/icons/soundcloud.svg',
-                                      ),
-                                    ),
-                                  ],
-                                )
-                                : SizedBox.shrink(),
+                                ],
+                              ),
                           ],
                         ),
-                        SizedBox(height: 36),
+                        const SizedBox(height: 36),
                         !editMode
                             ? widget.dj.mediaImageUrls.isEmpty
                                 ? SizedBox.shrink()
@@ -1060,9 +995,10 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                     List<String> newMediaUrls = [];
                                     for (XFile xfile in medias) {
                                       File originalFile = File(xfile.path);
-                                      File compressedFile = await compressImage(
-                                        originalFile,
-                                      );
+                                      File compressedFile =
+                                          await ImageCompressionService.compressImage(
+                                            originalFile,
+                                          );
                                       newMediaUrls.add(compressedFile.path);
                                     }
                                     List<String> mediaUrls = newMediaUrls;
@@ -1084,27 +1020,25 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                           height:
                               widget.dj.mediaImageUrls.isNotEmpty ? null : 24,
                         ),
-                        (widget.dj.mediaImageUrls.isNotEmpty && editMode)
-                            ? Center(
-                              child: TextButton(
-                                onPressed:
-                                    () => setState(
-                                      () => widget.dj.mediaImageUrls.clear(),
-                                    ),
-                                child: Text(
-                                  "remove all images",
-                                  style: TextStyle(
-                                    color: Palette.alarmRed.o(0.7),
-                                    fontWeight: FontWeight.w600,
+                        if (widget.dj.mediaImageUrls.isNotEmpty && editMode)
+                          Center(
+                            child: TextButton(
+                              onPressed:
+                                  () => setState(
+                                    () => widget.dj.mediaImageUrls.clear(),
                                   ),
+                              child: Text(
+                                "remove all images",
+                                style: TextStyle(
+                                  color: Palette.alarmRed.o(0.7),
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
-                            )
-                            : SizedBox.shrink(),
+                            ),
+                          ),
 
-                        widget.dj.mediaImageUrls.isNotEmpty
-                            ? SizedBox(height: 36)
-                            : SizedBox.shrink(),
+                        if (widget.dj.mediaImageUrls.isNotEmpty)
+                          SizedBox(height: 36),
 
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1418,86 +1352,20 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        _buildTrackDropdown(
+        TrackSelectionDropdown(
+          userTrackList: userTrackList,
           label: "first SoundCloud set",
           selectedTrack: selectedTrackOne,
           onChanged: (track) => setState(() => selectedTrackOne = track),
         ),
         const SizedBox(height: 36),
-        _buildTrackDropdown(
+        TrackSelectionDropdown(
+          userTrackList: userTrackList,
           label: "second SoundCloud set",
           selectedTrack: selectedTrackTwo,
           onChanged: (track) => setState(() => selectedTrackTwo = track),
         ),
       ],
-    );
-  }
-
-  Widget _buildTrackDropdown({
-    required String label,
-    required SoundcloudTrack? selectedTrack,
-    required Function(SoundcloudTrack?) onChanged,
-  }) {
-    return Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            label,
-            style: GoogleFonts.sometypeMono(
-              textStyle: TextStyle(
-                fontSize: 15,
-                color: Palette.glazedWhite,
-                fontWeight: FontWeight.w600,
-                decoration: TextDecoration.underline,
-                decorationColor: Palette.glazedWhite,
-                decorationStyle: TextDecorationStyle.dotted,
-                decorationThickness: 2,
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Container(
-            width: 298,
-            height: 60,
-            decoration: BoxDecoration(
-              border: Border.all(color: Palette.glazedWhite, width: 1),
-              borderRadius: BorderRadius.circular(8),
-              color: Palette.glazedWhite.o(0.2),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<SoundcloudTrack>(
-                borderRadius: BorderRadius.circular(8),
-                dropdownColor: Palette.primalBlack.o(0.85),
-                iconEnabledColor: Palette.glazedWhite,
-                value: selectedTrack,
-                isExpanded: true,
-                hint: Text(
-                  'select track',
-                  style: TextStyle(color: Palette.glazedWhite, fontSize: 14),
-                ),
-                style: TextStyle(color: Palette.glazedWhite, fontSize: 14),
-                items:
-                    userTrackList.map((track) {
-                      return DropdownMenuItem<SoundcloudTrack>(
-                        value: track,
-                        child: Text(
-                          track.title,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Palette.concreteGrey,
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                onChanged: onChanged,
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:gig_hub/src/Data/app_imports.dart' hide UserStarRating;
-import 'package:http/http.dart' as http;
+import 'package:gig_hub/src/Services/image_compression_service.dart';
+import 'package:gig_hub/src/Services/places_validation_service.dart';
 import 'package:gig_hub/src/Features/profile/booker/presentation/star_rating_booker.dart';
 
 class ProfileScreenBookerArgs {
@@ -51,9 +52,23 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
     text: widget.booker.city,
   );
   String? _locationError;
+  final _locationFocusNode = FocusNode();
+  Timer? _debounceTimer;
+
+  @override
+  void initState() {
+    _locationFocusNode.addListener(_onLocationFocusChange);
+    _locationController.addListener(_onLocationChanged);
+    super.initState();
+  }
 
   @override
   void dispose() {
+    _debounceTimer?.cancel();
+    _locationFocusNode.removeListener(_onLocationFocusChange);
+    _locationFocusNode.dispose();
+
+    _locationController.removeListener(_onLocationChanged);
     _infoController.dispose();
     _aboutController.dispose();
     _nameController.dispose();
@@ -61,61 +76,56 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
     super.dispose();
   }
 
-  Future<void> validateCityInput() async {
-    final apiKey = dotenv.env['GOOGLE_API_KEY'];
-    final trimmedValue = _locationController.text.trim();
+  void _onLocationChanged() {
+    final input = _locationController.text.trim();
+
+    _debounceTimer?.cancel();
+    if (input.isEmpty) {
+      setState(() => _locationError = ' ');
+      _formKey.currentState?.validate();
+      return;
+    }
+
+    _debounceTimer = Timer(const Duration(milliseconds: 350), () {
+      _validateCity(input);
+    });
+  }
+
+  void _onLocationFocusChange() {
+    if (!_locationFocusNode.hasFocus) {
+      _validateCity(_locationController.text);
+    }
+  }
+
+  Future<void> _validateCity(String value) async {
+    final trimmedValue = value.trim();
+
     if (trimmedValue.isEmpty) {
       setState(() => _locationError = ' ');
       _formKey.currentState?.validate();
       return;
     }
-    final query = Uri.encodeComponent(trimmedValue);
-    final url = Uri.parse(
-      'https://maps.googleapis.com/maps/api/place/autocomplete/json'
-      '?input=$query&types=(cities)&language=en&key=$apiKey',
-    );
+
     setState(() {
       _locationError = null;
     });
+
     try {
-      final response = await http.get(url);
-      final data = jsonDecode(response.body);
-      bool isValidCityFound = false;
-      if (response.statusCode == 200 && data['status'] == 'OK') {
-        final predictions = data['predictions'] as List;
-        if (predictions.isNotEmpty) {
-          for (var prediction in predictions) {
-            final String mainText =
-                prediction['structured_formatting']['main_text']
-                    ?.toString()
-                    .trim() ??
-                '';
-            final List types = prediction['types'] ?? [];
-            if (mainText.toLowerCase() == trimmedValue.toLowerCase() &&
-                (types.contains('locality') ||
-                    types.contains('administrative_area_level_3') ||
-                    types.contains('political'))) {
-              isValidCityFound = true;
-              break;
-            }
-          }
-        }
-        setState(() {
-          _locationError = isValidCityFound ? null : ' ';
-          widget.booker.city = trimmedValue;
-          _formKey.currentState?.validate();
-        });
-      } else {
-        setState(() {
-          _locationError = ' ';
-          _formKey.currentState?.validate();
-        });
-      }
-    } catch (e) {
+      final isValidCityFound = await PlacesValidationService.validateCity(
+        trimmedValue,
+      );
       setState(() {
-        _locationError = ' ';
-        _formKey.currentState?.validate();
+        _locationError = isValidCityFound ? null : ' ';
+        if (editMode) {
+          _formKey.currentState?.validate();
+        }
       });
+    } catch (e) {
+      setState(() => _locationError = ' ');
+      if (editMode) {
+        _formKey.currentState?.validate();
+      }
+      throw Exception('network error during city validation: $e');
     }
   }
 
@@ -150,33 +160,39 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                           ),
                 ),
 
-                editMode
-                    ? Positioned(
-                      top: 120,
-                      left: 180,
-                      child: IconButton(
-                        style: ButtonStyle(
-                          tapTargetSize: MaterialTapTargetSize.padded,
-                          splashFactory: NoSplash.splashFactory,
-                        ),
-                        onPressed: () async {
-                          final XFile? newMedia = await ImagePicker().pickImage(
-                            source: ImageSource.gallery,
-                          );
-                          if (newMedia != null) {
-                            setState(() {
-                              widget.booker.headImageUrl = newMedia.path;
-                            });
-                          }
-                        },
-                        icon: Icon(
-                          Icons.file_upload_rounded,
-                          color: Palette.concreteGrey,
-                          size: 48,
-                        ),
+                if (editMode)
+                  Positioned(
+                    top: 120,
+                    left: 180,
+                    child: IconButton(
+                      style: ButtonStyle(
+                        tapTargetSize: MaterialTapTargetSize.padded,
+                        splashFactory: NoSplash.splashFactory,
                       ),
-                    )
-                    : Positioned(child: SizedBox.shrink()),
+                      onPressed: () async {
+                        final XFile? picked = await ImagePicker().pickImage(
+                          source: ImageSource.gallery,
+                        );
+
+                        if (picked != null) {
+                          final File originalFile = File(picked.path);
+                          final File compressedFile =
+                              await ImageCompressionService.compressImage(
+                                originalFile,
+                              );
+
+                          setState(() {
+                            widget.booker.headImageUrl = compressedFile.path;
+                          });
+                        }
+                      },
+                      icon: Icon(
+                        Icons.file_upload_rounded,
+                        color: Palette.concreteGrey,
+                        size: 48,
+                      ),
+                    ),
+                  ),
                 Positioned(
                   top: 32,
                   child: Padding(
@@ -331,12 +347,18 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                                         width: 136,
                                         height: 24,
                                         child: TextFormField(
-                                          onEditingComplete: validateCityInput,
                                           style: TextStyle(
                                             color: Palette.glazedWhite,
                                             fontSize: 14,
                                           ),
                                           controller: _locationController,
+                                          focusNode: _locationFocusNode,
+                                          validator: (value) {
+                                            return _locationError;
+                                          },
+                                          autovalidateMode:
+                                              AutovalidateMode
+                                                  .onUserInteraction,
                                           decoration: InputDecoration(
                                             contentPadding: EdgeInsets.only(
                                               bottom: 12,
@@ -593,11 +615,17 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                                 ),
                                 onPressed: () async {
                                   List<XFile> medias = await ImagePicker()
-                                      .pickMultiImage(limit: 10);
-                                  List<String> mediaUrls =
-                                      medias
-                                          .map((element) => element.path)
-                                          .toList();
+                                      .pickMultiImage(limit: 5);
+                                  List<String> newMediaUrls = [];
+                                  for (XFile xfile in medias) {
+                                    File originalFile = File(xfile.path);
+                                    File compressedFile =
+                                        await ImageCompressionService.compressImage(
+                                          originalFile,
+                                        );
+                                    newMediaUrls.add(compressedFile.path);
+                                  }
+                                  List<String> mediaUrls = newMediaUrls;
                                   setState(() {
                                     widget.booker.mediaImageUrls.addAll(
                                       mediaUrls,
@@ -612,7 +640,28 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                               ),
                             ),
                           ),
-                      const SizedBox(height: 36),
+                      SizedBox(
+                        height:
+                            widget.booker.mediaImageUrls.isNotEmpty ? null : 24,
+                      ),
+                      if (widget.booker.mediaImageUrls.isNotEmpty && editMode)
+                        Center(
+                          child: TextButton(
+                            onPressed:
+                                () => setState(
+                                  () => widget.booker.mediaImageUrls.clear(),
+                                ),
+                            child: Text(
+                              "remove all images",
+                              style: TextStyle(
+                                color: Palette.alarmRed.o(0.7),
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                      if (widget.booker.mediaImageUrls.isNotEmpty)
+                        SizedBox(height: 36),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

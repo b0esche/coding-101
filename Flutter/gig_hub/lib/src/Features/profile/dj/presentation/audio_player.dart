@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:gig_hub/src/Features/profile/dj/domain/audio_manager.dart';
-import 'package:gig_hub/src/Features/profile/dj/domain/soundcloud_service.dart';
+import 'package:gig_hub/src/Services/soundcloud_service.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
