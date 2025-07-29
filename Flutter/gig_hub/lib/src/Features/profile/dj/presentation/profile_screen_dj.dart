@@ -1,4 +1,4 @@
-import 'package:gig_hub/src/Features/profile/dj/presentation/track_selection_dropdown.dart';
+import 'package:gig_hub/src/Features/profile/dj/presentation/widgets/track_selection_dropdown.dart';
 import 'package:gig_hub/src/Services/image_compression_service.dart';
 import "../../../../Data/app_imports.dart";
 import "../../../../Data/app_imports.dart" as http;

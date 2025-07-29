@@ -53,8 +53,8 @@ export 'package:gig_hub/src/Features/profile/booker/presentation/create_profile_
 export 'package:gig_hub/src/Features/profile/booker/presentation/profile_screen_booker.dart';
 export 'package:gig_hub/src/Features/profile/dj/presentation/create_profile_screen_dj.dart';
 export 'package:gig_hub/src/Features/profile/dj/presentation/profile_screen_dj.dart';
-export 'package:gig_hub/src/Features/profile/dj/presentation/audio_player.dart';
-export 'package:gig_hub/src/Features/profile/dj/presentation/star_rating_dj.dart';
+export 'package:gig_hub/src/Features/profile/dj/presentation/widgets/audio_player.dart';
+export 'package:gig_hub/src/Features/profile/dj/presentation/widgets/star_rating_dj.dart';
 export 'package:gig_hub/src/Features/search/presentation/search_function_card.dart';
 export 'package:gig_hub/src/Features/search/presentation/search_list_tile.dart';
 export 'package:gig_hub/src/Features/search/presentation/sort_button.dart';

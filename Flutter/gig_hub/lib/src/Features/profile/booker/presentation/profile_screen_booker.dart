@@ -1,7 +1,7 @@
 import 'package:gig_hub/src/Data/app_imports.dart' hide UserStarRating;
 import 'package:gig_hub/src/Services/image_compression_service.dart';
 import 'package:gig_hub/src/Services/places_validation_service.dart';
-import 'package:gig_hub/src/Features/profile/booker/presentation/star_rating_booker.dart';
+import 'package:gig_hub/src/Features/profile/booker/widgets/star_rating_booker.dart';
 
 class ProfileScreenBookerArgs {
   final Booker booker;
