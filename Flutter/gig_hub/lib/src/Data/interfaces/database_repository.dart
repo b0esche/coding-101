@@ -35,6 +35,12 @@ abstract class DatabaseRepository with ChangeNotifier {
     String senderId,
     String receiverId,
   );
+  Future<void> deleteChat(String userId, String partnerId);
+  Future<void> deleteMessage(
+    String chatId,
+    String messageId,
+    String currentUserId,
+  );
 
   // utils ###
   Future<AppUser> getCurrentUser();

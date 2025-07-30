@@ -177,6 +177,57 @@ class _ChatListScreenState extends State<ChatListScreen> {
                           );
                         }
                       },
+                      onLongPress: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              backgroundColor: Palette.forgedGold,
+
+                              title: Center(
+                                child: Text(
+                                  'delete chat for you and ${entry.user.displayName}?',
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.sometypeMono(
+                                    textStyle: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              actions: [
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    await db.deleteChat(
+                                      widget.currentUser.id,
+                                      entry.user.id,
+                                    );
+                                    if (context.mounted) {
+                                      Navigator.pop(context);
+                                    }
+                                  },
+                                  child: Text(
+                                    'delete chat',
+                                    style: TextStyle(
+                                      color: Palette.primalBlack,
+                                    ),
+                                  ),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: Text(
+                                    'cancel',
+                                    style: TextStyle(
+                                      color: Palette.primalBlack,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
                     );
                   }
 

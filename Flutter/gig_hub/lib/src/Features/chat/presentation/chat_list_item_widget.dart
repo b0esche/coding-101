@@ -6,12 +6,14 @@ class ChatListItemWidget extends StatelessWidget {
   final ChatListItem chatListItem;
   final AppUser currentUser;
   final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
 
   const ChatListItemWidget({
     super.key,
     required this.chatListItem,
     required this.currentUser,
     this.onTap,
+    this.onLongPress,
   });
 
   String _formatTimestamp(DateTime timestamp) {
@@ -55,6 +57,7 @@ class ChatListItemWidget extends StatelessWidget {
 
     return InkWell(
       onTap: onTap,
+      onLongPress: onLongPress,
       borderRadius: BorderRadius.circular(16),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),

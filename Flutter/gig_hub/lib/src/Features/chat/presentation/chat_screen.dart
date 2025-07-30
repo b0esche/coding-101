@@ -33,6 +33,8 @@ class ChatScreenState extends State<ChatScreen> {
 
   bool _encryptionReady = false;
 
+  final Set<String> _deleteModeMessages = {};
+
   @override
   void initState() {
     super.initState();
@@ -270,63 +272,133 @@ class ChatScreenState extends State<ChatScreen> {
                     final ChatMessage message = item;
                     final isMe = message.senderId == widget.currentUser.id;
 
+                    final inDeleteMode =
+                        isMe && _deleteModeMessages.contains(message.id);
                     return Align(
                       alignment:
                           isMe ? Alignment.centerRight : Alignment.centerLeft,
-                      child: Stack(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Container(
-                            constraints: BoxConstraints(
-                              minWidth: 96,
-                              maxWidth:
-                                  MediaQuery.of(context).size.width * 0.75,
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 14,
-                              vertical: 10,
-                            ),
-                            margin: const EdgeInsets.symmetric(vertical: 5),
-                            decoration: BoxDecoration(
-                              color:
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 180),
+                            transform:
+                                inDeleteMode
+                                    ? Matrix4.translationValues(-48, 0, 0)
+                                    : Matrix4.identity(),
+                            child: GestureDetector(
+                              onLongPress:
                                   isMe
-                                      ? Palette.forgedGold
-                                      : Palette.glazedWhite,
-                              borderRadius: BorderRadius.only(
-                                topLeft: const Radius.circular(16),
-                                topRight: const Radius.circular(16),
-                                bottomLeft: Radius.circular(isMe ? 16 : 4),
-                                bottomRight: Radius.circular(isMe ? 4 : 16),
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Palette.primalBlack.o(0.1),
-                                  blurRadius: 3,
-                                  offset: const Offset(0, 1),
+                                      ? () {
+                                        setState(() {
+                                          if (inDeleteMode) {
+                                            _deleteModeMessages.remove(
+                                              message.id,
+                                            );
+                                          } else {
+                                            _deleteModeMessages.add(message.id);
+                                          }
+                                        });
+                                      }
+                                      : null,
+                              child: Container(
+                                constraints: BoxConstraints(
+                                  minWidth: 96,
+                                  maxWidth:
+                                      MediaQuery.of(context).size.width * 0.75,
                                 ),
-                              ],
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 4, bottom: 2),
-                              child: Text(
-                                _decryptMessage(message.message),
-                                style: TextStyle(
-                                  color: Palette.primalBlack,
-                                  fontSize: 15,
+                                margin: const EdgeInsets.symmetric(vertical: 5),
+                                child: Stack(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 14,
+                                        vertical: 10,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color:
+                                            isMe
+                                                ? Palette.forgedGold
+                                                : Palette.glazedWhite,
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: const Radius.circular(16),
+                                          topRight: const Radius.circular(16),
+                                          bottomLeft: Radius.circular(
+                                            isMe ? 16 : 4,
+                                          ),
+                                          bottomRight: Radius.circular(
+                                            isMe ? 4 : 16,
+                                          ),
+                                        ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Palette.primalBlack.o(0.1),
+                                            blurRadius: 3,
+                                            offset: const Offset(0, 1),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                          top: 4,
+                                          bottom: 2,
+                                          right: 36,
+                                        ),
+                                        child: Text(
+                                          _decryptMessage(message.message),
+                                          style: TextStyle(
+                                            color: Palette.primalBlack,
+                                            fontSize: 15,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Positioned(
+                                      top: 8,
+                                      right: 10,
+                                      child: Text(
+                                        '${message.timestamp.hour.toString().padLeft(2, '0')}:${message.timestamp.minute.toString().padLeft(2, '0')}',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          color: Palette.primalBlack.o(0.8),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
                           ),
-                          Positioned(
-                            top: 8,
-                            right: 10,
-                            child: Text(
-                              '${message.timestamp.hour.toString().padLeft(2, '0')}:${message.timestamp.minute.toString().padLeft(2, '0')}',
-                              style: TextStyle(
-                                fontSize: 10,
-                                color: Palette.primalBlack.o(0.8),
+                          if (inDeleteMode)
+                            AnimatedOpacity(
+                              opacity: 1.0,
+                              duration: const Duration(milliseconds: 180),
+                              child: IconButton(
+                                style: ButtonStyle(
+                                  tapTargetSize: MaterialTapTargetSize.padded,
+                                ),
+                                icon: Icon(
+                                  Icons.delete_sweep_outlined,
+                                  color: Palette.alarmRed,
+                                  size: 32,
+                                ),
+                                onPressed: () async {
+                                  final chatId = db.getChatId(
+                                    widget.currentUser.id,
+                                    widget.chatPartner.id,
+                                  );
+                                  await db.deleteMessage(
+                                    chatId,
+                                    message.id,
+                                    widget.currentUser.id,
+                                  );
+                                  setState(() {
+                                    _deleteModeMessages.remove(message.id);
+                                  });
+                                },
                               ),
                             ),
-                          ),
                         ],
                       ),
                     );

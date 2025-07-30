@@ -297,6 +297,41 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
   }
 
   @override
+  Future<void> deleteMessage(
+    String chatId,
+    String messageId,
+    String currentUserId,
+  ) async {
+    final messageRef = _firestore
+        .collection('chats')
+        .doc(chatId)
+        .collection('messages')
+        .doc(messageId);
+    final msgDoc = await messageRef.get();
+    if (!msgDoc.exists) {
+      throw Exception('message not found');
+    }
+    final data = msgDoc.data();
+    if (data == null || data['senderId'] != currentUserId) {
+      throw Exception('You can only delete your own messages');
+    }
+    await messageRef.delete();
+  }
+
+  @override
+  Future<void> deleteChat(String userId, String partnerId) async {
+    final chatId = getChatId(userId, partnerId);
+    final chatDoc = _firestore.collection('chats').doc(chatId);
+
+    final messagesQuery = await chatDoc.collection('messages').get();
+    for (final msgDoc in messagesQuery.docs) {
+      await msgDoc.reference.delete();
+    }
+
+    await chatDoc.delete();
+  }
+
+  @override
   String getChatId(String uid1, String uid2) {
     final sorted = [uid1, uid2]..sort();
     return sorted.join('_');
