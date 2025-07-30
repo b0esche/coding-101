@@ -151,6 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Column(
                           children: [
                             TextFormField(
+                              textInputAction: TextInputAction.next,
                               keyboardType: TextInputType.emailAddress,
                               autofillHints: [AutofillHints.email],
                               controller: _loginEmailController,
@@ -169,6 +170,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             Divider(color: Palette.concreteGrey),
                             TextFormField(
+                              textInputAction: TextInputAction.done,
                               keyboardType: TextInputType.visiblePassword,
                               autofillHints: [AutofillHints.password],
                               controller: _loginPasswordController,

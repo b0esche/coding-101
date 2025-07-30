@@ -386,7 +386,7 @@ class _MainScreenState extends State<MainScreen> {
                     },
                   ),
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -426,7 +426,7 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                       ),
                     ),
-                    Spacer(),
+                    const Spacer(),
                     GestureDetector(
                       onTap:
                           () => setState(() {
@@ -465,7 +465,7 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(width: 4),
+                    const SizedBox(width: 4),
                   ],
                 ),
                 if (_isExpanded)
@@ -477,7 +477,7 @@ class _MainScreenState extends State<MainScreen> {
                       onExpandedChanged: _toggleExpanded,
                     ),
                   ),
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
                 Expanded(
                   child:
                       _isLoading

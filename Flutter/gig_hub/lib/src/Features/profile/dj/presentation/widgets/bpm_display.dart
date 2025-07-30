@@ -1,5 +1,4 @@
 import 'package:gig_hub/src/Data/app_imports.dart';
-import 'package:gig_hub/src/Features/profile/dj/presentation/profile_screen_dj.dart';
 
 class BpmDisplay extends StatelessWidget {
   const BpmDisplay({super.key, required this.widget});

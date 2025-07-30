@@ -109,9 +109,12 @@ class _SignUpSheetState extends State<SignUpSheet> {
             const SizedBox(height: 72),
 
             TextFormField(
+              textInputAction: TextInputAction.next,
+              keyboardType: TextInputType.emailAddress,
               controller: _emailController,
               validator: validateEmail,
               autofillHints: [AutofillHints.email],
+
               style: TextStyle(color: Palette.glazedWhite),
               decoration: InputDecoration(
                 hintText: "email",
@@ -130,6 +133,7 @@ class _SignUpSheetState extends State<SignUpSheet> {
             ),
             const SizedBox(height: 36),
             TextFormField(
+              textInputAction: TextInputAction.next,
               controller: _passwordController,
               obscureText: isObscured ? true : false,
               validator: validatePassword,
@@ -159,6 +163,7 @@ class _SignUpSheetState extends State<SignUpSheet> {
             ),
             const SizedBox(height: 36),
             TextFormField(
+              textInputAction: TextInputAction.done,
               controller: _confirmPasswordController,
               obscureText: isObscured ? true : false,
               validator:

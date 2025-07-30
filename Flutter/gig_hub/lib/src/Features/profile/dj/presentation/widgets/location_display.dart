@@ -1,5 +1,4 @@
 import 'package:gig_hub/src/Data/app_imports.dart';
-import 'package:gig_hub/src/Features/profile/dj/presentation/profile_screen_dj.dart';
 
 class LocationDisplay extends StatelessWidget {
   const LocationDisplay({super.key, required this.widget});

@@ -362,6 +362,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     child: Form(
                       key: _formKey,
                       child: TextFormField(
+                        textInputAction: TextInputAction.go,
                         autovalidateMode: AutovalidateMode.always,
                         validator: validateEmail,
                         keyboardType: TextInputType.emailAddress,

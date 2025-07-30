@@ -25,9 +25,9 @@ abstract class AppUser {
 }
 
 class Guest extends AppUser {
-  final List<String> favoriteUIds;
+  List<String> favoriteUIds;
 
-  const Guest({required super.id, this.favoriteUIds = const []})
+  Guest({required super.id, this.favoriteUIds = const []})
     : super(type: UserType.guest);
 
   Map<String, dynamic> toJson() => {
@@ -180,6 +180,6 @@ extension AppUserView on AppUser {
   String get avatarUrl {
     if (this is DJ) return (this as DJ).avatarImageUrl;
     if (this is Booker) return (this as Booker).avatarImageUrl;
-    return 'https://picsum.photos/106';
+    return 'https://firebasestorage.googleapis.com/v0/b/gig-hub-8ac24.firebasestorage.app/o/default%2Fdefault_avatar.jpg?alt=media&token=3998cdef-f4b1-4211-99c8-cd8a8b6ecc98';
   }
 }
