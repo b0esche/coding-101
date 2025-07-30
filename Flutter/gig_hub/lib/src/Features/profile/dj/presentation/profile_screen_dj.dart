@@ -383,7 +383,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                   style: GoogleFonts.sometypeMono(
                                     textStyle: TextStyle(
                                       color: Palette.glazedWhite,
-                                      fontSize: 20,
+                                      fontSize: 21,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -1149,7 +1149,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                     child: GestureDetector(
                       onTap: _showGenreDialog,
 
-                      child: const GenreBubble(genre: " edit genres "),
+                      child: const GenreBubble(genre: "__edit genres__"),
                     ),
                   ),
                 ],

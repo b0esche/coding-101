@@ -320,7 +320,6 @@ class _MainScreenState extends State<MainScreen> {
                                       ),
                                     )
                                     .then((_) {
-                                      if (!mounted) return;
                                       _loadLoggedInUser();
                                     });
                               },
@@ -485,7 +484,6 @@ class _MainScreenState extends State<MainScreen> {
                           ? Center(
                             child: CircularProgressIndicator(
                               color: Palette.forgedGold,
-                              strokeWidth: 1.65,
                             ),
                           )
                           : Stack(

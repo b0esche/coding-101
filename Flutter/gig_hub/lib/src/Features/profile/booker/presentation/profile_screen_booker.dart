@@ -252,7 +252,7 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                                 style: GoogleFonts.sometypeMono(
                                   textStyle: TextStyle(
                                     color: Palette.glazedWhite,
-                                    fontSize: 20,
+                                    fontSize: 21,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),

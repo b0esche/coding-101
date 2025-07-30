@@ -88,10 +88,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
-              child: CircularProgressIndicator(
-                color: Palette.forgedGold,
-                strokeWidth: 1.65,
-              ),
+              child: CircularProgressIndicator(color: Palette.forgedGold),
             );
           }
 

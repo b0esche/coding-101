@@ -34,7 +34,7 @@ class SoundcloudAuth {
     if (await canLaunchUrl(authUrl)) {
       await launchUrl(authUrl, mode: LaunchMode.externalApplication);
     } else {
-      throw Exception('could not launch SoundCloud login url.');
+      throw Exception('failed to launch SoundCloud login url.');
     }
   }
 

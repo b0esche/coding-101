@@ -22,6 +22,7 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -47,6 +48,7 @@
 			</array>
 		</dict>
 	</array>
+
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>FacebookAppID</key>
@@ -61,12 +63,14 @@
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+
 	<key>NSCameraUsageDescription</key>
 	<string>Need permission to access your camera to take new images.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Need permission to upload images to your profile.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Need persmission to access your microphone.</string>
+	<string>Need permission to access your microphone.</string>
+
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
@@ -75,19 +79,19 @@
 	<string>Main</string>
 	<key>UIStatusBarHidden</key>
 	<false/>
+
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-	</array>
-	<key>UISupportedInterfaceOrientations~ipad</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+
 	<key>NSAppTransportSecurity</key>
 	<dict>
-  		<key>NSAllowsArbitraryLoads</key>
-  		<true/>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
 	</dict>
 </dict>
 </plist>

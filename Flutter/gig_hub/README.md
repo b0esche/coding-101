@@ -84,7 +84,6 @@ _GigHub_ is a cross-platform mobile app that connects DJs and bookers. Users can
 |-------------------|-----------------------------|
 | `flutter_native_splash` | Launch screen generation |
 | `flutter_launcher_icons` | App icon automation   |
-| `device_preview`  | Responsive testing           |
 
 ---
 

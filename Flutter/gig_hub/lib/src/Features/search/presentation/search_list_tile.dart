@@ -302,7 +302,7 @@ class _SearchListTileState extends State<SearchListTile> {
                                           maxLines: 4,
                                           softWrap: true,
                                           overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(fontSize: 14.5),
+                                          style: TextStyle(fontSize: 15),
                                         ),
                                       ),
                                     ),

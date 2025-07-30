@@ -147,7 +147,7 @@ class _LocationAutocompleteFieldState extends State<LocationAutocompleteField> {
         CustomFormField(
           controller: _internalController,
           readOnly: false,
-          label: "location...",
+          label: "city...",
           onPressed: null,
           onChanged: (value) {},
           suffixIcon:

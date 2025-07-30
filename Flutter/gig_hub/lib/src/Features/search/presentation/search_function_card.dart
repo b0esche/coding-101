@@ -147,7 +147,7 @@ class _SearchFunctionCardState extends State<SearchFunctionCard> {
                             children: [
                               CustomFormField(
                                 readOnly: true,
-                                label: "genre...",
+                                label: "genres...",
                                 onPressed: _showGenreDialog,
                                 controller: genreController,
                               ),
