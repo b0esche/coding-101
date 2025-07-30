@@ -1,5 +1,5 @@
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
-
 import '../../../Data/app_imports.dart';
 
 class ChatListScreenArgs {
@@ -17,12 +17,32 @@ class ChatListScreen extends StatefulWidget {
   State<ChatListScreen> createState() => _ChatListScreenState();
 }
 
-class _ChatListScreenState extends State<ChatListScreen> {
+class _ChatListScreenState extends State<ChatListScreen> with RouteAware {
   final db = FirestoreDatabaseRepository();
+  RouteObserver<PageRoute>? _routeObserver;
 
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _routeObserver = RouteObserverProvider.of(context);
+    _routeObserver?.subscribe(this, ModalRoute.of(context)! as PageRoute);
+  }
+
+  @override
+  void dispose() {
+    _routeObserver?.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    // Wird aufgerufen, wenn man von ChatScreen zurückkehrt
+    setState(() {});
   }
 
   Future<List<dynamic>> _buildChatEntries(
@@ -154,7 +174,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                       chatListItem: entry,
                       currentUser: widget.currentUser,
                       onTap: () async {
-                        Navigator.push(
+                        await Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder:
@@ -164,18 +184,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                                 ),
                           ),
                         );
-                        if (entry.recent.read == false &&
-                            entry.recent.senderId != widget.currentUser.id) {
-                          setState(() {
-                            entry.recent.read = true;
-                          });
-                          await db.markMessageAsRead(
-                            entry.recent.id,
-                            widget.currentUser.id,
-                            entry.user.id,
-                            widget.currentUser.id,
-                          );
-                        }
+                        // Markierung als gelesen erfolgt jetzt im ChatScreen direkt beim Öffnen
                       },
                       onLongPress: () {
                         showDialog(

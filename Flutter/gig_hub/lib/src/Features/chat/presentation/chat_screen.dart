@@ -23,6 +23,31 @@ class ChatScreen extends StatefulWidget {
 }
 
 class ChatScreenState extends State<ChatScreen> {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _markLastMessageAsRead();
+  }
+
+  Future<void> _markLastMessageAsRead() async {
+    // Prüfe, ob es eine ungelesene empfangene Nachricht gibt und markiere sie als gelesen
+    final messages = await db.getMessages(
+      widget.currentUser.id,
+      widget.chatPartner.id,
+    );
+    if (messages.isNotEmpty) {
+      final lastMsg = messages.last;
+      if (!lastMsg.read && lastMsg.senderId != widget.currentUser.id) {
+        await db.markMessageAsRead(
+          lastMsg.id,
+          widget.currentUser.id,
+          widget.chatPartner.id,
+          widget.currentUser.id,
+        );
+      }
+    }
+  }
+
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final db = FirestoreDatabaseRepository();
@@ -120,7 +145,6 @@ class ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final db = context.watch<DatabaseRepository>();
     final partnerAvatarUrl = getPartnerAvatarUrl();
 
     return Scaffold(
@@ -343,7 +367,7 @@ class ChatScreenState extends State<ChatScreen> {
                                         padding: const EdgeInsets.only(
                                           top: 4,
                                           bottom: 2,
-                                          right: 36,
+                                          right: 60,
                                         ),
                                         child: Text(
                                           _decryptMessage(message.message),

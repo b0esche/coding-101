@@ -58,9 +58,10 @@ _GigHub_ is a cross-platform mobile app that connects DJs and bookers. Users can
 | `flutter_svg`             | Scalable vector graphics         |
 | `flutter_rating_stars`    | Rating widget                    |
 | `shimmer`                 | Loading shimmer effect           |
-| `liquid_glass_renderer`   | Fancy glassmorphism              |
+| `liquid_glass_renderer`*   | Fancy glassmorphism              |
 | `flutter_image_slideshow` | Slideshow view                   |
 | `pinch_zoom`              | Zoomable images                  |
+* only on iOS
 
 ### 🔊 Media & Uploads
 
