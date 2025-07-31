@@ -97,7 +97,6 @@ class _NotificationHandlerAppState extends State<NotificationHandlerApp> {
   }
 
   void _handleNotificationNav(RemoteMessage message) async {
-    debugPrint('Notification data: \\${message.data}');
     final screen = message.data['screen'];
     if (screen == 'chat_list_screen') {
       final user = await widget.db.getCurrentUser();
