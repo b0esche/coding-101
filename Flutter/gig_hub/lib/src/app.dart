@@ -21,7 +21,8 @@ class RouteObserverProvider extends InheritedWidget {
 }
 
 class App extends StatelessWidget {
-  const App({super.key});
+  final GlobalKey<NavigatorState>? navigatorKey;
+  const App({super.key, this.navigatorKey});
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +32,7 @@ class App extends StatelessWidget {
     return RouteObserverProvider(
       observer: routeObserver,
       child: MaterialApp(
+        navigatorKey: navigatorKey,
         navigatorObservers: [routeObserver],
         debugShowCheckedModeBanner: false,
         themeMode: ThemeMode.light,

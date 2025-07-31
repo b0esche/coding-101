@@ -30,7 +30,6 @@ class ChatScreenState extends State<ChatScreen> {
   }
 
   Future<void> _markLastMessageAsRead() async {
-    // Prüfe, ob es eine ungelesene empfangene Nachricht gibt und markiere sie als gelesen
     final messages = await db.getMessages(
       widget.currentUser.id,
       widget.chatPartner.id,

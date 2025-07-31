@@ -1,4 +1,3 @@
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import '../../../Data/app_imports.dart';
 
@@ -41,7 +40,6 @@ class _ChatListScreenState extends State<ChatListScreen> with RouteAware {
 
   @override
   void didPopNext() {
-    // Wird aufgerufen, wenn man von ChatScreen zurückkehrt
     setState(() {});
   }
 
@@ -184,7 +182,6 @@ class _ChatListScreenState extends State<ChatListScreen> with RouteAware {
                                 ),
                           ),
                         );
-                        // Markierung als gelesen erfolgt jetzt im ChatScreen direkt beim Öffnen
                       },
                       onLongPress: () {
                         showDialog(

@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:gig_hub/src/Data/app_imports.dart';
 
 class FirestoreDatabaseRepository extends DatabaseRepository {
@@ -413,5 +414,29 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
       await updateGuest(user);
     }
     notifyListeners();
+  }
+
+  @override
+  Future<void> initFirebaseMessaging() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    await messaging.requestPermission();
+
+    String? token = await messaging.getToken();
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null && token != null) {
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).update(
+        {'fcmToken': token},
+      );
+    }
+
+    messaging.onTokenRefresh.listen((newToken) async {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .update({'fcmToken': newToken});
+      }
+    });
   }
 }
