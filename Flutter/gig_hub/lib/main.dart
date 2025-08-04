@@ -54,7 +54,6 @@ void main() async {
   );
   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-
   runApp(
     MultiProvider(
       providers: [

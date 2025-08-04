@@ -763,7 +763,7 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                                   final booker = Booker(
                                     id: firebaseUser.uid,
                                     avatarImageUrl:
-                                        'https://firebasestorage.googleapis.com/v0/b/gig-hub-8ac24.firebasestorage.app/o/default%2Fdefault_avatar.jpg?alt=media&token=3998cdef-f4b1-4211-99c8-cd8a8b6ecc98',
+                                        'https://firebasestorage.googleapis.com/v0/b/gig-hub-8ac24.firebasestorage.app/o/default%2Fdefault_avatar.jpg?alt=media&token=9c48f377-736e-4a9a-bf31-6ffc3ed020f7',
                                     headImageUrl: uploadedHeadImageUrl,
                                     name: _nameController.text,
                                     city: _locationController.text,

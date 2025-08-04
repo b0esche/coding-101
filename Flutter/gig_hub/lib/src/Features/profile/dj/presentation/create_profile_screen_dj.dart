@@ -871,13 +871,12 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                       }
                                     }
                                   }
-
                                   final dj = DJ(
                                     id: firebaseUser.uid,
                                     genres: genres!,
                                     headImageUrl: uploadedHeadImageUrl,
                                     avatarImageUrl:
-                                        'https://firebasestorage.googleapis.com/v0/b/gig-hub-8ac24.firebasestorage.app/o/default%2Fdefault_avatar.jpg?alt=media&token=3998cdef-f4b1-4211-99c8-cd8a8b6ecc98',
+                                        'https://firebasestorage.googleapis.com/v0/b/gig-hub-8ac24.firebasestorage.app/o/default%2Fdefault_avatar.jpg?alt=media&token=9c48f377-736e-4a9a-bf31-6ffc3ed020f7',
                                     bpm: [
                                       int.parse(bpmMin!),
                                       int.parse(bpmMax!),
@@ -905,12 +904,9 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                     city: _locationController.text,
                                     favoriteUIds: [],
                                   );
-
                                   await db.createDJ(dj);
-
                                   final currentUser = await db.getCurrentUser();
                                   if (!context.mounted) return;
-
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
                                       builder:

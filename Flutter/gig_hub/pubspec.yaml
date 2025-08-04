@@ -58,6 +58,9 @@ dependencies:
   app_links: ^6.4.0
   firebase_messaging: ^15.2.10
   flutter_local_notifications: ^19.4.0
+  just_audio: ^0.10.4
+  just_waveform: ^0.0.7
+  waveform_flutter: ^1.2.0
   
 dev_dependencies:
   flutter_test:

@@ -5,37 +5,6 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  /// Gibt alle Nachrichten zwischen zwei Usern zurück (sortiert nach Zeit)
-  Future<List<ChatMessage>> getMessages(String userId, String partnerId) async {
-    final chatId = getChatId(userId, partnerId);
-    final snapshot =
-        await _firestore
-            .collection('chats')
-            .doc(chatId)
-            .collection('messages')
-            .orderBy('timestamp')
-            .get();
-    return snapshot.docs
-        .map((doc) => ChatMessage.fromJson(doc.id, doc.data()))
-        .toList();
-  }
-
-  /// Markiert eine Nachricht als gelesen
-  Future<void> markMessageAsRead(
-    String messageId,
-    String userId,
-    String partnerId,
-    String currentUserId,
-  ) async {
-    final chatId = getChatId(userId, partnerId);
-    final ref = _firestore
-        .collection('chats')
-        .doc(chatId)
-        .collection('messages')
-        .doc(messageId);
-    await ref.update({'read': true});
-  }
-
   /// USER ###
 
   // create ###
@@ -309,6 +278,35 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
   }
 
   /// UTILS ###
+
+  Future<List<ChatMessage>> getMessages(String userId, String partnerId) async {
+    final chatId = getChatId(userId, partnerId);
+    final snapshot =
+        await _firestore
+            .collection('chats')
+            .doc(chatId)
+            .collection('messages')
+            .orderBy('timestamp')
+            .get();
+    return snapshot.docs
+        .map((doc) => ChatMessage.fromJson(doc.id, doc.data()))
+        .toList();
+  }
+
+  Future<void> markMessageAsRead(
+    String messageId,
+    String userId,
+    String partnerId,
+    String currentUserId,
+  ) async {
+    final chatId = getChatId(userId, partnerId);
+    final ref = _firestore
+        .collection('chats')
+        .doc(chatId)
+        .collection('messages')
+        .doc(messageId);
+    await ref.update({'read': true});
+  }
 
   @override
   Future<void> deleteMessage(
