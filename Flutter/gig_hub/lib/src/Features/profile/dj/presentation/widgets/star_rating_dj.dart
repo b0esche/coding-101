@@ -40,7 +40,7 @@ class _UserStarRatingState extends State<UserStarRating> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             backgroundColor: Palette.forgedGold,
-            duration: Duration(milliseconds: 3150),
+            duration: Duration(milliseconds: 3500),
             content: Column(
               children: [
                 Center(
@@ -51,7 +51,7 @@ class _UserStarRatingState extends State<UserStarRating> {
                 ),
                 Center(
                   child: Text(
-                    'average rating: $currentRating, total ratings: $ratingCount',
+                    'overall rating: $currentRating ($ratingCount ratings)',
                     style: TextStyle(fontSize: 16),
                   ),
                 ),

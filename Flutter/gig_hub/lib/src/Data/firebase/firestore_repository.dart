@@ -110,6 +110,15 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
   Future<List<DJ>> getDJs() async {
     final currentUser = await getCurrentUser();
 
+    final blockedSnapshot =
+        await _firestore
+            .collection('users')
+            .doc(currentUser.id)
+            .collection('blocks')
+            .get();
+
+    final blockedUids = blockedSnapshot.docs.map((doc) => doc.id).toSet();
+
     final snapshot =
         await _firestore
             .collection('users')
@@ -117,7 +126,9 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
             .get();
 
     return snapshot.docs
-        .where((doc) => doc.id != currentUser.id)
+        .where(
+          (doc) => doc.id != currentUser.id && !blockedUids.contains(doc.id),
+        )
         .map((doc) => DJ.fromJson(doc.id, doc.data()))
         .toList();
   }
@@ -278,6 +289,33 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
   }
 
   /// UTILS ###
+  @override
+  Future<void> blockUser(String currentUid, String targetUid) async {
+    final firestore = FirebaseFirestore.instance;
+
+    final now = FieldValue.serverTimestamp();
+
+    final currentUserBlockRef = firestore
+        .collection('users')
+        .doc(currentUid)
+        .collection('blocks')
+        .doc(targetUid);
+
+    await currentUserBlockRef.set({'timestamp': now});
+  }
+
+  @override
+  Future<void> unblockUser(String currentUid, String targetUid) async {
+    final firestore = FirebaseFirestore.instance;
+
+    final currentUserBlockRef = firestore
+        .collection('users')
+        .doc(currentUid)
+        .collection('blocks')
+        .doc(targetUid);
+
+    await currentUserBlockRef.delete();
+  }
 
   Future<List<ChatMessage>> getMessages(String userId, String partnerId) async {
     final chatId = getChatId(userId, partnerId);

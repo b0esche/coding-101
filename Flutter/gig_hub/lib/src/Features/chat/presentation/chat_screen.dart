@@ -22,7 +22,8 @@ class ChatScreen extends StatefulWidget {
   ChatScreenState createState() => ChatScreenState();
 }
 
-class ChatScreenState extends State<ChatScreen> {
+class ChatScreenState extends State<ChatScreen>
+    with SingleTickerProviderStateMixin {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -63,6 +64,7 @@ class ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
     _initEncryption();
+    _bottomsheetAnimationController = AnimationController(vsync: this);
   }
 
   Future<void> _initEncryption() async {
@@ -142,6 +144,8 @@ class ChatScreenState extends State<ChatScreen> {
     });
   }
 
+  late final AnimationController _bottomsheetAnimationController;
+
   @override
   Widget build(BuildContext context) {
     final partnerAvatarUrl = getPartnerAvatarUrl();
@@ -196,12 +200,14 @@ class ChatScreenState extends State<ChatScreen> {
             ),
             const SizedBox(width: 16),
             SizedBox(
-              width: 208,
+              width: 172,
               child: Text(
                 widget.chatPartner.displayName,
+
                 maxLines: 2,
                 style: GoogleFonts.sometypeMono(
                   textStyle: TextStyle(
+                    wordSpacing: -3,
                     overflow: TextOverflow.ellipsis,
                     color: Palette.primalBlack,
                     fontWeight: FontWeight.w500,
@@ -213,6 +219,217 @@ class ChatScreenState extends State<ChatScreen> {
           ],
         ),
         leadingWidth: 32,
+        actionsPadding: EdgeInsets.only(bottom: 42),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: IconButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  ModalBottomSheetRoute(
+                    isDismissible: true,
+                    scrollControlDisabledMaxHeightRatio: 0.7,
+                    backgroundColor: Palette.forgedGold,
+                    builder: (context) {
+                      return BottomSheet(
+                        animationController: _bottomsheetAnimationController,
+                        onDragEnd:
+                            (details, {required isClosing}) =>
+                                Navigator.pop(context),
+                        enableDrag: true,
+                        showDragHandle: true,
+                        dragHandleColor: Palette.shadowGrey,
+                        backgroundColor: Palette.forgedGold,
+                        onClosing: () {},
+                        builder: (context) {
+                          return Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              spacing: 24,
+                              children: [
+                                Text(
+                                  widget.chatPartner.displayName,
+                                  style: TextStyle(
+                                    fontSize: 26,
+                                    fontWeight: FontWeight.w800,
+                                    color: Palette.shadowGrey,
+                                    decoration: TextDecoration.underline,
+                                    decorationColor: Palette.shadowGrey,
+                                  ),
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: Palette.shadowGrey,
+                                      width: 2.35,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Palette.gigGrey.o(0.65),
+                                        blurRadius: 3,
+                                        offset: Offset(1, 1),
+                                        spreadRadius: 1,
+                                      ),
+                                    ],
+                                  ),
+                                  child: CircleAvatar(
+                                    backgroundImage:
+                                        partnerAvatarUrl.isNotEmpty
+                                            ? NetworkImage(partnerAvatarUrl)
+                                            : const AssetImage(
+                                                  'assets/images/default_avatar.jpg',
+                                                )
+                                                as ImageProvider<Object>,
+                                    radius: 108,
+                                  ),
+                                ),
+                                Spacer(),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          backgroundColor: Palette.primalBlack,
+                                          surfaceTintColor: Palette.forgedGold,
+                                          title: Text(
+                                            'block user and delete chat?',
+                                            style: GoogleFonts.sometypeMono(
+                                              textStyle: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500,
+                                                color: Palette.glazedWhite,
+                                              ),
+                                            ),
+                                          ),
+                                          content: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              ElevatedButton(
+                                                onPressed:
+                                                    () =>
+                                                        Navigator.of(
+                                                          context,
+                                                        ).pop(),
+                                                child: Text(
+                                                  'cancel',
+                                                  style: TextStyle(
+                                                    color: Palette.primalBlack,
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(width: 8),
+                                              ElevatedButton(
+                                                onPressed: () async {
+                                                  await db.blockUser(
+                                                    widget.currentUser.id,
+                                                    widget.chatPartner.id,
+                                                  );
+                                                  await db.deleteChat(
+                                                    widget.currentUser.id,
+                                                    widget.chatPartner.id,
+                                                  );
+                                                  if (context.mounted) {
+                                                    Navigator.of(context).pop();
+                                                    Navigator.of(context).pop();
+                                                    Navigator.of(context).pop();
+                                                  }
+                                                },
+                                                child: Text(
+                                                  'block and delete',
+                                                  style: TextStyle(
+                                                    color: Palette.primalBlack,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                      left: 24,
+                                      right: 24,
+                                    ),
+                                    child: Text(
+                                      'block',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Palette.primalBlack,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    // TODO: reporting
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                      left: 24,
+                                      right: 24,
+                                    ),
+                                    child: Text(
+                                      'report',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Palette.primalBlack,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 36),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    elevation: 2,
+                    enableDrag: true,
+                    isScrollControlled: false,
+                  ),
+                );
+              },
+              style: ButtonStyle(
+                elevation: WidgetStateProperty.all(3),
+                tapTargetSize: MaterialTapTargetSize.padded,
+                splashFactory: NoSplash.splashFactory,
+              ),
+              icon: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Palette.primalBlack.o(0.85),
+                  border: Border.all(color: Palette.shadowGrey, width: 3),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Palette.primalBlack.o(0.85),
+                      offset: Offset(0.2, 0.15),
+                      blurRadius: 1.65,
+                    ),
+                    BoxShadow(
+                      color: Palette.glazedWhite.o(0.85),
+                      blurStyle: BlurStyle.inner,
+                    ),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Icon(
+                    Icons.announcement_rounded,
+                    color: Palette.glazedWhite,
+                    size: 22,
+                    shadows: [Shadow(color: Palette.glazedWhite)],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
       backgroundColor: Palette.primalBlack.o(0.95),
       body: Column(

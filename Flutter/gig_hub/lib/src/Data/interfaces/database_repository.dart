@@ -43,6 +43,8 @@ abstract class DatabaseRepository with ChangeNotifier {
   );
 
   // utils ###
+  Future<void> blockUser(String currentUid, String targetUid);
+  Future<void> unblockUser(String currentUid, String targetUid);
   Future<AppUser> getCurrentUser();
   Future<AppUser> getUserById(String id);
   Future<void> updateUser(AppUser user);

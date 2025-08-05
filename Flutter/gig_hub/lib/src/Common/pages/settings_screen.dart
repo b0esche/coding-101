@@ -315,7 +315,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                       ),
                       child: CircleAvatar(
-                        radius: 54,
+                        radius: 64,
                         backgroundImage: avatarProvider,
                       ),
                     ),
@@ -376,7 +376,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           labelStyle: TextStyle(color: Palette.primalBlack),
                           suffixIcon: IconButton(
                             onPressed: () => _emailController.clear(),
-                            icon: const Icon(Icons.delete),
+                            icon: Icon(
+                              Icons.delete,
+                              color: Palette.primalBlack.o(0.65),
+                              size: 26,
+                            ),
                           ),
                           fillColor: Palette.glazedWhite,
                           filled: true,
