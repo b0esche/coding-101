@@ -60,7 +60,7 @@ class _BpmSelectionDialogState extends State<BpmSelectionDialog> {
                           textStyle: TextStyle(
                             color: Palette.primalBlack,
                             fontWeight: FontWeight.w700,
-                            fontSize: 17,
+                            fontSize: 18,
                           ),
                         ),
                       ),

@@ -1,4 +1,6 @@
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:gig_hub/src/Data/app_imports.dart';
+import 'package:gig_hub/src/Data/services/localization_service.dart';
 
 class RouteObserverProvider extends InheritedWidget {
   final RouteObserver<PageRoute> observer;
@@ -20,9 +22,45 @@ class RouteObserverProvider extends InheritedWidget {
       observer != oldWidget.observer;
 }
 
-class App extends StatelessWidget {
+class App extends StatefulWidget {
   final GlobalKey<NavigatorState>? navigatorKey;
+
   const App({super.key, this.navigatorKey});
+
+  @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  final FlutterLocalization localization = FlutterLocalization.instance;
+  @override
+  void initState() {
+    localization.init(
+      mapLocales: [
+        const MapLocale('en', AppLocale.en),
+        const MapLocale('de', AppLocale.de),
+        const MapLocale('es', AppLocale.es),
+        const MapLocale('it', AppLocale.it),
+        const MapLocale('pt', AppLocale.pt),
+        const MapLocale('fr', AppLocale.fr),
+        const MapLocale('nl', AppLocale.nl),
+        const MapLocale('pl', AppLocale.pl),
+        const MapLocale('uk', AppLocale.uk),
+        const MapLocale('ar', AppLocale.ar),
+        const MapLocale('tr', AppLocale.tr),
+        const MapLocale('ja', AppLocale.ja),
+        const MapLocale('ko', AppLocale.ko),
+        const MapLocale('zh', AppLocale.zh),
+      ],
+      initLanguageCode: 'en',
+    );
+    localization.onTranslatedLanguage = _onTranslatedLanguage;
+    super.initState();
+  }
+
+  void _onTranslatedLanguage(Locale? locale) {
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +70,9 @@ class App extends StatelessWidget {
     return RouteObserverProvider(
       observer: routeObserver,
       child: MaterialApp(
-        navigatorKey: navigatorKey,
+        supportedLocales: localization.supportedLocales,
+        localizationsDelegates: localization.localizationsDelegates,
+        navigatorKey: widget.navigatorKey,
         navigatorObservers: [routeObserver],
         debugShowCheckedModeBanner: false,
         themeMode: ThemeMode.light,

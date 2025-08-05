@@ -1,3 +1,4 @@
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:gig_hub/src/Data/app_imports.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -13,6 +14,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final db = FirestoreDatabaseRepository();
+
+  final List<Map<String, String>> _languages = [
+    {'code': 'en', 'name': 'English', 'flag': '🇺🇸'},
+    {'code': 'de', 'name': 'Deutsch', 'flag': '🇩🇪'},
+    {'code': 'es', 'name': 'Español', 'flag': '🇪🇸'},
+    {'code': 'it', 'name': 'Italiano', 'flag': '🇮🇹'},
+    {'code': 'pt', 'name': 'Português', 'flag': '🇵🇹'},
+    {'code': 'fr', 'name': 'Français', 'flag': '🇫🇷'},
+    {'code': 'nl', 'name': 'Nederlands', 'flag': '🇳🇱'},
+    {'code': 'pl', 'name': 'Polski', 'flag': '🇵🇱'},
+    {'code': 'uk', 'name': 'Українська', 'flag': '🇺🇦'},
+    {'code': 'ar', 'name': 'العربية', 'flag': '🇸🇦'},
+    {'code': 'tr', 'name': 'Türkçe', 'flag': '🇹🇷'},
+    {'code': 'ja', 'name': '日本語', 'flag': '🇯🇵'},
+    {'code': 'ko', 'name': '한국어', 'flag': '🇰🇷'},
+    {'code': 'zh', 'name': '中文', 'flag': '🇨🇳'},
+  ];
+
+  String _currentLanguage = 'en';
 
   @override
   void initState() {
@@ -281,235 +301,305 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
       return Scaffold(
         backgroundColor: Palette.primalBlack,
-        body: Center(
-          child: Column(
-            spacing: 16,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SizedBox(height: 2),
-              Align(
-                alignment: Alignment.topLeft,
-                child: IconButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  icon: const Icon(Icons.chevron_left_rounded, size: 36),
-                  color: Palette.glazedWhite,
-                  style: ButtonStyle(
-                    tapTargetSize: MaterialTapTargetSize.padded,
-                    splashFactory: NoSplash.splashFactory,
+        body: Stack(
+          children: [
+            Positioned(
+              right: 8,
+              top: 32,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Palette.shadowGrey.o(0.2),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Palette.concreteGrey),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    value: _currentLanguage,
+                    dropdownColor: Palette.primalBlack.o(0.9),
+                    iconEnabledColor: Palette.forgedGold,
+                    style: TextStyle(color: Palette.glazedWhite),
+                    borderRadius: BorderRadius.circular(8),
+                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    items:
+                        _languages.map((language) {
+                          return DropdownMenuItem<String>(
+                            value: language['code'],
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 4.0,
+                                    right: 4.0,
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      language['flag']!,
+                                      style: TextStyle(fontSize: 20),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                    onChanged: (String? newLanguage) {
+                      if (newLanguage != null) {
+                        setState(() {
+                          _currentLanguage = newLanguage;
+                        });
+
+                        // Change the app language
+                        FlutterLocalization.instance.translate(newLanguage);
+                      }
+                    },
                   ),
                 ),
               ),
-              SizedBox(
-                height: 122,
-                child: Image.asset("assets/images/icon_full.png"),
-              ),
-              if (hasAvatar && avatarProvider != null)
-                Stack(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Palette.glazedWhite,
-                          width: 1.5,
-                        ),
-                      ),
-                      child: CircleAvatar(
-                        radius: 64,
-                        backgroundImage: avatarProvider,
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: IconButton(
-                        style: ButtonStyle(
-                          splashFactory: NoSplash.splashFactory,
-                        ),
-                        onPressed: _pickNewImage,
-                        icon: Icon(
-                          Icons.upload_file_rounded,
-                          color: Palette.shadowGrey,
-                          size: 32,
-                          shadows: [
-                            BoxShadow(
-                              blurRadius: 2,
-                              blurStyle: BlurStyle.inner,
-                              color: Palette.primalBlack,
-                              spreadRadius: 2,
-                              offset: Offset(0.6, 0.6),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            ),
+            Center(
+              child: Column(
+                spacing: 16,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    " change e-mail",
-                    style: GoogleFonts.sometypeMono(
-                      textStyle: TextStyle(
-                        color: Palette.glazedWhite,
-                        fontWeight: FontWeight.w600,
+                  SizedBox(height: 2),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: IconButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      icon: const Icon(Icons.chevron_left_rounded, size: 36),
+                      color: Palette.glazedWhite,
+                      style: ButtonStyle(
+                        tapTargetSize: MaterialTapTargetSize.padded,
+                        splashFactory: NoSplash.splashFactory,
                       ),
                     ),
                   ),
                   SizedBox(
-                    width: MediaQuery.of(context).size.width / 1.3,
-                    child: Form(
-                      key: _formKey,
-                      child: TextFormField(
-                        textInputAction: TextInputAction.go,
-                        autovalidateMode: AutovalidateMode.always,
-                        validator: validateEmail,
-                        keyboardType: TextInputType.emailAddress,
-                        onFieldSubmitted: _onEmailSubmitted,
-                        controller: _emailController,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          helperText: "press enter when finished",
-                          labelStyle: TextStyle(color: Palette.primalBlack),
-                          suffixIcon: IconButton(
-                            onPressed: () => _emailController.clear(),
-                            icon: Icon(
-                              Icons.delete,
-                              color: Palette.primalBlack.o(0.65),
-                              size: 26,
+                    height: 122,
+                    child: Image.asset("assets/images/icon_full.png"),
+                  ),
+                  if (hasAvatar && avatarProvider != null)
+                    Stack(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Palette.glazedWhite,
+                              width: 1.5,
                             ),
                           ),
-                          fillColor: Palette.glazedWhite,
-                          filled: true,
-                          floatingLabelBehavior: FloatingLabelBehavior.always,
-                          hintText: "press enter when done",
-                          hintStyle: TextStyle(color: Palette.forgedGold),
+                          child: CircleAvatar(
+                            radius: 64,
+                            backgroundImage: avatarProvider,
+                          ),
                         ),
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: IconButton(
+                            style: ButtonStyle(
+                              splashFactory: NoSplash.splashFactory,
+                            ),
+                            onPressed: _pickNewImage,
+                            icon: Icon(
+                              Icons.upload_file_rounded,
+                              color: Palette.shadowGrey,
+                              size: 32,
+                              shadows: [
+                                BoxShadow(
+                                  blurRadius: 2,
+                                  blurStyle: BlurStyle.inner,
+                                  color: Palette.primalBlack,
+                                  spreadRadius: 2,
+                                  offset: Offset(0.6, 0.6),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        " change e-mail",
+                        style: GoogleFonts.sometypeMono(
+                          textStyle: TextStyle(
+                            color: Palette.glazedWhite,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width / 1.3,
+                        child: Form(
+                          key: _formKey,
+                          child: TextFormField(
+                            textInputAction: TextInputAction.go,
+                            autovalidateMode: AutovalidateMode.always,
+                            validator: validateEmail,
+                            keyboardType: TextInputType.emailAddress,
+                            onFieldSubmitted: _onEmailSubmitted,
+                            controller: _emailController,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              helperText: "press enter when finished",
+                              labelStyle: TextStyle(color: Palette.primalBlack),
+                              suffixIcon: IconButton(
+                                onPressed: () => _emailController.clear(),
+                                icon: Icon(
+                                  Icons.delete,
+                                  color: Palette.primalBlack.o(0.65),
+                                  size: 26,
+                                ),
+                              ),
+                              fillColor: Palette.glazedWhite,
+                              filled: true,
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.always,
+                              hintText: "press enter when done",
+                              hintStyle: TextStyle(color: Palette.forgedGold),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 32,
+                    width: 168,
+                    child: FilledButton(
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStateProperty.all(
+                          Palette.shadowGrey,
+                        ),
+                        splashFactory: NoSplash.splashFactory,
+                      ),
+                      onPressed: _onResetPassword,
+                      child: const Text("change password"),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 32,
+                    width: 168,
+                    child: FilledButton(
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStateProperty.all(
+                          Palette.shadowGrey,
+                        ),
+                        splashFactory: NoSplash.splashFactory,
+                      ),
+                      onPressed: () {
+                        // TODO: blocked users page
+                      },
+                      child: const Text("blocked users"),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 32,
+                    width: 168,
+                    child: FilledButton(
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStateProperty.all(
+                          Palette.shadowGrey,
+                        ),
+                        splashFactory: NoSplash.splashFactory,
+                      ),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder:
+                              (context) => AlertDialog(
+                                backgroundColor: Palette.forgedGold,
+
+                                title: Center(
+                                  child: Text(
+                                    'are you sure?',
+                                    style: GoogleFonts.sometypeMono(
+                                      textStyle: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                actions: [
+                                  ElevatedButton(
+                                    style: ButtonStyle(
+                                      backgroundColor: WidgetStatePropertyAll(
+                                        Palette.glazedWhite,
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      auth.deleteUser();
+                                      if (!context.mounted) return;
+                                      if (mounted) {
+                                        Navigator.of(context).pop();
+                                        Navigator.of(context).pushReplacement(
+                                          MaterialPageRoute(
+                                            builder: (context) => LoginScreen(),
+                                          ),
+                                        );
+                                      }
+                                    },
+                                    child: Text(
+                                      'delete account',
+                                      style: TextStyle(
+                                        color: Palette.primalBlack,
+                                      ),
+                                    ),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: Text(
+                                      'cancel',
+                                      style: TextStyle(
+                                        color: Palette.primalBlack,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                        );
+                      },
+                      child: const Text("delete account"),
+                    ),
+                  ),
+                  FilledButton(
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(
+                        Palette.shadowGrey,
+                      ),
+                      splashFactory: NoSplash.splashFactory,
+                    ),
+                    onPressed: () async {
+                      await auth.signOut();
+                      if (!context.mounted) {
+                        return;
+                      }
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text("log out"),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 0, 24, 12),
+                      child: Text(
+                        "version 1.0.2",
+                        style: TextStyle(color: Palette.glazedWhite),
                       ),
                     ),
                   ),
                 ],
               ),
-              SizedBox(
-                height: 32,
-                width: 168,
-                child: FilledButton(
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all(
-                      Palette.shadowGrey,
-                    ),
-                    splashFactory: NoSplash.splashFactory,
-                  ),
-                  onPressed: _onResetPassword,
-                  child: const Text("change password"),
-                ),
-              ),
-              SizedBox(
-                height: 32,
-                width: 168,
-                child: FilledButton(
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all(
-                      Palette.shadowGrey,
-                    ),
-                    splashFactory: NoSplash.splashFactory,
-                  ),
-                  onPressed: () {
-                    // TODO: blocked users page
-                  },
-                  child: const Text("blocked users"),
-                ),
-              ),
-              SizedBox(
-                height: 32,
-                width: 168,
-                child: FilledButton(
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all(
-                      Palette.shadowGrey,
-                    ),
-                    splashFactory: NoSplash.splashFactory,
-                  ),
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder:
-                          (context) => AlertDialog(
-                            backgroundColor: Palette.forgedGold,
-
-                            title: Center(
-                              child: Text(
-                                'are you sure?',
-                                style: GoogleFonts.sometypeMono(
-                                  textStyle: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            actions: [
-                              ElevatedButton(
-                                onPressed: () {
-                                  auth.deleteUser();
-                                  if (!context.mounted) return;
-                                  if (mounted) {
-                                    Navigator.of(context).pop();
-                                    Navigator.of(context).pushReplacement(
-                                      MaterialPageRoute(
-                                        builder: (context) => LoginScreen(),
-                                      ),
-                                    );
-                                  }
-                                },
-                                child: Text(
-                                  'delete account',
-                                  style: TextStyle(color: Palette.primalBlack),
-                                ),
-                              ),
-                              ElevatedButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: Text(
-                                  'cancel',
-                                  style: TextStyle(color: Palette.primalBlack),
-                                ),
-                              ),
-                            ],
-                          ),
-                    );
-                  },
-                  child: const Text("delete account"),
-                ),
-              ),
-              FilledButton(
-                style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(Palette.shadowGrey),
-                  splashFactory: NoSplash.splashFactory,
-                ),
-                onPressed: () async {
-                  await auth.signOut();
-                  if (!context.mounted) {
-                    return;
-                  }
-                  Navigator.of(context).pop();
-                },
-                child: const Text("log out"),
-              ),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 0, 24, 12),
-                  child: Text(
-                    "version 1.0.2",
-                    style: TextStyle(color: Palette.glazedWhite),
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
     }

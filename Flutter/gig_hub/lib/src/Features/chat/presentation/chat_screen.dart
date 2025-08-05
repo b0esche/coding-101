@@ -286,6 +286,11 @@ class ChatScreenState extends State<ChatScreen>
                                 ),
                                 Spacer(),
                                 ElevatedButton(
+                                  style: ButtonStyle(
+                                    backgroundColor: WidgetStatePropertyAll(
+                                      Palette.glazedWhite,
+                                    ),
+                                  ),
                                   onPressed: () {
                                     showDialog(
                                       context: context,
@@ -308,6 +313,12 @@ class ChatScreenState extends State<ChatScreen>
                                                 MainAxisAlignment.spaceEvenly,
                                             children: [
                                               ElevatedButton(
+                                                style: ButtonStyle(
+                                                  backgroundColor:
+                                                      WidgetStatePropertyAll(
+                                                        Palette.glazedWhite,
+                                                      ),
+                                                ),
                                                 onPressed:
                                                     () =>
                                                         Navigator.of(
@@ -322,6 +333,12 @@ class ChatScreenState extends State<ChatScreen>
                                               ),
                                               SizedBox(width: 8),
                                               ElevatedButton(
+                                                style: ButtonStyle(
+                                                  backgroundColor:
+                                                      WidgetStatePropertyAll(
+                                                        Palette.glazedWhite,
+                                                      ),
+                                                ),
                                                 onPressed: () async {
                                                   await db.blockUser(
                                                     widget.currentUser.id,
@@ -365,6 +382,11 @@ class ChatScreenState extends State<ChatScreen>
                                   ),
                                 ),
                                 ElevatedButton(
+                                  style: ButtonStyle(
+                                    backgroundColor: WidgetStatePropertyAll(
+                                      Palette.glazedWhite,
+                                    ),
+                                  ),
                                   onPressed: () {
                                     // TODO: reporting
                                   },

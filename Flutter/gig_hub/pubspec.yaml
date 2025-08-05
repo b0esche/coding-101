@@ -61,6 +61,7 @@ dependencies:
   just_audio: ^0.10.4
   just_waveform: ^0.0.7
   waveform_flutter: ^1.2.0
+  flutter_localization: ^0.3.3
   
 dev_dependencies:
   flutter_test:
