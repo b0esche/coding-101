@@ -1,4 +1,6 @@
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:gig_hub/src/Data/app_imports.dart';
+import 'package:gig_hub/src/Data/services/localization_service.dart';
 
 class SearchFunctionCard extends StatefulWidget {
   final void Function(List<DJ>) onSearchResults;
@@ -193,7 +195,7 @@ class _SearchFunctionCardState extends State<SearchFunctionCard> {
                                       elevation: 4,
                                     ),
                                     child: Text(
-                                      "search",
+                                      AppLocale.search.getString(context),
                                       style: GoogleFonts.sometypeMono(
                                         textStyle: TextStyle(
                                           color: Palette.primalBlack,
@@ -259,7 +261,7 @@ class _SearchFunctionCardState extends State<SearchFunctionCard> {
                                           0,
                                         ),
                                         child: Text(
-                                          "clear",
+                                          AppLocale.clear.getString(context),
                                           style: GoogleFonts.sometypeMono(
                                             textStyle: TextStyle(
                                               fontSize: 11.5,
@@ -311,7 +313,7 @@ class _SearchFunctionCardState extends State<SearchFunctionCard> {
                                 elevation: 3,
                               ),
                               child: Text(
-                                "search",
+                                AppLocale.search.getString(context),
                                 style: GoogleFonts.sometypeMono(
                                   textStyle: TextStyle(
                                     color: Palette.primalBlack,

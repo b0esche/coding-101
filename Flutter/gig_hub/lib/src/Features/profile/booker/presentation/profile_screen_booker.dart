@@ -1,4 +1,6 @@
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:gig_hub/src/Data/app_imports.dart' hide UserStarRating;
+import 'package:gig_hub/src/Data/services/localization_service.dart';
 import 'package:gig_hub/src/data/services/image_compression_service.dart';
 import 'package:gig_hub/src/data/services/places_validation_service.dart';
 import 'package:gig_hub/src/Features/profile/booker/presentation/widgets/star_rating_booker.dart';
@@ -496,7 +498,7 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            " about",
+                            AppLocale.about.getString(context),
                             style: GoogleFonts.sometypeMono(
                               textStyle: TextStyle(
                                 color: Palette.glazedWhite,
@@ -666,7 +668,7 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            " info / requirements",
+                            AppLocale.info.getString(context),
                             style: GoogleFonts.sometypeMono(
                               textStyle: TextStyle(
                                 color: Palette.glazedWhite,
@@ -857,8 +859,11 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                                           children: [
                                             Text(
                                               !editMode
-                                                  ? "edit profile"
-                                                  : "done",
+                                                  ? AppLocale.editProfile
+                                                      .getString(context)
+                                                  : AppLocale.done.getString(
+                                                    context,
+                                                  ),
                                               style: GoogleFonts.sometypeMono(
                                                 textStyle: TextStyle(
                                                   fontWeight: FontWeight.w600,

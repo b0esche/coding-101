@@ -60,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
               top: 32,
               child: Container(
                 decoration: BoxDecoration(
-                  color: Palette.shadowGrey.o(0.2),
+                  color: Palette.shadowGrey.o(0.25),
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(color: Palette.concreteGrey),
                 ),

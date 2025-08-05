@@ -1,3 +1,6 @@
+import 'package:flutter_localization/flutter_localization.dart';
+import 'package:gig_hub/src/Data/services/localization_service.dart';
+
 import '../../Data/app_imports.dart';
 
 class MainScreen extends StatefulWidget {
@@ -436,7 +439,7 @@ class _MainScreenState extends State<MainScreen> {
                         text: TextSpan(
                           children: [
                             TextSpan(
-                              text: 'sort by ',
+                              text: AppLocale.sortBy.getString(context),
                               style: TextStyle(
                                 color: Palette.glazedWhite,
                                 fontSize: 13,

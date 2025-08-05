@@ -1,3 +1,6 @@
+import 'package:flutter_localization/flutter_localization.dart';
+import 'package:gig_hub/src/Data/services/localization_service.dart';
+
 import '../../../Data/app_imports.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
 
@@ -299,7 +302,9 @@ class ChatScreenState extends State<ChatScreen>
                                           backgroundColor: Palette.primalBlack,
                                           surfaceTintColor: Palette.forgedGold,
                                           title: Text(
-                                            'block user and delete chat?',
+                                            AppLocale.blockUser.getString(
+                                              context,
+                                            ),
                                             style: GoogleFonts.sometypeMono(
                                               textStyle: TextStyle(
                                                 fontSize: 18,
@@ -325,7 +330,9 @@ class ChatScreenState extends State<ChatScreen>
                                                           context,
                                                         ).pop(),
                                                 child: Text(
-                                                  'cancel',
+                                                  AppLocale.cancel.getString(
+                                                    context,
+                                                  ),
                                                   style: TextStyle(
                                                     color: Palette.primalBlack,
                                                   ),
@@ -355,7 +362,8 @@ class ChatScreenState extends State<ChatScreen>
                                                   }
                                                 },
                                                 child: Text(
-                                                  'block and delete',
+                                                  AppLocale.blockAndDelete
+                                                      .getString(context),
                                                   style: TextStyle(
                                                     color: Palette.primalBlack,
                                                   ),
@@ -373,7 +381,7 @@ class ChatScreenState extends State<ChatScreen>
                                       right: 24,
                                     ),
                                     child: Text(
-                                      'block',
+                                      AppLocale.block.getString(context),
                                       style: TextStyle(
                                         fontSize: 16,
                                         color: Palette.primalBlack,
@@ -396,7 +404,7 @@ class ChatScreenState extends State<ChatScreen>
                                       right: 24,
                                     ),
                                     child: Text(
-                                      'report',
+                                      AppLocale.report.getString(context),
                                       style: TextStyle(
                                         fontSize: 16,
                                         color: Palette.primalBlack,
@@ -513,7 +521,7 @@ class ChatScreenState extends State<ChatScreen>
                           DateTime.now().difference(item).inDays == 0;
                       final dateText =
                           isToday
-                              ? 'Today'
+                              ? AppLocale.today.getString(context)
                               : '${item.day.toString().padLeft(2, '0')}.${item.month.toString().padLeft(2, '0')}.${item.year}';
 
                       return Padding(
@@ -704,7 +712,7 @@ class ChatScreenState extends State<ChatScreen>
                   maxLines: 4,
                   textCapitalization: TextCapitalization.sentences,
                   decoration: InputDecoration(
-                    hintText: "message...",
+                    hintText: AppLocale.msg.getString(context),
                     hintStyle: TextStyle(color: Palette.primalBlack),
                     border: InputBorder.none,
                     contentPadding: const EdgeInsets.symmetric(vertical: 10),

@@ -1,3 +1,5 @@
+import 'package:flutter_localization/flutter_localization.dart';
+import 'package:gig_hub/src/Data/services/localization_service.dart';
 import 'package:intl/intl.dart';
 import '../../../Data/app_imports.dart';
 
@@ -149,7 +151,7 @@ class _ChatListScreenState extends State<ChatListScreen> with RouteAware {
                         DateTime.now().difference(entry).inDays == 0;
                     final formattedDate =
                         isToday
-                            ? 'Today'
+                            ? AppLocale.today.getString(context)
                             : DateFormat('MMM dd, yyyy').format(entry);
 
                     return Padding(
@@ -192,7 +194,9 @@ class _ChatListScreenState extends State<ChatListScreen> with RouteAware {
 
                               title: Center(
                                 child: Text(
-                                  'delete chat for you and ${entry.user.displayName}?',
+                                  (AppLocale.deleteChatMsg.getString(context) +
+                                      entry.user.displayName),
+
                                   textAlign: TextAlign.center,
                                   style: GoogleFonts.sometypeMono(
                                     textStyle: TextStyle(
@@ -214,7 +218,7 @@ class _ChatListScreenState extends State<ChatListScreen> with RouteAware {
                                     }
                                   },
                                   child: Text(
-                                    'delete chat',
+                                    AppLocale.deleteChat.getString(context),
                                     style: TextStyle(
                                       color: Palette.primalBlack,
                                     ),
@@ -223,7 +227,7 @@ class _ChatListScreenState extends State<ChatListScreen> with RouteAware {
                                 ElevatedButton(
                                   onPressed: () => Navigator.pop(context),
                                   child: Text(
-                                    'cancel',
+                                    AppLocale.cancel.getString(context),
                                     style: TextStyle(
                                       color: Palette.primalBlack,
                                     ),

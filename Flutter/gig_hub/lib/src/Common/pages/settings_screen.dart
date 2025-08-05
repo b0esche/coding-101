@@ -1,5 +1,6 @@
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:gig_hub/src/Data/app_imports.dart';
+import 'package:gig_hub/src/Data/services/localization_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -306,8 +307,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
         body: Stack(
           children: [
             Positioned(
-              right: 8,
-              top: 32,
+              right: 16,
+              top: 60,
               child: Container(
                 decoration: BoxDecoration(
                   color: Palette.shadowGrey.o(0.2),
@@ -437,7 +438,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        " change e-mail",
+                        AppLocale.changeEmail.getString(context),
                         style: GoogleFonts.sometypeMono(
                           textStyle: TextStyle(
                             color: Palette.glazedWhite,
@@ -493,7 +494,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         splashFactory: NoSplash.splashFactory,
                       ),
                       onPressed: _onResetPassword,
-                      child: const Text("change password"),
+                      child: Text(AppLocale.changePw.getString(context)),
                     ),
                   ),
                   SizedBox(
@@ -509,7 +510,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       onPressed: () {
                         // TODO: blocked users page
                       },
-                      child: const Text("blocked users"),
+                      child: Text(AppLocale.blocks.getString(context)),
                     ),
                   ),
                   SizedBox(
@@ -531,7 +532,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
                                 title: Center(
                                   child: Text(
-                                    'are you sure?',
+                                    AppLocale.areYouSure.getString(context),
                                     style: GoogleFonts.sometypeMono(
                                       textStyle: TextStyle(
                                         fontSize: 18,
@@ -560,7 +561,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                       }
                                     },
                                     child: Text(
-                                      'delete account',
+                                      AppLocale.deleteAcc.getString(context),
                                       style: TextStyle(
                                         color: Palette.primalBlack,
                                       ),
@@ -569,7 +570,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   ElevatedButton(
                                     onPressed: () => Navigator.pop(context),
                                     child: Text(
-                                      'cancel',
+                                      AppLocale.cancel.getString(context),
                                       style: TextStyle(
                                         color: Palette.primalBlack,
                                       ),
@@ -579,7 +580,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               ),
                         );
                       },
-                      child: const Text("delete account"),
+                      child: Text(AppLocale.deleteAcc.getString(context)),
                     ),
                   ),
                   FilledButton(
@@ -596,14 +597,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       }
                       Navigator.of(context).pop();
                     },
-                    child: const Text("log out"),
+                    child: Text(AppLocale.logOut.getString(context)),
                   ),
                   Align(
                     alignment: Alignment.bottomRight,
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(0, 0, 24, 12),
                       child: Text(
-                        "version 1.0.2",
+                        "version 1.0.3",
                         style: TextStyle(color: Palette.glazedWhite),
                       ),
                     ),

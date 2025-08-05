@@ -1,3 +1,5 @@
+import 'package:flutter_localization/flutter_localization.dart';
+import 'package:gig_hub/src/Data/services/localization_service.dart';
 import 'package:gig_hub/src/Features/profile/dj/presentation/widgets/location_display.dart';
 import 'package:gig_hub/src/Features/profile/dj/presentation/widgets/bpm_display.dart';
 import 'package:gig_hub/src/Features/profile/dj/presentation/widgets/location_input_field.dart';
@@ -525,7 +527,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              " about",
+                              AppLocale.about.getString(context),
                               style: GoogleFonts.sometypeMono(
                                 textStyle: TextStyle(
                                   color: Palette.glazedWhite,
@@ -715,7 +717,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              " info / requirements",
+                              AppLocale.info.getString(context),
                               style: GoogleFonts.sometypeMono(
                                 textStyle: TextStyle(
                                   color: Palette.glazedWhite,
@@ -978,7 +980,9 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                         children: [
                           !isUploading
                               ? Text(
-                                !editMode ? "edit profile" : "done",
+                                !editMode
+                                    ? AppLocale.editProfile.getString(context)
+                                    : AppLocale.done.getString(context),
                                 style: GoogleFonts.sometypeMono(
                                   textStyle: TextStyle(
                                     fontWeight: FontWeight.w600,
@@ -1149,7 +1153,9 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                     child: GestureDetector(
                       onTap: _showGenreDialog,
 
-                      child: const GenreBubble(genre: "__edit genres__"),
+                      child: GenreBubble(
+                        genre: AppLocale.editGenres.getString(context),
+                      ),
                     ),
                   ),
                 ],
@@ -1163,14 +1169,14 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
       children: [
         TrackSelectionDropdown(
           userTrackList: userTrackList,
-          label: "first SoundCloud set",
+          label: AppLocale.firstSoundcloud.getString(context),
           selectedTrack: selectedTrackOne,
           onChanged: (track) => setState(() => selectedTrackOne = track),
         ),
         const SizedBox(height: 36),
         TrackSelectionDropdown(
           userTrackList: userTrackList,
-          label: "second SoundCloud set",
+          label: AppLocale.secondSoundcloud.getString(context),
           selectedTrack: selectedTrackTwo,
           onChanged: (track) => setState(() => selectedTrackTwo = track),
         ),
