@@ -1,3 +1,6 @@
+import "package:flutter_localization/flutter_localization.dart";
+import "package:gig_hub/src/Data/services/localization_service.dart";
+
 import "../../../../Data/app_imports.dart";
 import "../../../../Data/app_imports.dart" as http;
 
@@ -18,8 +21,12 @@ class CreateProfileScreenBooker extends StatefulWidget {
 
 class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
   final _formKey = GlobalKey<FormState>();
-  late final _nameController = TextEditingController(text: 'your name');
-  late final _locationController = TextEditingController(text: 'your city');
+  late final _nameController = TextEditingController(
+    text: AppLocale.yourName.getString(context),
+  );
+  late final _locationController = TextEditingController(
+    text: AppLocale.yourCity.getString(context),
+  );
 
   late final _aboutController = TextEditingController();
   late final _infoController = TextEditingController();
@@ -65,7 +72,7 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
     );
 
     if (compressedBytes == null) {
-      throw Exception('image compression failed');
+      throw Exception(AppLocale.imgCompressionFailed.getString(context));
     }
 
     final compressedFile = File(targetPath);
@@ -428,7 +435,8 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                                       borderRadius: BorderRadius.circular(8),
                                       validator: (value) {
                                         if (value == null || value.isEmpty) {
-                                          return 'please select a category';
+                                          return AppLocale.selectCategory
+                                              .getString(context);
                                         }
                                         return null;
                                       },
@@ -501,7 +509,7 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            " about",
+                            AppLocale.about.getString(context),
                             style: GoogleFonts.sometypeMono(
                               textStyle: TextStyle(
                                 color: Palette.glazedWhite,
@@ -628,7 +636,7 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                                     mediaUrl!.clear();
                                   }),
                               child: Text(
-                                "remove all images",
+                                AppLocale.removeImages.getString(context),
                                 style: TextStyle(
                                   color: Palette.alarmRed.o(0.7),
                                   fontWeight: FontWeight.w600,
@@ -642,7 +650,7 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            " info / requirements",
+                            AppLocale.info.getString(context),
                             style: GoogleFonts.sometypeMono(
                               textStyle: TextStyle(
                                 color: Palette.glazedWhite,

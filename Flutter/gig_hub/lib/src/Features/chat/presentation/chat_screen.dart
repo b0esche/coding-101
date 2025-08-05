@@ -476,7 +476,9 @@ class ChatScreenState extends State<ChatScreen>
                 }
 
                 if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text("start talking!"));
+                  return Center(
+                    child: Text(AppLocale.startTalking.getString(context)),
+                  );
                 }
 
                 final rawMessages = snapshot.data!;

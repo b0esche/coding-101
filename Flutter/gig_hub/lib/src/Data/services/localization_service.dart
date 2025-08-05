@@ -19,25 +19,32 @@ mixin AppLocale {
   static const String genre = 'genre';
   static const String genres = 'genres';
   static const String editGenres = '__edit genres__';
+  static const String addGenres = '__add genres__';
   static const String city = 'city';
   static const String email = 'email';
   static const String changeEmail = ' change email';
-  static const String changeEmailMsg =
+  static const String changePwMsg =
       'follow the link in your emails to reset your password!';
+  static const String changeEmailMsg =
+      'email reset link was sent to your current email!';
   static const String pw = 'password';
   static const String confirmPw = 'confirm password';
   static const String changePw = 'change password';
   static const String forgotPw = 'forgot your password?';
+  static const String enterPw = 'enter your password';
   static const String forgotPwText = 'type in your email';
   static const String sendPwReset = 'send password reset link';
   static const String block = 'block';
+  static const String unblock = 'unblock';
   static const String blockAndDelete = 'block and delete';
   static const String blockUser = 'block user and delete chat?';
   static const String blocks = 'blocked users';
+  static const String unblockedSuccess = 'user unblocked successfully';
+  static const String unblockedFail = 'failed to unblock user';
   static const String report = 'report';
   static const String deleteAcc = 'delete account';
   static const String deleteChat = 'delete chat';
-  static const String deleteChatMsg = 'delete chat for you and %a';
+  static const String deleteChatMsg = 'delete chat for you and ';
   static const String areYouSure = 'are you sure?';
   static const String chats = 'chats';
   static const String today = 'today';
@@ -51,6 +58,18 @@ mixin AppLocale {
   static const String firstSoundcloud = 'first SoundCloud track';
   static const String secondSoundcloud = 'second SoundCloud track';
   static const String dontHaveAnAccount = '  don\'t have an account?';
+  static const String pressEnterFinish = 'press enter when finished';
+  static const String pressEnterDone = 'press enter wehen done';
+  static const String imgCompressionFailed = 'image compression failed';
+  static const String proceed = 'proceed';
+  static const String pwNecessary = 'password necessary';
+  static const String noBlockedUsers = 'no blocked users';
+  static const String noChats = 'no chats. start now!';
+  static const String loadingChatsError = 'couldn\'t load chats';
+  static const String startTalking = 'start talking!';
+  static const String removeImages = 'remove all images';
+  static const String selectCategory = 'please select a category';
+  static const String selectTrack = 'select track';
 
   // ENGLISH
   static const Map<String, dynamic> en = {
@@ -76,7 +95,8 @@ mixin AppLocale {
     city: 'city',
     email: 'email',
     changeEmail: ' change email',
-    changeEmailMsg: 'follow the link in your emails to reset your password!',
+    changePwMsg: 'follow the link in your emails to reset your password!',
+    changeEmailMsg: 'email reset link was sent to your current email!',
     pw: 'password',
     confirmPw: 'confirm password',
     changePw: 'change password',
@@ -104,6 +124,20 @@ mixin AppLocale {
     firstSoundcloud: 'first SoundCloud track',
     secondSoundcloud: 'second SoundCloud track',
     dontHaveAnAccount: '  don\'t have an account?',
+    pressEnterFinish: 'press enter when finished',
+    pressEnterDone: 'press enter when done',
+    imgCompressionFailed: 'image compression failed',
+    proceed: 'proceed',
+    pwNecessary: 'password necessary',
+    noBlockedUsers: 'no blocked users',
+    unblockedSuccess: 'user unblocked successfully',
+    unblockedFail: 'failed to unblock user',
+    noChats: 'no chats. start now!',
+    startTalking: 'start talking!',
+    removeImages: 'remove all images',
+    selectCategory: 'please select a category',
+    selectTrack: 'select track',
+    addGenres: '__add genres__',
   };
 
   // GERMAN
@@ -126,12 +160,14 @@ mixin AppLocale {
     yourTempo: 'dein tempo',
     genre: 'genre',
     genres: 'genres',
-    editGenres: '__genres bearbeiten__',
+    editGenres: 'genres bearbeiten',
     city: 'stadt',
     email: 'e-mail',
     changeEmail: ' e-mail ändern',
-    changeEmailMsg:
+    changePwMsg:
         'folge dem link in deinen e-mails, um dein passwort zurückzusetzen!',
+    changeEmailMsg:
+        'E-Mail-Zurücksetzungslink wurde an deine aktuelle E-Mail gesendet!',
     pw: 'passwort',
     confirmPw: 'passwort bestätigen',
     changePw: 'passwort ändern',
@@ -159,6 +195,20 @@ mixin AppLocale {
     firstSoundcloud: 'erster SoundCloud track',
     secondSoundcloud: 'zweiter SoundCloud track',
     dontHaveAnAccount: '  kein konto? melde dich an!',
+    pressEnterFinish: 'drücke enter, wenn fertig',
+    pressEnterDone: 'drücke enter, wenn erledigt',
+    imgCompressionFailed: 'bildkompression fehlgeschlagen',
+    proceed: 'fortfahren',
+    pwNecessary: 'passwort notwendig',
+    noBlockedUsers: 'keine blockierten nutzer',
+    unblockedSuccess: 'nutzer erfolgreich entsperrt',
+    unblockedFail: 'nutzer konnte nicht entsperrt werden',
+    noChats: 'keine chats. starte jetzt!',
+    startTalking: 'fang an zu reden!',
+    removeImages: 'alle bilder entfernen',
+    selectCategory: 'bitte wähle eine kategorie',
+    selectTrack: 'track auswählen',
+    addGenres: 'genres hinzufügen',
   };
 
   // SPANISH
@@ -181,12 +231,14 @@ mixin AppLocale {
     yourTempo: 'tu tempo',
     genre: 'género',
     genres: 'géneros',
-    editGenres: '__editar géneros__',
+    editGenres: 'editar géneros',
     city: 'ciudad',
     email: 'correo electrónico',
     changeEmail: ' cambiar correo electrónico',
-    changeEmailMsg:
+    changePwMsg:
         '¡sigue el enlace en tus correos electrónicos para restablecer tu contraseña!',
+    changeEmailMsg:
+        '¡enlace de restablecimiento de correo electrónico enviado a tu correo actual!',
     pw: 'contraseña',
     confirmPw: 'confirmar contraseña',
     changePw: 'cambiar contraseña',
@@ -214,6 +266,20 @@ mixin AppLocale {
     firstSoundcloud: 'primer track de SoundCloud',
     secondSoundcloud: 'segundo track de SoundCloud',
     dontHaveAnAccount: '  ¿no tienes una cuenta?',
+    pressEnterFinish: 'presiona enter cuando termines',
+    pressEnterDone: 'presiona enter cuando hayas terminado',
+    imgCompressionFailed: 'error de compresión de imagen',
+    proceed: 'continuar',
+    pwNecessary: 'contraseña necesaria',
+    noBlockedUsers: 'no hay usuarios bloqueados',
+    unblockedSuccess: 'usuario desbloqueado con éxito',
+    unblockedFail: 'no se pudo desbloquear al usuario',
+    noChats: 'no hay chats. ¡comienza ahora!',
+    startTalking: '¡comienza a hablar!',
+    removeImages: 'eliminar todas las imágenes',
+    selectCategory: 'por favor selecciona una categoría',
+    selectTrack: 'seleccionar track',
+    addGenres: 'agregar géneros',
   };
 
   // ITALIAN
@@ -236,12 +302,14 @@ mixin AppLocale {
     yourTempo: 'il tuo tempo',
     genre: 'genere',
     genres: 'generi',
-    editGenres: '__modifica generi__',
+    editGenres: 'modifica generi',
     city: 'città',
     email: 'email',
     changeEmail: ' cambia email',
-    changeEmailMsg:
+    changePwMsg:
         'segui il link nelle tue email per reimpostare la tua password!',
+    changeEmailMsg:
+        'link di reimpostazione email inviato alla tua email attuale!',
     pw: 'password',
     confirmPw: 'conferma password',
     changePw: 'cambia password',
@@ -269,6 +337,20 @@ mixin AppLocale {
     firstSoundcloud: 'primo track di SoundCloud',
     secondSoundcloud: 'secondo track di SoundCloud',
     dontHaveAnAccount: '  non hai un account? iscriviti!',
+    pressEnterFinish: 'premi invio quando hai finito',
+    pressEnterDone: 'premi invio quando hai completato',
+    imgCompressionFailed: 'errore di compressione dell\'immagine',
+    proceed: 'procedere',
+    pwNecessary: 'password necessaria',
+    noBlockedUsers: 'nessun utente bloccato',
+    unblockedSuccess: 'utente sbloccato con successo',
+    unblockedFail: 'impossibile sbloccare l\'utente',
+    noChats: 'nessuna chat. inizia ora!',
+    startTalking: 'inizia a parlare!',
+    removeImages: 'rimuovi tutte le immagini',
+    selectCategory: 'seleziona una categoria',
+    selectTrack: 'seleziona track',
+    addGenres: 'aggiungi generi',
   };
 
   // PORTUGESE
@@ -291,11 +373,13 @@ mixin AppLocale {
     yourTempo: 'seu tempo',
     genre: 'gênero',
     genres: 'gêneros',
-    editGenres: '__editar gêneros__',
+    editGenres: 'editar gêneros',
     city: 'cidade',
     email: 'email',
     changeEmail: ' mudar email',
-    changeEmailMsg: 'siga o link nos seus emails para redefinir sua senha!',
+    changePwMsg: 'siga o link nos seus emails para redefinir sua senha!',
+    changeEmailMsg:
+        'link de redefinição de email enviado para seu email atual!',
     pw: 'senha',
     confirmPw: 'confirmar senha',
     changePw: 'mudar senha',
@@ -323,6 +407,20 @@ mixin AppLocale {
     firstSoundcloud: 'primeira faixa do SoundCloud',
     secondSoundcloud: 'segunda faixa do SoundCloud',
     dontHaveAnAccount: '  não tem uma conta?',
+    pressEnterFinish: 'pressione enter quando terminar',
+    pressEnterDone: 'pressione enter quando concluído',
+    imgCompressionFailed: 'falha na compressão da imagem',
+    proceed: 'prosseguir',
+    pwNecessary: 'senha necessária',
+    noBlockedUsers: 'nenhum usuário bloqueado',
+    unblockedSuccess: 'usuário desbloqueado com sucesso',
+    unblockedFail: 'falha ao desbloquear usuário',
+    noChats: 'nenhum chat. comece agora!',
+    startTalking: 'comece a falar!',
+    removeImages: 'remover todas as imagens',
+    selectCategory: 'por favor, selecione uma categoria',
+    selectTrack: 'selecionar faixa',
+    addGenres: 'adicionar gêneros',
   };
 
   //  FRENCH
@@ -345,12 +443,14 @@ mixin AppLocale {
     yourTempo: 'votre tempo',
     genre: 'genre',
     genres: 'genres',
-    editGenres: '__modifier les genres__',
+    editGenres: 'modifier les genres',
     city: 'ville',
     email: 'email',
     changeEmail: ' changer l\'email',
-    changeEmailMsg:
+    changePwMsg:
         'suivez le lien dans vos emails pour réinitialiser votre mot de passe !',
+    changeEmailMsg:
+        'lien de réinitialisation de l\'email envoyé à votre email actuel !',
     pw: 'mot de passe',
     confirmPw: 'confirmer le mot de passe',
     changePw: 'changer le mot de passe',
@@ -378,6 +478,20 @@ mixin AppLocale {
     firstSoundcloud: 'première piste SoundCloud',
     secondSoundcloud: 'deuxième piste SoundCloud',
     dontHaveAnAccount: '  vous n\'avez pas de compte ?',
+    pressEnterFinish: 'appuyez sur entrer lorsque vous avez terminé',
+    pressEnterDone: 'appuyez sur entrer lorsque vous avez terminé',
+    imgCompressionFailed: 'échec de la compression de l\'image',
+    proceed: 'procéder',
+    pwNecessary: 'mot de passe nécessaire',
+    noBlockedUsers: 'aucun utilisateur bloqué',
+    unblockedSuccess: 'utilisateur débloqué avec succès',
+    unblockedFail: 'échec du déblocage de l\'utilisateur',
+    noChats: 'aucune conversation. commencez maintenant !',
+    startTalking: 'commencez à parler !',
+    removeImages: 'supprimer toutes les images',
+    selectCategory: 'veuillez sélectionner une catégorie',
+    selectTrack: 'sélectionner une piste',
+    addGenres: 'ajouter des genres',
   };
 
   // DUTCH
@@ -400,12 +514,14 @@ mixin AppLocale {
     yourTempo: 'jouw tempo',
     genre: 'genre',
     genres: 'genres',
-    editGenres: '__genres bewerken__',
+    editGenres: 'genres bewerken',
     city: 'stad',
     email: 'e-mail',
     changeEmail: ' e-mail wijzigen',
-    changeEmailMsg:
+    changePwMsg:
         'volg de link in je e-mails om je wachtwoord opnieuw in te stellen!',
+    changeEmailMsg:
+        'link voor het opnieuw instellen van e-mail verzonden naar je huidige e-mail!',
     pw: 'wachtwoord',
     confirmPw: 'bevestig wachtwoord',
     changePw: 'wachtwoord wijzigen',
@@ -433,6 +549,20 @@ mixin AppLocale {
     firstSoundcloud: 'eerste SoundCloud track',
     secondSoundcloud: 'tweede SoundCloud track',
     dontHaveAnAccount: '  heb je geen account?',
+    pressEnterFinish: 'druk op enter wanneer je klaar bent',
+    pressEnterDone: 'druk op enter wanneer je klaar bent',
+    imgCompressionFailed: 'afbeeldingscompressie mislukt',
+    proceed: 'doorgaan',
+    pwNecessary: 'wachtwoord nodig',
+    noBlockedUsers: 'geen geblokkeerde gebruikers',
+    unblockedSuccess: 'gebruiker succesvol gedeblokkeerd',
+    unblockedFail: 'deblokkeren van gebruiker mislukt',
+    noChats: 'geen chats. begin nu!',
+    startTalking: 'begin met praten!',
+    removeImages: 'verwijder alle afbeeldingen',
+    selectCategory: 'selecteer een categorie',
+    selectTrack: 'selecteer track',
+    addGenres: 'voeg genres toe',
   };
 
   // POLISH
@@ -455,12 +585,14 @@ mixin AppLocale {
     yourTempo: 'twoje tempo',
     genre: 'gatunek',
     genres: 'gatunki',
-    editGenres: '__edytuj gatunki__',
+    editGenres: 'edytuj gatunki',
     city: 'miasto',
     email: 'e-mail',
     changeEmail: ' zmień e-mail',
-    changeEmailMsg:
+    changePwMsg:
         'postępuj zgodnie z linkiem w swoich e-mailach, aby zresetować hasło!',
+    changeEmailMsg:
+        'link do resetowania e-maila został wysłany na twój aktualny e-mail!',
     pw: 'hasło',
     confirmPw: 'potwierdź hasło',
     changePw: 'zmień hasło',
@@ -488,6 +620,20 @@ mixin AppLocale {
     firstSoundcloud: 'pierwszy utwór SoundCloud',
     secondSoundcloud: 'drugi utwór SoundCloud',
     dontHaveAnAccount: '  nie masz konta?',
+    pressEnterFinish: 'naciśnij enter, gdy skończysz',
+    pressEnterDone: 'naciśnij enter, gdy skończysz',
+    imgCompressionFailed: 'kompresja obrazu nie powiodła się',
+    proceed: 'kontynuuj',
+    pwNecessary: 'wymagane hasło',
+    noBlockedUsers: 'brak zablokowanych użytkowników',
+    unblockedSuccess: 'użytkownik pomyślnie odblokowany',
+    unblockedFail: 'nie udało się odblokować użytkownika',
+    noChats: 'brak czatów. zacznij teraz!',
+    startTalking: 'zacznij rozmawiać!',
+    removeImages: 'usuń wszystkie obrazy',
+    selectCategory: 'proszę wybrać kategorię',
+    selectTrack: 'wybierz utwór',
+    addGenres: 'dodaj gatunki',
   };
 
   // UKRAINIAN
@@ -510,12 +656,14 @@ mixin AppLocale {
     yourTempo: 'ваш темп',
     genre: 'жанр',
     genres: 'жанри',
-    editGenres: '__редагувати жанри__',
+    editGenres: 'редагувати жанри',
     city: 'місто',
     email: 'електронна пошта',
     changeEmail: ' змінити електронну пошту',
-    changeEmailMsg:
+    changePwMsg:
         'слідуйте за посиланням у ваших електронних листах, щоб скинути пароль!',
+    changeEmailMsg:
+        'посилання для скидання електронної пошти надіслано на вашу поточну електронну пошту!',
     pw: 'пароль',
     confirmPw: 'підтвердити пароль',
     changePw: 'змінити пароль',
@@ -543,6 +691,20 @@ mixin AppLocale {
     firstSoundcloud: 'перший трек SoundCloud',
     secondSoundcloud: 'другий трек SoundCloud',
     dontHaveAnAccount: '  немає акаунту?',
+    pressEnterFinish: 'натисніть enter, коли закінчите',
+    pressEnterDone: 'натисніть enter, коли завершите',
+    imgCompressionFailed: 'збій стиснення зображення',
+    proceed: 'продовжити',
+    pwNecessary: 'необхідний пароль',
+    noBlockedUsers: 'немає заблокованих користувачів',
+    unblockedSuccess: 'користувача успішно розблоковано',
+    unblockedFail: 'не вдалося розблокувати користувача',
+    noChats: 'немає чатів. почніть зараз!',
+    startTalking: 'почніть розмову!',
+    removeImages: 'видалити всі зображення',
+    selectCategory: 'будь ласка, виберіть категорію',
+    selectTrack: 'вибрати трек',
+    addGenres: 'додати жанри',
   };
 
   // ARABIC
@@ -565,12 +727,14 @@ mixin AppLocale {
     yourTempo: 'إيقاعك',
     genre: 'نوع الموسيقى',
     genres: 'أنواع الموسيقى',
-    editGenres: '__تعديل الأنواع__',
+    editGenres: 'تعديل الأنواع',
     city: 'مدينة',
     email: 'البريد الإلكتروني',
     changeEmail: ' تغيير البريد الإلكتروني',
-    changeEmailMsg:
+    changePwMsg:
         'اتبع الرابط في رسائلك الإلكترونية لإعادة تعيين كلمة المرور الخاصة بك!',
+    changeEmailMsg:
+        'تم إرسال رابط إعادة تعيين البريد الإلكتروني إلى بريدك الإلكتروني الحالي!',
     pw: 'كلمة المرور',
     confirmPw: 'تأكيد كلمة المرور',
     changePw: 'تغيير كلمة المرور',
@@ -598,6 +762,20 @@ mixin AppLocale {
     firstSoundcloud: 'المسار الأول على SoundCloud',
     secondSoundcloud: 'المسار الثاني على SoundCloud',
     dontHaveAnAccount: '  ليس لديك حساب؟ سجل الآن!',
+    pressEnterFinish: 'اضغط على enter عند الانتهاء',
+    pressEnterDone: 'اضغط على enter عند الانتهاء',
+    imgCompressionFailed: 'فشل ضغط الصورة',
+    proceed: 'المتابعة',
+    pwNecessary: 'كلمة المرور مطلوبة',
+    noBlockedUsers: 'لا يوجد مستخدمون محظورون',
+    unblockedSuccess: 'تم إلغاء حظر المستخدم بنجاح',
+    unblockedFail: 'فشل إلغاء حظر المستخدم',
+    noChats: 'لا توجد دردشات. ابدأ الآن!',
+    startTalking: 'ابدأ في التحدث!',
+    removeImages: 'إزالة جميع الصور',
+    selectCategory: 'يرجى اختيار فئة',
+    selectTrack: 'اختيار المسار',
+    addGenres: 'إضافة أنواع الموسيقى',
   };
 
   // TURKISH
@@ -620,12 +798,14 @@ mixin AppLocale {
     yourTempo: 'tempo',
     genre: 'tür',
     genres: 'türler',
-    editGenres: '__türleri düzenle__',
+    editGenres: 'türleri düzenle',
     city: 'şehir',
     email: 'e-posta',
     changeEmail: ' e-postayı değiştir',
-    changeEmailMsg:
+    changePwMsg:
         'parolanızı sıfırlamak için e-postalarınızdaki bağlantıyı takip edin!',
+    changeEmailMsg:
+        'parola sıfırlama bağlantısı mevcut e-postanıza gönderildi!',
     pw: 'parola',
     confirmPw: 'parolayı onayla',
     changePw: 'parolayı değiştir',
@@ -653,6 +833,20 @@ mixin AppLocale {
     firstSoundcloud: 'ilk SoundCloud parçası',
     secondSoundcloud: 'ikinci SoundCloud parçası',
     dontHaveAnAccount: '  hesabınız yok mu? kaydolun!',
+    pressEnterFinish: 'tamamlandığında enter tuşuna basın',
+    pressEnterDone: 'tamamlandığında enter tuşuna basın',
+    imgCompressionFailed: 'görsel sıkıştırma başarısız oldu',
+    proceed: 'devam et',
+    pwNecessary: 'parola gerekli',
+    noBlockedUsers: 'engellenen kullanıcı yok',
+    unblockedSuccess: 'kullanıcı başarıyla engeli kaldırıldı',
+    unblockedFail: 'kullanıcının engeli kaldırılamadı',
+    noChats: 'sohbet yok. şimdi başlayın!',
+    startTalking: 'konuşmaya başlayın!',
+    removeImages: 'tüm görselleri kaldır',
+    selectCategory: 'lütfen bir kategori seçin',
+    selectTrack: 'parça seç',
+    addGenres: 'tür ekle',
   };
 
   // JAPANESE
@@ -675,11 +869,12 @@ mixin AppLocale {
     yourTempo: 'あなたのテンポ',
     genre: 'ジャンル',
     genres: 'ジャンル',
-    editGenres: '__ジャンルを編集__',
+    editGenres: 'ジャンルを編集',
     city: '都市',
     email: 'メールアドレス',
     changeEmail: ' メールアドレスを変更する',
-    changeEmailMsg: 'パスワードをリセットするためにメールのリンクに従ってください！',
+    changePwMsg: 'パスワードをリセットするためにメールのリンクに従ってください！',
+    changeEmailMsg: 'メールリセットリンクが現在のメールアドレスに送信されました！',
     pw: 'パスワード',
     confirmPw: 'パスワードを確認する',
     changePw: 'パスワードを変更する',
@@ -707,6 +902,20 @@ mixin AppLocale {
     firstSoundcloud: '最初のSoundCloudトラック',
     secondSoundcloud: '2番目のSoundCloudトラック',
     dontHaveAnAccount: 'アカウントがありませんか',
+    pressEnterFinish: '完了したらenterキーを押してください',
+    pressEnterDone: '完了したらenterキーを押してください',
+    imgCompressionFailed: '画像圧縮に失敗しました',
+    proceed: '進む',
+    pwNecessary: 'パスワードが必要です',
+    noBlockedUsers: 'ブロックされたユーザーはありません',
+    unblockedSuccess: 'ユーザーのブロックが解除されました',
+    unblockedFail: 'ユーザーのブロック解除に失敗しました',
+    noChats: 'チャットがありません。今すぐ始めましょう！',
+    startTalking: '話し始めましょう！',
+    removeImages: 'すべての画像を削除する',
+    selectCategory: 'カテゴリを選択してください',
+    selectTrack: 'トラックを選択',
+    addGenres: 'ジャンルを追加する',
   };
 
   // KOREAN
@@ -729,11 +938,12 @@ mixin AppLocale {
     yourTempo: '당신의 템포',
     genre: '장르',
     genres: '장르들',
-    editGenres: '__장르 편집__',
+    editGenres: '장르 편집',
     city: '도시',
     email: '이메일',
     changeEmail: ' 이메일 변경하기',
-    changeEmailMsg: '비밀번호를 재설정하려면 이메일의 링크를 따르세요!',
+    changePwMsg: '비밀번호를 재설정하려면 이메일의 링크를 따르세요!',
+    changeEmailMsg: '이메일 재설정 링크가 현재 이메일로 전송되었습니다!',
     pw: '비밀번호',
     confirmPw: '비밀번호 확인하기',
     changePw: '비밀번호 변경하기',
@@ -761,6 +971,20 @@ mixin AppLocale {
     firstSoundcloud: '첫 번째 SoundCloud 트랙',
     secondSoundcloud: '두 번째 SoundCloud 트랙',
     dontHaveAnAccount: '  계정이 없으신가요? 가입하세요!',
+    pressEnterFinish: '완료되면 Enter 키를 누르세요',
+    pressEnterDone: '완료되면 Enter 키를 누르세요',
+    imgCompressionFailed: '이미지 압축 실패',
+    proceed: '진행하기',
+    pwNecessary: '비밀번호 필요',
+    noBlockedUsers: '차단된 사용자가 없습니다',
+    unblockedSuccess: '사용자의 차단이 해제되었습니다',
+    unblockedFail: '사용자의 차단 해제에 실패했습니다',
+    noChats: '채팅이 없습니다. 지금 시작하세요!',
+    startTalking: '대화를 시작하세요!',
+    removeImages: '모든 이미지를 제거하기',
+    selectCategory: '카테고리를 선택하세요',
+    selectTrack: '트랙 선택하기',
+    addGenres: '장르 추가하기',
   };
 
   // CHINESE
@@ -783,11 +1007,12 @@ mixin AppLocale {
     yourTempo: '你的节奏',
     genre: '类型',
     genres: '类型们',
-    editGenres: '__编辑类型__',
+    editGenres: '编辑类型',
     city: '城市',
     email: '电子邮件',
     changeEmail: ' 更改电子邮件',
-    changeEmailMsg: '请按照您的电子邮件中的链接重置密码！',
+    changePwMsg: '请按照您的电子邮件中的链接重置密码！',
+    changeEmailMsg: '电子邮件重置链接已发送到您的当前电子邮件！',
     pw: '密码',
     confirmPw: '确认密码',
     changePw: '更改密码',
@@ -815,5 +1040,19 @@ mixin AppLocale {
     firstSoundcloud: '第一个 SoundCloud 曲目',
     secondSoundcloud: '第二个 SoundCloud 曲目',
     dontHaveAnAccount: '  没有账户？注册吧！',
+    pressEnterFinish: '完成后按 enter 键',
+    pressEnterDone: '完成后按 enter 键',
+    imgCompressionFailed: '图像压缩失败',
+    proceed: '继续',
+    pwNecessary: '需要密码',
+    noBlockedUsers: '没有被阻止的用户',
+    unblockedSuccess: '用户已成功解锁',
+    unblockedFail: '无法解锁用户',
+    noChats: '没有聊天记录。现在开始吧！',
+    startTalking: '开始聊天吧！',
+    removeImages: '删除所有图片',
+    selectCategory: '请选择一个类别',
+    selectTrack: '选择曲目',
+    addGenres: '添加类型',
   };
 }

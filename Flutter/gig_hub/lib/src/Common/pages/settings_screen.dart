@@ -1,6 +1,7 @@
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:gig_hub/src/Data/app_imports.dart';
 import 'package:gig_hub/src/Data/services/localization_service.dart';
+import 'package:gig_hub/src/Common/widgets/blocked_users_dialog.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -62,7 +63,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
 
     if (compressedBytes == null) {
-      throw Exception('image compression failed');
+      throw Exception(AppLocale.imgCompressionFailed.getString(context));
     }
 
     final compressedFile = File(targetPath);
@@ -144,9 +145,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
         return AlertDialog(
           title: Center(
-            child: const Text(
-              'enter your password',
-              style: TextStyle(fontSize: 16),
+            child: Text(
+              AppLocale.enterPw.getString(context),
+              style: const TextStyle(fontSize: 16),
             ),
           ),
           content: Form(
@@ -156,7 +157,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               obscureText: true,
               autofocus: true,
               decoration: InputDecoration(
-                labelText: 'password',
+                labelText: AppLocale.pw.getString(context),
 
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -172,7 +173,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               validator:
                   (value) =>
                       (value == null || value.isEmpty)
-                          ? 'password neccessary'
+                          ? AppLocale.pwNecessary.getString(context)
                           : null,
             ),
           ),
@@ -180,7 +181,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             TextButton(
               onPressed: () => Navigator.of(context).pop(null),
               child: Text(
-                'cancel',
+                AppLocale.cancel.getString(context),
                 style: TextStyle(color: Palette.primalBlack),
               ),
             ),
@@ -206,7 +207,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 elevation: 3,
               ),
               child: Text(
-                'proceed',
+                AppLocale.proceed.getString(context),
                 style: TextStyle(color: Palette.primalBlack),
               ),
             ),
@@ -228,22 +229,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
       await user.reauthenticateWithCredential(credential);
 
       await user.verifyBeforeUpdateEmail(newValue);
-
-      messenger.showSnackBar(
-        SnackBar(
-          backgroundColor: Palette.forgedGold,
-          content: const Center(
-            child: Text(
-              "email reset link was sent to your current email!",
-              style: TextStyle(fontSize: 16),
+      if (mounted) {
+        messenger.showSnackBar(
+          SnackBar(
+            backgroundColor: Palette.forgedGold,
+            content: Center(
+              child: Text(
+                AppLocale.changeEmailMsg.getString(context),
+                style: const TextStyle(fontSize: 16),
+              ),
             ),
           ),
-        ),
-      );
+        );
+      }
     } catch (e) {
       messenger.showSnackBar(
         SnackBar(
-          backgroundColor: Colors.red,
+          backgroundColor: Palette.alarmRed,
           content: Center(
             child: Text(
               'error: ${e.toString()}',
@@ -260,16 +262,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final messenger = ScaffoldMessenger.of(context);
     if (email != null) {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-      messenger.showSnackBar(
-        SnackBar(
-          backgroundColor: Palette.forgedGold,
-          content: Center(
-            child: Text(
-              "follow the link in your emails to reset your password!",
+      if (mounted) {
+        messenger.showSnackBar(
+          SnackBar(
+            backgroundColor: Palette.forgedGold,
+            content: Center(
+              child: Text(AppLocale.changeEmailMsg.getString(context)),
             ),
           ),
-        ),
-      );
+        );
+      }
     }
   }
 
@@ -461,7 +463,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
-                              helperText: "press enter when finished",
+                              helperText: AppLocale.pressEnterFinish.getString(
+                                context,
+                              ),
                               labelStyle: TextStyle(color: Palette.primalBlack),
                               suffixIcon: IconButton(
                                 onPressed: () => _emailController.clear(),
@@ -475,7 +479,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               filled: true,
                               floatingLabelBehavior:
                                   FloatingLabelBehavior.always,
-                              hintText: "press enter when done",
+                              hintText: AppLocale.pressEnterDone.getString(
+                                context,
+                              ),
                               hintStyle: TextStyle(color: Palette.forgedGold),
                             ),
                           ),
@@ -484,8 +490,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ],
                   ),
                   SizedBox(
-                    height: 32,
-                    width: 168,
+                    height: 42,
                     child: FilledButton(
                       style: ButtonStyle(
                         backgroundColor: WidgetStateProperty.all(
@@ -498,8 +503,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                   SizedBox(
-                    height: 32,
-                    width: 168,
+                    height: 42,
                     child: FilledButton(
                       style: ButtonStyle(
                         backgroundColor: WidgetStateProperty.all(
@@ -508,14 +512,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         splashFactory: NoSplash.splashFactory,
                       ),
                       onPressed: () {
-                        // TODO: blocked users page
+                        showDialog(
+                          context: context,
+                          builder: (context) => BlockedUsersDialog(),
+                        );
                       },
                       child: Text(AppLocale.blocks.getString(context)),
                     ),
                   ),
                   SizedBox(
-                    height: 32,
-                    width: 168,
+                    height: 42,
                     child: FilledButton(
                       style: ButtonStyle(
                         backgroundColor: WidgetStateProperty.all(
@@ -583,21 +589,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       child: Text(AppLocale.deleteAcc.getString(context)),
                     ),
                   ),
-                  FilledButton(
-                    style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.all(
-                        Palette.shadowGrey,
+                  SizedBox(
+                    height: 42,
+                    child: FilledButton(
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStateProperty.all(
+                          Palette.shadowGrey,
+                        ),
+                        splashFactory: NoSplash.splashFactory,
                       ),
-                      splashFactory: NoSplash.splashFactory,
+                      onPressed: () async {
+                        await auth.signOut();
+                        if (!context.mounted) {
+                          return;
+                        }
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(AppLocale.logOut.getString(context)),
                     ),
-                    onPressed: () async {
-                      await auth.signOut();
-                      if (!context.mounted) {
-                        return;
-                      }
-                      Navigator.of(context).pop();
-                    },
-                    child: Text(AppLocale.logOut.getString(context)),
                   ),
                   Align(
                     alignment: Alignment.bottomRight,

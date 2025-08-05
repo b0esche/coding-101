@@ -98,7 +98,7 @@ class _ChatListScreenState extends State<ChatListScreen> with RouteAware {
           icon: const Icon(Icons.chevron_left_rounded, size: 36),
           color: Palette.glazedWhite,
         ),
-        title: const Text('chats'),
+        title: Text(AppLocale.chats.getString(context)),
         backgroundColor: Palette.primalBlack,
         iconTheme: IconThemeData(color: Palette.glazedWhite),
         titleTextStyle: TextStyle(color: Palette.glazedWhite, fontSize: 20),
@@ -115,7 +115,7 @@ class _ChatListScreenState extends State<ChatListScreen> with RouteAware {
           if (snapshot.hasError) {
             return Center(
               child: Text(
-                'couldn\'t load chats',
+                AppLocale.loadingChatsError.getString(context),
                 style: TextStyle(color: Palette.glazedWhite),
               ),
             );
@@ -126,7 +126,7 @@ class _ChatListScreenState extends State<ChatListScreen> with RouteAware {
           if (recentMessages.isEmpty) {
             return Center(
               child: Text(
-                'no chats. start now!',
+                AppLocale.noChats.getString(context),
                 style: TextStyle(color: Palette.glazedWhite, fontSize: 16),
               ),
             );

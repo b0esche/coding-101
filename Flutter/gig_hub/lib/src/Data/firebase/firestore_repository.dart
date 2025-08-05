@@ -317,6 +317,49 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
     await currentUserBlockRef.delete();
   }
 
+  @override
+  Future<List<AppUser>> getBlockedUsers(String currentUid) async {
+    final firestore = FirebaseFirestore.instance;
+
+    final blockedSnapshot =
+        await firestore
+            .collection('users')
+            .doc(currentUid)
+            .collection('blocks')
+            .get();
+
+    final blockedUids = blockedSnapshot.docs.map((doc) => doc.id).toList();
+
+    List<AppUser> blockedUsers = [];
+
+    for (final uid in blockedUids) {
+      try {
+        final userDoc = await firestore.collection('users').doc(uid).get();
+        if (userDoc.exists && userDoc.data() != null) {
+          final data = userDoc.data()!;
+          final type = data['type'] as String? ?? 'guest';
+
+          switch (type) {
+            case 'dj':
+              blockedUsers.add(DJ.fromJson(uid, data));
+              break;
+            case 'booker':
+              blockedUsers.add(Booker.fromJson(uid, data));
+              break;
+            case 'guest':
+              blockedUsers.add(Guest.fromJson(uid, data));
+              break;
+          }
+        }
+      } catch (e) {
+        // Skip users that can't be loaded
+        continue;
+      }
+    }
+
+    return blockedUsers;
+  }
+
   Future<List<ChatMessage>> getMessages(String userId, String partnerId) async {
     final chatId = getChatId(userId, partnerId);
     final snapshot =

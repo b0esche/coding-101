@@ -25,7 +25,7 @@ class AudioPlayerWidget extends StatefulWidget {
   static Future<Uint8List> downloadAudioBytes(String publicUrl) async {
     final response = await http.get(Uri.parse(publicUrl));
     if (response.statusCode != 200) {
-      throw Exception('Failed to download audio');
+      throw Exception('failed to download audio');
     }
     return response.bodyBytes;
   }

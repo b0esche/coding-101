@@ -1,3 +1,6 @@
+import "package:flutter_localization/flutter_localization.dart";
+import "package:gig_hub/src/Data/services/localization_service.dart";
+
 import "../../../../Data/app_imports.dart";
 import "../../../../Data/app_imports.dart" as http;
 
@@ -46,9 +49,15 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
   void initState() {
     super.initState();
 
-    _nameController = TextEditingController(text: 'your name');
-    _locationController = TextEditingController(text: 'your city');
-    _bpmController = TextEditingController(text: 'your tempo');
+    _nameController = TextEditingController(
+      text: AppLocale.yourName.getString(context),
+    );
+    _locationController = TextEditingController(
+      text: AppLocale.yourCity.getString(context),
+    );
+    _bpmController = TextEditingController(
+      text: AppLocale.yourTempo.getString(context),
+    );
     _aboutController = TextEditingController();
     _infoController = TextEditingController();
 
@@ -95,7 +104,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
     );
 
     if (compressedBytes == null) {
-      throw Exception('image compression failed');
+      throw Exception(AppLocale.imgCompressionFailed.getString(context));
     }
 
     final compressedFile = File(targetPath);
@@ -557,7 +566,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            " about",
+                            AppLocale.about.getString(context),
                             style: GoogleFonts.sometypeMono(
                               textStyle: TextStyle(
                                 color: Palette.glazedWhite,
@@ -634,8 +643,12 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                 child: GenreBubble(
                                   genre:
                                       (genres == null)
-                                          ? " add genres "
-                                          : " edit genres ",
+                                          ? AppLocale.addGenres.getString(
+                                            context,
+                                          )
+                                          : AppLocale.editGenres.getString(
+                                            context,
+                                          ),
                                 ),
                               ),
                             ),
@@ -736,7 +749,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                     mediaUrl!.clear();
                                   }),
                               child: Text(
-                                "remove all images",
+                                AppLocale.removeImages.getString(context),
                                 style: TextStyle(
                                   color: Palette.alarmRed.o(0.7),
                                   fontWeight: FontWeight.w600,
@@ -750,7 +763,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            " info / requirements",
+                            AppLocale.info.getString(context),
                             style: GoogleFonts.sometypeMono(
                               textStyle: TextStyle(
                                 color: Palette.glazedWhite,
@@ -949,7 +962,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text(
-                                      "done",
+                                      AppLocale.done.getString(context),
                                       style: GoogleFonts.sometypeMono(
                                         textStyle: TextStyle(
                                           fontWeight: FontWeight.w600,
@@ -999,13 +1012,13 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         _buildTrackDropdown(
-          label: "first SoundCloud set",
+          label: AppLocale.firstSoundcloud.getString(context),
           selectedTrack: selectedTrackOne,
           onChanged: (track) => setState(() => selectedTrackOne = track),
         ),
         const SizedBox(height: 36),
         _buildTrackDropdown(
-          label: "second SoundCloud set",
+          label: AppLocale.secondSoundcloud.getString(context),
           selectedTrack: selectedTrackTwo,
           onChanged: (track) => setState(() => selectedTrackTwo = track),
         ),
@@ -1053,7 +1066,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                 value: selectedTrack,
                 isExpanded: true,
                 hint: Text(
-                  'select track',
+                  AppLocale.selectTrack.getString(context),
                   style: TextStyle(color: Palette.glazedWhite, fontSize: 11),
                 ),
                 style: TextStyle(color: Palette.glazedWhite, fontSize: 11),
