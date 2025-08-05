@@ -213,7 +213,7 @@ mixin AppLocale {
     sortBy: 'ordenar por',
     firstSoundcloud: 'primer track de SoundCloud',
     secondSoundcloud: 'segundo track de SoundCloud',
-    dontHaveAnAccount: '  ¿no tienes una cuenta? ¡regístrate!',
+    dontHaveAnAccount: '  ¿no tienes una cuenta?',
   };
 
   // ITALIAN
@@ -322,7 +322,7 @@ mixin AppLocale {
     sortBy: 'ordenar por',
     firstSoundcloud: 'primeira faixa do SoundCloud',
     secondSoundcloud: 'segunda faixa do SoundCloud',
-    dontHaveAnAccount: '  não tem uma conta? inscreva-se!',
+    dontHaveAnAccount: '  não tem uma conta?',
   };
 
   //  FRENCH
@@ -377,7 +377,7 @@ mixin AppLocale {
     sortBy: 'trier par',
     firstSoundcloud: 'première piste SoundCloud',
     secondSoundcloud: 'deuxième piste SoundCloud',
-    dontHaveAnAccount: '  vous n\'avez pas de compte ? inscrivez-vous !',
+    dontHaveAnAccount: '  vous n\'avez pas de compte ?',
   };
 
   // DUTCH
@@ -432,7 +432,7 @@ mixin AppLocale {
     sortBy: 'sorteren op',
     firstSoundcloud: 'eerste SoundCloud track',
     secondSoundcloud: 'tweede SoundCloud track',
-    dontHaveAnAccount: '  heb je geen account? meld je aan!',
+    dontHaveAnAccount: '  heb je geen account?',
   };
 
   // POLISH
@@ -487,7 +487,7 @@ mixin AppLocale {
     sortBy: 'sortuj według',
     firstSoundcloud: 'pierwszy utwór SoundCloud',
     secondSoundcloud: 'drugi utwór SoundCloud',
-    dontHaveAnAccount: '  nie masz konta? zarejestruj się!',
+    dontHaveAnAccount: '  nie masz konta?',
   };
 
   // UKRAINIAN
@@ -542,7 +542,7 @@ mixin AppLocale {
     sortBy: 'сортувати за',
     firstSoundcloud: 'перший трек SoundCloud',
     secondSoundcloud: 'другий трек SoundCloud',
-    dontHaveAnAccount: '  немає акаунту? зареєструйтесь!',
+    dontHaveAnAccount: '  немає акаунту?',
   };
 
   // ARABIC
@@ -706,7 +706,7 @@ mixin AppLocale {
     sortBy: '並べ替え',
     firstSoundcloud: '最初のSoundCloudトラック',
     secondSoundcloud: '2番目のSoundCloudトラック',
-    dontHaveAnAccount: '  アカウントがありませんか？サインアップしてください！',
+    dontHaveAnAccount: 'アカウントがありませんか',
   };
 
   // KOREAN

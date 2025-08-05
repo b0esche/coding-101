@@ -39,6 +39,13 @@ class _LoginScreenState extends State<LoginScreen> {
   String _currentLanguage = 'en';
 
   @override
+  void initState() {
+    super.initState();
+    _currentLanguage =
+        FlutterLocalization.instance.currentLocale?.languageCode ?? 'en';
+  }
+
+  @override
   Widget build(BuildContext context) {
     final auth = context.watch<AuthRepository>();
     final db = context.watch<DatabaseRepository>();
@@ -65,6 +72,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: TextStyle(color: Palette.glazedWhite),
                     borderRadius: BorderRadius.circular(8),
                     padding: EdgeInsets.symmetric(horizontal: 8),
+                    selectedItemBuilder: (BuildContext context) {
+                      return _languages.map((language) {
+                        return Center(
+                          child: Text(
+                            language['flag']!,
+                            style: TextStyle(fontSize: 24),
+                          ),
+                        );
+                      }).toList();
+                    },
                     items:
                         _languages.map((language) {
                           return DropdownMenuItem<String>(
@@ -399,7 +416,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             style: ButtonStyle(
                               padding:
                                   WidgetStateProperty.all<EdgeInsetsGeometry>(
-                                    EdgeInsets.only(left: 120, right: 120),
+                                    EdgeInsets.only(left: 90, right: 90),
                                   ),
                               backgroundColor: WidgetStateProperty.all<Color>(
                                 Palette.forgedGold.o(0.8),
@@ -565,7 +582,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.transparent,
                             foregroundColor: Colors.transparent,
-                            padding: EdgeInsets.only(left: 78, right: 78),
+                            padding: EdgeInsets.only(left: 32, right: 32),
 
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),

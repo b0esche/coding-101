@@ -37,6 +37,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   void initState() {
     super.initState();
+    _currentLanguage =
+        FlutterLocalization.instance.currentLocale?.languageCode ?? 'en';
     _loadCurrentUser();
   }
 
@@ -320,6 +322,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     style: TextStyle(color: Palette.glazedWhite),
                     borderRadius: BorderRadius.circular(8),
                     padding: EdgeInsets.symmetric(horizontal: 8),
+                    selectedItemBuilder: (BuildContext context) {
+                      return _languages.map((language) {
+                        return Center(
+                          child: Text(
+                            language['flag']!,
+                            style: TextStyle(fontSize: 24),
+                          ),
+                        );
+                      }).toList();
+                    },
                     items:
                         _languages.map((language) {
                           return DropdownMenuItem<String>(
@@ -335,7 +347,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   child: Center(
                                     child: Text(
                                       language['flag']!,
-                                      style: TextStyle(fontSize: 20),
+                                      style: TextStyle(fontSize: 24),
                                     ),
                                   ),
                                 ),
