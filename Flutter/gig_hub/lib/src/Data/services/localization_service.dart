@@ -1,5 +1,5 @@
 mixin AppLocale {
-  // strings
+  // app strings
   static const String title = 'title';
   static const String dj = 'dj';
   static const String booker = 'booker';
@@ -70,6 +70,7 @@ mixin AppLocale {
   static const String removeImages = 'remove all images';
   static const String selectCategory = 'please select a category';
   static const String selectTrack = 'select track';
+  static const String selectFive = 'select up to 5!';
 
   // ENGLISH
   static const Map<String, dynamic> en = {
@@ -104,6 +105,7 @@ mixin AppLocale {
     forgotPwText: 'type in your email',
     sendPwReset: 'send password reset link',
     block: 'block',
+    unblock: 'unblock',
     blockAndDelete: 'block and delete',
     blockUser: 'block user and delete chat?',
     blocks: 'blocked users',
@@ -138,6 +140,7 @@ mixin AppLocale {
     selectCategory: 'please select a category',
     selectTrack: 'select track',
     addGenres: '__add genres__',
+    selectFive: 'select up to 5!',
   };
 
   // GERMAN
@@ -209,6 +212,8 @@ mixin AppLocale {
     selectCategory: 'bitte wähle eine kategorie',
     selectTrack: 'track auswählen',
     addGenres: 'genres hinzufügen',
+    unblock: 'entsperren',
+    selectFive: 'wähle bis zu 5 aus!',
   };
 
   // SPANISH
@@ -280,6 +285,8 @@ mixin AppLocale {
     selectCategory: 'por favor selecciona una categoría',
     selectTrack: 'seleccionar track',
     addGenres: 'agregar géneros',
+    unblock: 'desbloquear',
+    selectFive: '¡selecciona hasta 5!',
   };
 
   // ITALIAN
@@ -351,6 +358,8 @@ mixin AppLocale {
     selectCategory: 'seleziona una categoria',
     selectTrack: 'seleziona track',
     addGenres: 'aggiungi generi',
+    unblock: 'sbloccare',
+    selectFive: 'seleziona fino a 5!',
   };
 
   // PORTUGESE
@@ -421,6 +430,8 @@ mixin AppLocale {
     selectCategory: 'por favor, selecione uma categoria',
     selectTrack: 'selecionar faixa',
     addGenres: 'adicionar gêneros',
+    unblock: 'desbloquear',
+    selectFive: 'selecione até 5!',
   };
 
   //  FRENCH
@@ -492,6 +503,8 @@ mixin AppLocale {
     selectCategory: 'veuillez sélectionner une catégorie',
     selectTrack: 'sélectionner une piste',
     addGenres: 'ajouter des genres',
+    unblock: 'débloquer',
+    selectFive: 'sélectionnez jusqu\'à 5 !',
   };
 
   // DUTCH
@@ -563,6 +576,8 @@ mixin AppLocale {
     selectCategory: 'selecteer een categorie',
     selectTrack: 'selecteer track',
     addGenres: 'voeg genres toe',
+    unblock: 'deblokkeren',
+    selectFive: 'selecteer tot 5!',
   };
 
   // POLISH
@@ -634,6 +649,8 @@ mixin AppLocale {
     selectCategory: 'proszę wybrać kategorię',
     selectTrack: 'wybierz utwór',
     addGenres: 'dodaj gatunki',
+    unblock: 'odblokuj',
+    selectFive: 'wybierz do 5!',
   };
 
   // UKRAINIAN
@@ -705,6 +722,8 @@ mixin AppLocale {
     selectCategory: 'будь ласка, виберіть категорію',
     selectTrack: 'вибрати трек',
     addGenres: 'додати жанри',
+    unblock: 'розблокувати',
+    selectFive: 'виберіть до 5!',
   };
 
   // ARABIC
@@ -776,6 +795,8 @@ mixin AppLocale {
     selectCategory: 'يرجى اختيار فئة',
     selectTrack: 'اختيار المسار',
     addGenres: 'إضافة أنواع الموسيقى',
+    unblock: 'إلغاء الحظر',
+    selectFive: 'اختر حتى 5!',
   };
 
   // TURKISH
@@ -813,6 +834,7 @@ mixin AppLocale {
     forgotPwText: 'e-postanızı yazın',
     sendPwReset: 'parola sıfırlama bağlantısını gönder',
     block: 'engelle',
+    unblock: 'engeli kaldır',
     blockAndDelete: 'engelle ve sil',
     blockUser: 'kullanıcıyı engelle ve sohbeti sil?',
     blocks: 'engellenen kullanıcılar',
@@ -847,6 +869,7 @@ mixin AppLocale {
     selectCategory: 'lütfen bir kategori seçin',
     selectTrack: 'parça seç',
     addGenres: 'tür ekle',
+    selectFive: 'en fazla 5 seçin!',
   };
 
   // JAPANESE
@@ -882,6 +905,7 @@ mixin AppLocale {
     forgotPwText: 'メールアドレスを入力してください',
     sendPwReset: 'パスワードリセットリンクを送信する',
     block: 'ブロックする',
+    unblock: 'ブロック解除',
     blockAndDelete: 'ブロックして削除する',
     blockUser: 'ユーザーをブロックしてチャットを削除しますか？',
     blocks: 'ブロックされたユーザー',
@@ -916,6 +940,7 @@ mixin AppLocale {
     selectCategory: 'カテゴリを選択してください',
     selectTrack: 'トラックを選択',
     addGenres: 'ジャンルを追加する',
+    selectFive: '最大5つを選択してください！',
   };
 
   // KOREAN
@@ -951,6 +976,7 @@ mixin AppLocale {
     forgotPwText: '이메일을 입력하세요',
     sendPwReset: '비밀번호 재설정 링크 보내기',
     block: '차단하기',
+    unblock: '차단 해제',
     blockAndDelete: '차단하고 삭제하기',
     blockUser: '사용자를 차단하고 채팅을 삭제하시겠습니까?',
     blocks: '차단된 사용자들',
@@ -985,6 +1011,7 @@ mixin AppLocale {
     selectCategory: '카테고리를 선택하세요',
     selectTrack: '트랙 선택하기',
     addGenres: '장르 추가하기',
+    selectFive: '최대 5개 선택하세요!',
   };
 
   // CHINESE
@@ -1020,6 +1047,7 @@ mixin AppLocale {
     forgotPwText: '输入您的电子邮件地址',
     sendPwReset: '发送密码重置链接',
     block: '阻止',
+    unblock: '解除阻止',
     blockAndDelete: '阻止并删除',
     blockUser: '阻止用户并删除聊天？',
     blocks: '被阻止的用户们',
@@ -1054,5 +1082,6 @@ mixin AppLocale {
     selectCategory: '请选择一个类别',
     selectTrack: '选择曲目',
     addGenres: '添加类型',
+    selectFive: '最多选择 5 个！',
   };
 }

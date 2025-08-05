@@ -232,9 +232,10 @@ class ChatScreenState extends State<ChatScreen>
                   ModalBottomSheetRoute(
                     isDismissible: true,
                     scrollControlDisabledMaxHeightRatio: 0.7,
-                    backgroundColor: Palette.forgedGold,
+                    backgroundColor: Palette.forgedGold.o(0.9),
                     builder: (context) {
                       return BottomSheet(
+                        backgroundColor: Colors.transparent,
                         animationController: _bottomsheetAnimationController,
                         onDragEnd:
                             (details, {required isClosing}) =>
@@ -242,7 +243,6 @@ class ChatScreenState extends State<ChatScreen>
                         enableDrag: true,
                         showDragHandle: true,
                         dragHandleColor: Palette.shadowGrey,
-                        backgroundColor: Palette.forgedGold,
                         onClosing: () {},
                         builder: (context) {
                           return Padding(

@@ -61,15 +61,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
       quality: 60,
       format: CompressFormat.jpeg,
     );
-
-    if (compressedBytes == null) {
-      throw Exception(AppLocale.imgCompressionFailed.getString(context));
+    if (mounted) {
+      if (compressedBytes == null) {
+        throw Exception(AppLocale.imgCompressionFailed.getString(context));
+      }
     }
+    if (compressedBytes != null) {
+      final compressedFile = File(targetPath);
+      await compressedFile.writeAsBytes(compressedBytes);
 
-    final compressedFile = File(targetPath);
-    await compressedFile.writeAsBytes(compressedBytes);
-
-    return compressedFile;
+      return compressedFile;
+    }
+    return file;
   }
 
   Future<void> _pickNewImage() async {
@@ -339,22 +342,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         _languages.map((language) {
                           return DropdownMenuItem<String>(
                             value: language['code'],
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                    left: 4.0,
-                                    right: 4.0,
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      language['flag']!,
-                                      style: TextStyle(fontSize: 24),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                            child: Center(
+                              child: Text(
+                                language['flag']!,
+                                style: TextStyle(fontSize: 24),
+                              ),
                             ),
                           );
                         }).toList(),
@@ -471,7 +463,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 onPressed: () => _emailController.clear(),
                                 icon: Icon(
                                   Icons.delete,
-                                  color: Palette.primalBlack.o(0.65),
+                                  color: Palette.primalBlack.o(0.85),
                                   size: 26,
                                 ),
                               ),

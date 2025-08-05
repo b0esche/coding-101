@@ -1,4 +1,6 @@
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:gig_hub/src/Data/app_imports.dart';
+import 'package:gig_hub/src/Data/services/localization_service.dart';
 
 class GenreSelectionDialog extends StatefulWidget {
   final List<String> initialSelectedGenres;
@@ -125,7 +127,7 @@ class _GenreSelectionDialogState extends State<GenreSelectionDialog> {
                 Padding(
                   padding: const EdgeInsets.only(left: 36),
                   child: Text(
-                    "select up to 5!",
+                    AppLocale.selectFive.getString(context),
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
                       color: Palette.alarmRed.o(0.9),

@@ -194,8 +194,7 @@ class _ChatListScreenState extends State<ChatListScreen> with RouteAware {
 
                               title: Center(
                                 child: Text(
-                                  (AppLocale.deleteChatMsg.getString(context) +
-                                      entry.user.displayName),
+                                  ('${AppLocale.deleteChatMsg.getString(context)}${entry.user.displayName}?'),
 
                                   textAlign: TextAlign.center,
                                   style: GoogleFonts.sometypeMono(

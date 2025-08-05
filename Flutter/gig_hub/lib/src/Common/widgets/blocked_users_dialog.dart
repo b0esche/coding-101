@@ -50,7 +50,7 @@ class _BlockedUsersDialogState extends State<BlockedUsersDialog> {
             content: Center(
               child: Text(
                 AppLocale.unblockedSuccess.getString(context),
-                style: TextStyle(color: Palette.primalBlack, fontSize: 16),
+                style: TextStyle(color: Palette.glazedWhite, fontSize: 16),
               ),
             ),
           ),
@@ -64,7 +64,7 @@ class _BlockedUsersDialogState extends State<BlockedUsersDialog> {
             content: Center(
               child: Text(
                 AppLocale.unblockedFail.getString(context),
-                style: TextStyle(color: Palette.glazedWhite),
+                style: TextStyle(color: Palette.glazedWhite, fontSize: 16),
               ),
             ),
           ),
@@ -279,9 +279,9 @@ class _BlockedUsersDialogState extends State<BlockedUsersDialog> {
                         Navigator.of(context).pop();
                       },
                       icon: Icon(
-                        Icons.close,
+                        Icons.close_rounded,
                         color: Palette.forgedGold,
-                        size: 19.2,
+                        size: 18,
                         shadows: [
                           Shadow(
                             offset: Offset(0.3, 0.3),
