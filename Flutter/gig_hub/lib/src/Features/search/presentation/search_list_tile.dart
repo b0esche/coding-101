@@ -176,7 +176,7 @@ class _SearchListTileState extends State<SearchListTile> {
                         padding: EdgeInsets.only(top: 12),
                         child: Column(
                           children: [
-                            const Divider(),
+                            const Divider(indent: 12, endIndent: 12),
                             Column(
                               spacing: 16,
                               children: [

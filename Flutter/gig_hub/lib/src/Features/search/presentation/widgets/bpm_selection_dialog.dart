@@ -135,7 +135,7 @@ class _BpmSelectionDialogState extends State<BpmSelectionDialog> {
                       icon: Icon(
                         Icons.check,
                         color: Palette.forgedGold,
-                        size: 19.2,
+                        size: 18,
                         shadows: [
                           Shadow(
                             offset: Offset(0.3, 0.3),

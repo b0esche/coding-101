@@ -86,22 +86,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         _languages.map((language) {
                           return DropdownMenuItem<String>(
                             value: language['code'],
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                    left: 4.0,
-                                    right: 4.0,
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      language['flag']!,
-                                      style: TextStyle(fontSize: 24),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                            child: Center(
+                              child: Text(
+                                language['flag']!,
+                                style: TextStyle(fontSize: 24),
+                              ),
                             ),
                           );
                         }).toList(),

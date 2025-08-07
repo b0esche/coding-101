@@ -207,6 +207,15 @@ class _ChatListScreenState extends State<ChatListScreen> with RouteAware {
                               ),
                               actions: [
                                 ElevatedButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: Text(
+                                    AppLocale.cancel.getString(context),
+                                    style: TextStyle(
+                                      color: Palette.primalBlack,
+                                    ),
+                                  ),
+                                ),
+                                ElevatedButton(
                                   onPressed: () async {
                                     await db.deleteChat(
                                       widget.currentUser.id,
@@ -218,15 +227,6 @@ class _ChatListScreenState extends State<ChatListScreen> with RouteAware {
                                   },
                                   child: Text(
                                     AppLocale.deleteChat.getString(context),
-                                    style: TextStyle(
-                                      color: Palette.primalBlack,
-                                    ),
-                                  ),
-                                ),
-                                ElevatedButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: Text(
-                                    AppLocale.cancel.getString(context),
                                     style: TextStyle(
                                       color: Palette.primalBlack,
                                     ),

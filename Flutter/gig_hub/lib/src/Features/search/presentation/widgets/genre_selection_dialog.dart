@@ -95,7 +95,7 @@ class _GenreSelectionDialogState extends State<GenreSelectionDialog> {
                                   isSelected
                                       ? Icons.check_circle
                                       : Icons.circle_outlined,
-                                  color: Palette.primalBlack.o(0.65),
+                                  color: Palette.primalBlack.o(0.85),
                                 ),
                               ),
                             ],
@@ -166,7 +166,7 @@ class _GenreSelectionDialogState extends State<GenreSelectionDialog> {
                           icon: Icon(
                             Icons.check_rounded,
                             color: Palette.forgedGold,
-                            size: 19.2,
+                            size: 18,
                             shadows: [
                               Shadow(
                                 offset: Offset(0.3, 0.3),

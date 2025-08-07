@@ -652,7 +652,7 @@ class ChatScreenState extends State<ChatScreen>
                                 ),
                                 icon: Icon(
                                   Icons.delete_sweep_outlined,
-                                  color: Palette.alarmRed,
+                                  color: Palette.alarmRed.o(0.85),
                                   size: 32,
                                 ),
                                 onPressed: () async {
