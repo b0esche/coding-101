@@ -699,45 +699,60 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                             ),
                           )
                           : Center(
-                            child: Container(
-                              height: 160,
-                              width: 240,
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Palette.forgedGold),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: IconButton(
-                                style: ButtonStyle(
-                                  tapTargetSize: MaterialTapTargetSize.padded,
+                            child: Column(
+                              children: [
+                                Text(
+                                  AppLocale.addImages.getString(context),
+                                  style: GoogleFonts.sometypeMono(
+                                    textStyle: TextStyle(
+                                      color: Palette.glazedWhite,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
                                 ),
-                                onPressed: () async {
-                                  final picker = ImagePicker();
-                                  final medias = await picker.pickMultiImage(
-                                    limit: 5,
-                                  );
+                                SizedBox(height: 4),
+                                Container(
+                                  height: 160,
+                                  width: 240,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Palette.forgedGold,
+                                    ),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: IconButton(
+                                    style: ButtonStyle(
+                                      tapTargetSize:
+                                          MaterialTapTargetSize.padded,
+                                    ),
+                                    onPressed: () async {
+                                      final picker = ImagePicker();
+                                      final medias = await picker
+                                          .pickMultiImage(limit: 5);
 
-                                  if (medias.isNotEmpty) {
-                                    List<String> newMediaUrls = [];
+                                      if (medias.isNotEmpty) {
+                                        List<String> newMediaUrls = [];
 
-                                    for (XFile xfile in medias) {
-                                      File originalFile = File(xfile.path);
-                                      File compressedFile = await compressImage(
-                                        originalFile,
-                                      );
-                                      newMediaUrls.add(compressedFile.path);
-                                    }
+                                        for (XFile xfile in medias) {
+                                          File originalFile = File(xfile.path);
+                                          File compressedFile =
+                                              await compressImage(originalFile);
+                                          newMediaUrls.add(compressedFile.path);
+                                        }
 
-                                    setState(() {
-                                      mediaUrl = newMediaUrls;
-                                    });
-                                  }
-                                },
-                                icon: Icon(
-                                  Icons.file_upload_rounded,
-                                  color: Palette.concreteGrey,
-                                  size: 48,
+                                        setState(() {
+                                          mediaUrl = newMediaUrls;
+                                        });
+                                      }
+                                    },
+                                    icon: Icon(
+                                      Icons.file_upload_rounded,
+                                      color: Palette.concreteGrey,
+                                      size: 48,
+                                    ),
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
                           ),
                       SizedBox(height: 8),
@@ -820,6 +835,47 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                           height: 100,
                           child: OutlinedButton(
                             onPressed: () async {
+                              if (_nameController.text.isEmpty ||
+                                  _nameController.text == '' ||
+                                  _nameController.text == 'Name' ||
+                                  _nameController.text == 'name' ||
+                                  _nameController.text ==
+                                      AppLocale.yourName.getString(context) ||
+                                  _aboutController.text == '' ||
+                                  _aboutController.text.isEmpty ||
+                                  _infoController.text == '' ||
+                                  _infoController.text.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    backgroundColor: Palette.forgedGold,
+                                    content: Center(
+                                      child: Text(
+                                        AppLocale.fillOutAllFields.getString(
+                                          context,
+                                        ),
+                                        style: TextStyle(fontSize: 16),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                                return;
+                              }
+                              if (headUrl == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    backgroundColor: Palette.forgedGold,
+                                    content: Center(
+                                      child: Text(
+                                        AppLocale.addHeadImage.getString(
+                                          context,
+                                        ),
+                                        style: TextStyle(fontSize: 16),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                                return;
+                              }
                               setState(() {
                                 isLoading = true;
                               });
@@ -935,7 +991,8 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                       backgroundColor: Palette.forgedGold,
                                       content: Center(
                                         child: Text(
-                                          "failed to create profile, try again later!",
+                                          AppLocale.profileCreationFailed
+                                              .getString(context),
                                         ),
                                       ),
                                     ),

@@ -286,7 +286,7 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Palette.glazedWhite,
-                            fontSize: 12,
+                            fontSize: 14,
                           ),
                           decoration: InputDecoration(
                             contentPadding: EdgeInsets.only(bottom: 14),
@@ -342,16 +342,16 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  const Icon(Icons.place, size: 20),
+                                  const Icon(Icons.location_pin, size: 18),
                                   const SizedBox(width: 4),
                                   SizedBox(
-                                    width: 100,
+                                    width: 138,
                                     height: 24,
                                     child: TextFormField(
                                       onTap: _locationController.clear,
                                       style: TextStyle(
                                         color: Palette.glazedWhite,
-                                        fontSize: 10,
+                                        fontSize: 13,
                                       ),
                                       textAlign: TextAlign.center,
                                       controller: _locationController,
@@ -422,11 +422,11 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                                 children: [
                                   const Icon(
                                     Icons.house_siding_rounded,
-                                    size: 24,
+                                    size: 22,
                                   ),
                                   const SizedBox(width: 4),
                                   SizedBox(
-                                    width: 120,
+                                    width: 138,
                                     height: 24,
                                     child: DropdownButtonFormField<String>(
                                       iconEnabledColor: Palette.glazedWhite.o(
@@ -459,7 +459,7 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                                                     style: TextStyle(
                                                       color:
                                                           Palette.glazedWhite,
-                                                      fontSize: 11,
+                                                      fontSize: 13,
                                                     ),
                                                   ),
                                                 ),
@@ -597,34 +597,51 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                             ),
                           )
                           : Center(
-                            child: Container(
-                              height: 160,
-                              width: 240,
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Palette.forgedGold),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: IconButton(
-                                style: ButtonStyle(
-                                  tapTargetSize: MaterialTapTargetSize.padded,
+                            child: Column(
+                              children: [
+                                Text(
+                                  AppLocale.addImages.getString(context),
+                                  style: GoogleFonts.sometypeMono(
+                                    textStyle: TextStyle(
+                                      color: Palette.glazedWhite,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
                                 ),
-                                onPressed: () async {
-                                  List<XFile> medias = await ImagePicker()
-                                      .pickMultiImage(limit: 10);
-                                  List<String> newMediaUrls =
-                                      medias
-                                          .map((element) => element.path)
-                                          .toList();
-                                  setState(() {
-                                    mediaUrl = newMediaUrls;
-                                  });
-                                },
-                                icon: Icon(
-                                  Icons.file_upload_rounded,
-                                  color: Palette.concreteGrey,
-                                  size: 48,
+                                SizedBox(height: 4),
+                                Container(
+                                  height: 160,
+                                  width: 240,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Palette.forgedGold,
+                                    ),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: IconButton(
+                                    style: ButtonStyle(
+                                      tapTargetSize:
+                                          MaterialTapTargetSize.padded,
+                                    ),
+                                    onPressed: () async {
+                                      List<XFile> medias = await ImagePicker()
+                                          .pickMultiImage(limit: 10);
+                                      List<String> newMediaUrls =
+                                          medias
+                                              .map((element) => element.path)
+                                              .toList();
+                                      setState(() {
+                                        mediaUrl = newMediaUrls;
+                                      });
+                                    },
+                                    icon: Icon(
+                                      Icons.file_upload_rounded,
+                                      color: Palette.concreteGrey,
+                                      size: 48,
+                                    ),
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
                           ),
                       SizedBox(height: 8),
@@ -638,7 +655,7 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                               child: Text(
                                 AppLocale.removeImages.getString(context),
                                 style: TextStyle(
-                                  color: Palette.alarmRed.o(0.7),
+                                  color: Palette.alarmRed.o(0.75),
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -707,11 +724,53 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                           height: 100,
                           child: OutlinedButton(
                             onPressed: () async {
+                              if (_nameController.text.isEmpty ||
+                                  _nameController.text == '' ||
+                                  _nameController.text == 'Name' ||
+                                  _nameController.text == 'name' ||
+                                  _nameController.text ==
+                                      AppLocale.yourName.getString(context) ||
+                                  _aboutController.text == '' ||
+                                  _aboutController.text.isEmpty ||
+                                  _infoController.text == '' ||
+                                  _infoController.text.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    backgroundColor: Palette.forgedGold,
+                                    content: Center(
+                                      child: Text(
+                                        AppLocale.fillOutAllFields.getString(
+                                          context,
+                                        ),
+                                        style: TextStyle(fontSize: 16),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                                return;
+                              }
+                              if (headUrl == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    backgroundColor: Palette.forgedGold,
+                                    content: Center(
+                                      child: Text(
+                                        AppLocale.addHeadImage.getString(
+                                          context,
+                                        ),
+                                        style: TextStyle(fontSize: 16),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                                return;
+                              }
                               setState(() {
                                 isLoading = true;
                               });
                               FocusManager.instance.primaryFocus?.unfocus();
                               if (headUrl!.isNotEmpty &&
+                                  headUrl != null &&
                                   _aboutController.text.isNotEmpty &&
                                   _infoController.text.isNotEmpty &&
                                   _locationController.text.isNotEmpty &&
@@ -801,7 +860,8 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                                       backgroundColor: Palette.forgedGold,
                                       content: Center(
                                         child: Text(
-                                          "failed to create profile, try again later!",
+                                          AppLocale.profileCreationFailed
+                                              .getString(context),
                                         ),
                                       ),
                                     ),
@@ -828,7 +888,7 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text(
-                                      "done",
+                                      AppLocale.done.getString(context),
                                       style: GoogleFonts.sometypeMono(
                                         textStyle: TextStyle(
                                           fontWeight: FontWeight.w600,

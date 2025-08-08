@@ -71,6 +71,12 @@ mixin AppLocale {
   static const String selectCategory = 'please select a category';
   static const String selectTrack = 'select track';
   static const String selectFive = 'select up to 5!';
+  static const String addImages = 'add images to your profile!';
+  static const String addHeadImage = 'add a cover image to your profile!';
+  static const String profileCreationFailed =
+      'failed to create profile, try again later!';
+  static const String fillOutAllFields =
+      'please fill out all fields! (name, about, info)';
 
   // ENGLISH
   static const Map<String, dynamic> en = {
@@ -141,6 +147,10 @@ mixin AppLocale {
     selectTrack: 'select track',
     addGenres: '__add genres__',
     selectFive: 'select up to 5!',
+    addImages: 'add images to your profile!',
+    addHeadImage: 'add a cover image to your profile!',
+    fillOutAllFields: 'please fill out all fields! (name, about, info)',
+    profileCreationFailed: 'failed to create profile, try again later!',
   };
 
   // GERMAN
@@ -214,6 +224,11 @@ mixin AppLocale {
     addGenres: 'genres hinzufügen',
     unblock: 'entsperren',
     selectFive: 'wähle bis zu 5 aus!',
+    addImages: 'bilder zu deinem profil hinzufügen!',
+    addHeadImage: 'füge ein titelbild zu deinem profil hinzu!',
+    fillOutAllFields: 'bitte fülle alle felder aus! (name, über, info)',
+    profileCreationFailed:
+        'profil konnte nicht erstellt werden, bitte später erneut versuchen!',
   };
 
   // SPANISH
@@ -287,6 +302,12 @@ mixin AppLocale {
     addGenres: 'agregar géneros',
     unblock: 'desbloquear',
     selectFive: '¡selecciona hasta 5!',
+    addImages: '¡agrega imágenes a tu perfil!',
+    addHeadImage: 'agrega una imagen de portada a tu perfil!',
+    fillOutAllFields:
+        '¡por favor completa todos los campos! (nombre, acerca de, info)',
+    profileCreationFailed:
+        'no se pudo crear el perfil, ¡inténtalo de nuevo más tarde!',
   };
 
   // ITALIAN
@@ -360,6 +381,11 @@ mixin AppLocale {
     addGenres: 'aggiungi generi',
     unblock: 'sbloccare',
     selectFive: 'seleziona fino a 5!',
+    addImages: 'aggiungi immagini al tuo profilo!',
+    addHeadImage: 'aggiungi un\'immagine di copertura al tuo profilo!',
+    fillOutAllFields:
+        'per favore compila tutti i campi! (nome, informazioni, info)',
+    profileCreationFailed: 'impossibile creare il profilo, riprova più tardi!',
   };
 
   // PORTUGESE
@@ -432,6 +458,11 @@ mixin AppLocale {
     addGenres: 'adicionar gêneros',
     unblock: 'desbloquear',
     selectFive: 'selecione até 5!',
+    addImages: 'adicionar imagens ao seu perfil!',
+    addHeadImage: 'adicionar uma imagem de capa ao seu perfil!',
+    fillOutAllFields:
+        'por favor, preencha todos os campos! (nome, sobre, info)',
+    profileCreationFailed: 'falha ao criar perfil, tente novamente mais tarde!',
   };
 
   //  FRENCH
@@ -505,6 +536,12 @@ mixin AppLocale {
     addGenres: 'ajouter des genres',
     unblock: 'débloquer',
     selectFive: 'sélectionnez jusqu\'à 5 !',
+    addImages: 'ajouter des images à votre profil !',
+    addHeadImage: 'ajouter une image de couverture à votre profil !',
+    fillOutAllFields:
+        'veuillez remplir tous les champs ! (nom, à propos, info)',
+    profileCreationFailed:
+        'échec de la création du profil, essayez à nouveau plus tard !',
   };
 
   // DUTCH
@@ -578,6 +615,11 @@ mixin AppLocale {
     addGenres: 'voeg genres toe',
     unblock: 'deblokkeren',
     selectFive: 'selecteer tot 5!',
+    addImages: 'voeg afbeeldingen toe aan je profiel!',
+    addHeadImage: 'voeg een omslagafbeelding toe aan je profiel!',
+    fillOutAllFields: 'vul alstublieft alle velden in! (naam, over, info)',
+    profileCreationFailed:
+        'profiel kon niet worden aangemaakt, probeer het later opnieuw!',
   };
 
   // POLISH
@@ -651,6 +693,11 @@ mixin AppLocale {
     addGenres: 'dodaj gatunki',
     unblock: 'odblokuj',
     selectFive: 'wybierz do 5!',
+    addImages: 'dodaj obrazy do swojego profilu!',
+    addHeadImage: 'dodaj obraz okładki do swojego profilu!',
+    fillOutAllFields: 'proszę wypełnić wszystkie pola! (imię, o mnie, info)',
+    profileCreationFailed:
+        'nie udało się utworzyć profilu, spróbuj ponownie później!',
   };
 
   // UKRAINIAN
@@ -724,6 +771,12 @@ mixin AppLocale {
     addGenres: 'додати жанри',
     unblock: 'розблокувати',
     selectFive: 'виберіть до 5!',
+    addImages: 'додайте зображення до свого профілю!',
+    addHeadImage: 'додайте обкладинку до свого профілю!',
+    fillOutAllFields:
+        'будь ласка, заповніть усі поля! (ім\'я, про себе, інформація)',
+    profileCreationFailed:
+        'не вдалося створити профіль, спробуйте ще раз пізніше!',
   };
 
   // ARABIC
@@ -797,6 +850,11 @@ mixin AppLocale {
     addGenres: 'إضافة أنواع الموسيقى',
     unblock: 'إلغاء الحظر',
     selectFive: 'اختر حتى 5!',
+    addImages: 'إضافة صور إلى ملفك الشخصي!',
+    addHeadImage: 'إضافة صورة غلاف إلى ملفك الشخصي!',
+    fillOutAllFields: 'يرجى ملء جميع الحقول! (الاسم، حول، معلومات)',
+    profileCreationFailed:
+        'فشل إنشاء الملف الشخصي، يرجى المحاولة مرة أخرى لاحقًا!',
   };
 
   // TURKISH
@@ -870,6 +928,11 @@ mixin AppLocale {
     selectTrack: 'parça seç',
     addGenres: 'tür ekle',
     selectFive: 'en fazla 5 seçin!',
+    addImages: 'profilinize görseller ekleyin!',
+    addHeadImage: 'profilinize kapak resmi ekleyin!',
+    fillOutAllFields: 'lütfen tüm alanları doldurun! (isim, hakkında, bilgi)',
+    profileCreationFailed:
+        'profil oluşturulamadı, lütfen daha sonra tekrar deneyin!',
   };
 
   // JAPANESE
@@ -941,6 +1004,10 @@ mixin AppLocale {
     selectTrack: 'トラックを選択',
     addGenres: 'ジャンルを追加する',
     selectFive: '最大5つを選択してください！',
+    addImages: 'プロフィールに画像を追加する',
+    addHeadImage: 'プロフィールにカバー画像を追加する',
+    fillOutAllFields: 'すべてのフィールドを入力してください！ (名前、情報、info)',
+    profileCreationFailed: 'プロフィールの作成に失敗しました。後でもう一度お試しください！',
   };
 
   // KOREAN
@@ -1012,6 +1079,10 @@ mixin AppLocale {
     selectTrack: '트랙 선택하기',
     addGenres: '장르 추가하기',
     selectFive: '최대 5개 선택하세요!',
+    addImages: '프로필에 이미지를 추가하세요!',
+    addHeadImage: '프로필에 커버 이미지를 추가하세요!',
+    fillOutAllFields: '모든 필드를 입력하세요! (이름, 정보, info)',
+    profileCreationFailed: '프로필 생성에 실패했습니다. 나중에 다시 시도하세요!',
   };
 
   // CHINESE
@@ -1083,5 +1154,9 @@ mixin AppLocale {
     selectTrack: '选择曲目',
     addGenres: '添加类型',
     selectFive: '最多选择 5 个！',
+    addImages: '向您的个人资料添加图片！',
+    addHeadImage: '向您的个人资料添加封面图片！',
+    fillOutAllFields: '请填写所有字段！ (姓名、关于、信息)',
+    profileCreationFailed: '创建个人资料失败，请稍后再试！',
   };
 }

@@ -88,7 +88,7 @@ class _UserStarRatingState extends State<UserStarRating> {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: 130,
+      top: 120,
       right: 0,
       child: Container(
         decoration: BoxDecoration(
