@@ -25,19 +25,25 @@ abstract class AppUser {
 }
 
 class Guest extends AppUser {
+  String avatarImageUrl;
   List<String> favoriteUIds;
 
-  Guest({required super.id, this.favoriteUIds = const []})
-    : super(type: UserType.guest);
+  Guest({
+    required super.id,
+    required this.avatarImageUrl,
+    this.favoriteUIds = const [],
+  }) : super(type: UserType.guest);
 
   Map<String, dynamic> toJson() => {
     'type': type.name,
     'favoriteUIds': favoriteUIds,
+    'avatarImageUrl': avatarImageUrl,
   };
 
   factory Guest.fromJson(String id, Map<String, dynamic> json) => Guest(
     id: id,
     favoriteUIds: List<String>.from(json['favoriteUIds'] ?? []),
+    avatarImageUrl: json['avatarImageUrl'] as String,
   );
 }
 
@@ -180,6 +186,7 @@ extension AppUserView on AppUser {
   String get avatarUrl {
     if (this is DJ) return (this as DJ).avatarImageUrl;
     if (this is Booker) return (this as Booker).avatarImageUrl;
+    if (this is Guest) return (this as Guest).avatarImageUrl;
     return 'https://firebasestorage.googleapis.com/v0/b/gig-hub-8ac24.firebasestorage.app/o/default%2Fdefault_avatar.jpg?alt=media&token=9c48f377-736e-4a9a-bf31-6ffc3ed020f7';
   }
 }

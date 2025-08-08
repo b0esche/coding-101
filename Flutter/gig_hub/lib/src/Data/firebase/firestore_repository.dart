@@ -47,6 +47,7 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
   Future<void> updateGuest(Guest guest) async {
     await _firestore.collection('users').doc(guest.id).update({
       'favoriteUIds': guest.favoriteUIds,
+      'avatarImageUrl': guest.avatarImageUrl,
     });
   }
 

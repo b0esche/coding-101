@@ -99,13 +99,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
         final downloadUrl = await uploadTask.ref.getDownloadURL();
 
         setState(() {
-          _pickedImage = picked;
-
           if (_user is DJ) {
             (_user as DJ).avatarImageUrl = downloadUrl;
           } else if (_user is Booker) {
             (_user as Booker).avatarImageUrl = downloadUrl;
+          } else if (_user is Guest) {
+            (_user as Guest).avatarImageUrl = downloadUrl;
           }
+          // Reset _pickedImage so that the new URL from database is used
+          _pickedImage = null;
         });
 
         await db.updateUser(_user!);
@@ -289,23 +291,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
       );
     } else {
-      final hasAvatar = _user is DJ || _user is Booker;
       final avatarUrl =
-          hasAvatar
-              ? (_user is DJ
-                  ? (_user as DJ).avatarImageUrl
-                  : (_user as Booker).avatarImageUrl)
-              : null;
+          _user is DJ
+              ? (_user as DJ).avatarImageUrl
+              : _user is Booker
+              ? (_user as Booker).avatarImageUrl
+              : (_user as Guest).avatarImageUrl;
 
-      final ImageProvider? avatarProvider =
+      final ImageProvider avatarProvider =
           _pickedImage != null
               ? FileImage(File(_pickedImage!.path))
-              : (hasAvatar
-                      ? (avatarUrl != null && avatarUrl.startsWith('http')
-                          ? NetworkImage(avatarUrl)
-                          : FileImage(File(avatarUrl!)))
-                      : null)
-                  as ImageProvider?;
+              : NetworkImage(avatarUrl);
 
       return Scaffold(
         backgroundColor: Palette.primalBlack,
@@ -386,206 +382,211 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     height: 122,
                     child: Image.asset("assets/images/icon_full.png"),
                   ),
-                  if (hasAvatar && avatarProvider != null)
-                    Stack(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Palette.glazedWhite,
-                              width: 1.5,
-                            ),
-                          ),
-                          child: CircleAvatar(
-                            radius: 64,
-                            backgroundImage: avatarProvider,
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: IconButton(
-                            style: ButtonStyle(
-                              splashFactory: NoSplash.splashFactory,
-                            ),
-                            onPressed: _pickNewImage,
-                            icon: Icon(
-                              Icons.upload_file_rounded,
-                              color: Palette.shadowGrey,
-                              size: 32,
-                              shadows: [
-                                BoxShadow(
-                                  blurRadius: 2,
-                                  blurStyle: BlurStyle.inner,
-                                  color: Palette.primalBlack,
-                                  spreadRadius: 2,
-                                  offset: Offset(0.6, 0.6),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+
+                  Stack(
                     children: [
-                      Text(
-                        AppLocale.changeEmail.getString(context),
-                        style: GoogleFonts.sometypeMono(
-                          textStyle: TextStyle(
+                      Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
                             color: Palette.glazedWhite,
-                            fontWeight: FontWeight.w600,
+                            width: 1.5,
                           ),
+                        ),
+                        child: CircleAvatar(
+                          radius: 64,
+                          backgroundImage: avatarProvider,
                         ),
                       ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width / 1.3,
-                        child: Form(
-                          key: _formKey,
-                          child: TextFormField(
-                            readOnly: _user is Guest ? true : false,
-                            textInputAction: TextInputAction.go,
-                            autovalidateMode:
-                                _user is Guest ? null : AutovalidateMode.always,
-                            validator: validateEmail,
-                            keyboardType: TextInputType.emailAddress,
-                            onFieldSubmitted: _onEmailSubmitted,
-                            controller: _emailController,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: IconButton(
+                          style: ButtonStyle(
+                            splashFactory: NoSplash.splashFactory,
+                          ),
+                          onPressed: _pickNewImage,
+                          icon: Icon(
+                            Icons.upload_file_rounded,
+                            color: Palette.shadowGrey,
+                            size: 32,
+                            shadows: [
+                              BoxShadow(
+                                blurRadius: 2,
+                                blurStyle: BlurStyle.inner,
+                                color: Palette.primalBlack,
+                                spreadRadius: 2,
+                                offset: Offset(0.6, 0.6),
                               ),
-                              helperText: AppLocale.pressEnterFinish.getString(
-                                context,
-                              ),
-                              labelStyle: TextStyle(color: Palette.primalBlack),
-                              suffixIcon: IconButton(
-                                onPressed: () => _emailController.clear(),
-                                icon: Icon(
-                                  Icons.delete,
-                                  color: Palette.primalBlack.o(0.85),
-                                  size: 26,
-                                ),
-                              ),
-                              fillColor: Palette.glazedWhite,
-                              filled: true,
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.always,
-                              hintText: AppLocale.pressEnterDone.getString(
-                                context,
-                              ),
-                              hintStyle: TextStyle(color: Palette.forgedGold),
-                            ),
+                            ],
                           ),
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(
-                    height: 42,
-                    child: FilledButton(
-                      style: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.all(
-                          Palette.shadowGrey,
+                  if (_user is! Guest)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          AppLocale.changeEmail.getString(context),
+                          style: GoogleFonts.sometypeMono(
+                            textStyle: TextStyle(
+                              color: Palette.glazedWhite,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ),
-                        splashFactory: NoSplash.splashFactory,
-                      ),
-                      onPressed: _user is Guest ? null : _onResetPassword,
-                      child: Text(AppLocale.changePw.getString(context)),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 42,
-                    child: FilledButton(
-                      style: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.all(
-                          Palette.shadowGrey,
-                        ),
-                        splashFactory: NoSplash.splashFactory,
-                      ),
-                      onPressed:
-                          _user is Guest
-                              ? null
-                              : () {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) => BlockedUsersDialog(),
-                                );
-                              },
-                      child: Text(AppLocale.blocks.getString(context)),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 42,
-                    child: FilledButton(
-                      style: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.all(
-                          Palette.shadowGrey,
-                        ),
-                        splashFactory: NoSplash.splashFactory,
-                      ),
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder:
-                              (context) => AlertDialog(
-                                backgroundColor: Palette.forgedGold,
-
-                                title: Center(
-                                  child: Text(
-                                    AppLocale.areYouSure.getString(context),
-                                    style: GoogleFonts.sometypeMono(
-                                      textStyle: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width / 1.3,
+                          child: Form(
+                            key: _formKey,
+                            child: TextFormField(
+                              readOnly: false,
+                              textInputAction: TextInputAction.go,
+                              autovalidateMode: AutovalidateMode.always,
+                              validator: validateEmail,
+                              keyboardType: TextInputType.emailAddress,
+                              onFieldSubmitted: _onEmailSubmitted,
+                              controller: _emailController,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                helperText: AppLocale.pressEnterFinish
+                                    .getString(context),
+                                labelStyle: TextStyle(
+                                  color: Palette.primalBlack,
+                                ),
+                                suffixIcon: IconButton(
+                                  onPressed: () => _emailController.clear(),
+                                  icon: Icon(
+                                    Icons.delete,
+                                    color: Palette.primalBlack.o(0.85),
+                                    size: 26,
                                   ),
                                 ),
-                                actions: [
-                                  ElevatedButton(
-                                    style: ButtonStyle(
-                                      backgroundColor: WidgetStatePropertyAll(
-                                        Palette.glazedWhite,
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      auth.deleteUser();
-                                      if (!context.mounted) return;
-                                      if (mounted) {
-                                        Navigator.of(context).pop();
-                                        Navigator.of(context).pushReplacement(
-                                          MaterialPageRoute(
-                                            builder: (context) => LoginScreen(),
-                                          ),
-                                        );
-                                      }
-                                    },
-                                    child: Text(
-                                      AppLocale.deleteAcc.getString(context),
-                                      style: TextStyle(
-                                        color: Palette.primalBlack,
-                                      ),
-                                    ),
-                                  ),
-                                  ElevatedButton(
-                                    onPressed: () => Navigator.pop(context),
-                                    child: Text(
-                                      AppLocale.cancel.getString(context),
-                                      style: TextStyle(
-                                        color: Palette.primalBlack,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                fillColor: Palette.glazedWhite,
+                                filled: true,
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.always,
+                                hintText: AppLocale.pressEnterDone.getString(
+                                  context,
+                                ),
+                                hintStyle: TextStyle(color: Palette.forgedGold),
                               ),
-                        );
-                      },
-                      child: Text(AppLocale.deleteAcc.getString(context)),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
+                  if (_user is! Guest)
+                    SizedBox(
+                      height: 42,
+                      child: FilledButton(
+                        style: ButtonStyle(
+                          backgroundColor: WidgetStateProperty.all(
+                            Palette.shadowGrey,
+                          ),
+                          splashFactory: NoSplash.splashFactory,
+                        ),
+                        onPressed: _user is Guest ? null : _onResetPassword,
+                        child: Text(AppLocale.changePw.getString(context)),
+                      ),
+                    ),
+                  if (_user is! Guest)
+                    SizedBox(
+                      height: 42,
+                      child: FilledButton(
+                        style: ButtonStyle(
+                          backgroundColor: WidgetStateProperty.all(
+                            Palette.shadowGrey,
+                          ),
+                          splashFactory: NoSplash.splashFactory,
+                        ),
+                        onPressed:
+                            _user is Guest
+                                ? null
+                                : () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => BlockedUsersDialog(),
+                                  );
+                                },
+                        child: Text(AppLocale.blocks.getString(context)),
+                      ),
+                    ),
+                  if (_user is! Guest)
+                    SizedBox(
+                      height: 42,
+                      child: FilledButton(
+                        style: ButtonStyle(
+                          backgroundColor: WidgetStateProperty.all(
+                            Palette.shadowGrey,
+                          ),
+                          splashFactory: NoSplash.splashFactory,
+                        ),
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder:
+                                (context) => AlertDialog(
+                                  backgroundColor: Palette.forgedGold,
+
+                                  title: Center(
+                                    child: Text(
+                                      AppLocale.areYouSure.getString(context),
+                                      style: GoogleFonts.sometypeMono(
+                                        textStyle: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  actions: [
+                                    ElevatedButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: Text(
+                                        AppLocale.cancel.getString(context),
+                                        style: TextStyle(
+                                          color: Palette.primalBlack,
+                                        ),
+                                      ),
+                                    ),
+                                    ElevatedButton(
+                                      style: ButtonStyle(
+                                        backgroundColor: WidgetStatePropertyAll(
+                                          Palette.glazedWhite,
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        auth.deleteUser();
+                                        if (!context.mounted) return;
+                                        if (mounted) {
+                                          Navigator.of(context).pop();
+                                          Navigator.of(context).pushReplacement(
+                                            MaterialPageRoute(
+                                              builder:
+                                                  (context) => LoginScreen(),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      child: Text(
+                                        AppLocale.deleteAcc.getString(context),
+                                        style: TextStyle(
+                                          color: Palette.primalBlack,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                          );
+                        },
+                        child: Text(AppLocale.deleteAcc.getString(context)),
+                      ),
+                    ),
                   SizedBox(
                     height: 42,
                     child: FilledButton(

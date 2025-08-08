@@ -337,7 +337,9 @@ class _MainScreenState extends State<MainScreen> {
                                 child: FadeInImage.assetNetwork(
                                   placeholder:
                                       'assets/images/default_avatar.jpg',
-                                  image: widget.initialUser!.avatarUrl,
+                                  image:
+                                      currentUser?.avatarUrl ??
+                                      'https://firebasestorage.googleapis.com/v0/b/gig-hub-8ac24.firebasestorage.app/o/default%2Fdefault_avatar.jpg?alt=media&token=9c48f377-736e-4a9a-bf31-6ffc3ed020f7',
                                   height: 68,
                                   width: 68,
                                   fit: BoxFit.cover,
@@ -556,7 +558,14 @@ class _MainScreenState extends State<MainScreen> {
         ),
         bottomNavigationBar: CustomNavBar(
           currentUser:
-              currentUser ?? Guest(id: '', favoriteUIds: []) as AppUser,
+              currentUser ??
+              Guest(
+                    id: '',
+                    favoriteUIds: [],
+                    avatarImageUrl:
+                        'https://firebasestorage.googleapis.com/v0/b/gig-hub-8ac24.firebasestorage.app/o/default%2Fdefault_avatar.jpg?alt=media&token=9c48f377-736e-4a9a-bf31-6ffc3ed020f7',
+                  )
+                  as AppUser,
         ),
       ),
     );

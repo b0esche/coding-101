@@ -590,7 +590,11 @@ class _LoginScreenState extends State<LoginScreen> {
                               throw Exception("failed to create guest key");
                             }
 
-                            final guestUser = Guest(id: uid);
+                            final guestUser = Guest(
+                              id: uid,
+                              avatarImageUrl:
+                                  'https://firebasestorage.googleapis.com/v0/b/gig-hub-8ac24.firebasestorage.app/o/default%2Fdefault_avatar.jpg?alt=media&token=9c48f377-736e-4a9a-bf31-6ffc3ed020f7',
+                            );
 
                             await db.createGuest(guestUser);
                             if (!context.mounted) return;
