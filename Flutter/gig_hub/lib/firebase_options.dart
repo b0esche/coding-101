@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDVCwA1EjSdy_h8lHBXpXq2DZYS4FmIM8Y',
-    appId: '1:753984654569:android:95a866afa09d6ce534f478',
+    appId: '1:753984654569:android:b683ef353537dba934f478',
     messagingSenderId: '753984654569',
     projectId: 'gig-hub-8ac24',
     storageBucket: 'gig-hub-8ac24.firebasestorage.app',
@@ -59,7 +59,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyCf8E5xs7QDberuNjCIWB_bzVlmdLOZg74',
-    appId: '1:753984654569:ios:d1e7c35c15c2780a34f478',
+    appId: '1:753984654569:ios:19ec6e86a4d789b334f478',
     messagingSenderId: '753984654569',
     projectId: 'gig-hub-8ac24',
     storageBucket: 'gig-hub-8ac24.firebasestorage.app',
