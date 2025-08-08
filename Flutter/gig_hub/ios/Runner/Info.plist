@@ -65,7 +65,7 @@
 	<true/>
 
 	<key>NSCameraUsageDescription</key>
-	<string>Need permission to access your camera to take new images.</string>
+	<string>Need permission to access your camera to take new images for your profile.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Need permission to upload images to your profile.</string>
 	<key>NSMicrophoneUsageDescription</key>

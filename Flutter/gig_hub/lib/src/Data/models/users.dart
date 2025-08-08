@@ -9,7 +9,7 @@ abstract class AppUser {
   factory AppUser.fromJson(String id, Map<String, dynamic> json) {
     final typeString = json['type'] as String?;
     final type = UserType.values.firstWhere(
-      (e) => e.name == typeString,
+      (e) => e.name == typeString as String,
       orElse: () => throw Exception('unknown user type: $typeString'),
     );
 
@@ -97,18 +97,18 @@ class DJ extends AppUser {
 
   factory DJ.fromJson(String id, Map<String, dynamic> json) => DJ(
     id: id,
-    avatarImageUrl: json['avatarImageUrl'],
-    headImageUrl: json['headImageUrl'],
-    name: json['name'],
-    city: json['city'],
-    about: json['about'],
-    info: json['info'],
+    avatarImageUrl: json['avatarImageUrl'] as String,
+    headImageUrl: json['headImageUrl'] as String,
+    name: json['name'] as String,
+    city: json['city'] as String,
+    about: json['about'] as String,
+    info: json['info'] as String,
     genres: List<String>.from(json['genres'] ?? []),
     bpm: List<int>.from(json['bpm'] ?? []),
     streamingUrls: List<String>.from(json['streamingUrls'] ?? []),
     trackTitles: List<String>.from(json['trackTitles'] ?? []),
     trackUrls: List<String>.from(json['trackUrls']),
-    avgRating: (json['avgRating'] ?? 0.0).toDouble(),
+    avgRating: (json['avgRating'] ?? 0.0).toDouble() as double,
     ratingCount: (json['ratingCount'] ?? 0) as int,
     mediaImageUrls: List<String>.from(json['mediaImageUrls'] ?? []),
     favoriteUIds: List<String>.from(json['favoriteUIds'] ?? []),
@@ -156,14 +156,14 @@ class Booker extends AppUser {
 
   factory Booker.fromJson(String id, Map<String, dynamic> json) => Booker(
     id: id,
-    avatarImageUrl: json['avatarImageUrl'],
-    headImageUrl: json['headImageUrl'],
-    name: json['name'],
-    city: json['city'],
-    about: json['about'],
-    info: json['info'],
-    category: json['category'],
-    avgRating: (json['avgRating'] ?? 0.0).toDouble(),
+    avatarImageUrl: json['avatarImageUrl'] as String,
+    headImageUrl: json['headImageUrl'] as String,
+    name: json['name'] as String,
+    city: json['city'] as String,
+    about: json['about'] as String,
+    info: json['info'] as String,
+    category: json['category'] as String,
+    avgRating: (json['avgRating'] ?? 0.0).toDouble() as double,
     ratingCount: (json['ratingCount'] ?? 0) as int,
     mediaImageUrls: List<String>.from(json['mediaImageUrls'] ?? []),
     favoriteUIds: List<String>.from(json['favoriteUIds'] ?? []),

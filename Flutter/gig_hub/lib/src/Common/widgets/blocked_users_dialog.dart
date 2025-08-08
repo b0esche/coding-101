@@ -116,6 +116,7 @@ class _BlockedUsersDialogState extends State<BlockedUsersDialog> {
                                 ? Center(
                                   child: CircularProgressIndicator(
                                     color: Palette.forgedGold,
+                                    strokeWidth: 1.85,
                                   ),
                                 )
                                 : _blockedUsers.isEmpty
