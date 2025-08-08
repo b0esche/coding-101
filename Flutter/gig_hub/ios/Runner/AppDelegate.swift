@@ -10,10 +10,8 @@ import flutter_local_notifications
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    // 🔥 Firebase INITIALISIEREN
     FirebaseApp.configure()
 
-    // Facebook SDK
     ApplicationDelegate.shared.application(
       application,
       didFinishLaunchingWithOptions: launchOptions

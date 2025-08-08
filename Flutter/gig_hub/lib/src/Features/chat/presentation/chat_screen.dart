@@ -260,31 +260,35 @@ class ChatScreenState extends State<ChatScreen>
                                     decorationColor: Palette.shadowGrey,
                                   ),
                                 ),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                      color: Palette.shadowGrey,
-                                      width: 2.35,
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Palette.gigGrey.o(0.65),
-                                        blurRadius: 3,
-                                        offset: Offset(1, 1),
-                                        spreadRadius: 1,
+                                PinchZoom(
+                                  maxScale: 2,
+                                  zoomEnabled: true,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: Palette.shadowGrey,
+                                        width: 2.35,
                                       ),
-                                    ],
-                                  ),
-                                  child: CircleAvatar(
-                                    backgroundImage:
-                                        partnerAvatarUrl.isNotEmpty
-                                            ? NetworkImage(partnerAvatarUrl)
-                                            : const AssetImage(
-                                                  'assets/images/default_avatar.jpg',
-                                                )
-                                                as ImageProvider<Object>,
-                                    radius: 108,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Palette.gigGrey.o(0.65),
+                                          blurRadius: 3,
+                                          offset: Offset(1, 1),
+                                          spreadRadius: 1,
+                                        ),
+                                      ],
+                                    ),
+                                    child: CircleAvatar(
+                                      backgroundImage:
+                                          partnerAvatarUrl.isNotEmpty
+                                              ? NetworkImage(partnerAvatarUrl)
+                                              : const AssetImage(
+                                                    'assets/images/default_avatar.jpg',
+                                                  )
+                                                  as ImageProvider<Object>,
+                                      radius: 108,
+                                    ),
                                   ),
                                 ),
                                 Spacer(),

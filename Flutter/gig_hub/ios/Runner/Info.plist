@@ -22,7 +22,6 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
-
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -48,7 +47,6 @@
 			</array>
 		</dict>
 	</array>
-
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>FacebookAppID</key>
@@ -57,48 +55,44 @@
 	<string>6b51d6e23be656eb0ae5c486d5384037</string>
 	<key>FacebookDisplayName</key>
 	<string>Gig Hub</string>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<true/>
 	<key>GIDClientID</key>
 	<string>753984654569-9da6clav6eamkjt0l2b27mehkl2l1spj.apps.googleusercontent.com</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Need permission to access your camera to take new images for your profile.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Need permission to upload images to your profile.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Need permission to access your microphone.</string>
-
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Need permission to upload images to your profile.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>UIStatusBarHidden</key>
 	<false/>
-
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
-
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<true/>
-	</dict>
-	<key>FirebaseAppDelegateProxyEnabled</key>
-	<true/>
-	<key>UIBackgroundModes</key>
-	<array>
-  		<string>fetch</string>
-  		<string>remote-notification</string>
 	</array>
 </dict>
 </plist>

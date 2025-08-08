@@ -589,16 +589,10 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                                         PinchZoom(
                                           zoomEnabled: true,
                                           maxScale: 2.5,
-                                          child:
-                                              path.startsWith('http')
-                                                  ? Image.network(
-                                                    path,
-                                                    fit: BoxFit.cover,
-                                                  )
-                                                  : Image.file(
-                                                    File(path),
-                                                    fit: BoxFit.cover,
-                                                  ),
+                                          child: Image.network(
+                                            path,
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
                                   ],
                                 ),
