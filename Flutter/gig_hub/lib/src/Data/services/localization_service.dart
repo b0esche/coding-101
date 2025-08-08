@@ -34,6 +34,7 @@ mixin AppLocale {
   static const String enterPw = 'enter your password';
   static const String forgotPwText = 'type in your email';
   static const String sendPwReset = 'send password reset link';
+  static const String pwResetLinkSent = 'password reset link sent';
   static const String block = 'block';
   static const String unblock = 'unblock';
   static const String blockAndDelete = 'block and delete';
@@ -72,6 +73,8 @@ mixin AppLocale {
   static const String selectTrack = 'select track';
   static const String selectFive = 'select up to 5!';
   static const String addImages = 'add images to your profile!';
+  static const String accessFailed = 'access failed, please retry!';
+  static const String invalidCred = 'invalid password or email!';
   static const String addHeadImage = 'add a cover image to your profile!';
   static const String profileCreationFailed =
       'failed to create profile, try again later!';
