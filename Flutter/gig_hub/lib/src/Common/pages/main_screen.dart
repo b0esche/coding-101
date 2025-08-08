@@ -308,45 +308,44 @@ class _MainScreenState extends State<MainScreen> {
                     height: 130,
                     child: Stack(
                       children: [
-                        if (currentUser is! Guest)
-                          Positioned(
-                            top: 8,
-                            right: 0,
-                            child: GestureDetector(
-                              onTap: () {
-                                if (currentUser == null) return;
-                                Navigator.of(context)
-                                    .push(
-                                      MaterialPageRoute(
-                                        builder: (context) => SettingsScreen(),
-                                        fullscreenDialog: true,
-                                      ),
-                                    )
-                                    .then((_) {
-                                      _loadLoggedInUser();
-                                    });
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: Palette.glazedWhite.o(0.5),
-                                    width: 1.4,
-                                  ),
+                        Positioned(
+                          top: 8,
+                          right: 0,
+                          child: GestureDetector(
+                            onTap: () {
+                              if (currentUser == null) return;
+                              Navigator.of(context)
+                                  .push(
+                                    MaterialPageRoute(
+                                      builder: (context) => SettingsScreen(),
+                                      fullscreenDialog: true,
+                                    ),
+                                  )
+                                  .then((_) {
+                                    _loadLoggedInUser();
+                                  });
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Palette.glazedWhite.o(0.5),
+                                  width: 1.4,
                                 ),
-                                child: ClipOval(
-                                  child: FadeInImage.assetNetwork(
-                                    placeholder:
-                                        'assets/images/default_avatar.jpg',
-                                    image: widget.initialUser!.avatarUrl,
-                                    height: 68,
-                                    width: 68,
-                                    fit: BoxFit.cover,
-                                  ),
+                              ),
+                              child: ClipOval(
+                                child: FadeInImage.assetNetwork(
+                                  placeholder:
+                                      'assets/images/default_avatar.jpg',
+                                  image: widget.initialUser!.avatarUrl,
+                                  height: 68,
+                                  width: 68,
+                                  fit: BoxFit.cover,
                                 ),
                               ),
                             ),
                           ),
+                        ),
                         Align(
                           alignment: Alignment.center,
                           child: SizedBox(

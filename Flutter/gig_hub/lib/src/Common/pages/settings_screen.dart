@@ -445,8 +445,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         child: Form(
                           key: _formKey,
                           child: TextFormField(
+                            readOnly: _user is Guest ? true : false,
                             textInputAction: TextInputAction.go,
-                            autovalidateMode: AutovalidateMode.always,
+                            autovalidateMode:
+                                _user is Guest ? null : AutovalidateMode.always,
                             validator: validateEmail,
                             keyboardType: TextInputType.emailAddress,
                             onFieldSubmitted: _onEmailSubmitted,
@@ -490,7 +492,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                         splashFactory: NoSplash.splashFactory,
                       ),
-                      onPressed: _onResetPassword,
+                      onPressed: _user is Guest ? null : _onResetPassword,
                       child: Text(AppLocale.changePw.getString(context)),
                     ),
                   ),
@@ -503,12 +505,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                         splashFactory: NoSplash.splashFactory,
                       ),
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => BlockedUsersDialog(),
-                        );
-                      },
+                      onPressed:
+                          _user is Guest
+                              ? null
+                              : () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => BlockedUsersDialog(),
+                                );
+                              },
                       child: Text(AppLocale.blocks.getString(context)),
                     ),
                   ),
