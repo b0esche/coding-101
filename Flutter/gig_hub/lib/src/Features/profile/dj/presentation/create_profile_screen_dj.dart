@@ -20,11 +20,17 @@ class CreateProfileScreenDJ extends StatefulWidget {
 
 class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
   final _formKey = GlobalKey<FormState>();
-  late final TextEditingController _nameController;
-  late final TextEditingController _locationController;
-  late final TextEditingController _bpmController;
-  late final TextEditingController _aboutController;
-  late final TextEditingController _infoController;
+  late final _nameController = TextEditingController(
+    text: AppLocale.yourName.getString(context),
+  );
+  late final _locationController = TextEditingController(
+    text: AppLocale.yourCity.getString(context),
+  );
+  late final _bpmController = TextEditingController(
+    text: AppLocale.yourTempo.getString(context),
+  );
+  late final _aboutController = TextEditingController();
+  late final _infoController = TextEditingController();
   final FocusNode _locationFocusNode = FocusNode();
   String? headUrl;
   String? _locationError;
@@ -48,18 +54,6 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
   @override
   void initState() {
     super.initState();
-
-    _nameController = TextEditingController(
-      text: AppLocale.yourName.getString(context),
-    );
-    _locationController = TextEditingController(
-      text: AppLocale.yourCity.getString(context),
-    );
-    _bpmController = TextEditingController(
-      text: AppLocale.yourTempo.getString(context),
-    );
-    _aboutController = TextEditingController();
-    _infoController = TextEditingController();
 
     _locationFocusNode.addListener(_onLocationFocusChange);
 
@@ -352,7 +346,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Palette.glazedWhite,
-                            fontSize: 12,
+                            fontSize: 14,
                           ),
                           decoration: InputDecoration(
                             contentPadding: EdgeInsets.only(bottom: 14),
@@ -411,13 +405,13 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                   const Icon(Icons.place, size: 20),
                                   const SizedBox(width: 4),
                                   SizedBox(
-                                    width: 100,
+                                    width: 138,
                                     height: 24,
                                     child: TextFormField(
                                       onTap: _locationController.clear,
                                       style: TextStyle(
                                         color: Palette.glazedWhite,
-                                        fontSize: 10,
+                                        fontSize: 13,
                                       ),
                                       textAlign: TextAlign.center,
                                       controller: _locationController,
@@ -489,7 +483,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                   const Icon(Icons.speed, size: 24),
                                   const SizedBox(width: 4),
                                   SizedBox(
-                                    width: 100,
+                                    width: 138,
                                     height: 24,
                                     child: TextFormField(
                                       readOnly: true,
@@ -528,7 +522,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                       },
                                       style: TextStyle(
                                         color: Palette.glazedWhite,
-                                        fontSize: 10,
+                                        fontSize: 13,
                                       ),
                                       controller: _bpmController,
                                       decoration: InputDecoration(
