@@ -353,7 +353,6 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
           }
         }
       } catch (e) {
-        // Skip users that can't be loaded
         continue;
       }
     }
@@ -518,5 +517,66 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
             .update({'fcmToken': newToken});
       }
     });
+  }
+
+  /// STATUS MESSAGES ###
+
+  @override
+  Future<void> createStatusMessage(StatusMessage statusMessage) async {
+    try {
+      final existingStatusQuery =
+          await _firestore
+              .collection('status_messages')
+              .where('userId', isEqualTo: statusMessage.userId)
+              .get();
+
+      for (final doc in existingStatusQuery.docs) {
+        await doc.reference.delete();
+      }
+
+      await _firestore
+          .collection('status_messages')
+          .doc(statusMessage.id)
+          .set(statusMessage.toJson());
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<StatusMessage?> getActiveStatusMessage(String userId) async {
+    try {
+      final query =
+          await _firestore
+              .collection('status_messages')
+              .where('userId', isEqualTo: userId)
+              .limit(5)
+              .get();
+
+      if (query.docs.isEmpty) return null;
+
+      for (final doc in query.docs) {
+        final statusMessage = StatusMessage.fromJson(doc.id, doc.data());
+        if (!statusMessage.isExpired) {
+          return statusMessage;
+        }
+      }
+
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  @override
+  Future<void> deleteStatusMessage(String statusMessageId) async {
+    try {
+      await _firestore
+          .collection('status_messages')
+          .doc(statusMessageId)
+          .delete();
+    } catch (e) {
+      rethrow;
+    }
   }
 }

@@ -52,6 +52,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
   int index = 0;
   bool editMode = false;
   Timer? _debounceTimer;
+  StatusMessage? _currentStatusMessage;
 
   bool get isFavorite {
     final id = widget.dj.id;
@@ -106,6 +107,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
     _locationController.addListener(_onLocationChanged);
 
     _loadTracksIfAvailable();
+    _loadStatusMessage();
   }
 
   @override
@@ -189,6 +191,158 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
     setState(() {
       userTrackList = tracks;
     });
+  }
+
+  Future<void> _loadStatusMessage() async {
+    try {
+      final db = context.read<DatabaseRepository>();
+      final statusMessage = await db.getActiveStatusMessage(widget.dj.id);
+      if (mounted) {
+        setState(() {
+          _currentStatusMessage = statusMessage;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _currentStatusMessage = null;
+        });
+      }
+    }
+  }
+
+  Future<void> _showStatusDialog() async {
+    final result = await showDialog<Map<String, dynamic>>(
+      context: context,
+      builder: (context) => StatusMessageDialog(),
+    );
+
+    if (result != null && mounted) {
+      try {
+        final message = result['message'] as String;
+        final days = result['days'] as int;
+
+        final statusMessage = StatusMessage(
+          id: Uuid().v4(),
+          userId: widget.dj.id,
+          message: message,
+          createdAt: DateTime.now(),
+          expiresAt: DateTime.now().add(Duration(days: days)),
+        );
+
+        final db = context.read<DatabaseRepository>();
+        await db.createStatusMessage(statusMessage);
+        await _loadStatusMessage();
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(AppLocale.updateStatusFailed.getString(context)),
+              backgroundColor: Palette.alarmRed,
+            ),
+          );
+        }
+      }
+    }
+  }
+
+  Future<void> _showEditStatusDialog() async {
+    if (_currentStatusMessage == null) return;
+
+    final result = await showDialog<String>(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            backgroundColor: Palette.primalBlack,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+              side: BorderSide(color: Palette.forgedGold, width: 2),
+            ),
+            title: Text(
+              AppLocale.statusMessage.getString(context),
+              style: GoogleFonts.sometypeMono(
+                textStyle: TextStyle(
+                  color: Palette.glazedWhite,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            content: Text(
+              _currentStatusMessage!.message,
+              style: TextStyle(color: Palette.glazedWhite, fontSize: 14),
+            ),
+            actionsOverflowButtonSpacing: -8,
+            actions: [
+              TextButton(
+                style: ButtonStyle(
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(
+                  AppLocale.cancel.getString(context),
+                  style: TextStyle(color: Palette.glazedWhite),
+                ),
+              ),
+              TextButton(
+                style: ButtonStyle(
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                onPressed: () => Navigator.of(context).pop('edit'),
+                child: Text(
+                  AppLocale.edit.getString(context),
+                  style: TextStyle(color: Palette.forgedGold),
+                ),
+              ),
+              TextButton(
+                style: ButtonStyle(
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                onPressed: () => Navigator.of(context).pop('delete'),
+                child: Text(
+                  AppLocale.delete.getString(context),
+                  style: TextStyle(color: Palette.alarmRed),
+                ),
+              ),
+            ],
+          ),
+    );
+
+    if (result != null) {
+      try {
+        if (result == 'delete' && mounted) {
+          final db = context.read<DatabaseRepository>();
+          await db.deleteStatusMessage(_currentStatusMessage!.id);
+          await _loadStatusMessage();
+        } else if (result == 'edit') {
+          _showStatusDialog();
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(AppLocale.updateStatusFailed.getString(context)),
+              backgroundColor: Palette.alarmRed,
+            ),
+          );
+        }
+      }
+    }
+  }
+
+  String _getTimeRemaining(DateTime expiresAt) {
+    final now = DateTime.now();
+    final difference = expiresAt.difference(now);
+
+    if (difference.inDays > 0) {
+      return '${difference.inDays}d remaining';
+    } else if (difference.inHours > 0) {
+      return '${difference.inHours}h remaining';
+    } else if (difference.inMinutes > 0) {
+      return '${difference.inMinutes}m remaining';
+    } else {
+      return 'expires soon';
+    }
   }
 
   Future<void> _showGenreDialog() async {
@@ -431,6 +585,137 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                       ),
                     ),
                   ),
+                  if (!editMode && widget.currentUser.id == widget.dj.id)
+                    if (_currentStatusMessage == null ||
+                        _currentStatusMessage!.isExpired)
+                      Positioned(
+                        top: 36,
+                        right: 4,
+                        child: Container(
+                          height: 42,
+                          width: 42,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: Palette.forgedGold.o(0.8),
+                            border: Border.all(
+                              color: Palette.primalBlack,
+                              width: 1.65,
+                            ),
+                          ),
+                          child: IconButton(
+                            onPressed: _showStatusDialog,
+                            icon: Icon(
+                              Icons.add,
+                              color: Palette.primalBlack,
+                              size: 24,
+                            ),
+                            style: ButtonStyle(
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              splashFactory: NoSplash.splashFactory,
+                            ),
+                          ),
+                        ),
+                      )
+                    else
+                      Positioned(
+                        top: 36,
+                        right: 2,
+                        child: GestureDetector(
+                          onTap: _showEditStatusDialog,
+                          child: Container(
+                            constraints: BoxConstraints(maxWidth: 280),
+                            padding: EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: Palette.primalBlack.o(0.65),
+                              border: Border.all(
+                                color: Palette.forgedGold.o(0.65),
+                                width: 1.35,
+                              ),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  _currentStatusMessage!.message,
+                                  style: TextStyle(
+                                    color: Palette.glazedWhite,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      _getTimeRemaining(
+                                        _currentStatusMessage!.expiresAt,
+                                      ),
+                                      style: TextStyle(
+                                        color: Palette.glazedWhite.o(0.95),
+                                        fontSize: 10,
+                                      ),
+                                    ),
+                                    Spacer(),
+                                    Icon(
+                                      Icons.edit,
+                                      color: Palette.forgedGold,
+                                      size: 13,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+
+                  if (!editMode &&
+                      widget.currentUser.id != widget.dj.id &&
+                      _currentStatusMessage != null &&
+                      !_currentStatusMessage!.isExpired)
+                    Positioned(
+                      top: 36,
+                      right: 2,
+                      child: Container(
+                        constraints: BoxConstraints(maxWidth: 280),
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: Palette.primalBlack.o(0.7),
+                          border: Border.all(
+                            color: Palette.forgedGold.o(0.65),
+                            width: 1,
+                          ),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              _currentStatusMessage!.message,
+                              style: TextStyle(
+                                color: Palette.glazedWhite,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              _getTimeRemaining(
+                                _currentStatusMessage!.expiresAt,
+                              ),
+                              style: TextStyle(
+                                color: Palette.glazedWhite.o(0.95),
+                                fontSize: 10,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   if (!editMode) UserStarRating(widget: widget),
 
                   Positioned(

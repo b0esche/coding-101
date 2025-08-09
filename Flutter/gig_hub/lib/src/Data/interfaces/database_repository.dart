@@ -50,4 +50,9 @@ abstract class DatabaseRepository with ChangeNotifier {
   Future<AppUser> getUserById(String id);
   Future<void> updateUser(AppUser user);
   Future<void> initFirebaseMessaging();
+
+  // status messages ###
+  Future<void> createStatusMessage(StatusMessage statusMessage);
+  Future<StatusMessage?> getActiveStatusMessage(String userId);
+  Future<void> deleteStatusMessage(String statusMessageId);
 }

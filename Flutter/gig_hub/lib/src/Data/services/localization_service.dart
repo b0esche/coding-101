@@ -5,6 +5,7 @@ mixin AppLocale {
   static const String booker = 'booker';
   static const String cancel = 'cancel';
   static const String scontinue = 'continue';
+  static const String delete = 'delete';
   static const String continueAsGuest = 'continue as guest';
   static const String search = 'search';
   static const String clear = 'clear';
@@ -51,6 +52,7 @@ mixin AppLocale {
   static const String today = 'today';
   static const String msg = 'message...';
   static const String editProfile = 'edit profile';
+  static const String edit = 'edit';
   static const String logIn = 'log in';
   static const String logOut = 'log out';
   static const String signUp = 'Sign Up';
@@ -67,6 +69,8 @@ mixin AppLocale {
   static const String noBlockedUsers = 'no blocked users';
   static const String noChats = 'no chats. start now!';
   static const String loadingChatsError = 'couldn\'t load chats';
+  static const String updateStatusFailed =
+      'failed to update status message. please check your connection.';
   static const String startTalking = 'start talking!';
   static const String removeImages = 'remove all images';
   static const String selectCategory = 'please select a category';
@@ -80,6 +84,13 @@ mixin AppLocale {
       'failed to create profile, try again later!';
   static const String fillOutAllFields =
       'please fill out all fields! (name, about, info)';
+  static const String postStatus = 'post status';
+  static const String statusMessage = 'status message';
+  static const String displayFor = 'display for:';
+  static const String day1 = '1 day';
+  static const String days7 = '7 days';
+  static const String days30 = '30 days';
+  static const String enterStatusMsg = 'enter your status message...';
 
   // ENGLISH
   static const Map<String, dynamic> en = {
@@ -154,6 +165,17 @@ mixin AppLocale {
     addHeadImage: 'add a cover image to your profile!',
     fillOutAllFields: 'please fill out all fields! (name, about, info)',
     profileCreationFailed: 'failed to create profile, try again later!',
+    postStatus: 'post status',
+    statusMessage: 'status message',
+    day1: '1 day',
+    days7: '7 days',
+    days30: '30 days',
+    enterStatusMsg: 'enter your status message...',
+    displayFor: 'display for:',
+    updateStatusFailed:
+        'failed to update status message, please try again later.',
+    delete: 'delete',
+    edit: 'edit',
   };
 
   // GERMAN
@@ -232,6 +254,17 @@ mixin AppLocale {
     fillOutAllFields: 'bitte fülle alle felder aus! (name, über, info)',
     profileCreationFailed:
         'profil konnte nicht erstellt werden, bitte später erneut versuchen!',
+    postStatus: 'status posten',
+    statusMessage: 'status nachricht',
+    day1: '1 tag',
+    days7: '7 tage',
+    days30: '30 tage',
+    enterStatusMsg: 'deine statusnachricht eingeben...',
+    displayFor: 'anzeige für:',
+    updateStatusFailed:
+        'statusnachricht konnte nicht aktualisiert werden, bitte versuche es später erneut.',
+    delete: 'löschen',
+    edit: 'bearbeiten',
   };
 
   // SPANISH
@@ -311,6 +344,17 @@ mixin AppLocale {
         '¡por favor completa todos los campos! (nombre, acerca de, info)',
     profileCreationFailed:
         'no se pudo crear el perfil, ¡inténtalo de nuevo más tarde!',
+    postStatus: 'publicar estado',
+    statusMessage: 'mensaje de estado',
+    day1: '1 día',
+    days7: '7 días',
+    days30: '30 días',
+    enterStatusMsg: 'ingresa tu mensaje de estado...',
+    displayFor: 'mostrar por:',
+    updateStatusFailed:
+        'no se pudo actualizar el mensaje de estado, por favor inténtalo de nuevo más tarde.',
+    delete: 'eliminar',
+    edit: 'editar',
   };
 
   // ITALIAN
@@ -389,6 +433,17 @@ mixin AppLocale {
     fillOutAllFields:
         'per favore compila tutti i campi! (nome, informazioni, info)',
     profileCreationFailed: 'impossibile creare il profilo, riprova più tardi!',
+    postStatus: 'pubblica stato',
+    statusMessage: 'messaggio di stato',
+    day1: '1 giorno',
+    days7: '7 giorni',
+    days30: '30 giorni',
+    enterStatusMsg: 'inserisci il tuo messaggio di stato...',
+    displayFor: 'visualizza per:',
+    updateStatusFailed:
+        'impossibile aggiornare il messaggio di stato, riprova più tardi.',
+    delete: 'elimina',
+    edit: 'modifica',
   };
 
   // PORTUGESE
@@ -466,6 +521,17 @@ mixin AppLocale {
     fillOutAllFields:
         'por favor, preencha todos os campos! (nome, sobre, info)',
     profileCreationFailed: 'falha ao criar perfil, tente novamente mais tarde!',
+    postStatus: 'postar status',
+    statusMessage: 'mensagem de status',
+    day1: '1 dia',
+    days7: '7 dias',
+    days30: '30 dias',
+    enterStatusMsg: 'digite sua mensagem de status...',
+    displayFor: 'exibir por:',
+    updateStatusFailed:
+        'falha ao atualizar mensagem de status, tente novamente mais tarde.',
+    delete: 'excluir',
+    edit: 'editar',
   };
 
   //  FRENCH
@@ -545,6 +611,17 @@ mixin AppLocale {
         'veuillez remplir tous les champs ! (nom, à propos, info)',
     profileCreationFailed:
         'échec de la création du profil, essayez à nouveau plus tard !',
+    postStatus: 'publier le statut',
+    statusMessage: 'message de statut',
+    day1: '1 jour',
+    days7: '7 jours',
+    days30: '30 jours',
+    enterStatusMsg: 'entrez votre message de statut...',
+    displayFor: 'afficher pour :',
+    updateStatusFailed:
+        'échec de la mise à jour du message de statut, veuillez réessayer plus tard.',
+    delete: 'supprimer',
+    edit: 'modifier',
   };
 
   // DUTCH
@@ -623,6 +700,17 @@ mixin AppLocale {
     fillOutAllFields: 'vul alstublieft alle velden in! (naam, over, info)',
     profileCreationFailed:
         'profiel kon niet worden aangemaakt, probeer het later opnieuw!',
+    postStatus: 'status plaatsen',
+    statusMessage: 'statusbericht',
+    day1: '1 dag',
+    days7: '7 dagen',
+    days30: '30 dagen',
+    enterStatusMsg: 'voer je statusbericht in...',
+    displayFor: 'weergeven voor:',
+    updateStatusFailed:
+        'statusbericht kon niet worden bijgewerkt, probeer het later opnieuw.',
+    delete: 'verwijderen',
+    edit: 'bewerken',
   };
 
   // POLISH
@@ -701,6 +789,17 @@ mixin AppLocale {
     fillOutAllFields: 'proszę wypełnić wszystkie pola! (imię, o mnie, info)',
     profileCreationFailed:
         'nie udało się utworzyć profilu, spróbuj ponownie później!',
+    postStatus: 'opublikuj status',
+    statusMessage: 'wiadomość statusu',
+    day1: '1 dzień',
+    days7: '7 dni',
+    days30: '30 dni',
+    enterStatusMsg: 'wprowadź swoją wiadomość statusu...',
+    displayFor: 'wyświetlaj przez:',
+    updateStatusFailed:
+        'nie udało się zaktualizować wiadomości statusu, spróbuj ponownie później.',
+    delete: 'usuń',
+    edit: 'edytuj',
   };
 
   // UKRAINIAN
@@ -780,6 +879,17 @@ mixin AppLocale {
         'будь ласка, заповніть усі поля! (ім\'я, про себе, інформація)',
     profileCreationFailed:
         'не вдалося створити профіль, спробуйте ще раз пізніше!',
+    postStatus: 'опублікувати статус',
+    statusMessage: 'повідомлення статусу',
+    day1: '1 день',
+    days7: '7 днів',
+    days30: '30 днів',
+    enterStatusMsg: 'введіть ваше повідомлення статусу...',
+    displayFor: 'відображати для:',
+    updateStatusFailed:
+        'не вдалося оновити повідомлення статусу, спробуйте ще раз пізніше.',
+    delete: 'видалити',
+    edit: 'редагувати',
   };
 
   // ARABIC
@@ -858,6 +968,17 @@ mixin AppLocale {
     fillOutAllFields: 'يرجى ملء جميع الحقول! (الاسم، حول، معلومات)',
     profileCreationFailed:
         'فشل إنشاء الملف الشخصي، يرجى المحاولة مرة أخرى لاحقًا!',
+    postStatus: 'نشر الحالة',
+    statusMessage: 'رسالة الحالة',
+    day1: 'يوم واحد',
+    days7: '7 أيام',
+    days30: '30 يوم',
+    enterStatusMsg: 'أدخل رسالة حالتك...',
+    displayFor: 'عرض لمدة:',
+    updateStatusFailed:
+        'فشل تحديث رسالة الحالة، يرجى المحاولة مرة أخرى لاحقًا.',
+    delete: 'حذف',
+    edit: 'تعديل',
   };
 
   // TURKISH
@@ -936,6 +1057,17 @@ mixin AppLocale {
     fillOutAllFields: 'lütfen tüm alanları doldurun! (isim, hakkında, bilgi)',
     profileCreationFailed:
         'profil oluşturulamadı, lütfen daha sonra tekrar deneyin!',
+    postStatus: 'durum paylaş',
+    statusMessage: 'durum mesajı',
+    day1: '1 gün',
+    days7: '7 gün',
+    days30: '30 gün',
+    enterStatusMsg: 'durum mesajınızı girin...',
+    displayFor: 'gösterim süresi:',
+    updateStatusFailed:
+        'durum mesajı güncellenemedi, lütfen daha sonra tekrar deneyin.',
+    delete: 'sil',
+    edit: 'düzenle',
   };
 
   // JAPANESE
@@ -1011,6 +1143,16 @@ mixin AppLocale {
     addHeadImage: 'プロフィールにカバー画像を追加する',
     fillOutAllFields: 'すべてのフィールドを入力してください！ (名前、情報、info)',
     profileCreationFailed: 'プロフィールの作成に失敗しました。後でもう一度お試しください！',
+    postStatus: 'ステータスを投稿',
+    statusMessage: 'ステータスメッセージ',
+    day1: '1日',
+    days7: '7日',
+    days30: '30日',
+    enterStatusMsg: 'ステータスメッセージを入力してください...',
+    displayFor: '表示期間:',
+    updateStatusFailed: 'ステータスメッセージの更新に失敗しました。後でもう一度お試しください。',
+    delete: '削除',
+    edit: '編集',
   };
 
   // KOREAN
@@ -1086,6 +1228,16 @@ mixin AppLocale {
     addHeadImage: '프로필에 커버 이미지를 추가하세요!',
     fillOutAllFields: '모든 필드를 입력하세요! (이름, 정보, info)',
     profileCreationFailed: '프로필 생성에 실패했습니다. 나중에 다시 시도하세요!',
+    postStatus: '상태 게시',
+    statusMessage: '상태 메시지',
+    day1: '1일',
+    days7: '7일',
+    days30: '30일',
+    enterStatusMsg: '상태 메시지를 입력하세요...',
+    displayFor: '표시 기간:',
+    updateStatusFailed: '상태 메시지 업데이트에 실패했습니다. 나중에 다시 시도하세요.',
+    delete: '삭제',
+    edit: '편집',
   };
 
   // CHINESE
@@ -1161,5 +1313,15 @@ mixin AppLocale {
     addHeadImage: '向您的个人资料添加封面图片！',
     fillOutAllFields: '请填写所有字段！ (姓名、关于、信息)',
     profileCreationFailed: '创建个人资料失败，请稍后再试！',
+    postStatus: '发布状态',
+    statusMessage: '状态消息',
+    day1: '1天',
+    days7: '7天',
+    days30: '30天',
+    enterStatusMsg: '输入您的状态消息...',
+    displayFor: '显示时间：',
+    updateStatusFailed: '更新状态消息失败，请稍后再试。',
+    delete: '删除',
+    edit: '编辑',
   };
 }
