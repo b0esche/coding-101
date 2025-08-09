@@ -232,7 +232,7 @@ class ChatScreenState extends State<ChatScreen>
                   ModalBottomSheetRoute(
                     isDismissible: true,
                     scrollControlDisabledMaxHeightRatio: 0.7,
-                    backgroundColor: Palette.forgedGold.o(0.9),
+                    backgroundColor: Palette.forgedGold.o(0.935),
                     builder: (context) {
                       return BottomSheet(
                         backgroundColor: Colors.transparent,
@@ -626,6 +626,7 @@ class ChatScreenState extends State<ChatScreen>
                                           style: TextStyle(
                                             color: Palette.primalBlack,
                                             fontSize: 15,
+                                            wordSpacing: -0.15,
                                           ),
                                         ),
                                       ),
