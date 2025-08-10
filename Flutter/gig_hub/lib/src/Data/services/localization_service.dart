@@ -176,6 +176,7 @@ mixin AppLocale {
         'failed to update status message, please try again later.',
     delete: 'delete',
     edit: 'edit',
+    enterPw: 'enter your password',
   };
 
   // GERMAN
@@ -265,6 +266,7 @@ mixin AppLocale {
         'statusnachricht konnte nicht aktualisiert werden, bitte versuche es später erneut.',
     delete: 'löschen',
     edit: 'bearbeiten',
+    enterPw: 'dein passwort eingeben',
   };
 
   // SPANISH
@@ -355,6 +357,7 @@ mixin AppLocale {
         'no se pudo actualizar el mensaje de estado, por favor inténtalo de nuevo más tarde.',
     delete: 'eliminar',
     edit: 'editar',
+    enterPw: 'ingresa tu contraseña',
   };
 
   // ITALIAN
@@ -444,6 +447,7 @@ mixin AppLocale {
         'impossibile aggiornare il messaggio di stato, riprova più tardi.',
     delete: 'elimina',
     edit: 'modifica',
+    enterPw: 'inserisci la tua password',
   };
 
   // PORTUGESE
@@ -532,6 +536,7 @@ mixin AppLocale {
         'falha ao atualizar mensagem de status, tente novamente mais tarde.',
     delete: 'excluir',
     edit: 'editar',
+    enterPw: 'digite sua senha',
   };
 
   //  FRENCH
@@ -622,6 +627,7 @@ mixin AppLocale {
         'échec de la mise à jour du message de statut, veuillez réessayer plus tard.',
     delete: 'supprimer',
     edit: 'modifier',
+    enterPw: 'entrez votre mot de passe',
   };
 
   // DUTCH
@@ -711,6 +717,7 @@ mixin AppLocale {
         'statusbericht kon niet worden bijgewerkt, probeer het later opnieuw.',
     delete: 'verwijderen',
     edit: 'bewerken',
+    enterPw: 'voer je wachtwoord in',
   };
 
   // POLISH
@@ -800,6 +807,7 @@ mixin AppLocale {
         'nie udało się zaktualizować wiadomości statusu, spróbuj ponownie później.',
     delete: 'usuń',
     edit: 'edytuj',
+    enterPw: 'wprowadź swoje hasło',
   };
 
   // UKRAINIAN
@@ -890,6 +898,7 @@ mixin AppLocale {
         'не вдалося оновити повідомлення статусу, спробуйте ще раз пізніше.',
     delete: 'видалити',
     edit: 'редагувати',
+    enterPw: 'введіть ваш пароль',
   };
 
   // ARABIC
@@ -979,6 +988,7 @@ mixin AppLocale {
         'فشل تحديث رسالة الحالة، يرجى المحاولة مرة أخرى لاحقًا.',
     delete: 'حذف',
     edit: 'تعديل',
+    enterPw: 'أدخل كلمة المرور الخاصة بك',
   };
 
   // TURKISH
@@ -1068,6 +1078,7 @@ mixin AppLocale {
         'durum mesajı güncellenemedi, lütfen daha sonra tekrar deneyin.',
     delete: 'sil',
     edit: 'düzenle',
+    enterPw: 'parolanızı girin',
   };
 
   // JAPANESE
@@ -1153,6 +1164,7 @@ mixin AppLocale {
     updateStatusFailed: 'ステータスメッセージの更新に失敗しました。後でもう一度お試しください。',
     delete: '削除',
     edit: '編集',
+    enterPw: 'パスワードを入力してください',
   };
 
   // KOREAN
@@ -1238,6 +1250,7 @@ mixin AppLocale {
     updateStatusFailed: '상태 메시지 업데이트에 실패했습니다. 나중에 다시 시도하세요.',
     delete: '삭제',
     edit: '편집',
+    enterPw: '비밀번호를 입력하세요',
   };
 
   // CHINESE
@@ -1323,5 +1336,6 @@ mixin AppLocale {
     updateStatusFailed: '更新状态消息失败，请稍后再试。',
     delete: '删除',
     edit: '编辑',
+    enterPw: '输入您的密码',
   };
 }

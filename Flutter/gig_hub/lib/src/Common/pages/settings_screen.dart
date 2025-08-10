@@ -272,7 +272,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           SnackBar(
             backgroundColor: Palette.forgedGold,
             content: Center(
-              child: Text(AppLocale.changeEmailMsg.getString(context)),
+              child: Text(AppLocale.changePwMsg.getString(context)),
             ),
           ),
         );
@@ -394,7 +394,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ),
                         ),
                         child: CircleAvatar(
-                          radius: 64,
+                          radius: 80,
                           backgroundImage: avatarProvider,
                         ),
                       ),
@@ -462,7 +462,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   onPressed: () => _emailController.clear(),
                                   icon: Icon(
                                     Icons.delete,
-                                    color: Palette.primalBlack.o(0.85),
+                                    color: Palette.alarmRed.o(0.85),
                                     size: 26,
                                   ),
                                 ),

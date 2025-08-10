@@ -592,13 +592,13 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                         top: 36,
                         right: 4,
                         child: Container(
-                          height: 42,
-                          width: 42,
+                          height: 38,
+                          width: 38,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(8),
                             color: Palette.forgedGold.o(0.8),
                             border: Border.all(
-                              color: Palette.primalBlack,
+                              color: Palette.primalBlack.o(0.65),
                               width: 1.65,
                             ),
                           ),
@@ -607,7 +607,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                             icon: Icon(
                               Icons.add,
                               color: Palette.primalBlack,
-                              size: 24,
+                              size: 20,
                             ),
                             style: ButtonStyle(
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
