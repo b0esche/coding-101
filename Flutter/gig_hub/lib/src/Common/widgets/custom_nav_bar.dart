@@ -82,103 +82,109 @@ class _CustomNavBarState extends State<CustomNavBar> with RouteAware {
                           ),
                         ),
                       ),
-                      VerticalDivider(color: Palette.primalBlack),
-                      IconButton(
-                        onPressed: () async {
-                          if (widget.currentUser is DJ) {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => ProfileScreenDJ(
-                                      currentUser: widget.currentUser,
-                                      dj: widget.currentUser as DJ,
-
-                                      showChatButton: false,
-                                      showEditButton: false,
-                                      showFavoriteIcon: false,
-                                    ),
-                              ),
-                            );
-                          } else if (widget.currentUser is Booker) {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => ProfileScreenBooker(
-                                      booker: widget.currentUser as Booker,
-                                      db: db,
-
-                                      showEditButton: false,
-                                    ),
-                              ),
-                            );
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                duration: Duration(milliseconds: 950),
-                                backgroundColor: Palette.forgedGold,
-                                content: Center(
-                                  child: Text(
-                                    'sign up as DJ or booker to create a profile!',
-                                    style: TextStyle(fontSize: 16),
-                                  ),
-                                ),
-                              ),
-                            );
-                          }
-                        },
-                        icon: Icon(
-                          Icons.account_box_rounded,
-                          color: Palette.glazedWhite,
-                        ),
-                      ),
-                      VerticalDivider(color: Palette.primalBlack),
-                      Stack(
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              if (widget.currentUser is Guest) {
-                                showModalBottomSheet(
-                                  showDragHandle: true,
-                                  backgroundColor: Colors.transparent,
-                                  context: context,
-                                  isScrollControlled: true,
-                                  builder: (BuildContext context) {
-                                    return SignUpSheet();
-                                  },
-                                );
-                                return;
-                              }
-                              Navigator.push(
-                                context,
+                      if (widget.currentUser is! Guest)
+                        VerticalDivider(color: Palette.primalBlack),
+                      if (widget.currentUser is! Guest)
+                        IconButton(
+                          onPressed: () async {
+                            if (widget.currentUser is DJ) {
+                              Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder:
-                                      (context) => ChatListScreen(
+                                      (context) => ProfileScreenDJ(
                                         currentUser: widget.currentUser,
+                                        dj: widget.currentUser as DJ,
+
+                                        showChatButton: false,
+                                        showEditButton: false,
+                                        showFavoriteIcon: false,
                                       ),
                                 ),
                               );
-                            },
-                            icon: Icon(
-                              Icons.question_answer_outlined,
-                              color: Palette.glazedWhite,
-                            ),
-                          ),
-                          if (hasUnreadMessages)
-                            Positioned(
-                              right: 2,
-                              bottom: 12,
-                              child: Container(
-                                height: 8,
-                                width: 8,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Palette.forgedGold,
+                            } else if (widget.currentUser is Booker) {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => ProfileScreenBooker(
+                                        booker: widget.currentUser as Booker,
+                                        db: db,
+
+                                        showEditButton: false,
+                                      ),
                                 ),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  duration: Duration(milliseconds: 950),
+                                  backgroundColor: Palette.forgedGold,
+                                  content: Center(
+                                    child: Text(
+                                      'sign up as DJ or booker to create a profile!',
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                          icon: Icon(
+                            Icons.account_box_rounded,
+                            color: Palette.glazedWhite,
+                          ),
+                        ),
+                      if (widget.currentUser is! Guest)
+                        VerticalDivider(color: Palette.primalBlack),
+                      if (widget.currentUser is! Guest)
+                        Stack(
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                if (widget.currentUser is Guest) {
+                                  showModalBottomSheet(
+                                    showDragHandle: true,
+                                    backgroundColor: Colors.transparent,
+                                    context: context,
+                                    isScrollControlled: true,
+                                    builder: (BuildContext context) {
+                                      return SignUpSheet();
+                                    },
+                                  );
+                                  return;
+                                }
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) => ChatListScreen(
+                                          currentUser: widget.currentUser,
+                                        ),
+                                  ),
+                                );
+                              },
+                              icon: Icon(
+                                Icons.question_answer_outlined,
+                                color: Palette.glazedWhite,
                               ),
                             ),
-                        ],
-                      ),
+                            if (hasUnreadMessages)
+                              Positioned(
+                                right: 2,
+                                bottom: 12,
+                                child: Container(
+                                  height: 8,
+                                  width: 8,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Palette.forgedGold,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+
                       VerticalDivider(color: Palette.primalBlack),
+
                       Padding(
                         padding: const EdgeInsets.only(right: 8),
                         child: Banner(

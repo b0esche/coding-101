@@ -51,7 +51,7 @@ class _UserStarRatingState extends State<UserStarRating> {
                 ),
                 Center(
                   child: Text(
-                    'overall rating: $currentRating ($ratingCount ratings)',
+                    'overall rating: ${currentRating.toStringAsFixed(1)} ($ratingCount ratings)',
                     style: TextStyle(fontSize: 16),
                   ),
                 ),
