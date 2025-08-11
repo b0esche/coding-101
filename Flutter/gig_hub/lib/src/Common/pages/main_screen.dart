@@ -443,8 +443,8 @@ class _MainScreenState extends State<MainScreen> {
                               text: AppLocale.sortBy.getString(context),
                               style: TextStyle(
                                 color: Palette.glazedWhite,
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
                                 wordSpacing: -1,
                               ),
                             ),
