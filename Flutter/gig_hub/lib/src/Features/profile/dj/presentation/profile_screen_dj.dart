@@ -71,7 +71,6 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
   final _locationFocusNode = FocusNode();
   String? _locationError;
 
-  late final PlayerController _playerControllerOne, _playerControllerTwo;
   late final TextEditingController _nameController = TextEditingController(
     text: widget.dj.name,
   );
@@ -99,9 +98,6 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
   @override
   void initState() {
     super.initState();
-
-    _playerControllerOne = PlayerController();
-    _playerControllerTwo = PlayerController();
 
     _locationFocusNode.addListener(_onLocationFocusChange);
     _locationController.addListener(_onLocationChanged);
@@ -367,7 +363,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
     final db = context.watch<DatabaseRepository>();
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
-        PlayerController().stopAllPlayers();
+        // Audio players now manage their own disposal
       },
       canPop: true,
       child: Scaffold(
@@ -474,11 +470,10 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                       padding: const EdgeInsets.all(2.0),
                       child: IconButton(
                         onPressed: () {
-                          PlayerController().stopAllPlayers().whenComplete(() {
-                            if (context.mounted) {
-                              Navigator.of(context).pop();
-                            }
-                          });
+                          // Audio players now manage their own disposal
+                          if (context.mounted) {
+                            Navigator.of(context).pop();
+                          }
                         },
                         icon: Icon(
                           Icons.chevron_left,
@@ -898,7 +893,6 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                   children: [
                                     AudioPlayerWidget(
                                       audioUrl: widget.dj.streamingUrls.first,
-                                      playerController: _playerControllerOne,
                                     ),
                                     IconButton(
                                       style: ButtonStyle(
@@ -950,7 +944,6 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                 children: [
                                   AudioPlayerWidget(
                                     audioUrl: widget.dj.streamingUrls.last,
-                                    playerController: _playerControllerTwo,
                                   ),
                                   IconButton(
                                     style: ButtonStyle(
@@ -1156,9 +1149,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                         ),
                       );
                     }
-                    !editMode
-                        ? PlayerController().stopAllPlayers()
-                        : PlayerController().overrideAudioSession;
+                    // Audio players now manage their own state
                     if (editMode &&
                         _formKey.currentState!.validate() &&
                         (selectedTrackOne != null &&
@@ -1244,7 +1235,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                       });
                       await db.updateDJ(widget.dj);
                     } else if (!editMode) {
-                      PlayerController().stopAllPlayers();
+                      // Audio players now manage their own state
                       setState(() => editMode = !editMode);
                     }
                   },

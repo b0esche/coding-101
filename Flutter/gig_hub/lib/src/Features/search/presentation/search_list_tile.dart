@@ -59,6 +59,7 @@ class _SearchListTileState extends State<SearchListTile> {
       ),
       child: InkWell(
         splashFactory: NoSplash.splashFactory,
+        overlayColor: WidgetStatePropertyAll(Colors.transparent),
         onTap: () {
           setState(() {
             isExpanded = !isExpanded;

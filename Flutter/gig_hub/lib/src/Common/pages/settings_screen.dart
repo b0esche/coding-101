@@ -378,13 +378,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                     ),
                   ),
-                  GestureDetector(
-                    onTap:
-                        () => launchUrlString('https://gig-hub-8ac24.web.app'),
-                    child: SizedBox(
-                      height: 122,
-                      child: Image.asset("assets/images/icon_full.png"),
-                    ),
+                  SizedBox(
+                    height: 122,
+                    child: Image.asset("assets/images/icon_full.png"),
                   ),
 
                   Stack(
