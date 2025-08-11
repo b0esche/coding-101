@@ -83,11 +83,11 @@ class _QAPageState extends State<QAPage> {
                     ),
                     const SizedBox(width: 16),
                     Text(
-                      'Frequently Asked Questions',
+                      'Frequently Asked\nQuestions',
                       style: GoogleFonts.sometypeMono(
-                        fontSize: 28,
+                        fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: Palette.shadowGrey,
+                        color: Palette.gigGrey,
                       ),
                     ),
                   ],
@@ -106,34 +106,13 @@ class _QAPageState extends State<QAPage> {
 
           const SizedBox(height: 32),
 
-          // Search Bar
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            decoration: BoxDecoration(
-              color: Palette.lightGrey,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Palette.shadowGrey),
-            ),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Search questions...',
-                hintStyle: GoogleFonts.sometypeMono(color: Palette.gigGrey),
-                prefixIcon: Icon(Icons.search_rounded, color: Palette.gigGrey),
-                border: InputBorder.none,
-              ),
-              style: GoogleFonts.sometypeMono(),
-            ),
-          ),
-
-          const SizedBox(height: 24),
-
           // FAQ List
           Text(
             'Common Questions',
             style: GoogleFonts.sometypeMono(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: Palette.shadowGrey,
+              color: Palette.gigGrey,
             ),
           ),
 
@@ -200,6 +179,7 @@ class _QAPageState extends State<QAPage> {
     final isExpanded = expandedIndex == index;
 
     return Card(
+      color: Palette.primalBlack.o(0.35),
       margin: const EdgeInsets.only(bottom: 12),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),

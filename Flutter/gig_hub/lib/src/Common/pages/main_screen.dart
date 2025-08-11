@@ -350,11 +350,14 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                         Align(
                           alignment: Alignment.center,
-                          child: SizedBox(
-                            height: 160,
-                            width: 160,
-                            child: Hero(
-                              tag: context,
+                          child: GestureDetector(
+                            onLongPress:
+                                () => launchUrlString(
+                                  'https://gig-hub-8ac24.web.app/',
+                                ),
+                            child: SizedBox(
+                              height: 160,
+                              width: 160,
                               child: Image.asset('assets/images/icon_full.png'),
                             ),
                           ),

@@ -70,8 +70,8 @@ class ImpressumPage extends StatelessWidget {
           _buildSection('Contact Information', [
             _buildInfoRow('Address:', 'Braugasse 23\n50859 Cologne\nGermany'),
             _buildInfoRow('Phone:', '+49 (0) 160 99110299'),
-            _buildInfoRow('Email:', 'info@gighub.com'),
-            _buildInfoRow('Website:', 'www.gighub.com'),
+            _buildInfoRow('Email:', 'b0eschex@gmail.com'),
+            _buildInfoRow('Website:', 'https://gig-hub-8ac24.web.app/'),
           ]),
 
           // const SizedBox(height: 24),
@@ -180,6 +180,7 @@ class ImpressumPage extends StatelessWidget {
 
   Widget _buildSection(String title, List<Widget> content) {
     return Card(
+      color: Palette.primalBlack.o(0.35),
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -190,7 +191,7 @@ class ImpressumPage extends StatelessWidget {
               style: GoogleFonts.sometypeMono(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Palette.primalBlack,
+                color: Palette.shadowGrey,
               ),
             ),
             const SizedBox(height: 16),
@@ -223,7 +224,7 @@ class ImpressumPage extends StatelessWidget {
               value,
               style: GoogleFonts.sometypeMono(
                 fontSize: 14,
-                color: Palette.primalBlack,
+                color: Palette.gigGrey,
                 height: 1.3,
               ),
             ),
@@ -252,7 +253,7 @@ class ImpressumPage extends StatelessWidget {
             content,
             style: GoogleFonts.sometypeMono(
               fontSize: 13,
-              color: Palette.primalBlack,
+              color: Palette.gigGrey,
               height: 1.4,
             ),
           ),

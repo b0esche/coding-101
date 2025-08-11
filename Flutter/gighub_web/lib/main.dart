@@ -19,7 +19,7 @@ class MainApp extends StatelessWidget {
         title: 'GigHub web',
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
-        themeMode: ThemeMode.system,
+        themeMode: ThemeMode.dark,
         home: const MainLayout(),
         debugShowCheckedModeBanner: false,
       ),

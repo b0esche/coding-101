@@ -41,7 +41,7 @@ class PortfolioPage extends StatelessWidget {
                       style: GoogleFonts.sometypeMono(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
-                        color: Palette.shadowGrey,
+                        color: Palette.gigGrey,
                       ),
                     ),
                   ],
@@ -179,7 +179,7 @@ class PortfolioPage extends StatelessWidget {
                   children: [
                     _buildMetricItem('99.9%', 'Uptime'),
                     _buildMetricItem('< 100ms', 'Response Time'),
-                    _buildMetricItem('0+', 'Active Users'),
+                    _buildMetricItem('2+', 'Active Users'),
                     _buildMetricItem('1+', 'Countries'),
                   ],
                 ),

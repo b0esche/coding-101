@@ -35,7 +35,7 @@ class ContributePage extends StatelessWidget {
                     Text(
                       'Contribute to GigHub',
                       style: GoogleFonts.sometypeMono(
-                        fontSize: 28,
+                        fontSize: 24,
                         fontWeight: FontWeight.bold,
                         color: Palette.gigGrey,
                       ),
@@ -47,7 +47,7 @@ class ContributePage extends StatelessWidget {
                   'Help us build the future of music collaboration. Your contributions make a difference!',
                   style: GoogleFonts.sometypeMono(
                     fontSize: 16,
-                    color: Palette.shadowGrey,
+                    color: Palette.gigGrey,
                   ),
                 ),
               ],
@@ -160,6 +160,7 @@ class ContributePage extends StatelessWidget {
                       label: Text(
                         'View on GitHub',
                         style: GoogleFonts.sometypeMono(
+                          fontSize: 12,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -171,6 +172,7 @@ class ContributePage extends StatelessWidget {
                       label: Text(
                         'Join Discord',
                         style: GoogleFonts.sometypeMono(
+                          fontSize: 12,
                           fontWeight: FontWeight.w600,
                           color: Palette.forgedGold,
                         ),
@@ -230,7 +232,7 @@ class ContributePage extends StatelessWidget {
                         description,
                         style: GoogleFonts.sometypeMono(
                           fontSize: 14,
-                          color: Palette.gigGrey,
+                          color: Palette.concreteGrey,
                         ),
                       ),
                     ],

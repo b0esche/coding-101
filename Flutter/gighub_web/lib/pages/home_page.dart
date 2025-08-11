@@ -43,17 +43,17 @@ class HomePage extends StatelessWidget {
                     color: Palette.glazedWhite,
                   ),
                 ),
-                const SizedBox(height: 24),
-                ElevatedButton.icon(
-                  onPressed: () {},
-                  icon: const Icon(Icons.play_arrow_rounded),
-                  label: Text(
-                    'Get Started',
-                    style: GoogleFonts.sometypeMono(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
+                // const SizedBox(height: 24),
+                // ElevatedButton.icon(
+                //   onPressed: () {},
+                //   icon: const Icon(Icons.play_arrow_rounded),
+                //   label: Text(
+                //     'Get Started',
+                //     style: GoogleFonts.sometypeMono(
+                //       fontWeight: FontWeight.w600,
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),
@@ -66,7 +66,7 @@ class HomePage extends StatelessWidget {
             style: GoogleFonts.sometypeMono(
               fontSize: 24,
               fontWeight: FontWeight.bold,
-              color: Palette.primalBlack,
+              color: Palette.gigGrey,
             ),
           ),
 
