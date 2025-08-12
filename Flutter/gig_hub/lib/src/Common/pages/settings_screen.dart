@@ -308,6 +308,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
         body: Stack(
           children: [
             Positioned(
+              top: 128,
+              right: 8,
+              child: IconButton(
+                onPressed:
+                    () => launchUrlString(
+                      'https://gig-hub-8ac24.web.app/#/qapage',
+                    ),
+                icon: Icon(
+                  Icons.help_outline_rounded,
+                  size: 34,
+                  color: Palette.glazedWhite,
+                ),
+              ),
+            ),
+            Positioned(
               right: 16,
               top: 60,
               child: Container(
@@ -362,7 +377,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             Center(
               child: Column(
-                spacing: 16,
+                spacing: 12,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SizedBox(height: 2),
@@ -378,9 +393,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: 122,
-                    child: Image.asset("assets/images/icon_full.png"),
+                  GestureDetector(
+                    onTap:
+                        () => launchUrlString('https://gig-hub-8ac24.web.app'),
+                    child: SizedBox.square(
+                      dimension: 136,
+                      child: Image.asset("assets/images/icon_full.png"),
+                    ),
                   ),
 
                   Stack(

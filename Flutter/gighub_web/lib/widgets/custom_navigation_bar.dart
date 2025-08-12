@@ -1,80 +1,79 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import '../theme/palette.dart';
-import '../providers/navigation_provider.dart';
 
 class CustomNavigationBar extends StatelessWidget {
   const CustomNavigationBar({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<NavigationProvider>(
-      builder: (context, navigationProvider, child) {
-        return Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Palette.primalBlack,
-            boxShadow: [
-              BoxShadow(
-                color: Palette.forgedGold.o(0.3),
-                blurRadius: 8,
-                offset: const Offset(0, -2),
+    final currentLocation = GoRouter.of(
+      context,
+    ).routerDelegate.currentConfiguration.uri.path;
+
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Palette.primalBlack,
+        boxShadow: [
+          BoxShadow(
+            color: Palette.forgedGold.o(0.3),
+            blurRadius: 8,
+            offset: const Offset(0, -2),
+          ),
+        ],
+      ),
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _buildNavItem(
+                context,
+                'Home',
+                Icons.home_rounded,
+                '/',
+                currentLocation == '/',
+                () => context.go('/'),
+              ),
+              _buildNavItem(
+                context,
+                'Contribute',
+                Icons.add_circle_outline_rounded,
+                '/contribute',
+                currentLocation == '/contribute',
+                () => context.go('/contribute'),
+              ),
+              _buildNavItem(
+                context,
+                'Q&A',
+                Icons.help_outline_rounded,
+                '/qa',
+                currentLocation == '/qa',
+                () => context.go('/qa'),
+              ),
+              _buildNavItem(
+                context,
+                'Portfolio',
+                Icons.work_outline_rounded,
+                '/portfolio',
+                currentLocation == '/portfolio',
+                () => context.go('/portfolio'),
+              ),
+              _buildNavItem(
+                context,
+                'Impressum',
+                Icons.info_outline_rounded,
+                '/impressum',
+                currentLocation == '/impressum',
+                () => context.go('/impressum'),
               ),
             ],
           ),
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buildNavItem(
-                    context,
-                    'Home',
-                    Icons.home_rounded,
-                    AppPage.home,
-                    navigationProvider.currentPage == AppPage.home,
-                    () => navigationProvider.setPage(AppPage.home),
-                  ),
-                  _buildNavItem(
-                    context,
-                    'Contribute',
-                    Icons.add_circle_outline_rounded,
-                    AppPage.contribute,
-                    navigationProvider.currentPage == AppPage.contribute,
-                    () => navigationProvider.setPage(AppPage.contribute),
-                  ),
-                  _buildNavItem(
-                    context,
-                    'Q&A',
-                    Icons.help_outline_rounded,
-                    AppPage.qa,
-                    navigationProvider.currentPage == AppPage.qa,
-                    () => navigationProvider.setPage(AppPage.qa),
-                  ),
-                  _buildNavItem(
-                    context,
-                    'Portfolio',
-                    Icons.work_outline_rounded,
-                    AppPage.portfolio,
-                    navigationProvider.currentPage == AppPage.portfolio,
-                    () => navigationProvider.setPage(AppPage.portfolio),
-                  ),
-                  _buildNavItem(
-                    context,
-                    'Impressum',
-                    Icons.info_outline_rounded,
-                    AppPage.impressum,
-                    navigationProvider.currentPage == AppPage.impressum,
-                    () => navigationProvider.setPage(AppPage.impressum),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
+        ),
+      ),
     );
   }
 
@@ -82,7 +81,7 @@ class CustomNavigationBar extends StatelessWidget {
     BuildContext context,
     String label,
     IconData icon,
-    AppPage page,
+    String route,
     bool isSelected,
     VoidCallback onTap,
   ) {
