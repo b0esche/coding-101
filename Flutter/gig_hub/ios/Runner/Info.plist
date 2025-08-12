@@ -76,12 +76,6 @@
 	<string>Need permission to upload images to your profile.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>fetch</string>
-		<string>remote-notification</string>
-		<string>audio</string>
-	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

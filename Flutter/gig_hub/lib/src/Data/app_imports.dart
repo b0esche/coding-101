@@ -11,7 +11,6 @@ export 'package:http/http.dart';
 export 'package:flutter_svg/svg.dart';
 export 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 export 'package:just_audio/just_audio.dart';
-export 'package:just_audio_background/just_audio_background.dart';
 export 'package:just_waveform/just_waveform.dart';
 export 'package:gig_hub/src/Data/services/audio_service.dart';
 export 'package:pinch_zoom/pinch_zoom.dart';

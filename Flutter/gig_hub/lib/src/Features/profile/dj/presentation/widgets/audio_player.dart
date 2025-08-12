@@ -1,9 +1,37 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:gig_hub/src/Data/services/audio_service.dart';
+import 'package:just_waveform/just_waveform.dart';
+import 'package:gig_hub/src/data/services/soundcloud_service.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
+
+class AudioPlayerCoordinator {
+  static AudioPlayerCoordinator? _instance;
+  static AudioPlayerCoordinator get instance =>
+      _instance ??= AudioPlayerCoordinator._();
+
+  AudioPlayerCoordinator._();
+
+  _AudioPlayerWidgetState? _currentlyPlaying;
+
+  void requestPlayback(_AudioPlayerWidgetState player) {
+    if (_currentlyPlaying != null && _currentlyPlaying != player) {
+      _currentlyPlaying!._stopFromCoordinator();
+    }
+    _currentlyPlaying = player;
+  }
+
+  void playerStopped(_AudioPlayerWidgetState player) {
+    if (_currentlyPlaying == player) {
+      _currentlyPlaying = null;
+    }
+  }
+}
 
 class AudioPlayerWidget extends StatefulWidget {
   final String audioUrl;
@@ -12,12 +40,49 @@ class AudioPlayerWidget extends StatefulWidget {
 
   @override
   State<AudioPlayerWidget> createState() => _AudioPlayerWidgetState();
+
+  static Future<String> downloadAndSaveAudio(
+    Map<String, dynamic> params,
+  ) async {
+    final String publicUrl = params['publicUrl'];
+    final String filePath = params['filePath'];
+
+    final request = http.Request('GET', Uri.parse(publicUrl));
+    final response = await request.send();
+
+    if (response.statusCode != 200) {
+      throw Exception('failed to download audio');
+    }
+
+    final file = File(filePath);
+    final sink = file.openWrite();
+
+    try {
+      int bytesWritten = 0;
+      const yieldInterval = 128 * 1024;
+
+      await for (final chunk in response.stream) {
+        sink.add(chunk);
+        bytesWritten += chunk.length;
+
+        if (bytesWritten % yieldInterval == 0) {
+          await Future.delayed(Duration.zero);
+        }
+      }
+
+      await sink.flush();
+    } finally {
+      await sink.close();
+    }
+
+    return filePath;
+  }
 }
 
 class _AudioPlayerWidgetState extends State<AudioPlayerWidget>
     with TickerProviderStateMixin {
+  AudioPlayer? _audioPlayer;
   late AnimationController _controller;
-  final AudioService _audioService = AudioService.instance;
 
   bool _isLoading = true;
   bool _isPlaying = false;
@@ -27,11 +92,9 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget>
   Duration _position = Duration.zero;
   List<double> _waveformData = [];
 
-  late StreamSubscription<PlayerState> _playerStateSubscription;
-  late StreamSubscription<Duration> _positionSubscription;
-  late StreamSubscription<Duration?> _durationSubscription;
-  late StreamSubscription<bool> _loadingSubscription;
-  late StreamSubscription<List<double>> _waveformSubscription;
+  StreamSubscription<PlayerState>? _playerStateSubscription;
+  StreamSubscription<Duration>? _positionSubscription;
+  StreamSubscription<Duration?>? _durationSubscription;
 
   @override
   void initState() {
@@ -42,101 +105,200 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget>
       vsync: this,
     );
 
-    _setupSubscriptions();
-    _loadTrack();
+    _init();
   }
 
-  void _setupSubscriptions() {
-    // Subscribe to loading state
-    _loadingSubscription = _audioService.loadingStream.listen((isLoading) {
-      if (mounted) {
-        setState(() => _isLoading = isLoading);
-      }
-    });
-
-    // Subscribe to waveform data
-    _waveformSubscription = _audioService.waveformStream.listen((waveformData) {
-      if (mounted) {
-        setState(() => _waveformData = waveformData);
-      }
-    });
-
-    // Subscribe to player state
-    _playerStateSubscription = _audioService.player.playerStateStream.listen((
-      state,
-    ) {
-      if (mounted) {
-        setState(() {
-          _isPlaying = state.playing;
-          _hasFinished = state.processingState == ProcessingState.completed;
-        });
-
-        // Sync animation controller with player state
-        if (state.playing) {
-          _controller.forward();
-        } else {
-          _controller.reverse();
-        }
-      }
-    });
-
-    // Subscribe to position
-    _positionSubscription = _audioService.player.positionStream.listen((
-      position,
-    ) {
-      if (mounted) {
-        setState(() => _position = position);
-      }
-    });
-
-    // Subscribe to duration
-    _durationSubscription = _audioService.player.durationStream.listen((
-      duration,
-    ) {
-      if (mounted) {
-        setState(() => _duration = duration);
-      }
-    });
-  }
-
-  Future<void> _loadTrack() async {
+  Future<void> _init() async {
     try {
-      await _audioService.loadTrack(widget.audioUrl);
+      _audioPlayer = AudioPlayer();
 
-      // Set initial waveform data if available
-      if (mounted) {
-        setState(() {
-          _waveformData = _audioService.currentWaveformData;
-        });
+      _playerStateSubscription = _audioPlayer!.playerStateStream.listen((
+        state,
+      ) {
+        if (mounted) {
+          setState(() {
+            _isPlaying = state.playing;
+            _hasFinished = state.processingState == ProcessingState.completed;
+          });
+
+          if (state.playing) {
+            _controller.forward();
+            AudioPlayerCoordinator.instance.requestPlayback(this);
+          } else {
+            _controller.reverse();
+            AudioPlayerCoordinator.instance.playerStopped(this);
+          }
+        }
+      });
+
+      _positionSubscription = _audioPlayer!.positionStream.listen((position) {
+        if (mounted) {
+          setState(() => _position = position);
+        }
+      });
+
+      _durationSubscription = _audioPlayer!.durationStream.listen((duration) {
+        if (mounted) {
+          setState(() => _duration = duration);
+        }
+      });
+
+      final urlToStream = widget.audioUrl;
+      final publicUrl = await SoundcloudService().getPublicStreamUrl(
+        urlToStream,
+      );
+
+      if (publicUrl.isEmpty) {
+        throw Exception('invalid audio file from server');
+      }
+
+      try {
+        final audioSource = AudioSource.uri(Uri.parse(publicUrl));
+        await _audioPlayer!.setAudioSource(audioSource);
+
+        if (!mounted) return;
+        setState(() => _isLoading = false);
+
+        _showSimpleWaveform();
+        _downloadAndExtractWaveformInBackground(publicUrl);
+      } catch (e) {
+        debugPrint('Direct streaming failed, falling back to download: $e');
+        await _downloadAndSetupPlayer(publicUrl);
       }
     } catch (e) {
       if (mounted) {
         setState(() => _isLoading = false);
       }
-      debugPrint('Error loading track: $e');
+      debugPrint('Error while loading player: $e');
+    }
+  }
+
+  void _showSimpleWaveform() {
+    setState(() {
+      _waveformData = List.generate(
+        100,
+        (i) => 0.2 + (0.6 * sin(i * 0.15)) + (0.2 * sin(i * 0.05)),
+      );
+    });
+  }
+
+  Future<void> _downloadAndSetupPlayer(String publicUrl) async {
+    final dir = await getTemporaryDirectory();
+    final filePath = '${dir.path}/${publicUrl.hashCode}.mp3';
+
+    final savedFilePath = await compute(
+      AudioPlayerWidget.downloadAndSaveAudio,
+      {'publicUrl': publicUrl, 'filePath': filePath},
+    );
+
+    final audioSource = AudioSource.uri(Uri.file(savedFilePath));
+    await _audioPlayer!.setAudioSource(audioSource);
+
+    if (!mounted) return;
+    setState(() => _isLoading = false);
+
+    _extractWaveform(savedFilePath);
+  }
+
+  Future<void> _downloadAndExtractWaveformInBackground(String publicUrl) async {
+    try {
+      final dir = await getTemporaryDirectory();
+      final filePath = '${dir.path}/${publicUrl.hashCode}.mp3';
+
+      if (!await File(filePath).exists()) {
+        await compute(AudioPlayerWidget.downloadAndSaveAudio, {
+          'publicUrl': publicUrl,
+          'filePath': filePath,
+        });
+      }
+
+      _extractWaveform(filePath);
+    } catch (e) {
+      debugPrint('Background waveform extraction failed: $e');
+    }
+  }
+
+  Future<void> _extractWaveform(String filePath) async {
+    try {
+      final file = File(filePath);
+      final fileSize = await file.length();
+      const maxSizeForFullWaveform = 2000 * 1024 * 1024;
+
+      if (fileSize > maxSizeForFullWaveform) {
+        debugPrint('File too large, skipping waveform extraction');
+        return;
+      }
+
+      final progressStream = JustWaveform.extract(
+        audioInFile: file,
+        waveOutFile: File('$filePath.wave'),
+        zoom: const WaveformZoom.pixelsPerSecond(5),
+      );
+
+      await progressStream.timeout(Duration(seconds: 60)).listen((progress) {
+        if (progress.waveform != null && mounted) {
+          setState(() {
+            _waveformData = _normalizeWaveformData(
+              progress.waveform!.data.map((e) => e.toDouble()).toList(),
+            );
+          });
+        }
+      }).asFuture();
+    } catch (e) {
+      debugPrint('Waveform extraction failed: $e');
+    }
+  }
+
+  List<double> _normalizeWaveformData(List<double> data) {
+    if (data.isEmpty) return [];
+
+    final maxValue = data.map((v) => v.abs()).reduce(max);
+    if (maxValue == 0) return List.filled(data.length, 0.0);
+
+    const maxPoints = 500;
+    if (data.length > maxPoints) {
+      final step = data.length / maxPoints;
+      final List<double> downsampled = [];
+      for (int i = 0; i < maxPoints; i++) {
+        final index = (i * step).round();
+        if (index < data.length) {
+          downsampled.add(data[index].abs() / maxValue);
+        }
+      }
+      return downsampled;
+    }
+
+    return data.map((v) => v.abs() / maxValue).toList();
+  }
+
+  void _stopFromCoordinator() {
+    if (_audioPlayer != null && _isPlaying) {
+      _audioPlayer!.pause();
     }
   }
 
   @override
   void dispose() {
-    _playerStateSubscription.cancel();
-    _positionSubscription.cancel();
-    _durationSubscription.cancel();
-    _loadingSubscription.cancel();
-    _waveformSubscription.cancel();
+    AudioPlayerCoordinator.instance.playerStopped(this);
+    _playerStateSubscription?.cancel();
+    _positionSubscription?.cancel();
+    _durationSubscription?.cancel();
+    _audioPlayer?.dispose();
     _controller.dispose();
     super.dispose();
   }
 
   Future<void> _togglePlayPause() async {
+    if (_audioPlayer == null) return;
+
     if (_isPlaying) {
-      await _audioService.player.pause();
+      await _audioPlayer!.pause();
     } else {
       if (_hasFinished) {
-        await _audioService.player.seek(Duration.zero);
+        await _audioPlayer!.seek(Duration.zero);
         _hasFinished = false;
       }
-      await _audioService.player.play();
+      await _audioPlayer!.play();
     }
   }
 
@@ -198,13 +360,13 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget>
                                     _duration!.inMilliseconds
                                 : 0.0,
                         onSeek: (progress) async {
-                          if (_duration != null) {
+                          if (_audioPlayer != null && _duration != null) {
                             final position = Duration(
                               milliseconds:
                                   (_duration!.inMilliseconds * progress)
                                       .round(),
                             );
-                            await _audioService.player.seek(position);
+                            await _audioPlayer!.seek(position);
                           }
                         },
                       ),
@@ -216,7 +378,6 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget>
   }
 }
 
-// Custom waveform widget that looks like the original but performs much better
 class CustomWaveformWidget extends StatelessWidget {
   final List<double> waveformData;
   final double progress;
@@ -266,7 +427,6 @@ class WaveformPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     if (waveformData.isEmpty) {
-      // Draw placeholder bars if no waveform data
       _drawPlaceholderWaveform(canvas, size);
       return;
     }
