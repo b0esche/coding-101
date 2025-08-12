@@ -446,7 +446,7 @@ class _MainScreenState extends State<MainScreen> {
                               text: AppLocale.sortBy.getString(context),
                               style: TextStyle(
                                 color: Palette.glazedWhite,
-                                fontSize: 12,
+                                fontSize: 12.5,
                                 fontWeight: FontWeight.w500,
                                 wordSpacing: -1,
                               ),

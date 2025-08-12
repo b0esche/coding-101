@@ -312,12 +312,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               right: 8,
               child: IconButton(
                 onPressed:
-                    () => launchUrlString(
-                      'https://gig-hub-8ac24.web.app/#/qapage',
-                    ),
+                    () => launchUrlString('https://gig-hub-8ac24.web.app/#/qa'),
                 icon: Icon(
                   Icons.help_outline_rounded,
-                  size: 34,
+                  size: 36,
                   color: Palette.glazedWhite,
                 ),
               ),
@@ -395,9 +393,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   GestureDetector(
                     onTap:
-                        () => launchUrlString('https://gig-hub-8ac24.web.app'),
+                        () => launchUrlString(
+                          'https://gig-hub-8ac24.web.app/#/portfolio',
+                        ),
                     child: SizedBox.square(
-                      dimension: 136,
+                      dimension: 142,
                       child: Image.asset("assets/images/icon_full.png"),
                     ),
                   ),
@@ -627,11 +627,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   Align(
                     alignment: Alignment.bottomRight,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 0, 24, 12),
-                      child: Text(
-                        "version 1.0.3",
-                        style: TextStyle(color: Palette.glazedWhite),
+                    child: GestureDetector(
+                      onTap:
+                          () => launchUrlString(
+                            'https://gig-hub-8ac24.web.app/#/contribute',
+                          ),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 0, 24, 12),
+                        child: Text(
+                          "version 1.0.3",
+                          style: TextStyle(color: Palette.glazedWhite),
+                        ),
                       ),
                     ),
                   ),
