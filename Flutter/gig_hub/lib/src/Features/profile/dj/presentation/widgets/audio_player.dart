@@ -222,7 +222,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget>
     try {
       final file = File(filePath);
       final fileSize = await file.length();
-      const maxSizeForFullWaveform = 2000 * 1024 * 1024;
+      const maxSizeForFullWaveform = 1000 * 1024 * 1024;
 
       if (fileSize > maxSizeForFullWaveform) {
         debugPrint('File too large, skipping waveform extraction');

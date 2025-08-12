@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:gig_hub/src/Data/app_imports.dart';
 import 'package:intl/intl.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
@@ -93,9 +94,16 @@ class ChatListItemWidget extends StatelessWidget {
                       ),
                     ),
                     child: ClipOval(
-                      child: FadeInImage.assetNetwork(
-                        placeholder: 'assets/images/default_avatar.jpg',
-                        image: avatarUrl,
+                      child: CachedNetworkImage(
+                        progressIndicatorBuilder:
+                            (context, url, progress) =>
+                                CircularProgressIndicator(
+                                  color: Palette.forgedGold,
+                                  strokeWidth: 1.65,
+                                ),
+                        imageUrl: avatarUrl,
+                        fadeInDuration: Duration(milliseconds: 150),
+                        fadeInCurve: Curves.easeIn,
                         height: 80,
                         width: 80,
                         fit: BoxFit.cover,

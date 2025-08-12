@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:gig_hub/src/Data/app_imports.dart';
 
 class SearchListTile extends StatefulWidget {
@@ -82,9 +83,22 @@ class _SearchListTileState extends State<SearchListTile> {
                     ),
                   ),
                   child: ClipOval(
-                    child: FadeInImage.assetNetwork(
-                      image: widget.imagePath,
-                      placeholder: 'assets/images/default_avatar.jpg',
+                    child: CachedNetworkImage(
+                      imageUrl: widget.imagePath,
+                      progressIndicatorBuilder:
+                          (context, url, progress) => CircularProgressIndicator(
+                            color: Palette.forgedGold,
+                            strokeWidth: 1.65,
+                          ),
+                      errorWidget:
+                          (context, url, error) => Image.asset(
+                            'assets/images/default_avatar.jpg',
+                            height: 70,
+                            width: 70,
+                            fit: BoxFit.cover,
+                          ),
+                      fadeInCurve: Curves.easeIn,
+                      fadeInDuration: Duration(milliseconds: 150),
                       height: 70,
                       width: 70,
                       fit: BoxFit.cover,
@@ -98,37 +112,37 @@ class _SearchListTileState extends State<SearchListTile> {
                     children: [
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-
                         children: [
-                          SizedBox(
-                            width: 186,
-                            child: Text(
-                              widget.name,
-                              style: GoogleFonts.sometypeMono(
-                                textStyle: TextStyle(
-                                  decoration: TextDecoration.underline,
-                                  decorationColor: Palette.primalBlack.o(0.2),
-                                  wordSpacing: -6,
-                                  letterSpacing: -0.25,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                  overflow:
-                                      isExpanded
-                                          ? TextOverflow.fade
-                                          : TextOverflow.ellipsis,
-                                  shadows: [
-                                    Shadow(
-                                      offset: Offset(0.25, 0.25),
-                                      color: Palette.shadowGrey.o(0.35),
-                                      blurRadius: 3,
-                                    ),
-                                  ],
+                          Flexible(
+                            child: SizedBox(
+                              width: 186,
+                              child: Text(
+                                widget.name,
+                                style: GoogleFonts.sometypeMono(
+                                  textStyle: TextStyle(
+                                    decoration: TextDecoration.underline,
+                                    decorationColor: Palette.primalBlack.o(0.2),
+                                    wordSpacing: -6,
+                                    letterSpacing: -0.25,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                    overflow:
+                                        isExpanded
+                                            ? TextOverflow.fade
+                                            : TextOverflow.ellipsis,
+                                    shadows: [
+                                      Shadow(
+                                        offset: Offset(0.25, 0.25),
+                                        color: Palette.shadowGrey.o(0.35),
+                                        blurRadius: 3,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                          Spacer(),
+                          const SizedBox(width: 8),
                           RatingStars(
                             value: widget.rating ?? 0,
                             starBuilder:

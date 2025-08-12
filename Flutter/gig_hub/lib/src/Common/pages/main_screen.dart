@@ -335,6 +335,8 @@ class _MainScreenState extends State<MainScreen> {
                               ),
                               child: ClipOval(
                                 child: FadeInImage.assetNetwork(
+                                  fadeInCurve: Curves.easeIn,
+                                  fadeInDuration: Duration(milliseconds: 150),
                                   placeholder:
                                       'assets/images/default_avatar.jpg',
                                   image:
