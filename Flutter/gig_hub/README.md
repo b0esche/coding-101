@@ -10,6 +10,7 @@ _GigHub_ is a cross-platform mobile app that connects DJs and bookers. Users can
 - 🔐 **End-to-end encrypted messaging** using AES-256
 - 👤 **DJ & Booker profiles** with SoundCloud track streaming, bios, images, and customizable info
 - 🎵 **High-performance audio player** optimized for long tracks (1:30h+) with instant loading
+- 🎧 **Background audio playback** continues playing when app is minimized or phone is locked
 - 📊 **Beautiful waveform visualization** with custom rendering for smooth performance
 - 📨 **Realtime chat** via Firebase Cloud Firestore
 - 🧾 **Authentication** (email, Apple, Google, Facebook)
@@ -67,12 +68,13 @@ _GigHub_ is a cross-platform mobile app that connects DJs and bookers. Users can
 
 ### 🔊 Audio & Media
 
-| Package               | Purpose                           |
-|-----------------------|-----------------------------------|
-| `image_picker`        | Pick images from device           |
-| `flutter_image_compress` | Reduce image sizes              |
-| `just_audio`          | High-performance audio playback   |
-| `just_waveform`       | Efficient waveform visualization  |
+| Package                   | Purpose                           |
+|---------------------------|-----------------------------------|
+| `image_picker`            | Pick images from device           |
+| `flutter_image_compress`  | Reduce image sizes                |
+| `just_audio`              | High-performance audio playback   |
+| `just_audio_background`   | Background audio continuation     |
+| `just_waveform`           | Efficient waveform visualization  |
 
 
 ### 🌍 Navigation & Links
@@ -96,6 +98,8 @@ _GigHub_ is a cross-platform mobile app that connects DJs and bookers. Users can
 ### 🎵 Audio Player
 - **Instant Loading**: Streams audio directly without downloading first
 - **Long Track Support**: Optimized for 1:30h+ tracks without UI freezing
+- **Background Playback**: Continues playing when app is minimized or phone locked
+- **Media Controls**: System notification with play/pause controls
 - **Smart Waveform**: Custom rendering with automatic fallbacks for large files
 - **Background Processing**: File operations in isolates to keep UI responsive
 - **Memory Efficient**: Downsampled waveforms and streaming downloads

@@ -54,6 +54,16 @@ Future<void> main() async {
   await dotenv.load(fileName: ".env");
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
+  await JustAudioBackground.init(
+    androidNotificationChannelId: 'com.gighub.audio',
+    androidNotificationChannelName: 'GigHub Audio',
+    androidNotificationOngoing: true,
+    androidShowNotificationBadge: true,
+    androidNotificationClickStartsActivity: true,
+    androidNotificationIcon: 'mipmap/ic_launcher',
+    preloadArtwork: true,
+  );
+
   await FirebaseMessaging.instance.requestPermission();
   await db.initFirebaseMessaging();
 
