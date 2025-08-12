@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
-import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'theme/app_theme.dart';
-import 'providers/navigation_provider.dart';
 import 'pages/home_page.dart';
 import 'pages/contribute_page.dart';
 import 'pages/qa_page.dart';
@@ -22,16 +20,13 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => NavigationProvider(),
-      child: MaterialApp.router(
-        title: 'GigHub web',
-        theme: AppTheme.lightTheme,
-        darkTheme: AppTheme.darkTheme,
-        themeMode: ThemeMode.dark,
-        debugShowCheckedModeBanner: false,
-        routerConfig: _router,
-      ),
+    return MaterialApp.router(
+      title: 'GigHub web',
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.dark,
+      debugShowCheckedModeBanner: false,
+      routerConfig: _router,
     );
   }
 }
@@ -82,21 +77,15 @@ class MainScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<NavigationProvider>(
-      builder: (context, navigationProvider, _) {
-        return Scaffold(
-          appBar: AppBar(title: Text(_getPageTitle(context)), elevation: 2),
-          body: child,
-          bottomNavigationBar: const CustomNavigationBar(),
-        );
-      },
+    return Scaffold(
+      appBar: AppBar(title: Text(_getPageTitle(context)), elevation: 2),
+      body: child,
+      bottomNavigationBar: const CustomNavigationBar(),
     );
   }
 
   String _getPageTitle(BuildContext context) {
-    final location = GoRouter.of(
-      context,
-    ).routerDelegate.currentConfiguration.uri.path;
+    final location = GoRouterState.of(context).uri.path;
     switch (location) {
       case '/':
         return 'GigHub';

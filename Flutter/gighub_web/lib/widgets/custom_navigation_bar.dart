@@ -8,9 +8,7 @@ class CustomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentLocation = GoRouter.of(
-      context,
-    ).routerDelegate.currentConfiguration.uri.path;
+    final currentLocation = GoRouterState.of(context).uri.path;
 
     return Container(
       width: double.infinity,
