@@ -10,7 +10,6 @@ import 'pages/impressum_page.dart';
 import 'widgets/custom_navigation_bar.dart';
 
 void main() {
-  // Use hash-based URL strategy for web
   setUrlStrategy(const HashUrlStrategy());
   runApp(const MainApp());
 }
@@ -31,7 +30,6 @@ class MainApp extends StatelessWidget {
   }
 }
 
-// Router configuration with hash routing
 final _router = GoRouter(
   initialLocation: '/',
   routes: [

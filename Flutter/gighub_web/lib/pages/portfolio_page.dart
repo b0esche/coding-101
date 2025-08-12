@@ -112,8 +112,8 @@ class PortfolioPage extends StatelessWidget {
 
           _buildProjectCard(
             'Event Management Platform',
-            'Comprehensive gig booking and management system',
-            ['Calendar Integration', 'Payment Processing', 'Notifications'],
+            'Comprehensive gig publishing and management system',
+            ['Location Integration', 'Event Group Chats', 'Notifications'],
             Icons.event_rounded,
             'Coming Soon',
             false,

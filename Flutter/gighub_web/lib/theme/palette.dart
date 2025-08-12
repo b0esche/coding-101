@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 abstract class Palette {
-  // Main colors inspired by gig_hub
   static const Color primalBlack = Color.fromARGB(255, 33, 33, 33);
   static const Color glazedWhite = Color.fromARGB(255, 248, 248, 248);
   static const Color gigGrey = Color.fromARGB(255, 155, 155, 155);
@@ -11,7 +10,6 @@ abstract class Palette {
   static const Color alarmRed = Color.fromARGB(255, 235, 72, 72);
   static const Color okGreen = Color.fromARGB(255, 25, 255, 144);
 
-  // Additional colors for web
   static const Color darkGrey = Color.fromARGB(255, 66, 66, 66);
   static const Color lightGrey = Color.fromARGB(255, 244, 244, 244);
   static const Color accentBlue = Color.fromARGB(255, 100, 149, 237);
@@ -19,6 +17,6 @@ abstract class Palette {
 
 extension ColorExtension on Color {
   Color o(double opacity) {
-    return withOpacity(opacity);
+    return withValues(alpha: opacity);
   }
 }
