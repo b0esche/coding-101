@@ -1,7 +1,9 @@
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:gig_hub/src/Data/services/localization_service.dart';
 import 'package:intl/intl.dart';
+import 'package:encrypt/encrypt.dart' as encrypt;
 import '../../../Data/app_imports.dart';
+import 'widgets/group_chat_list_widget.dart';
 
 class ChatListScreenArgs {
   final AppUser currentUser;
@@ -18,13 +20,16 @@ class ChatListScreen extends StatefulWidget {
   State<ChatListScreen> createState() => _ChatListScreenState();
 }
 
-class _ChatListScreenState extends State<ChatListScreen> with RouteAware {
+class _ChatListScreenState extends State<ChatListScreen>
+    with RouteAware, TickerProviderStateMixin {
   final db = FirestoreDatabaseRepository();
   RouteObserver<PageRoute>? _routeObserver;
+  late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   @override
@@ -37,12 +42,54 @@ class _ChatListScreenState extends State<ChatListScreen> with RouteAware {
   @override
   void dispose() {
     _routeObserver?.unsubscribe(this);
+    _tabController.dispose();
     super.dispose();
   }
 
   @override
   void didPopNext() {
     setState(() {});
+  }
+
+  String _decryptMessage(String text) {
+    final keyString = dotenv.env['ENCRYPTION_KEY'];
+    if (keyString == null || keyString.length != 32) {
+      return '[key error]';
+    }
+
+    if (!text.startsWith('enc::')) {
+      return text;
+    }
+
+    try {
+      final key = encrypt.Key.fromUtf8(keyString);
+      final encrypter = encrypt.Encrypter(encrypt.AES(key));
+
+      final parts = text.substring(5).split(':');
+      if (parts.length != 2) return '[format error]';
+
+      final iv = encrypt.IV.fromBase64(parts[0]);
+      final encryptedData = parts[1];
+
+      return encrypter.decrypt64(encryptedData, iv: iv);
+    } catch (e) {
+      return '[decoding error]';
+    }
+  }
+
+  String _formatTimestamp(DateTime timestamp) {
+    final now = DateTime.now();
+    final difference = now.difference(timestamp);
+
+    if (difference.inDays > 0) {
+      return '${difference.inDays}d';
+    } else if (difference.inHours > 0) {
+      return '${difference.inHours}h';
+    } else if (difference.inMinutes > 0) {
+      return '${difference.inMinutes}m';
+    } else {
+      return 'now';
+    }
   }
 
   Future<List<dynamic>> _buildChatEntries(
@@ -102,77 +149,178 @@ class _ChatListScreenState extends State<ChatListScreen> with RouteAware {
         backgroundColor: Palette.primalBlack,
         iconTheme: IconThemeData(color: Palette.glazedWhite),
         titleTextStyle: TextStyle(color: Palette.glazedWhite, fontSize: 20),
+        bottom: TabBar(
+          controller: _tabController,
+          indicatorColor: Palette.forgedGold,
+          labelColor: Palette.forgedGold,
+          unselectedLabelColor: Palette.glazedWhite.o(0.7),
+          tabs: [Tab(text: 'Direct Chats'), Tab(text: 'Group Chats')],
+        ),
       ),
-      body: StreamBuilder<List<ChatMessage>>(
-        stream: db.getChatsStream(widget.currentUser.id),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(color: Palette.forgedGold),
-            );
-          }
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          _buildDirectChats(),
+          GroupChatListWidget(currentUserId: widget.currentUser.id),
+        ],
+      ),
+    );
+  }
 
-          if (snapshot.hasError) {
-            return Center(
-              child: Text(
-                AppLocale.loadingChatsError.getString(context),
-                style: TextStyle(color: Palette.glazedWhite),
-              ),
-            );
-          }
+  Widget _buildDirectChats() {
+    return StreamBuilder<List<ChatMessage>>(
+      stream: db.getChatsStream(widget.currentUser.id),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+            child: CircularProgressIndicator(color: Palette.forgedGold),
+          );
+        }
 
-          final recentMessages = snapshot.data ?? [];
+        if (snapshot.hasError) {
+          return Center(
+            child: Text(
+              AppLocale.loadingChatsError.getString(context),
+              style: TextStyle(color: Palette.glazedWhite),
+            ),
+          );
+        }
 
-          if (recentMessages.isEmpty) {
-            return Center(
-              child: Text(
-                AppLocale.noChats.getString(context),
-                style: TextStyle(color: Palette.glazedWhite, fontSize: 16),
-              ),
-            );
-          }
+        final recentMessages = snapshot.data ?? [];
 
-          return FutureBuilder<List<dynamic>>(
-            future: _buildChatEntries(recentMessages),
-            builder: (context, asyncSnapshot) {
-              if (!asyncSnapshot.hasData) {
-                return const SizedBox.shrink();
-              }
+        if (recentMessages.isEmpty) {
+          return Center(
+            child: Text(
+              AppLocale.noChats.getString(context),
+              style: TextStyle(color: Palette.glazedWhite, fontSize: 16),
+            ),
+          );
+        }
 
-              final chatEntries = asyncSnapshot.data!;
-              return ListView.builder(
-                padding: const EdgeInsets.all(12),
-                itemCount: chatEntries.length,
-                itemBuilder: (context, idx) {
-                  final entry = chatEntries[idx];
+        return FutureBuilder<List<dynamic>>(
+          future: _buildChatEntries(recentMessages),
+          builder: (context, asyncSnapshot) {
+            if (!asyncSnapshot.hasData) {
+              return const SizedBox.shrink();
+            }
 
-                  if (entry is DateTime) {
-                    final isToday =
-                        DateTime.now().difference(entry).inDays == 0;
-                    final formattedDate =
-                        isToday
-                            ? AppLocale.today.getString(context)
-                            : DateFormat('MMM dd, yyyy').format(entry);
+            final chatEntries = asyncSnapshot.data!;
+            return ListView.builder(
+              padding: const EdgeInsets.all(12),
+              itemCount: chatEntries.length,
+              itemBuilder: (context, idx) {
+                final entry = chatEntries[idx];
 
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Center(
-                        child: Text(
-                          formattedDate,
-                          style: TextStyle(
-                            color: Palette.glazedWhite.o(0.6),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
+                if (entry is DateTime) {
+                  final isToday = DateTime.now().difference(entry).inDays == 0;
+                  final formattedDate =
+                      isToday
+                          ? AppLocale.today.getString(context)
+                          : DateFormat('MMM dd, yyyy').format(entry);
+
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Center(
+                      child: Text(
+                        formattedDate,
+                        style: TextStyle(
+                          color: Palette.glazedWhite.o(0.6),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
-                    );
-                  }
+                    ),
+                  );
+                }
 
-                  if (entry is ChatListItem) {
-                    return ChatListItemWidget(
-                      chatListItem: entry,
-                      currentUser: widget.currentUser,
+                if (entry is ChatListItem) {
+                  return Container(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Palette.gigGrey.o(0.3),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: Palette.gigGrey.o(0.5),
+                        width: 1,
+                      ),
+                    ),
+                    child: ListTile(
+                      leading: Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: Palette.forgedGold.o(0.2),
+                          borderRadius: BorderRadius.circular(25),
+                          border: Border.all(
+                            color: Palette.forgedGold,
+                            width: 2,
+                          ),
+                          image:
+                              entry.user.avatarUrl.isNotEmpty
+                                  ? DecorationImage(
+                                    image: NetworkImage(entry.user.avatarUrl),
+                                    fit: BoxFit.cover,
+                                  )
+                                  : null,
+                        ),
+                        child:
+                            entry.user.avatarUrl.isEmpty
+                                ? Icon(
+                                  Icons.person,
+                                  color: Palette.forgedGold,
+                                  size: 24,
+                                )
+                                : null,
+                      ),
+                      title: Text(
+                        entry.user.displayName,
+                        style: TextStyle(
+                          color: Palette.glazedWhite,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      subtitle: Text(
+                        entry.recent.message.startsWith('enc::')
+                            ? _decryptMessage(entry.recent.message)
+                            : entry.recent.message,
+                        style: TextStyle(
+                          color: Palette.glazedWhite.o(0.7),
+                          fontSize: 14,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      trailing: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            _formatTimestamp(entry.recent.timestamp),
+                            style: TextStyle(
+                              color: Palette.glazedWhite.o(0.5),
+                              fontSize: 11,
+                            ),
+                          ),
+                          if (!entry.recent.read &&
+                              entry.recent.senderId !=
+                                  widget.currentUser.id) ...[
+                            const SizedBox(height: 4),
+                            Container(
+                              width: 8,
+                              height: 8,
+                              decoration: BoxDecoration(
+                                color: Palette.forgedGold,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
                       onTap: () async {
                         await Navigator.push(
                           context,
@@ -191,11 +339,9 @@ class _ChatListScreenState extends State<ChatListScreen> with RouteAware {
                           builder: (context) {
                             return AlertDialog(
                               backgroundColor: Palette.forgedGold,
-
                               title: Center(
                                 child: Text(
                                   ('${AppLocale.deleteChatMsg.getString(context)}${entry.user.displayName}?'),
-
                                   textAlign: TextAlign.center,
                                   style: GoogleFonts.sometypeMono(
                                     textStyle: TextStyle(
@@ -237,16 +383,16 @@ class _ChatListScreenState extends State<ChatListScreen> with RouteAware {
                           },
                         );
                       },
-                    );
-                  }
+                    ),
+                  );
+                }
 
-                  return const SizedBox.shrink();
-                },
-              );
-            },
-          );
-        },
-      ),
+                return const SizedBox.shrink();
+              },
+            );
+          },
+        );
+      },
     );
   }
 }

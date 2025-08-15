@@ -101,7 +101,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget>
     super.initState();
 
     _controller = AnimationController(
-      duration: Duration(milliseconds: 650),
+      duration: Duration(milliseconds: 350),
       vsync: this,
     );
 
@@ -222,7 +222,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget>
     try {
       final file = File(filePath);
       final fileSize = await file.length();
-      const maxSizeForFullWaveform = 1000 * 1024 * 1024;
+      const maxSizeForFullWaveform = 150 * 1024 * 1024;
 
       if (fileSize > maxSizeForFullWaveform) {
         debugPrint('File too large, skipping waveform extraction');

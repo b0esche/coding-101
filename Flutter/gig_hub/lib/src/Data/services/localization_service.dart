@@ -91,6 +91,39 @@ mixin AppLocale {
   static const String days7 = '7 days';
   static const String days30 = '30 days';
   static const String enterStatusMsg = 'enter your status message...';
+  static const String reportUser = 'report user';
+  static const String reportMessage = 'report message';
+  static const String reportReason = 'describe the issue...';
+  static const String addScreenshots = 'add screenshots';
+  static const String reportAndBlock = 'report and block';
+  static const String reportSent = 'report sent successfully';
+  static const String reportFailed = 'failed to send report';
+  static const String maxTwoScreenshots = 'maximum 2 screenshots';
+  static const String removeScreenshot = 'remove screenshot';
+  static const String createRave = 'create rave';
+  static const String raveName = 'rave name';
+  static const String raveDate = 'rave date';
+  static const String startTime = 'doors open';
+  static const String raveLocation = 'rave location';
+  static const String raveDescription = 'description';
+  static const String ticketShop = 'ticket shop link';
+  static const String additionalLink = 'additional link';
+  static const String addDJs = 'add djs';
+  static const String addCollaborators = 'add collaborators';
+  static const String createGroupChat = 'create group chat';
+  static const String raveCreated = 'rave created successfully';
+  static const String raveCreationFailed = 'failed to create rave';
+  static const String attending = 'attending';
+  static const String raveDetails = 'rave details';
+  static const String organizer = 'organizer';
+  static const String collaborators = 'collaborators';
+  static const String lineup = 'lineup';
+  static const String selectDate = 'select date';
+  static const String selectTime = 'select time';
+  static const String searchDJs = 'search djs...';
+  static const String searchBookers = 'search bookers...';
+  static const String multiDay = 'multi-day event';
+  static const String endDate = 'end date';
 
   // ENGLISH
   static const Map<String, dynamic> en = {
@@ -177,6 +210,39 @@ mixin AppLocale {
     delete: 'delete',
     edit: 'edit',
     enterPw: 'enter your password',
+    reportUser: 'report user',
+    reportMessage: 'report message',
+    reportReason: 'describe the issue...',
+    addScreenshots: 'add screenshots',
+    reportAndBlock: 'report and block',
+    reportSent: 'report sent successfully',
+    reportFailed: 'failed to send report',
+    maxTwoScreenshots: 'maximum 2 screenshots',
+    removeScreenshot: 'remove screenshot',
+    createRave: 'Create Rave',
+    raveName: 'Rave Name',
+    raveDate: 'Rave Date',
+    startTime: 'Doors Open',
+    raveLocation: 'Rave Location',
+    raveDescription: 'Description',
+    ticketShop: 'Ticket Shop Link',
+    additionalLink: 'Additional Link',
+    addDJs: 'Add DJs',
+    addCollaborators: 'Add Collaborators',
+    createGroupChat: 'Create Group Chat',
+    raveCreated: 'Rave created successfully!',
+    raveCreationFailed: 'Failed to create rave',
+    attending: 'Attending',
+    raveDetails: 'Rave Details',
+    organizer: 'Organizer',
+    collaborators: 'Collaborators',
+    lineup: 'Lineup',
+    selectDate: 'Select Date',
+    selectTime: 'Select Time',
+    searchDJs: 'Search DJs...',
+    searchBookers: 'Search bookers...',
+    multiDay: 'Multi-day event',
+    endDate: 'End Date',
   };
 
   // GERMAN

@@ -399,8 +399,35 @@ class ChatScreenState extends State<ChatScreen>
                                       Palette.glazedWhite,
                                     ),
                                   ),
-                                  onPressed: () {
-                                    // TODO: reporting
+                                  onPressed: () async {
+                                    Navigator.of(
+                                      context,
+                                    ).pop(); // Close the bottom sheet first
+
+                                    await showDialog(
+                                      context: context,
+                                      builder:
+                                          (context) => ReportUserDialog(
+                                            reportedUser: widget.chatPartner,
+                                            currentUser: widget.currentUser,
+                                            onReportComplete: () async {
+                                              // Block user and delete chat after successful report
+                                              await db.blockUser(
+                                                widget.currentUser.id,
+                                                widget.chatPartner.id,
+                                              );
+                                              await db.deleteChat(
+                                                widget.currentUser.id,
+                                                widget.chatPartner.id,
+                                              );
+                                              if (context.mounted) {
+                                                Navigator.of(
+                                                  context,
+                                                ).pop(); // Close chat screen
+                                              }
+                                            },
+                                          ),
+                                    );
                                   },
                                   child: Padding(
                                     padding: const EdgeInsets.only(

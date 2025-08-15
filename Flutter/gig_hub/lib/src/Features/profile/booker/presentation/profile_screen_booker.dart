@@ -4,6 +4,7 @@ import 'package:gig_hub/src/Data/services/localization_service.dart';
 import 'package:gig_hub/src/data/services/image_compression_service.dart';
 import 'package:gig_hub/src/data/services/places_validation_service.dart';
 import 'package:gig_hub/src/Features/profile/booker/presentation/widgets/star_rating_booker.dart';
+import 'package:gig_hub/src/Features/raves/presentation/widgets/rave_list.dart';
 
 class ProfileScreenBookerArgs {
   final Booker booker;
@@ -42,6 +43,9 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
   StatusMessage? _currentStatusMessage;
   AppUser? _currentUser;
 
+  // Separate ValueNotifier for slideshow index to avoid full rebuilds
+  late final ValueNotifier<int> _slideshowIndexNotifier = ValueNotifier(0);
+
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _infoController = TextEditingController(
     text: widget.booker.info,
@@ -79,6 +83,7 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
     _aboutController.dispose();
     _nameController.dispose();
     _locationController.dispose();
+    _slideshowIndexNotifier.dispose();
     super.dispose();
   }
 
@@ -877,32 +882,38 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                       !editMode
                           ? widget.booker.mediaImageUrls.isEmpty
                               ? SizedBox.shrink()
-                              : ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: ImageSlideshow(
-                                  width: double.infinity,
-                                  height: 240,
-                                  isLoop: true,
-                                  autoPlayInterval: 12000,
-                                  indicatorColor: Palette.shadowGrey,
-                                  indicatorBackgroundColor: Palette.gigGrey,
-                                  initialPage: index,
-                                  onPageChanged: (value) {
-                                    setState(() => index = value);
-                                  },
-                                  children: [
-                                    if (widget.booker.mediaImageUrls.isNotEmpty)
-                                      for (String path
-                                          in widget.booker.mediaImageUrls)
-                                        PinchZoom(
-                                          zoomEnabled: true,
-                                          maxScale: 2.5,
-                                          child: Image.network(
-                                            path,
-                                            fit: BoxFit.cover,
+                              : RepaintBoundary(
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: ImageSlideshow(
+                                    width: double.infinity,
+                                    height: 240,
+                                    isLoop: true,
+                                    autoPlayInterval: 12000,
+                                    indicatorColor: Palette.shadowGrey,
+                                    indicatorBackgroundColor: Palette.gigGrey,
+                                    initialPage: _slideshowIndexNotifier.value,
+                                    onPageChanged: (value) {
+                                      // Use ValueNotifier instead of setState to avoid rebuilding entire widget
+                                      _slideshowIndexNotifier.value = value;
+                                    },
+                                    children: [
+                                      if (widget
+                                          .booker
+                                          .mediaImageUrls
+                                          .isNotEmpty)
+                                        for (String path
+                                            in widget.booker.mediaImageUrls)
+                                          PinchZoom(
+                                            zoomEnabled: true,
+                                            maxScale: 2.5,
+                                            child: Image.network(
+                                              path,
+                                              fit: BoxFit.cover,
+                                            ),
                                           ),
-                                        ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               )
                           : Center(
@@ -966,6 +977,19 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                         ),
                       if (widget.booker.mediaImageUrls.isNotEmpty)
                         SizedBox(height: 36),
+                      if (!editMode)
+                        RepaintBoundary(
+                          child: Column(
+                            children: [
+                              RaveList(
+                                userId: widget.booker.id,
+                                showCreateButton: true,
+                                showOnlyUpcoming: false,
+                              ),
+                              SizedBox(height: 36),
+                            ],
+                          ),
+                        ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

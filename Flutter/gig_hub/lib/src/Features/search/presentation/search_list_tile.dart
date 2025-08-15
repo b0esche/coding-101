@@ -142,7 +142,6 @@ class _SearchListTileState extends State<SearchListTile> {
                               ),
                             ),
                           ),
-                          const SizedBox(width: 8),
                           RatingStars(
                             value: widget.rating ?? 0,
                             starBuilder:

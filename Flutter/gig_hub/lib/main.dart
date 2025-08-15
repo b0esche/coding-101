@@ -3,6 +3,7 @@ import 'package:gig_hub/src/Data/app_imports.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:gig_hub/src/Data/services/notification_service.dart';
+import 'package:gig_hub/src/Data/services/group_chat_cleanup_service.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -59,6 +60,10 @@ Future<void> main() async {
 
   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
+  // Start group chat cleanup service
+  GroupChatCleanupService().startCleanupService();
+
   runApp(
     MultiProvider(
       providers: [

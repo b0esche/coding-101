@@ -7,6 +7,7 @@ import 'package:gig_hub/src/Features/profile/dj/presentation/widgets/about_box.d
 import 'package:gig_hub/src/Features/profile/dj/presentation/widgets/info_box.dart';
 import 'package:gig_hub/src/Features/profile/dj/presentation/widgets/track_selection_dropdown.dart';
 import 'package:gig_hub/src/data/services/image_compression_service.dart';
+import 'package:gig_hub/src/Features/raves/presentation/widgets/rave_list.dart';
 import "../../../../Data/app_imports.dart";
 import "../../../../Data/app_imports.dart" as http;
 import 'package:gig_hub/src/data/services/places_validation_service.dart';
@@ -53,6 +54,9 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
   bool editMode = false;
   Timer? _debounceTimer;
   StatusMessage? _currentStatusMessage;
+
+  // Separate ValueNotifier for slideshow index to avoid full rebuilds
+  late final ValueNotifier<int> _slideshowIndexNotifier = ValueNotifier(0);
 
   bool get isFavorite {
     final id = widget.dj.id;
@@ -119,6 +123,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
     _bpmController.dispose();
     _aboutController.dispose();
     _infoController.dispose();
+    _slideshowIndexNotifier.dispose();
     super.dispose();
   }
 
@@ -891,8 +896,10 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                 ? Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    AudioPlayerWidget(
-                                      audioUrl: widget.dj.streamingUrls.first,
+                                    RepaintBoundary(
+                                      child: AudioPlayerWidget(
+                                        audioUrl: widget.dj.streamingUrls.first,
+                                      ),
                                     ),
                                     IconButton(
                                       style: ButtonStyle(
@@ -942,8 +949,10 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  AudioPlayerWidget(
-                                    audioUrl: widget.dj.streamingUrls.last,
+                                  RepaintBoundary(
+                                    child: AudioPlayerWidget(
+                                      audioUrl: widget.dj.streamingUrls.last,
+                                    ),
                                   ),
                                   IconButton(
                                     style: ButtonStyle(
@@ -965,7 +974,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                         !editMode
                             ? widget.dj.mediaImageUrls.isEmpty
                                 ? SizedBox.shrink()
-                                : imageSlideshow()
+                                : RepaintBoundary(child: imageSlideshow())
                             : imageSlideshowEditor(),
                         SizedBox(
                           height:
@@ -990,7 +999,20 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
 
                         if (widget.dj.mediaImageUrls.isNotEmpty)
                           const SizedBox(height: 36),
-
+                        if (!editMode)
+                          RepaintBoundary(
+                            child: Column(
+                              children: [
+                                RaveList(
+                                  userId: widget.dj.id,
+                                  showCreateButton:
+                                      false, // DJs can't create raves, only bookers can
+                                  showOnlyUpcoming: false,
+                                ),
+                                const SizedBox(height: 36),
+                              ],
+                            ),
+                          ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -1308,9 +1330,10 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
             widget.dj.mediaImageUrls.length == 1
                 ? Colors.transparent
                 : Palette.gigGrey,
-        initialPage: index,
+        initialPage: _slideshowIndexNotifier.value,
         onPageChanged: (value) {
-          setState(() => index = value);
+          // Use ValueNotifier instead of setState to avoid rebuilding entire widget
+          _slideshowIndexNotifier.value = value;
         },
         children: [
           if (widget.dj.mediaImageUrls.isNotEmpty)

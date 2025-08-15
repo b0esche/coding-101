@@ -1,4 +1,6 @@
 import 'package:gig_hub/src/Data/app_imports.dart';
+import '../models/group_chat.dart';
+import '../models/group_message.dart';
 
 abstract class DatabaseRepository with ChangeNotifier {
   // create user ###
@@ -55,4 +57,22 @@ abstract class DatabaseRepository with ChangeNotifier {
   Future<void> createStatusMessage(StatusMessage statusMessage);
   Future<StatusMessage?> getActiveStatusMessage(String userId);
   Future<void> deleteStatusMessage(String statusMessageId);
+
+  // group chats ###
+  Future<GroupChat> createGroupChat(GroupChat groupChat);
+  Future<GroupChat?> getGroupChatByRaveId(String raveId);
+  Future<List<GroupChat>> getUserGroupChats(String userId);
+  Future<void> sendGroupMessage(GroupMessage message);
+  Stream<List<GroupMessage>> getGroupMessagesStream(String groupChatId);
+  Future<void> markGroupMessageAsRead(
+    String groupChatId,
+    String messageId,
+    String userId,
+  );
+  Future<void> deleteExpiredGroupChats();
+  Future<void> updateGroupChatLastMessage(
+    String groupChatId,
+    GroupMessage message,
+  );
+  Future<void> updateGroupChatImage(String groupChatId, String imageUrl);
 }

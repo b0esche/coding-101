@@ -1,5 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:gig_hub/src/Data/app_imports.dart';
+import '../models/group_chat.dart';
+import '../models/group_message.dart';
 
 class FirestoreDatabaseRepository extends DatabaseRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -576,6 +578,219 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
           .doc(statusMessageId)
           .delete();
     } catch (e) {
+      rethrow;
+    }
+  }
+
+  // GROUP CHAT METHODS ###
+
+  @override
+  Future<GroupChat> createGroupChat(GroupChat groupChat) async {
+    try {
+      print(
+        'createGroupChat: Creating group chat for rave ${groupChat.raveId}',
+      );
+      print('createGroupChat: Members: ${groupChat.memberIds}');
+
+      final docRef = await _firestore
+          .collection('group_chats')
+          .add(groupChat.toJson());
+
+      print('createGroupChat: Created with ID ${docRef.id}');
+      return groupChat.copyWith(id: docRef.id);
+    } catch (e) {
+      print('createGroupChat: Error: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<GroupChat?> getGroupChatByRaveId(String raveId) async {
+    try {
+      final query =
+          await _firestore
+              .collection('group_chats')
+              .where('raveId', isEqualTo: raveId)
+              .where('isActive', isEqualTo: true)
+              .limit(1)
+              .get();
+
+      if (query.docs.isEmpty) return null;
+
+      final doc = query.docs.first;
+      return GroupChat.fromJson(doc.id, doc.data());
+    } catch (e) {
+      return null;
+    }
+  }
+
+  @override
+  Future<List<GroupChat>> getUserGroupChats(String userId) async {
+    try {
+      print('getUserGroupChats: Querying for user $userId');
+
+      final query =
+          await _firestore
+              .collection('group_chats')
+              .where('memberIds', arrayContains: userId)
+              .where('isActive', isEqualTo: true)
+              .orderBy('lastMessageTimestamp', descending: true)
+              .get();
+
+      print('getUserGroupChats: Found ${query.docs.length} documents');
+
+      final groupChats =
+          query.docs.map((doc) {
+            print('getUserGroupChats: Processing doc ${doc.id}');
+            return GroupChat.fromJson(doc.id, doc.data());
+          }).toList();
+
+      print('getUserGroupChats: Returning ${groupChats.length} group chats');
+      return groupChats;
+    } catch (e) {
+      print('getUserGroupChats: Error: $e');
+      return [];
+    }
+  }
+
+  @override
+  Future<void> sendGroupMessage(GroupMessage message) async {
+    try {
+      print(
+        'sendGroupMessage: Sending message to group ${message.groupChatId}',
+      );
+      print('sendGroupMessage: Message: ${message.message}');
+
+      // Use subcollection approach with generated doc ref (like regular chat)
+      final docRef =
+          _firestore
+              .collection('group_chats')
+              .doc(message.groupChatId)
+              .collection('messages')
+              .doc();
+
+      final newMessage = GroupMessage(
+        id: docRef.id,
+        groupChatId: message.groupChatId,
+        senderId: message.senderId,
+        senderName: message.senderName,
+        senderAvatarUrl: message.senderAvatarUrl,
+        message: message.message,
+        timestamp: message.timestamp,
+        readBy: message.readBy,
+      );
+
+      await docRef.set(newMessage.toJson());
+      print('sendGroupMessage: Message sent successfully');
+
+      // Update the group chat's last message
+      await updateGroupChatLastMessage(message.groupChatId, newMessage);
+      print('sendGroupMessage: Updated group chat last message');
+    } catch (e) {
+      print('sendGroupMessage: Error: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Stream<List<GroupMessage>> getGroupMessagesStream(String groupChatId) {
+    print('getGroupMessagesStream: Querying for groupChatId $groupChatId');
+
+    // Use subcollection approach to match regular chat pattern
+    return _firestore
+        .collection('group_chats')
+        .doc(groupChatId)
+        .collection('messages')
+        .orderBy('timestamp')
+        .snapshots()
+        .handleError((error) {
+          print('getGroupMessagesStream: Error: $error');
+          return const Stream.empty();
+        })
+        .map((snapshot) {
+          print(
+            'getGroupMessagesStream: Found ${snapshot.docs.length} messages',
+          );
+          return snapshot.docs.map((doc) {
+            print('getGroupMessagesStream: Processing message ${doc.id}');
+            return GroupMessage.fromJson(doc.id, doc.data());
+          }).toList();
+        });
+  }
+
+  @override
+  Future<void> markGroupMessageAsRead(
+    String groupChatId,
+    String messageId,
+    String userId,
+  ) async {
+    try {
+      await _firestore
+          .collection('group_chats')
+          .doc(groupChatId)
+          .collection('messages')
+          .doc(messageId)
+          .update({'readBy.$userId': true});
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> updateGroupChatLastMessage(
+    String groupChatId,
+    GroupMessage message,
+  ) async {
+    try {
+      await _firestore.collection('group_chats').doc(groupChatId).update({
+        'lastMessage': message.message,
+        'lastMessageSenderId': message.senderId,
+        'lastMessageTimestamp': Timestamp.fromDate(message.timestamp),
+      });
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> deleteExpiredGroupChats() async {
+    try {
+      final now = DateTime.now();
+      final query =
+          await _firestore
+              .collection('group_chats')
+              .where('autoDeleteAt', isLessThan: Timestamp.fromDate(now))
+              .where('isActive', isEqualTo: true)
+              .get();
+
+      for (final doc in query.docs) {
+        final batch = _firestore.batch();
+
+        // Mark group chat as inactive
+        batch.update(doc.reference, {'isActive': false});
+
+        // Delete all messages in this group chat (using subcollection)
+        final messagesQuery = await doc.reference.collection('messages').get();
+
+        for (final messageDoc in messagesQuery.docs) {
+          batch.delete(messageDoc.reference);
+        }
+
+        await batch.commit();
+      }
+    } catch (e) {
+      print('Error deleting expired group chats: $e');
+    }
+  }
+
+  @override
+  Future<void> updateGroupChatImage(String groupChatId, String imageUrl) async {
+    try {
+      await _firestore.collection('group_chats').doc(groupChatId).update({
+        'imageUrl': imageUrl,
+      });
+    } catch (e) {
+      print('Error updating group chat image: $e');
       rethrow;
     }
   }
