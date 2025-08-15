@@ -51,10 +51,11 @@ class _RaveListState extends State<RaveList> {
                 textStyle: TextStyle(
                   color: Palette.glazedWhite,
                   fontWeight: FontWeight.w600,
+                  fontSize: 15,
                 ),
               ),
             ),
-            const Spacer(),
+
             if (widget.showCreateButton && targetUserId == currentUser?.uid)
               IconButton(
                 onPressed: _showCreateRaveDialog,
@@ -65,7 +66,6 @@ class _RaveListState extends State<RaveList> {
               ),
           ],
         ),
-        const SizedBox(height: 8),
 
         StreamBuilder<List<Rave>>(
           stream: _buildCombinedRaveStream(targetUserId),
