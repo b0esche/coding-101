@@ -19,6 +19,7 @@ import flutter_image_compress_macos
 import flutter_local_notifications
 import flutter_localization
 import flutter_secure_storage_macos
+import geolocator_apple
 import google_sign_in_ios
 import just_audio
 import just_waveform
@@ -42,6 +43,7 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   FlutterLocalNotificationsPlugin.register(with: registry.registrar(forPlugin: "FlutterLocalNotificationsPlugin"))
   FlutterLocalizationPlugin.register(with: registry.registrar(forPlugin: "FlutterLocalizationPlugin"))
   FlutterSecureStoragePlugin.register(with: registry.registrar(forPlugin: "FlutterSecureStoragePlugin"))
+  GeolocatorPlugin.register(with: registry.registrar(forPlugin: "GeolocatorPlugin"))
   FLTGoogleSignInPlugin.register(with: registry.registrar(forPlugin: "FLTGoogleSignInPlugin"))
   JustAudioPlugin.register(with: registry.registrar(forPlugin: "JustAudioPlugin"))
   JustWaveformPlugin.register(with: registry.registrar(forPlugin: "JustWaveformPlugin"))

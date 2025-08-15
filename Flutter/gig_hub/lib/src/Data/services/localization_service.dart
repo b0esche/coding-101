@@ -125,6 +125,55 @@ mixin AppLocale {
   static const String multiDay = 'multi-day event';
   static const String endDate = 'end date';
 
+  // radar and alerts
+  static const String raveRadar = 'rave radar';
+  static const String raveAlerts = 'rave alerts';
+  static const String setupRaveAlert = 'setup rave alert';
+  static const String getNotifiedNewRaves =
+      'get notified when new raves are created near you';
+  static const String location = 'location';
+  static const String currentLocationSelected = 'current location selected';
+  static const String useCurrentLocation = 'use current location';
+  static const String orEnterCityName = 'or enter a city name';
+  static const String alertRadius = 'alert radius';
+  static const String createAlert = 'create alert';
+  static const String raveAlertCreatedSuccess =
+      'rave alert created successfully!';
+  static const String raveAlertCreationFailed = 'failed to create rave alert';
+  static const String locationNotFound =
+      'location not found. please try a different city or address.';
+  static const String failedValidateLocation =
+      'failed to validate location. please check your internet connection.';
+  static const String failedCurrentLocation = 'failed to get current location';
+  static const String locationPermissionsDenied =
+      'location permissions are denied';
+  static const String locationPermissionsPermanentlyDenied =
+      'location permissions are permanently denied';
+
+  // search and loading
+  static const String searchRavesDjsGenres =
+      'search raves, djs, genres, locations...';
+  static const String loadingRaves = 'loading raves...';
+  static const String loadingDetails = 'loading details...';
+  static const String noRavesFound = 'no raves found';
+  static const String tryDifferentKeywords =
+      'try searching for different keywords';
+  static const String noRavesAvailable = 'no raves available';
+  static const String checkBackLater = 'check back later for new events';
+  static const String failedLoadRaves = 'failed to load raves';
+  static const String failedLoadRaveDetails = 'failed to load rave details';
+  static const String failedUpdateAttendance = 'failed to update attendance';
+  static const String leftRave = 'left';
+  static const String joinedRave = 'joined';
+  static const String retry = 'retry';
+
+  // general ui
+  static const String error = 'error';
+  static const String close = 'close';
+  static const String unknown = 'unknown';
+  static const String guest = 'guest';
+  static const String km = 'km';
+
   // ENGLISH
   static const Map<String, dynamic> en = {
     title: 'localization',
@@ -243,6 +292,50 @@ mixin AppLocale {
     searchBookers: 'Search bookers...',
     multiDay: 'Multi-day event',
     endDate: 'End Date',
+
+    // radar and alerts
+    raveRadar: 'rave radar',
+    raveAlerts: 'rave alerts',
+    setupRaveAlert: 'setup rave alert',
+    getNotifiedNewRaves: 'get notified when new raves are created near you',
+    location: 'location',
+    currentLocationSelected: 'current location selected',
+    useCurrentLocation: 'use current location',
+    orEnterCityName: 'or enter a city name',
+    alertRadius: 'alert radius',
+    createAlert: 'create alert',
+    raveAlertCreatedSuccess: 'rave alert created successfully!',
+    raveAlertCreationFailed: 'failed to create rave alert',
+    locationNotFound:
+        'location not found. please try a different city or address.',
+    failedValidateLocation:
+        'failed to validate location. please check your internet connection.',
+    failedCurrentLocation: 'failed to get current location',
+    locationPermissionsDenied: 'location permissions are denied',
+    locationPermissionsPermanentlyDenied:
+        'location permissions are permanently denied',
+
+    // search and loading
+    searchRavesDjsGenres: 'search raves, djs, genres, locations...',
+    loadingRaves: 'loading raves...',
+    loadingDetails: 'loading details...',
+    noRavesFound: 'no raves found',
+    tryDifferentKeywords: 'try searching for different keywords',
+    noRavesAvailable: 'no raves available',
+    checkBackLater: 'check back later for new events',
+    failedLoadRaves: 'failed to load raves',
+    failedLoadRaveDetails: 'failed to load rave details',
+    failedUpdateAttendance: 'failed to update attendance',
+    leftRave: 'left',
+    joinedRave: 'joined',
+    retry: 'retry',
+
+    // general ui
+    error: 'error',
+    close: 'close',
+    unknown: 'unknown',
+    guest: 'guest',
+    km: 'km',
   };
 
   // GERMAN
@@ -333,6 +426,52 @@ mixin AppLocale {
     delete: 'löschen',
     edit: 'bearbeiten',
     enterPw: 'dein passwort eingeben',
+
+    // radar and alerts
+    raveRadar: 'rave radar',
+    raveAlerts: 'rave benachrichtigungen',
+    setupRaveAlert: 'rave benachrichtigung einrichten',
+    getNotifiedNewRaves:
+        'benachrichtigung über neue raves in deiner nähe erhalten',
+    location: 'standort',
+    currentLocationSelected: 'aktueller standort ausgewählt',
+    useCurrentLocation: 'aktuellen standort verwenden',
+    orEnterCityName: 'oder stadt eingeben',
+    alertRadius: 'benachrichtigungsradius',
+    createAlert: 'benachrichtigung erstellen',
+    raveAlertCreatedSuccess: 'rave benachrichtigung erfolgreich erstellt!',
+    raveAlertCreationFailed:
+        'rave benachrichtigung konnte nicht erstellt werden',
+    locationNotFound:
+        'standort nicht gefunden. bitte versuche eine andere stadt oder adresse.',
+    failedValidateLocation:
+        'standort konnte nicht validiert werden. bitte überprüfe deine internetverbindung.',
+    failedCurrentLocation: 'aktueller standort konnte nicht ermittelt werden',
+    locationPermissionsDenied: 'standortberechtigungen wurden verweigert',
+    locationPermissionsPermanentlyDenied:
+        'standortberechtigungen wurden dauerhaft verweigert',
+
+    // search and loading
+    searchRavesDjsGenres: 'raves, djs, genres, orte suchen...',
+    loadingRaves: 'raves werden geladen...',
+    loadingDetails: 'details werden geladen...',
+    noRavesFound: 'keine raves gefunden',
+    tryDifferentKeywords: 'versuche andere suchbegriffe',
+    noRavesAvailable: 'keine raves verfügbar',
+    checkBackLater: 'schau später nach neuen events',
+    failedLoadRaves: 'raves konnten nicht geladen werden',
+    failedLoadRaveDetails: 'rave details konnten nicht geladen werden',
+    failedUpdateAttendance: 'teilnahme konnte nicht aktualisiert werden',
+    leftRave: 'verlassen',
+    joinedRave: 'teilgenommen',
+    retry: 'wiederholen',
+
+    // general ui
+    error: 'fehler',
+    close: 'schließen',
+    unknown: 'unbekannt',
+    guest: 'gast',
+    km: 'km',
   };
 
   // SPANISH
@@ -424,6 +563,48 @@ mixin AppLocale {
     delete: 'eliminar',
     edit: 'editar',
     enterPw: 'ingresa tu contraseña',
+
+    // radar and alerts
+    raveRadar: 'radar de raves',
+    raveAlerts: 'alertas de raves',
+    setupRaveAlert: 'configurar alerta de rave',
+    getNotifiedNewRaves:
+        'recibe notificaciones cuando se creen nuevos raves cerca de ti',
+    location: 'ubicación',
+    currentLocationSelected: 'ubicación actual seleccionada',
+    useCurrentLocation: 'usar ubicación actual',
+    orEnterCityName: 'o ingresa el nombre de una ciudad',
+    alertRadius: 'radio de alerta',
+    createAlert: 'crear alerta',
+    raveAlertCreatedSuccess: '¡alerta de rave creada exitosamente!',
+    raveAlertCreationFailed: 'falló al crear la alerta de rave',
+    locationNotFound:
+        'ubicación no encontrada. por favor intenta con una ciudad o dirección diferente.',
+    failedValidateLocation:
+        'falló al validar la ubicación. por favor verifica tu conexión a internet.',
+    failedCurrentLocation: 'falló al obtener la ubicación actual',
+
+    // search and loading
+    searchRavesDjsGenres: 'buscar raves, djs, géneros, ubicaciones...',
+    loadingRaves: 'cargando raves...',
+    loadingDetails: 'cargando detalles...',
+    noRavesFound: 'no se encontraron raves',
+    tryDifferentKeywords: 'intenta buscar con palabras clave diferentes',
+    noRavesAvailable: 'no hay raves disponibles',
+    checkBackLater: 'vuelve más tarde para nuevos eventos',
+    failedLoadRaves: 'falló al cargar raves',
+    failedLoadRaveDetails: 'falló al cargar detalles del rave',
+    failedUpdateAttendance: 'falló al actualizar asistencia',
+    leftRave: 'saliste de',
+    joinedRave: 'te uniste a',
+    retry: 'reintentar',
+
+    // general ui
+    error: 'error',
+    close: 'cerrar',
+    unknown: 'desconocido',
+    guest: 'invitado',
+    km: 'km',
   };
 
   // ITALIAN
@@ -514,6 +695,48 @@ mixin AppLocale {
     delete: 'elimina',
     edit: 'modifica',
     enterPw: 'inserisci la tua password',
+
+    // radar and alerts
+    raveRadar: 'radar rave',
+    raveAlerts: 'avvisi rave',
+    setupRaveAlert: 'configura avviso rave',
+    getNotifiedNewRaves:
+        'ricevi notifiche quando vengono creati nuovi rave vicino a te',
+    location: 'posizione',
+    currentLocationSelected: 'posizione attuale selezionata',
+    useCurrentLocation: 'usa posizione attuale',
+    orEnterCityName: 'o inserisci il nome di una città',
+    alertRadius: 'raggio di avviso',
+    createAlert: 'crea avviso',
+    raveAlertCreatedSuccess: 'avviso rave creato con successo!',
+    raveAlertCreationFailed: 'creazione avviso rave fallita',
+    locationNotFound:
+        'posizione non trovata. prova con una città o indirizzo diverso.',
+    failedValidateLocation:
+        'validazione posizione fallita. controlla la tua connessione internet.',
+    failedCurrentLocation: 'impossibile ottenere la posizione attuale',
+
+    // search and loading
+    searchRavesDjsGenres: 'cerca rave, dj, generi, luoghi...',
+    loadingRaves: 'caricando rave...',
+    loadingDetails: 'caricando dettagli...',
+    noRavesFound: 'nessun rave trovato',
+    tryDifferentKeywords: 'prova con parole chiave diverse',
+    noRavesAvailable: 'nessun rave disponibile',
+    checkBackLater: 'torna più tardi per nuovi eventi',
+    failedLoadRaves: 'caricamento rave fallito',
+    failedLoadRaveDetails: 'caricamento dettagli rave fallito',
+    failedUpdateAttendance: 'aggiornamento partecipazione fallito',
+    leftRave: 'hai lasciato',
+    joinedRave: 'ti sei unito a',
+    retry: 'riprova',
+
+    // general ui
+    error: 'errore',
+    close: 'chiudi',
+    unknown: 'sconosciuto',
+    guest: 'ospite',
+    km: 'km',
   };
 
   // PORTUGESE

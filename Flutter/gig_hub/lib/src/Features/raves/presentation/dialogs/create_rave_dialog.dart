@@ -5,7 +5,7 @@ import 'package:flutter_localization/flutter_localization.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
-import '../../../../Data/models/rave.dart';
+import '../../domain/rave.dart';
 import '../../../../Data/models/users.dart';
 import '../../../../Data/models/group_chat.dart';
 import '../../../../Data/interfaces/database_repository.dart';

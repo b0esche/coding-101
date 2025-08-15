@@ -1,4 +1,5 @@
 import 'package:gig_hub/src/Data/app_imports.dart';
+import '../../Features/radar/presentation/rave_radar_screen.dart';
 
 class CustomNavBar extends StatefulWidget {
   final AppUser currentUser;
@@ -187,30 +188,18 @@ class _CustomNavBarState extends State<CustomNavBar> with RouteAware {
 
                       Padding(
                         padding: const EdgeInsets.only(right: 8),
-                        child: Banner(
-                          textStyle: GoogleFonts.sometypeMono(fontSize: 12),
-                          message: 'soon',
-                          location: BannerLocation.topEnd,
-                          color: Palette.forgedGold,
-                          child: IconButton(
-                            onPressed: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  duration: Duration(milliseconds: 650),
-                                  backgroundColor: Palette.forgedGold,
-                                  content: Center(
-                                    child: Text(
-                                      "coming soon: RAVE RADAR!",
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                            icon: Icon(
-                              Icons.radar_rounded,
-                              color: Palette.glazedWhite,
-                            ),
+                        child: IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const RaveRadarScreen(),
+                              ),
+                            );
+                          },
+                          icon: Icon(
+                            Icons.radar_rounded,
+                            color: Palette.glazedWhite,
                           ),
                         ),
                       ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:intl/intl.dart';
-import '../../../../Data/models/rave.dart';
+import '../../domain/rave.dart';
 import '../../../../Data/services/localization_service.dart';
 import '../../../../Theme/palette.dart';
 

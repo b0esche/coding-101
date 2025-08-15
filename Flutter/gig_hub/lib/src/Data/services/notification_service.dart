@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:gig_hub/src/Data/app_imports.dart';
+import 'package:gig_hub/src/Features/profile/booker/presentation/booker_profile_loader_screen.dart';
 
 /// Notification handler service that manages push notification interactions
 ///
@@ -45,14 +46,51 @@ class _NotificationHandlerAppState extends State<NotificationHandlerApp> {
 
   void _handleNotificationNav(RemoteMessage message) async {
     final screen = message.data['screen'];
-    if (screen == 'chat_list_screen') {
-      final user = await widget.db.getCurrentUser();
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _navigatorKey.currentState?.push(
-          MaterialPageRoute(builder: (_) => ChatListScreen(currentUser: user)),
-        );
-      });
+    final notificationType = message.data['type'];
+
+    // Handle different notification types
+    switch (notificationType) {
+      case 'rave_alert':
+        _handleRaveAlertNavigation(message);
+        break;
+      default:
+        // Handle existing chat notifications
+        if (screen == 'chat_list_screen') {
+          final user = await widget.db.getCurrentUser();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _navigatorKey.currentState?.push(
+              MaterialPageRoute(
+                builder: (_) => ChatListScreen(currentUser: user),
+              ),
+            );
+          });
+        }
+        break;
     }
+  }
+
+  /// Handle rave alert notification navigation
+  void _handleRaveAlertNavigation(RemoteMessage message) {
+    final organizerId = message.data['organizerId'];
+    final raveId = message.data['raveId'];
+
+    if (organizerId == null) {
+      print('No organizer ID in rave alert notification');
+      return;
+    }
+
+    // Navigate directly to the booker's profile screen
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _navigatorKey.currentState?.push(
+        MaterialPageRoute(
+          builder:
+              (_) => BookerProfileLoaderScreen(
+                bookerId: organizerId,
+                highlightedRaveId: raveId,
+              ),
+        ),
+      );
+    });
   }
 
   @override

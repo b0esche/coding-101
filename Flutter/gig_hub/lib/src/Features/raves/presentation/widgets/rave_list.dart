@@ -1,4 +1,4 @@
-import '../../../../Data/models/rave.dart';
+import '../../domain/rave.dart';
 import 'rave_tile.dart';
 import '../dialogs/rave_detail_dialog.dart';
 import '../dialogs/create_rave_dialog.dart';
