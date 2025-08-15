@@ -107,3 +107,60 @@ exports.sendChatNotification =
         await getMessaging().send(payload);
       }
     });
+
+exports.sendGroupChatNotification =
+  onDocumentCreated("group_chats/{groupChatId}/messages/{messageId}",
+    async (event) => {
+      const message = event.data.data();
+      const senderId = message.senderId;
+      const senderName = message.senderName;
+      const groupChatId = event.params.groupChatId;
+
+      // Get the group chat to find all members
+      const groupChatDoc = await getFirestore().collection("group_chats")
+        .doc(groupChatId).get();
+      const groupChatData = groupChatDoc.data();
+      const memberIds = groupChatData.memberIds || [];
+      const groupName = groupChatData.name;
+
+      // Send notification to all members except the sender
+      const notificationPromises = memberIds
+        .filter((memberId) => memberId !== senderId)
+        .map(async (memberId) => {
+          const userDoc = await getFirestore().collection("users")
+            .doc(memberId).get();
+          const userData = userDoc.data();
+          const fcmToken = userData && userData.fcmToken;
+
+          if (fcmToken) {
+            const payload = {
+              notification: {
+                title: groupName,
+                body: `${senderName}: new message`,
+              },
+              data: {
+                senderId: senderId,
+                groupChatId: groupChatId,
+                screen: "chat_list_screen",
+              },
+              android: {
+                priority: "high",
+                notification: {
+                  channelId: "chat_channel",
+                },
+              },
+              apns: {
+                payload: {
+                  aps: {
+                    sound: "default",
+                  },
+                },
+              },
+              token: fcmToken,
+            };
+            return getMessaging().send(payload);
+          }
+        });
+
+      await Promise.all(notificationPromises.filter((p) => p !== undefined));
+    });

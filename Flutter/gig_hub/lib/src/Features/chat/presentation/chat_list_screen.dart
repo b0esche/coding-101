@@ -206,7 +206,7 @@ class _ChatListScreenState extends State<ChatListScreen>
 
             final chatEntries = asyncSnapshot.data!;
             return ListView.builder(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.only(top: 16, bottom: 16),
               itemCount: chatEntries.length,
               itemBuilder: (context, idx) {
                 final entry = chatEntries[idx];

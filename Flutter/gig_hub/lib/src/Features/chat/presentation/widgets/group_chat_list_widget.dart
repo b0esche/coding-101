@@ -215,10 +215,6 @@ class _GroupChatListWidgetState extends State<GroupChatListWidget> {
                   fontSize: 11,
                 ),
               ),
-            if (groupChat.autoDeleteAt != null) ...[
-              const SizedBox(height: 4),
-              Icon(Icons.schedule, color: Palette.glazedWhite.o(0.3), size: 12),
-            ],
           ],
         ),
         onTap: () async {
