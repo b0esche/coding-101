@@ -81,6 +81,10 @@ class CachedFirestoreRepository extends FirestoreDatabaseRepository {
     final cachedMessages = await _cache.getCachedChatMessages(chatId);
     if (cachedMessages != null && cachedMessages.isNotEmpty) {
       controller.add(cachedMessages);
+    } else {
+      // Emit empty list immediately if no cached messages
+      // This prevents the UI from showing loading state
+      controller.add(<ChatMessage>[]);
     }
 
     // 2. Set up selective Firebase listener (only for new messages)
@@ -101,11 +105,16 @@ class CachedFirestoreRepository extends FirestoreDatabaseRepository {
               : super.getMessagesStream(senderId, receiverId);
 
       _firebaseListeners[chatId] = firebaseStream.listen((newMessages) {
-        if (newMessages.isNotEmpty) {
-          // Merge with cached messages
+        // Always process the result, even if empty
+        // For new chats, empty result should be shown immediately
+        if (lastMessageTime == null) {
+          // First time loading - replace cache entirely
+          _cache.cacheChatMessages(chatId, newMessages);
+        } else if (newMessages.isNotEmpty) {
+          // Incremental update - merge with existing cache
           _mergeAndCacheMessages(chatId, newMessages);
-          _notifyMessageStreamControllers(chatId);
         }
+        _notifyMessageStreamControllers(chatId);
       });
     }
   }

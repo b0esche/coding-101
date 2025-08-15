@@ -1,5 +1,3 @@
-import 'package:flutter_localization/flutter_localization.dart';
-import 'package:gig_hub/src/Data/services/localization_service.dart';
 import 'package:intl/intl.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
 import '../../../Data/app_imports.dart';
@@ -260,7 +258,7 @@ class _ChatListScreenState extends State<ChatListScreen>
           indicatorColor: Palette.forgedGold,
           labelColor: Palette.forgedGold,
           unselectedLabelColor: Palette.glazedWhite.o(0.7),
-          tabs: [Tab(text: 'Direct Chats'), Tab(text: 'Group Chats')],
+          tabs: [Tab(text: 'direct chats'), Tab(text: 'group chats')],
         ),
       ),
       body: TabBarView(

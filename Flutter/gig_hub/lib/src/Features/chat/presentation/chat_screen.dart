@@ -502,7 +502,10 @@ class ChatScreenState extends State<ChatScreen>
                 widget.chatPartner.id,
               ),
               builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
+                // Only show loading if we don't have any data AND we're waiting
+                // This prevents loading state when cached data is available
+                if (snapshot.connectionState == ConnectionState.waiting &&
+                    !snapshot.hasData) {
                   return const Center(child: CircularProgressIndicator());
                 }
 

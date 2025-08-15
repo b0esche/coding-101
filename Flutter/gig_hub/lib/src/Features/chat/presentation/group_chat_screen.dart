@@ -633,7 +633,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                   side: BorderSide(color: Palette.forgedGold, width: 2),
                 ),
                 title: Text(
-                  'Group Info',
+                  'group info',
                   style: TextStyle(
                     color: Palette.primalBlack,
                     fontSize: 18,
@@ -695,7 +695,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'Members (${widget.groupChat.memberIds.length}):',
+                      'members (${widget.groupChat.memberIds.length}):',
                       style: TextStyle(
                         color: Palette.primalBlack,
                         fontWeight: FontWeight.w600,
@@ -745,7 +745,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                     if (widget.groupChat.autoDeleteAt != null) ...[
                       const SizedBox(height: 16),
                       Text(
-                        'Auto-delete: ${widget.groupChat.autoDeleteAt!.day.toString().padLeft(2, '0')}.${widget.groupChat.autoDeleteAt!.month.toString().padLeft(2, '0')}.${widget.groupChat.autoDeleteAt!.year}',
+                        'auto-delete: ${widget.groupChat.autoDeleteAt!.day.toString().padLeft(2, '0')}.${widget.groupChat.autoDeleteAt!.month.toString().padLeft(2, '0')}.${widget.groupChat.autoDeleteAt!.year}',
                         style: TextStyle(
                           color: Palette.primalBlack.o(0.7),
                           fontSize: 12,
@@ -758,7 +758,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                   TextButton(
                     onPressed: () => Navigator.of(context).pop(),
                     child: Text(
-                      'Close',
+                      'close',
                       style: TextStyle(color: Palette.forgedGold),
                     ),
                   ),
@@ -774,7 +774,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error loading members: $e'),
+            content: Text('error loading members: $e'),
             backgroundColor: Palette.alarmRed,
           ),
         );
@@ -805,7 +805,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                     CircularProgressIndicator(color: Palette.forgedGold),
                     const SizedBox(width: 16),
                     Text(
-                      'Uploading image...',
+                      'uploading image...',
                       style: TextStyle(color: Palette.primalBlack),
                     ),
                   ],
@@ -859,7 +859,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to upload image: $e'),
+            content: Text('failed to upload image: $e'),
             backgroundColor: Palette.alarmRed,
           ),
         );

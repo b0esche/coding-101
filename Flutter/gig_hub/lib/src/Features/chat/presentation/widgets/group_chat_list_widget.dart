@@ -110,7 +110,7 @@ class _GroupChatListWidgetState extends State<GroupChatListWidget> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'No group chats yet',
+                  'no group chats yet',
                   style: TextStyle(
                     color: Palette.glazedWhite.o(0.7),
                     fontSize: 14,
@@ -202,7 +202,7 @@ class _GroupChatListWidgetState extends State<GroupChatListWidget> {
               ),
             ] else ...[
               Text(
-                'No messages yet',
+                'no messages yet',
                 style: TextStyle(
                   color: Palette.glazedWhite.o(0.5),
                   fontSize: 14,
