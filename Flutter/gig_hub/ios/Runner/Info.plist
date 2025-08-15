@@ -40,21 +40,9 @@
 				<string>com.googleusercontent.apps.753984654569-9da6clav6eamkjt0l2b27mehkl2l1spj</string>
 			</array>
 		</dict>
-		<dict>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>fb24351049274489890</string>
-			</array>
-		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
-	<key>FacebookAppID</key>
-	<string>24351049274489890</string>
-	<key>FacebookClientToken</key>
-	<string>6b51d6e23be656eb0ae5c486d5384037</string>
-	<key>FacebookDisplayName</key>
-	<string>Gig Hub</string>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<true/>
 	<key>GIDClientID</key>
@@ -70,14 +58,14 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Need permission to access your camera to take new images for your profile.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app needs access to location to set up rave alerts in your area.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app needs access to location to set up rave alerts in your area.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Need permission to access your microphone.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Need permission to upload images to your profile.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app needs access to location to set up rave alerts in your area.</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>This app needs access to location to set up rave alerts in your area.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

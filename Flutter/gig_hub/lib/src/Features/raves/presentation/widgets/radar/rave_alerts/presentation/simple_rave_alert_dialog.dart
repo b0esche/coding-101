@@ -1,13 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../../../../../../Data/app_imports.dart';
 import '../domain/rave_alert.dart';
-import 'dart:async';
-import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 /// Simple location result class for places API responses
 class _LocationResult {

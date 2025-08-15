@@ -1,6 +1,4 @@
-import 'package:flutter_localization/flutter_localization.dart';
 import 'package:gig_hub/src/Data/app_imports.dart';
-import 'package:gig_hub/src/Data/services/localization_service.dart';
 import 'package:gig_hub/src/Common/widgets/blocked_users_dialog.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -183,37 +181,50 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ),
           actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(null),
-              child: Text(
-                AppLocale.cancel.getString(context),
-                style: TextStyle(color: Palette.primalBlack),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                if (formKey.currentState?.validate() ?? false) {
-                  Navigator.of(context).pop(passwordController.text);
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Palette.shadowGrey,
-                splashFactory: NoSplash.splashFactory,
-                maximumSize: const Size(150, 24),
-                minimumSize: const Size(88, 22),
-                padding: EdgeInsets.zero,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  side: BorderSide(
-                    color: Palette.concreteGrey.o(0.7),
-                    width: 1.5,
+            SizedBox(
+              height: 36,
+              child: ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(null),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.transparent,
+                  foregroundColor: Palette.primalBlack,
+                  elevation: 0,
+                  splashFactory: NoSplash.splashFactory,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    side: BorderSide(
+                      color: Palette.primalBlack.o(0.3),
+                      width: 1,
+                    ),
                   ),
                 ),
-                elevation: 3,
+                child: Text(
+                  AppLocale.cancel.getString(context),
+                  style: GoogleFonts.outfit(fontWeight: FontWeight.w500),
+                ),
               ),
-              child: Text(
-                AppLocale.proceed.getString(context),
-                style: TextStyle(color: Palette.primalBlack),
+            ),
+            SizedBox(
+              height: 36,
+              child: ElevatedButton(
+                onPressed: () {
+                  if (formKey.currentState?.validate() ?? false) {
+                    Navigator.of(context).pop(passwordController.text);
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Palette.forgedGold,
+                  foregroundColor: Palette.primalBlack,
+                  elevation: 0,
+                  splashFactory: NoSplash.splashFactory,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: Text(
+                  AppLocale.proceed.getString(context),
+                  style: GoogleFonts.outfit(fontWeight: FontWeight.w500),
+                ),
               ),
             ),
           ],
@@ -500,28 +511,56 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ],
                     ),
                   if (_user is! Guest)
-                    SizedBox(
-                      height: 42,
-                      child: FilledButton(
-                        style: ButtonStyle(
-                          backgroundColor: WidgetStateProperty.all(
-                            Palette.shadowGrey,
-                          ),
+                    Container(
+                      height: 48,
+                      width: MediaQuery.of(context).size.width / 1.4,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Palette.shadowGrey.o(0.1),
+                          foregroundColor: Palette.glazedWhite,
+                          elevation: 0,
                           splashFactory: NoSplash.splashFactory,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                            side: BorderSide(
+                              color: Palette.glazedWhite.o(0.7),
+                              width: 2,
+                            ),
+                          ),
                         ),
                         onPressed: _user is Guest ? null : _onResetPassword,
-                        child: Text(AppLocale.changePw.getString(context)),
+                        child: Text(
+                          AppLocale.changePw.getString(context),
+                          style: GoogleFonts.outfit(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                       ),
                     ),
                   if (_user is! Guest)
-                    SizedBox(
-                      height: 42,
-                      child: FilledButton(
-                        style: ButtonStyle(
-                          backgroundColor: WidgetStateProperty.all(
-                            Palette.shadowGrey,
-                          ),
+                    Container(
+                      height: 48,
+                      width: MediaQuery.of(context).size.width / 1.4,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Palette.shadowGrey.o(0.1),
+                          foregroundColor: Palette.glazedWhite,
+                          elevation: 0,
                           splashFactory: NoSplash.splashFactory,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                            side: BorderSide(
+                              color: Palette.glazedWhite.o(0.7),
+                              width: 2,
+                            ),
+                          ),
                         ),
                         onPressed:
                             _user is Guest
@@ -532,18 +571,35 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     builder: (context) => BlockedUsersDialog(),
                                   );
                                 },
-                        child: Text(AppLocale.blocks.getString(context)),
+                        child: Text(
+                          AppLocale.blocks.getString(context),
+                          style: GoogleFonts.outfit(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                       ),
                     ),
                   if (_user is! Guest)
-                    SizedBox(
-                      height: 42,
-                      child: FilledButton(
-                        style: ButtonStyle(
-                          backgroundColor: WidgetStateProperty.all(
-                            Palette.shadowGrey,
-                          ),
+                    Container(
+                      height: 48,
+                      width: MediaQuery.of(context).size.width / 1.4,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Palette.alarmRed.o(0.1),
+                          foregroundColor: Palette.alarmRed,
+                          elevation: 0,
                           splashFactory: NoSplash.splashFactory,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                            side: BorderSide(
+                              color: Palette.alarmRed.o(0.7),
+                              width: 2,
+                            ),
+                          ),
                         ),
                         onPressed: () {
                           showDialog(
@@ -564,38 +620,69 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     ),
                                   ),
                                   actions: [
-                                    ElevatedButton(
-                                      onPressed: () => Navigator.pop(context),
-                                      child: Text(
-                                        AppLocale.cancel.getString(context),
-                                        style: TextStyle(
-                                          color: Palette.primalBlack,
+                                    SizedBox(
+                                      height: 36,
+                                      child: ElevatedButton(
+                                        onPressed: () => Navigator.pop(context),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.transparent,
+                                          foregroundColor: Palette.primalBlack,
+                                          elevation: 0,
+                                          splashFactory: NoSplash.splashFactory,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
+                                            side: BorderSide(
+                                              color: Palette.primalBlack.o(0.3),
+                                              width: 1,
+                                            ),
+                                          ),
+                                        ),
+                                        child: Text(
+                                          AppLocale.cancel.getString(context),
+                                          style: GoogleFonts.outfit(
+                                            fontWeight: FontWeight.w500,
+                                          ),
                                         ),
                                       ),
                                     ),
-                                    ElevatedButton(
-                                      style: ButtonStyle(
-                                        backgroundColor: WidgetStatePropertyAll(
-                                          Palette.glazedWhite,
-                                        ),
-                                      ),
-                                      onPressed: () {
-                                        auth.deleteUser();
-                                        if (!context.mounted) return;
-                                        if (mounted) {
-                                          Navigator.of(context).pop();
-                                          Navigator.of(context).pushReplacement(
-                                            MaterialPageRoute(
-                                              builder:
-                                                  (context) => LoginScreen(),
+                                    SizedBox(
+                                      height: 36,
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Palette.alarmRed,
+                                          foregroundColor: Palette.glazedWhite,
+                                          elevation: 0,
+                                          splashFactory: NoSplash.splashFactory,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              8,
                                             ),
-                                          );
-                                        }
-                                      },
-                                      child: Text(
-                                        AppLocale.deleteAcc.getString(context),
-                                        style: TextStyle(
-                                          color: Palette.primalBlack,
+                                          ),
+                                        ),
+                                        onPressed: () {
+                                          auth.deleteUser();
+                                          if (!context.mounted) return;
+                                          if (mounted) {
+                                            Navigator.of(context).pop();
+                                            Navigator.of(
+                                              context,
+                                            ).pushReplacement(
+                                              MaterialPageRoute(
+                                                builder:
+                                                    (context) => LoginScreen(),
+                                              ),
+                                            );
+                                          }
+                                        },
+                                        child: Text(
+                                          AppLocale.deleteAcc.getString(
+                                            context,
+                                          ),
+                                          style: GoogleFonts.outfit(
+                                            fontWeight: FontWeight.w500,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -603,17 +690,34 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 ),
                           );
                         },
-                        child: Text(AppLocale.deleteAcc.getString(context)),
+                        child: Text(
+                          AppLocale.deleteAcc.getString(context),
+                          style: GoogleFonts.outfit(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                       ),
                     ),
-                  SizedBox(
-                    height: 42,
-                    child: FilledButton(
-                      style: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.all(
-                          Palette.shadowGrey,
-                        ),
+                  Container(
+                    height: 48,
+                    width: MediaQuery.of(context).size.width / 1.4,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Palette.forgedGold.o(0.1),
+                        foregroundColor: Palette.forgedGold,
+                        elevation: 0,
                         splashFactory: NoSplash.splashFactory,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          side: BorderSide(
+                            color: Palette.forgedGold.o(0.7),
+                            width: 2,
+                          ),
+                        ),
                       ),
                       onPressed: () async {
                         await auth.signOut();
@@ -622,7 +726,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         }
                         Navigator.of(context).pop();
                       },
-                      child: Text(AppLocale.logOut.getString(context)),
+                      child: Text(
+                        AppLocale.logOut.getString(context),
+                        style: GoogleFonts.outfit(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ),
                   ),
                   Align(
@@ -635,7 +745,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(0, 0, 24, 12),
                         child: Text(
-                          "version 1.0.3",
+                          "version 1.0.21",
                           style: TextStyle(color: Palette.glazedWhite),
                         ),
                       ),

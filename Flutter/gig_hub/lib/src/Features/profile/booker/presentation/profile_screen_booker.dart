@@ -1,6 +1,4 @@
-import 'package:flutter_localization/flutter_localization.dart';
 import 'package:gig_hub/src/Data/app_imports.dart' hide UserStarRating;
-import 'package:gig_hub/src/Data/services/localization_service.dart';
 import 'package:gig_hub/src/data/services/image_compression_service.dart';
 import 'package:gig_hub/src/data/services/places_validation_service.dart';
 import 'package:gig_hub/src/Features/profile/booker/presentation/widgets/star_rating_booker.dart';
@@ -902,6 +900,13 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                                         for (String path
                                             in widget.booker.mediaImageUrls)
                                           PinchZoom(
+                                            onZoomEnd: () {
+                                              // Reset zoom state when zoom gesture ends
+                                              // This prevents the image from getting stuck in zoomed state
+                                              setState(() {
+                                                // Force a rebuild to reset any zoom transformation
+                                              });
+                                            },
                                             zoomEnabled: true,
                                             maxScale: 2.5,
                                             child: Image.network(

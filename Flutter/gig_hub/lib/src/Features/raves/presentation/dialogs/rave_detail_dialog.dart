@@ -1,7 +1,5 @@
-import 'package:flutter_localization/flutter_localization.dart';
 import 'package:intl/intl.dart';
 import '../../domain/rave.dart';
-import '../../../../Data/services/localization_service.dart';
 import '../../../../Data/app_imports.dart';
 
 class RaveDetailDialog extends StatefulWidget {
@@ -386,8 +384,8 @@ class _RaveDetailDialogState extends State<RaveDetailDialog> {
               dj: user,
               showChatButton:
                   false, // Disable chat since we don't have current user context
-              showEditButton: false,
-              showFavoriteIcon: false,
+              showEditButton: true,
+              showFavoriteIcon: true,
               currentUser: Guest(
                 id: '',
                 avatarImageUrl: '',
@@ -396,7 +394,7 @@ class _RaveDetailDialogState extends State<RaveDetailDialog> {
           } else if (user is Booker) {
             return ProfileScreenBooker(
               booker: user,
-              showEditButton: false,
+              showEditButton: true,
               db: CachedFirestoreRepository(),
             );
           } else {

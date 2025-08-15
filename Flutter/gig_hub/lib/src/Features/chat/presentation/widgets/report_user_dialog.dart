@@ -1,6 +1,4 @@
-import 'package:flutter_localization/flutter_localization.dart';
 import '../../../../Data/app_imports.dart';
-import '../../../../Data/services/localization_service.dart';
 
 class ReportUserDialog extends StatefulWidget {
   final AppUser reportedUser;

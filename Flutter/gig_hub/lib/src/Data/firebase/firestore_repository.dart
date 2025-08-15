@@ -26,6 +26,7 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
   Future<void> createGuest(Guest guest) async {
     final docRef = _firestore.collection('users').doc(guest.id);
     await docRef.set(guest.toJson());
+    await initFirebaseMessaging(); // Initialize FCM token after user creation
   }
 
   /// Creates a new DJ user document in Firestore
@@ -33,6 +34,7 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
   Future<void> createDJ(DJ dj) async {
     final docRef = _firestore.collection('users').doc(dj.id);
     await docRef.set(dj.toJson());
+    await initFirebaseMessaging(); // Initialize FCM token after user creation
   }
 
   /// Creates a new Booker user document in Firestore
@@ -40,6 +42,7 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
   Future<void> createBooker(Booker booker) async {
     final docRef = _firestore.collection('users').doc(booker.id);
     await docRef.set(booker.toJson());
+    await initFirebaseMessaging(); // Initialize FCM token after user creation
   }
 
   // delete ###
@@ -513,26 +516,31 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
 
   @override
   Future<void> initFirebaseMessaging() async {
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
-    await messaging.requestPermission();
+    try {
+      FirebaseMessaging messaging = FirebaseMessaging.instance;
+      await messaging.requestPermission();
 
-    String? token = await messaging.getToken();
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null && token != null) {
-      await FirebaseFirestore.instance.collection('users').doc(user.uid).update(
-        {'fcmToken': token},
-      );
-    }
-
-    messaging.onTokenRefresh.listen((newToken) async {
+      String? token = await messaging.getToken();
       final user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .update({'fcmToken': newToken});
+      if (user != null && token != null) {
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+          'fcmToken': token,
+        }, SetOptions(merge: true));
       }
-    });
+
+      messaging.onTokenRefresh.listen((newToken) async {
+        final user = FirebaseAuth.instance.currentUser;
+        if (user != null) {
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .set({'fcmToken': newToken}, SetOptions(merge: true));
+        }
+      });
+    } catch (e) {
+      print('Error initializing Firebase Messaging: $e');
+      // Don't rethrow - this is not critical for app functionality
+    }
   }
 
   /// STATUS MESSAGES ###

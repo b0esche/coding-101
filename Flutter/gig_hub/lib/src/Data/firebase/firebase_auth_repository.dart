@@ -18,10 +18,36 @@ class FirebaseAuthRepository implements AuthRepository {
     );
   }
 
-  // sign in/up w/ apple ### TODO: impl. APPLE SIGN IN
+  // sign in/up w/ apple ###
   @override
   Future<void> signInWithApple() async {
-    //
+    try {
+      // Check if Apple Sign In is available on this device
+      final isAvailable = await SignInWithApple.isAvailable();
+
+      if (!isAvailable) {
+        throw Exception('Apple Sign In is not available on this device');
+      }
+
+      // Request Apple ID credential
+      final credential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+
+      // Create Firebase credential from Apple credential
+      final oauthCredential = OAuthProvider("apple.com").credential(
+        idToken: credential.identityToken,
+        accessToken: credential.authorizationCode,
+      );
+
+      // Sign in to Firebase with the Apple credential
+      await FirebaseAuth.instance.signInWithCredential(oauthCredential);
+    } catch (e) {
+      rethrow; // Rethrow the original exception to preserve the exact error
+    }
   }
 
   // sign in/up w/ google ###
@@ -36,22 +62,6 @@ class FirebaseAuthRepository implements AuthRepository {
       idToken: googleAuth.idToken,
     );
     await FirebaseAuth.instance.signInWithCredential(credential);
-  }
-
-  // sign in/up w/ facebook ###
-  @override
-  Future<void> signInWithFacebook() async {
-    final result = await FacebookAuth.instance.login(
-      loginBehavior: LoginBehavior.nativeWithFallback,
-    );
-    if (result.status == LoginStatus.success && result.accessToken != null) {
-      final credential = FacebookAuthProvider.credential(
-        result.accessToken!.tokenString,
-      );
-      await FirebaseAuth.instance.signInWithCredential(credential);
-    } else {
-      throw Exception('Facebook login failed: ${result.status}');
-    }
   }
 
   // password reset ###
@@ -83,10 +93,6 @@ class FirebaseAuthRepository implements AuthRepository {
 
     try {
       await GoogleSignIn.instance.signOut();
-    } catch (_) {}
-
-    try {
-      await FacebookAuth.instance.logOut();
     } catch (_) {}
   }
 

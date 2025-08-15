@@ -6,7 +6,6 @@ abstract class AuthRepository {
   Future<void> signOut();
   Future<void> signInWithApple();
   Future<void> signInWithGoogle();
-  Future<void> signInWithFacebook();
   Future<void> sendPasswordResetEmail(String email);
   Future<void> confirmPasswordReset(String code, String newPassword);
   Future<void> deleteUser();

@@ -30,7 +30,7 @@ class _RaveRadarScreenState extends State<RaveRadarScreen> {
   Timer? _searchDebouncer;
   List<Rave> _allRaves = [];
   List<Rave> _filteredRaves = [];
-  Map<String, AppUser> _userCache = {}; // Cache for DJ and organizer data
+  final Map<String, AppUser> _userCache = {}; // Cache for DJ and organizer data
   bool _isLoading = true;
   bool _isSearching = false;
   String _searchQuery = '';

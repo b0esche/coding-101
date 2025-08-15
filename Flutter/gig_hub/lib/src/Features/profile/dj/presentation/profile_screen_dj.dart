@@ -1,5 +1,3 @@
-import 'package:flutter_localization/flutter_localization.dart';
-import 'package:gig_hub/src/Data/services/localization_service.dart';
 import 'package:gig_hub/src/Features/profile/dj/presentation/widgets/location_display.dart';
 import 'package:gig_hub/src/Features/profile/dj/presentation/widgets/bpm_display.dart';
 import 'package:gig_hub/src/Features/profile/dj/presentation/widgets/location_input_field.dart';
@@ -1339,6 +1337,13 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
           if (widget.dj.mediaImageUrls.isNotEmpty)
             for (String path in widget.dj.mediaImageUrls)
               PinchZoom(
+                onZoomEnd: () {
+                  // Reset zoom state when zoom gesture ends
+                  // This prevents the image from getting stuck in zoomed state
+                  setState(() {
+                    // Force a rebuild to reset any zoom transformation
+                  });
+                },
                 zoomEnabled: true,
                 maxScale: 2.5,
                 child:

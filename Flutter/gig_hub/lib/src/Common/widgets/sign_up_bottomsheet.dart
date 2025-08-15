@@ -1,6 +1,4 @@
-import 'package:flutter_localization/flutter_localization.dart';
 import 'package:gig_hub/src/Data/app_imports.dart';
-import 'package:gig_hub/src/Data/services/localization_service.dart';
 
 class SignUpSheet extends StatefulWidget {
   const SignUpSheet({super.key});

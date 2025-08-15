@@ -1,6 +1,3 @@
-import "package:flutter_localization/flutter_localization.dart";
-import "package:gig_hub/src/Data/services/localization_service.dart";
-
 import "../../../../Data/app_imports.dart";
 import "../../../../Data/app_imports.dart" as http;
 
@@ -676,6 +673,13 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                               children:
                                   mediaUrl!.map((path) {
                                     return PinchZoom(
+                                      onZoomEnd: () {
+                                        // Reset zoom state when zoom gesture ends
+                                        // This prevents the image from getting stuck in zoomed state
+                                        setState(() {
+                                          // Force a rebuild to reset any zoom transformation
+                                        });
+                                      },
                                       zoomEnabled: true,
                                       maxScale: 2.5,
                                       child:
@@ -883,14 +887,26 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                   _locationController.text.isNotEmpty &&
                                   _nameController.text.isNotEmpty) {
                                 try {
-                                  final UserCredential userCredential =
-                                      await FirebaseAuth.instance
-                                          .createUserWithEmailAndPassword(
-                                            email: widget.email,
-                                            password: widget.pw,
-                                          );
-                                  final User? firebaseUser =
-                                      userCredential.user;
+                                  User? firebaseUser;
+
+                                  // Check if user is already authenticated (social login)
+                                  final currentUser =
+                                      FirebaseAuth.instance.currentUser;
+                                  if (currentUser != null &&
+                                      widget.pw.isEmpty) {
+                                    // Social login case - user is already authenticated
+                                    firebaseUser = currentUser;
+                                  } else {
+                                    // Email/password signup case
+                                    final UserCredential userCredential =
+                                        await FirebaseAuth.instance
+                                            .createUserWithEmailAndPassword(
+                                              email: widget.email,
+                                              password: widget.pw,
+                                            );
+                                    firebaseUser = userCredential.user;
+                                  }
+
                                   if (firebaseUser == null) {
                                     throw Exception("user creation failed");
                                   }
@@ -968,14 +984,13 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                     favoriteUIds: [],
                                   );
                                   await db.createDJ(dj);
-                                  final currentUser = await db.getCurrentUser();
+                                  final newUser = await db.getCurrentUser();
                                   if (!context.mounted) return;
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
                                       builder:
-                                          (context) => MainScreen(
-                                            initialUser: currentUser,
-                                          ),
+                                          (context) =>
+                                              MainScreen(initialUser: newUser),
                                     ),
                                   );
                                 } catch (e) {

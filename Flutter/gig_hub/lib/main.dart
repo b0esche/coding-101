@@ -20,6 +20,10 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 final AuthRepository auth = FirebaseAuthRepository();
 final DatabaseRepository db = FirestoreDatabaseRepository();
 
+// Global navigator key for app-wide navigation
+final GlobalKey<NavigatorState> globalNavigatorKey =
+    GlobalKey<NavigatorState>();
+
 // Notification configuration for different platforms
 const AndroidInitializationSettings initializationSettingsAndroid =
     AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -68,7 +72,6 @@ Future<void> main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   await FirebaseMessaging.instance.requestPermission();
-  await db.initFirebaseMessaging();
 
   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);

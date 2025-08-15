@@ -21,16 +21,6 @@ PODS:
     - Firebase/Functions (= 11.15.0)
     - firebase_core
     - Flutter
-  - FBAEMKit (18.0.0):
-    - FBSDKCoreKit_Basics (= 18.0.0)
-  - FBSDKCoreKit (18.0.0):
-    - FBAEMKit (= 18.0.0)
-    - FBSDKCoreKit_Basics (= 18.0.0)
-  - FBSDKCoreKit_Basics (18.0.0)
-  - FBSDKLoginKit (18.0.0):
-    - FBSDKCoreKit (= 18.0.0)
-  - FBSDKShareKit (18.0.0):
-    - FBSDKCoreKit (= 18.0.0)
   - Firebase/Auth (11.15.0):
     - Firebase/CoreOnly
     - FirebaseAuth (~> 11.15.0)
@@ -137,9 +127,6 @@ PODS:
   - Flutter (1.0.0)
   - flutter_email_sender (0.0.1):
     - Flutter
-  - flutter_facebook_auth (7.1.2):
-    - FBSDKLoginKit (~> 18.0.0)
-    - Flutter
   - flutter_image_compress_common (1.0.0):
     - Flutter
     - Mantle
@@ -245,6 +232,8 @@ PODS:
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
+  - sign_in_with_apple (0.0.1):
+    - Flutter
   - sqflite_darwin (0.0.4):
     - Flutter
     - FlutterMacOS
@@ -256,9 +245,6 @@ DEPENDENCIES:
   - audio_session (from `.symlinks/plugins/audio_session/ios`)
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
   - cloud_functions (from `.symlinks/plugins/cloud_functions/ios`)
-  - FBSDKCoreKit
-  - FBSDKLoginKit
-  - FBSDKShareKit
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
@@ -266,7 +252,6 @@ DEPENDENCIES:
   - FirebaseFirestore (from `https://github.com/invertase/firestore-ios-sdk-frameworks.git`, tag `11.15.0`)
   - Flutter (from `Flutter`)
   - flutter_email_sender (from `.symlinks/plugins/flutter_email_sender/ios`)
-  - flutter_facebook_auth (from `.symlinks/plugins/flutter_facebook_auth/ios`)
   - flutter_image_compress_common (from `.symlinks/plugins/flutter_image_compress_common/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_localization (from `.symlinks/plugins/flutter_localization/ios`)
@@ -279,6 +264,7 @@ DEPENDENCIES:
   - just_waveform (from `.symlinks/plugins/just_waveform/darwin`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
+  - sign_in_with_apple (from `.symlinks/plugins/sign_in_with_apple/ios`)
   - sqflite_darwin (from `.symlinks/plugins/sqflite_darwin/darwin`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
 
@@ -286,11 +272,6 @@ SPEC REPOS:
   trunk:
     - AppAuth
     - AppCheckCore
-    - FBAEMKit
-    - FBSDKCoreKit
-    - FBSDKCoreKit_Basics
-    - FBSDKLoginKit
-    - FBSDKShareKit
     - Firebase
     - FirebaseAppCheckInterop
     - FirebaseAuth
@@ -348,8 +329,6 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_email_sender:
     :path: ".symlinks/plugins/flutter_email_sender/ios"
-  flutter_facebook_auth:
-    :path: ".symlinks/plugins/flutter_facebook_auth/ios"
   flutter_image_compress_common:
     :path: ".symlinks/plugins/flutter_image_compress_common/ios"
   flutter_local_notifications:
@@ -374,6 +353,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
   shared_preferences_foundation:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
+  sign_in_with_apple:
+    :path: ".symlinks/plugins/sign_in_with_apple/ios"
   sqflite_darwin:
     :path: ".symlinks/plugins/sqflite_darwin/darwin"
   url_launcher_ios:
@@ -391,11 +372,6 @@ SPEC CHECKSUMS:
   audio_session: 9bb7f6c970f21241b19f5a3658097ae459681ba0
   cloud_firestore: 8b8ad857da9a98527dab9c7ae520d0eba975bef9
   cloud_functions: 8565a870fbdc2b5046cba8183e972484128b6d8d
-  FBAEMKit: e34530df538b8eb8aeb53c35867715ba6c63ef0c
-  FBSDKCoreKit: d3f479a69127acebb1c6aad91c1a33907bcf6c2f
-  FBSDKCoreKit_Basics: 017b6dc2a1862024815a8229e75661e627ac1e29
-  FBSDKLoginKit: 5875762d1fe09ddcb05d03365d4f5dc34413843d
-  FBSDKShareKit: 082d1b087d6481af36f8d8433542f25f2fc2c8dd
   Firebase: d99ac19b909cd2c548339c2241ecd0d1599ab02e
   firebase_auth: dad1f2f9c317dba1b300933a3f7622fa30eb721c
   firebase_core: 995454a784ff288be5689b796deb9e9fa3601818
@@ -422,7 +398,6 @@ SPEC CHECKSUMS:
   FirebaseStorage: 50fc9ee147392943e492467db6b52759b0447037
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_email_sender: 2397f5e84aaacfb61af569637a963e7c687858d8
-  flutter_facebook_auth: d97dc09216aebd99d7ac52360186a630f67bdf18
   flutter_image_compress_common: 1697a328fd72bfb335507c6bca1a65fa5ad87df1
   flutter_local_notifications: a5a732f069baa862e728d839dd2ebb904737effb
   flutter_localization: 72299fb6cb4e51cae587bd953ed0b958040b71e6
@@ -448,9 +423,10 @@ SPEC CHECKSUMS:
   SDWebImage: f29024626962457f3470184232766516dee8dfea
   SDWebImageWebPCoder: e38c0a70396191361d60c092933e22c20d5b1380
   shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
+  sign_in_with_apple: c5dcc141574c8c54d5ac99dd2163c0c72ad22418
   sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
   url_launcher_ios: 694010445543906933d732453a59da0a173ae33d
 
-PODFILE CHECKSUM: 1e0b720f9b8ae073078d70312a2726f3eb2fadec
+PODFILE CHECKSUM: 506aa2a105d02f7515ab8725efb57b3806b4b441
 
 COCOAPODS: 1.16.2

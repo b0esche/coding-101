@@ -1,6 +1,5 @@
-import 'package:flutter_localization/flutter_localization.dart';
 import 'package:gig_hub/src/Data/app_imports.dart';
-import 'package:gig_hub/src/Data/services/localization_service.dart';
+import '../../../main.dart' show globalNavigatorKey;
 
 import '../../Data/app_imports.dart' as http;
 
@@ -76,6 +75,74 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
       );
+    }
+  }
+
+  Future<void> _handleSocialLogin(
+    Future<void> Function() socialLoginMethod,
+  ) async {
+    if (!mounted) {
+      return;
+    }
+    final db = context.read<DatabaseRepository>();
+
+    try {
+      // Perform social login
+      await socialLoginMethod();
+
+      // Check if widget is still mounted after async operation
+      if (!mounted) {
+        return;
+      }
+
+      // Check if this is a new user by comparing user IDs
+      final newUser = FirebaseAuth.instance.currentUser;
+
+      if (newUser != null) {
+        // Check if user document exists regardless of whether it's a new authentication
+        try {
+          await db.getCurrentUser();
+          // User document exists, app.dart will handle navigation automatically
+          return;
+        } catch (e) {
+          // User document doesn't exist, this user needs to create a profile
+
+          // Get the selected user type and user email
+          final selectedUserType = selected.first; // 'dj' or 'booker'
+          final userEmail = newUser.email ?? '';
+
+          // Use Future.microtask for immediate execution after current event loop
+          // This executes faster than addPostFrameCallback and avoids widget unmounting
+          Future.microtask(() {
+            if (selectedUserType == 'dj') {
+              globalNavigatorKey.currentState?.pushReplacement(
+                MaterialPageRoute(
+                  builder:
+                      (context) => CreateProfileScreenDJ(
+                        email: userEmail,
+                        pw: '', // Social login doesn't use password
+                      ),
+                ),
+              );
+            } else {
+              globalNavigatorKey.currentState?.pushReplacement(
+                MaterialPageRoute(
+                  builder:
+                      (context) => CreateProfileScreenBooker(
+                        email: userEmail,
+                        pw: '', // Social login doesn't use password
+                      ),
+                ),
+              );
+            }
+          });
+        }
+      }
+    } catch (e) {
+      // Handle social login errors - only show snackbar if widget is still mounted
+      if (mounted) {
+        rethrow;
+      }
     }
   }
 
@@ -536,11 +603,37 @@ class _LoginScreenState extends State<LoginScreen> {
                         width: 300,
                         child: Center(
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               IconButton(
-                                onPressed: () {
-                                  // Apple sign-in functionality to be implemented
+                                onPressed: () async {
+                                  await _handleSocialLogin(() async {
+                                    try {
+                                      await auth.signInWithApple();
+                                    } catch (e) {
+                                      if (!context.mounted) return;
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          backgroundColor: Palette.alarmRed,
+                                          duration: Duration(seconds: 5),
+                                          content: Center(
+                                            child: Text(
+                                              'Apple Sign In Error: ${e.toString()}',
+                                              textAlign: TextAlign.center,
+                                              style: GoogleFonts.outfit(
+                                                color: Palette.glazedWhite,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                      rethrow; // Re-throw to be handled by _handleSocialLogin
+                                    }
+                                  });
                                 },
                                 icon: Image.asset(
                                   'assets/images/apple_logo.png',
@@ -549,53 +642,32 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               IconButton(
                                 onPressed: () async {
-                                  try {
-                                    await auth.signInWithGoogle();
-                                  } catch (e) {
-                                    if (!context.mounted) return;
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        backgroundColor: Palette.forgedGold,
-                                        content: Center(
-                                          child: Text(
-                                            AppLocale.accessFailed.getString(
-                                              context,
+                                  await _handleSocialLogin(() async {
+                                    try {
+                                      await auth.signInWithGoogle();
+                                    } catch (e) {
+                                      if (!context.mounted) return;
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          backgroundColor: Palette.forgedGold,
+                                          content: Center(
+                                            child: Text(
+                                              AppLocale.accessFailed.getString(
+                                                context,
+                                              ),
+                                              style: TextStyle(fontSize: 16),
                                             ),
-                                            style: TextStyle(fontSize: 16),
                                           ),
                                         ),
-                                      ),
-                                    );
-                                  }
+                                      );
+                                      rethrow;
+                                    }
+                                  });
                                 },
                                 icon: Image.asset(
                                   'assets/images/google_logo.png',
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
-                              IconButton(
-                                onPressed: () async {
-                                  try {
-                                    await auth.signInWithFacebook();
-                                  } catch (e) {
-                                    if (!context.mounted) return;
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        backgroundColor: Palette.forgedGold,
-                                        content: Center(
-                                          child: Text(
-                                            AppLocale.accessFailed.getString(
-                                              context,
-                                            ),
-                                            style: TextStyle(fontSize: 16),
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
-                                icon: Image.asset(
-                                  'assets/images/facebook_logo.png',
                                   fit: BoxFit.contain,
                                 ),
                               ),

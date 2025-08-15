@@ -1,6 +1,3 @@
-import 'package:flutter_localization/flutter_localization.dart';
-import 'package:gig_hub/src/Data/services/localization_service.dart';
-
 import '../../../Data/app_imports.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
 
@@ -261,6 +258,13 @@ class ChatScreenState extends State<ChatScreen>
                                   ),
                                 ),
                                 PinchZoom(
+                                  onZoomEnd: () {
+                                    // Reset zoom state when zoom gesture ends
+                                    // This prevents the avatar from getting stuck in zoomed state
+                                    setState(() {
+                                      // Force a rebuild to reset any zoom transformation
+                                    });
+                                  },
                                   maxScale: 2,
                                   zoomEnabled: true,
                                   child: Container(

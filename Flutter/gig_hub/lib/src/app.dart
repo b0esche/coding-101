@@ -1,6 +1,4 @@
-import 'package:flutter_localization/flutter_localization.dart';
 import 'package:gig_hub/src/Data/app_imports.dart';
-import 'package:gig_hub/src/Data/services/localization_service.dart';
 
 class RouteObserverProvider extends InheritedWidget {
   final RouteObserver<PageRoute> observer;
@@ -114,7 +112,38 @@ class _AppState extends State<App> {
                 }
 
                 if (userSnap.hasError || userSnap.data == null) {
-                  return LoginScreen();
+                  // If user is authenticated but no document exists, they might be completing social signup
+                  // Show a brief loading state before returning to LoginScreen to allow social login flow to complete
+                  return FutureBuilder(
+                    future: Future.delayed(Duration(milliseconds: 500)),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Scaffold(
+                          backgroundColor: Palette.primalBlack,
+                          body: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CircularProgressIndicator(
+                                  color: Palette.forgedGold,
+                                  strokeWidth: 1.65,
+                                ),
+                                SizedBox(height: 20),
+                                Text(
+                                  'Completing setup...',
+                                  style: TextStyle(
+                                    color: Palette.glazedWhite,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }
+                      return LoginScreen();
+                    },
+                  );
                 }
                 if (authSnap.connectionState == ConnectionState.done) {
                   return MainScreen(initialUser: userSnap.data!);

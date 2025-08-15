@@ -155,8 +155,8 @@ class _RaveListState extends State<RaveList> {
             const SizedBox(height: 8),
             Text(
               widget.showCreateButton && targetUserId == currentUser?.uid
-                  ? 'No upcoming gigs yet. Create your first one!'
-                  : 'No upcoming gigs',
+                  ? 'no upcoming gigs yet. create your first one!'
+                  : 'no upcoming gigs',
               style: TextStyle(color: Palette.glazedWhite.o(0.7), fontSize: 14),
               textAlign: TextAlign.center,
             ),
@@ -332,7 +332,7 @@ class _RaveListState extends State<RaveList> {
                 ),
                 const SizedBox(width: 16),
                 Text(
-                  'Loading details...',
+                  'loading details...',
                   style: TextStyle(color: Palette.glazedWhite),
                 ),
               ],
@@ -346,7 +346,7 @@ class _RaveListState extends State<RaveList> {
       final collaboratorUsers = await _getUsers(rave.collaboratorIds);
       final organizerUser = await _getUser(rave.organizerId);
 
-      String organizerName = 'Unknown';
+      String organizerName = 'unknown';
       String? organizerAvatarUrl;
 
       if (organizerUser != null) {
@@ -389,7 +389,7 @@ class _RaveListState extends State<RaveList> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to load rave details'),
+            content: Text('failed to load rave details'),
             backgroundColor: Palette.alarmRed,
           ),
         );
@@ -427,10 +427,10 @@ class _RaveListState extends State<RaveList> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to update attendance'),
+            content: Text('failed to update attendance'),
             backgroundColor: Palette.alarmRed,
             action: SnackBarAction(
-              label: 'Retry',
+              label: 'retry',
               textColor: Palette.glazedWhite,
               onPressed: () => _toggleAttendance(rave),
             ),
@@ -556,7 +556,7 @@ class _RaveListState extends State<RaveList> {
                   ),
                   const SizedBox(width: 16),
                   Text(
-                    'Deleting rave...',
+                    'deleting rave...',
                     style: TextStyle(color: Palette.glazedWhite),
                   ),
                 ],

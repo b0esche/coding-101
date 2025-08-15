@@ -1,4 +1,3 @@
-import FBSDKCoreKit
 import FirebaseCore
 import Flutter
 import UIKit
@@ -12,11 +11,6 @@ import flutter_local_notifications
   ) -> Bool {
     FirebaseApp.configure()
 
-    ApplicationDelegate.shared.application(
-      application,
-      didFinishLaunchingWithOptions: launchOptions
-    )
-
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
@@ -26,12 +20,6 @@ import flutter_local_notifications
     open url: URL,
     options: [UIApplication.OpenURLOptionsKey: Any] = [:]
   ) -> Bool {
-    let handledByFacebook = ApplicationDelegate.shared.application(
-      app,
-      open: url,
-      options: options
-    )
-
     FlutterLocalNotificationsPlugin.setPluginRegistrantCallback { (registry) in
       GeneratedPluginRegistrant.register(with: registry)
 
@@ -41,12 +29,10 @@ import flutter_local_notifications
       UNUserNotificationCenter.current().delegate = self as? UNUserNotificationCenterDelegate
     }
 
-    let handledByFlutter = super.application(
+    return super.application(
       app,
       open: url,
       options: options
     )
-
-    return handledByFacebook || handledByFlutter
   }
 }

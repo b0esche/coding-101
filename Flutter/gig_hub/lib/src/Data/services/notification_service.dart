@@ -1,6 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:gig_hub/src/Data/app_imports.dart';
 import 'package:gig_hub/src/Features/profile/booker/presentation/booker_profile_loader_screen.dart';
+import '../../../main.dart' show globalNavigatorKey;
 
 /// Notification handler service that manages push notification interactions
 ///
@@ -24,8 +25,6 @@ class NotificationHandlerApp extends StatefulWidget {
 }
 
 class _NotificationHandlerAppState extends State<NotificationHandlerApp> {
-  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
-
   @override
   void initState() {
     super.initState();
@@ -58,7 +57,7 @@ class _NotificationHandlerAppState extends State<NotificationHandlerApp> {
         if (screen == 'chat_list_screen') {
           final user = await widget.db.getCurrentUser();
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            _navigatorKey.currentState?.push(
+            globalNavigatorKey.currentState?.push(
               MaterialPageRoute(
                 builder: (_) => ChatListScreen(currentUser: user),
               ),
@@ -80,7 +79,7 @@ class _NotificationHandlerAppState extends State<NotificationHandlerApp> {
 
     // Navigate directly to the booker's profile screen
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _navigatorKey.currentState?.push(
+      globalNavigatorKey.currentState?.push(
         MaterialPageRoute(
           builder:
               (_) => BookerProfileLoaderScreen(
@@ -94,6 +93,6 @@ class _NotificationHandlerAppState extends State<NotificationHandlerApp> {
 
   @override
   Widget build(BuildContext context) {
-    return App(navigatorKey: _navigatorKey);
+    return App(navigatorKey: globalNavigatorKey);
   }
 }

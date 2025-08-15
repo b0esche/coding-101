@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.gig_hub"
+    namespace = "com.b0esche.gig_hub"
     compileSdk = 34  // Updated for background audio compatibility
     ndkVersion = "27.0.12077973"
 
@@ -27,13 +27,13 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.gig_hub"
+        applicationId = "com.b0esche.gig_hub"
         minSdk = 23
         targetSdk = 34  // Updated for latest Android features
         versionCode = flutter.versionCode
         versionName = flutter.versionName
 
-        manifestPlaceholders["appAuthRedirectScheme"] = "com.example.gig_hub"
+        manifestPlaceholders["appAuthRedirectScheme"] = "com.b0esche.gig_hub"
     }
 
     buildTypes {
@@ -58,7 +58,4 @@ dependencies {
     // Firebase components
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
-
-    // Facebook SDK
-    implementation("com.facebook.android:facebook-android-sdk:16.3.0")
 }

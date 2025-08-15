@@ -1,6 +1,4 @@
-import 'package:flutter_localization/flutter_localization.dart';
 import 'package:gig_hub/src/Data/app_imports.dart';
-import 'package:gig_hub/src/Data/services/localization_service.dart';
 
 class SearchFunctionCard extends StatefulWidget {
   final void Function(List<DJ>) onSearchResults;

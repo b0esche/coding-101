@@ -1,5 +1,3 @@
-import 'package:flutter_localization/flutter_localization.dart';
-import 'package:gig_hub/src/Data/services/localization_service.dart';
 
 import '../../Data/app_imports.dart';
 
