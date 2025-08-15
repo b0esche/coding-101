@@ -228,7 +228,6 @@ exports.notifyRaveAlerts = onDocumentCreated(
     // Validate rave data
     if (!raveData || !raveData.geoPoint || !raveData.name ||
       !raveData.organizerId) {
-      console.log("Invalid rave data, skipping notification");
       return;
     }
 
@@ -246,7 +245,6 @@ exports.notifyRaveAlerts = onDocumentCreated(
         .get();
 
       if (alertsSnapshot.empty) {
-        console.log("No active rave alerts found");
         return;
       }
 
@@ -324,8 +322,6 @@ exports.notifyRaveAlerts = onDocumentCreated(
                   token: fcmToken,
                 };
 
-                console.log(`Sending rave alert to user ${userId} ` +
-                  `for rave ${raveName} (${distance}km away)`);
                 return getMessaging().send(payload);
               }
             }
@@ -341,9 +337,6 @@ exports.notifyRaveAlerts = onDocumentCreated(
         (result) => result.status === "fulfilled").length;
       const failed = results.filter(
         (result) => result.status === "rejected").length;
-
-      console.log(`Rave alert notifications sent: ${successful} ` +
-        `successful, ${failed} failed`);
     } catch (error) {
       console.error("Error processing rave alerts:", error);
     }

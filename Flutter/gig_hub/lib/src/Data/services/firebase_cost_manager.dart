@@ -164,7 +164,7 @@ class FirebaseCostManager {
 
   void _logListenerActivity(String identifier) {
     // Log listener activity for cost analysis
-    debugPrint('Firebase Listener Activity: $identifier at ${DateTime.now()}');
+    // Logging removed for production
   }
 
   /// Clean up resources and optimize memory usage

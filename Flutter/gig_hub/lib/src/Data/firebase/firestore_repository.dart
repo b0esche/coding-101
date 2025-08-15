@@ -784,4 +784,71 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
       rethrow;
     }
   }
+
+  /// Default implementation - no caching, so no refresh needed
+  @override
+  Future<void> forceRefreshChatList(String userId) async {
+    // Base implementation does nothing since there's no caching
+  }
+
+  // =============================================================================
+  // RAVE MANAGEMENT SECTION
+  // =============================================================================
+
+  /// Updates a rave document in Firestore
+  @override
+  Future<void> updateRave(String raveId, Map<String, dynamic> updates) async {
+    try {
+      // Always update the updatedAt timestamp
+      final updatesWithTimestamp = Map<String, dynamic>.from(updates);
+      updatesWithTimestamp['updatedAt'] = DateTime.now().toIso8601String();
+
+      await _firestore
+          .collection('raves')
+          .doc(raveId)
+          .update(updatesWithTimestamp);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  /// Deletes a rave document from Firestore
+  /// Also cleans up associated group chat if it exists
+  @override
+  Future<void> deleteRave(String raveId) async {
+    try {
+      final batch = _firestore.batch();
+
+      // Get the rave document first to check for group chat
+      final raveDoc = await _firestore.collection('raves').doc(raveId).get();
+
+      if (raveDoc.exists) {
+        final raveData = raveDoc.data();
+        final groupChatId = raveData?['groupChatId'] as String?;
+
+        // Delete the rave document
+        batch.delete(raveDoc.reference);
+
+        // If there's an associated group chat, clean it up
+        if (groupChatId != null && groupChatId.isNotEmpty) {
+          final groupChatRef = _firestore
+              .collection('group_chats')
+              .doc(groupChatId);
+
+          // Mark group chat as inactive
+          batch.update(groupChatRef, {'isActive': false});
+
+          // Delete all messages in the group chat
+          final messagesQuery = await groupChatRef.collection('messages').get();
+          for (final messageDoc in messagesQuery.docs) {
+            batch.delete(messageDoc.reference);
+          }
+        }
+
+        await batch.commit();
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

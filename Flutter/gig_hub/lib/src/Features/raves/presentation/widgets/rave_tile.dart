@@ -9,16 +9,22 @@ class RaveTile extends StatelessWidget {
   final Rave rave;
   final VoidCallback? onTap;
   final VoidCallback? onAttendToggle;
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
   final bool isAttending;
   final bool showAttendButton;
+  final bool showOrganizerOptions;
 
   const RaveTile({
     super.key,
     required this.rave,
     this.onTap,
     this.onAttendToggle,
+    this.onEdit,
+    this.onDelete,
     this.isAttending = false,
     this.showAttendButton = true,
+    this.showOrganizerOptions = false,
   });
 
   @override
@@ -88,7 +94,9 @@ class RaveTile extends StatelessWidget {
                         ],
                       ),
                     ),
-                    if (showAttendButton) _buildAttendButton(),
+                    if (showOrganizerOptions) _buildOrganizerActions(),
+                    if (showAttendButton && !showOrganizerOptions)
+                      _buildAttendButton(),
                   ],
                 ),
                 const SizedBox(height: 8),
@@ -203,6 +211,49 @@ class RaveTile extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildOrganizerActions() {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Edit button
+        SizedBox(
+          height: 32,
+          width: 32,
+          child: IconButton(
+            onPressed: onEdit,
+            style: IconButton.styleFrom(
+              backgroundColor: const Color(0xFFD4AF37).o(0.1),
+              side: BorderSide(color: const Color(0xFFD4AF37), width: 1),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              padding: EdgeInsets.zero,
+            ),
+            icon: const Icon(Icons.edit, color: Color(0xFFD4AF37), size: 16),
+          ),
+        ),
+        const SizedBox(width: 8),
+        // Delete button
+        SizedBox(
+          height: 32,
+          width: 32,
+          child: IconButton(
+            onPressed: onDelete,
+            style: IconButton.styleFrom(
+              backgroundColor: Colors.red.o(0.1),
+              side: BorderSide(color: Colors.red, width: 1),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              padding: EdgeInsets.zero,
+            ),
+            icon: const Icon(Icons.delete, color: Colors.red, size: 16),
+          ),
+        ),
+      ],
     );
   }
 

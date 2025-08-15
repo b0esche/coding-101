@@ -217,18 +217,10 @@ class FirebaseQueryOptimizer {
     _readOperations += count;
     _collectionReadCounts[collection] =
         (_collectionReadCounts[collection] ?? 0) + count;
-
-    if (kDebugMode) {
-      print('Firebase Read: $collection (+$count) - Total: $_readOperations');
-    }
   }
 
   void _trackWrite(int count) {
     _writeOperations += count;
-
-    if (kDebugMode) {
-      print('Firebase Write: +$count - Total: $_writeOperations');
-    }
   }
 
   /// Estimate monthly Firestore costs based on current usage
@@ -297,15 +289,8 @@ class FirebaseQueryOptimizer {
     try {
       // Note: Bundle loading requires proper setup and is mainly for web
       // Consider pre-aggregated data patterns instead for mobile
-      if (kDebugMode) {
-        print(
-          'Bundle loading not implemented for mobile - consider data pre-aggregation',
-        );
-      }
     } catch (e) {
-      if (kDebugMode) {
-        print('Bundle loading failed: $e');
-      }
+      // Bundle loading failed - continue with regular queries
     }
   }
 

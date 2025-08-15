@@ -57,6 +57,10 @@ class _ChatListScreenState extends State<ChatListScreen>
   /// Set up the direct chats stream once and maintain the subscription
   void _setupDirectChatsStream() {
     _isLoadingDirectChats = true;
+
+    // Force refresh to ensure we have the latest data
+    db.forceRefreshChatList(widget.currentUser.id);
+
     _directChatsSubscription = db
         .getChatsStream(widget.currentUser.id)
         .listen(
@@ -97,7 +101,13 @@ class _ChatListScreenState extends State<ChatListScreen>
   void didPopNext() {
     // Refresh the chat list when user returns from a chat screen
     // This ensures new messages are immediately visible
-    setState(() {});
+
+    // Force refresh the cached chat list data
+    db.forceRefreshChatList(widget.currentUser.id);
+
+    // Cancel current subscription and restart it to get fresh data
+    _directChatsSubscription?.cancel();
+    _setupDirectChatsStream();
   }
 
   /// Decrypts AES-256 encrypted messages using the environment key

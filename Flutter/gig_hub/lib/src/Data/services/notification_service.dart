@@ -75,7 +75,6 @@ class _NotificationHandlerAppState extends State<NotificationHandlerApp> {
     final raveId = message.data['raveId'];
 
     if (organizerId == null) {
-      print('No organizer ID in rave alert notification');
       return;
     }
 

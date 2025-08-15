@@ -1,9 +1,5 @@
-import 'dart:async';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gig_hub/src/Data/app_imports.dart';
-import '../firebase/firestore_repository.dart';
-import '../services/cache_service.dart';
+
 import '../models/group_message.dart';
 
 /// Enhanced Firestore repository with intelligent caching to reduce Firebase costs
@@ -38,15 +34,111 @@ class CachedFirestoreRepository extends FirestoreDatabaseRepository {
 
   @override
   Future<void> sendMessage(ChatMessage message) async {
-    // Update cache optimistically before Firebase
+    // 1. Update cache optimistically before Firebase
     final chatId = getChatId(message.senderId, message.receiverId);
     _cache.addMessageToCache(chatId, message);
 
-    // Update stream controllers immediately for real-time UI
+    // 2. Update message stream controllers immediately
     _notifyMessageStreamControllers(chatId);
 
-    // Send to Firebase
-    await super.sendMessage(message);
+    // 3. CRITICAL: Update chat list cache immediately with the new message
+    _updateChatListWithNewMessage(message);
+
+    // 4. Update Firebase chat document immediately for the sender (optimistic)
+    _updateChatDocumentInFirebase(chatId, message);
+
+    // 5. Send to Firebase (don't await to keep UI responsive)
+    super.sendMessage(message).catchError((error) {
+      // Handle error if needed, but keep optimistic update
+    });
+  }
+
+  /// Updates the chat document in Firebase to maintain last message data
+  Future<void> _updateChatDocumentInFirebase(
+    String chatId,
+    ChatMessage message,
+  ) async {
+    try {
+      await _firestore.collection('chats').doc(chatId).set({
+        'participants': [message.senderId, message.receiverId],
+        'lastMessage': message.message,
+        'lastTimestamp': Timestamp.fromDate(message.timestamp),
+        'lastSenderId': message.senderId,
+        'lastRead': false,
+      }, SetOptions(merge: true));
+    } catch (e) {
+      // Fail silently - the optimistic update is what matters for UX
+    }
+  }
+
+  /// Updates the chat list cache when a new message is sent
+  /// This ensures the chat list shows the correct most recent message
+  void _updateChatListWithNewMessage(ChatMessage message) {
+    // Update chat list for both sender and receiver
+    final senderId = message.senderId;
+    final receiverId = message.receiverId;
+
+    _updateUserChatList(senderId, message);
+    _updateUserChatList(receiverId, message);
+  }
+
+  /// Updates a specific user's chat list to reflect the new message
+  void _updateUserChatList(String userId, ChatMessage newMessage) {
+    List<ChatMessage> currentChatList;
+
+    // If user's chat list isn't loaded yet, create a new list with just this message
+    if (!_lastChatListValues.containsKey(userId)) {
+      currentChatList = [newMessage];
+    } else {
+      // Update existing cache
+      currentChatList = List<ChatMessage>.from(_lastChatListValues[userId]!);
+
+      // Find existing chat entry for this conversation
+      final partnerId =
+          newMessage.senderId == userId
+              ? newMessage.receiverId
+              : newMessage.senderId;
+      final existingIndex = currentChatList.indexWhere((chat) {
+        final chatPartnerId =
+            chat.senderId == userId ? chat.receiverId : chat.senderId;
+        return chatPartnerId == partnerId;
+      });
+
+      if (existingIndex != -1) {
+        // Update existing chat entry
+        currentChatList[existingIndex] = newMessage;
+      } else {
+        // Add new chat entry
+        currentChatList.add(newMessage);
+      }
+    }
+
+    // Sort by timestamp (most recent first)
+    currentChatList.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+
+    // Update cache immediately
+    _lastChatListValues[userId] = currentChatList;
+    _cache.cacheChatList(userId, currentChatList);
+
+    // CRITICAL: Notify stream controllers immediately for real-time UI update
+    _notifyChatListStreamController(userId, currentChatList);
+  }
+
+  /// Notifies chat list stream controller of updates
+  void _notifyChatListStreamController(
+    String userId,
+    List<ChatMessage> chatList,
+  ) {
+    if (_chatListStreamControllers.containsKey(userId)) {
+      final controller = _chatListStreamControllers[userId]!;
+      if (!controller.isClosed) {
+        // Force immediate stream update
+        controller.add(chatList);
+
+        // Also ensure the cached value is immediately available for future stream requests
+        _lastChatListValues[userId] = chatList;
+      }
+    }
   }
 
   @override
@@ -173,32 +265,33 @@ class CachedFirestoreRepository extends FirestoreDatabaseRepository {
 
   @override
   Stream<List<ChatMessage>> getChatsStream(String userId) {
-    // If we have both controller and cached data, return a stream that starts with cached data
-    if (_chatListStreamControllers.containsKey(userId) &&
-        _lastChatListValues.containsKey(userId)) {
-      final existingController = _chatListStreamControllers[userId]!;
-      final cachedData = _lastChatListValues[userId]!;
+    // Return existing controller stream if available
+    if (_chatListStreamControllers.containsKey(userId)) {
+      final controller = _chatListStreamControllers[userId]!;
 
-      // Create an async generator that yields cached data first, then stream data
-      return Stream.fromFuture(Future.value(cachedData)).asyncExpand((
-        initialData,
-      ) {
-        return Stream<List<ChatMessage>>.multi((controller) {
-          // Emit the cached data immediately
-          controller.add(initialData);
+      // If we have cached data, emit it immediately, then continue with the stream
+      if (_lastChatListValues.containsKey(userId)) {
+        final cachedData = _lastChatListValues[userId]!;
 
-          // Then listen to the ongoing stream for updates
-          final subscription = existingController.stream.listen((data) {
-            if (data != initialData) {
-              // Only emit if different
-              _lastChatListValues[userId] = data;
-              controller.add(data);
-            }
-          }, onError: controller.addError);
+        return Stream<List<ChatMessage>>.multi((streamController) {
+          // Emit cached data first for immediate UI update
+          streamController.add(cachedData);
 
-          controller.onCancel = () => subscription.cancel();
+          // Then listen to ongoing updates
+          final subscription = controller.stream.listen((data) {
+            _lastChatListValues[userId] = data;
+            streamController.add(data);
+          }, onError: streamController.addError);
+
+          streamController.onCancel = () => subscription.cancel();
         });
-      });
+      } else {
+        // No cached data, just return the controller stream
+        return controller.stream.map((data) {
+          _lastChatListValues[userId] = data;
+          return data;
+        });
+      }
     }
 
     // Create new controller if none exists
@@ -208,7 +301,7 @@ class CachedFirestoreRepository extends FirestoreDatabaseRepository {
     // Initialize the stream
     _initializeChatListStream(userId, controller);
 
-    // Return a stream that tracks values for future reuse
+    // Return the controller stream
     return controller.stream.map((data) {
       _lastChatListValues[userId] = data;
       return data;
@@ -239,17 +332,28 @@ class CachedFirestoreRepository extends FirestoreDatabaseRepository {
       }
     }
 
-    // 3. Set up periodic updates for fresh data
-    Timer.periodic(const Duration(seconds: 30), (timer) async {
-      try {
-        final freshChatList = await _getOptimizedChatsStream(userId);
-        _cache.cacheChatList(userId, freshChatList);
-        _lastChatListValues[userId] = freshChatList;
-        controller.add(freshChatList);
-      } catch (e) {
-        // Continue with cached data on error
+    // Note: No periodic timer - rely on optimistic updates and explicit refreshes
+  }
+
+  /// Forces an immediate refresh of the chat list for a specific user
+  /// This is useful when returning to the chat list screen after sending messages
+  @override
+  Future<void> forceRefreshChatList(String userId) async {
+    try {
+      final freshChatList = await _getOptimizedChatsStream(userId);
+      _cache.cacheChatList(userId, freshChatList);
+      _lastChatListValues[userId] = freshChatList;
+
+      // Notify the stream controller if it exists
+      if (_chatListStreamControllers.containsKey(userId)) {
+        final controller = _chatListStreamControllers[userId]!;
+        if (!controller.isClosed) {
+          controller.add(freshChatList);
+        }
       }
-    });
+    } catch (e) {
+      // Continue with cached data on error
+    }
   }
 
   /// Optimized chat list fetching that avoids N+1 queries
@@ -527,6 +631,38 @@ class CachedFirestoreRepository extends FirestoreDatabaseRepository {
 
     // Update cache with new data
     _cache.cacheUser(user.id, user);
+  }
+
+  // =============================================================================
+  // RAVE OPERATIONS WITH CACHING
+  // =============================================================================
+
+  /// Updates a rave and invalidates any related caches
+  @override
+  Future<void> updateRave(String raveId, Map<String, dynamic> updates) async {
+    try {
+      // Update in Firebase
+      await super.updateRave(raveId, updates);
+
+      // Invalidate any rave-related caches
+      // You might want to invalidate specific caches here if you implement rave caching
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  /// Deletes a rave and cleans up any related caches
+  @override
+  Future<void> deleteRave(String raveId) async {
+    try {
+      // Delete from Firebase (includes group chat cleanup)
+      await super.deleteRave(raveId);
+
+      // Invalidate any rave-related caches
+      // You might want to invalidate specific caches here if you implement rave caching
+    } catch (e) {
+      rethrow;
+    }
   }
 
   // =============================================================================

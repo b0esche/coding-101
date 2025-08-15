@@ -43,6 +43,7 @@ abstract class DatabaseRepository with ChangeNotifier {
     String messageId,
     String currentUserId,
   );
+  Future<void> forceRefreshChatList(String userId);
 
   // utils ###
   Future<void> blockUser(String currentUid, String targetUid);
@@ -75,4 +76,8 @@ abstract class DatabaseRepository with ChangeNotifier {
     GroupMessage message,
   );
   Future<void> updateGroupChatImage(String groupChatId, String imageUrl);
+
+  // raves ###
+  Future<void> updateRave(String raveId, Map<String, dynamic> updates);
+  Future<void> deleteRave(String raveId);
 }

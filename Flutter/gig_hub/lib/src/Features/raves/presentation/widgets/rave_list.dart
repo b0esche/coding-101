@@ -1,7 +1,9 @@
+import 'package:intl/intl.dart';
 import '../../domain/rave.dart';
 import 'rave_tile.dart';
 import '../dialogs/rave_detail_dialog.dart';
 import '../dialogs/create_rave_dialog.dart';
+import '../dialogs/edit_rave_dialog.dart';
 import '../../../../Data/app_imports.dart';
 
 class RaveList extends StatefulWidget {
@@ -115,6 +117,19 @@ class _RaveListState extends State<RaveList> {
                                   ? () => _toggleAttendance(rave)
                                   : null,
                           showAttendButton: targetUserId != currentUser?.uid,
+                          showOrganizerOptions:
+                              targetUserId == currentUser?.uid &&
+                              rave.organizerId == currentUser?.uid,
+                          onEdit:
+                              targetUserId == currentUser?.uid &&
+                                      rave.organizerId == currentUser?.uid
+                                  ? () => _showEditRaveDialog(rave)
+                                  : null,
+                          onDelete:
+                              targetUserId == currentUser?.uid &&
+                                      rave.organizerId == currentUser?.uid
+                                  ? () => _showDeleteRaveDialog(rave)
+                                  : null,
                         ),
                       )
                       .toList(),
@@ -419,6 +434,164 @@ class _RaveListState extends State<RaveList> {
               textColor: Palette.glazedWhite,
               onPressed: () => _toggleAttendance(rave),
             ),
+          ),
+        );
+      }
+    }
+  }
+
+  void _showEditRaveDialog(Rave rave) {
+    showDialog(
+      context: context,
+      builder: (context) => EditRaveDialog(rave: rave),
+    );
+  }
+
+  void _showDeleteRaveDialog(Rave rave) {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            backgroundColor: Palette.primalBlack,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+              side: BorderSide(color: Palette.forgedGold, width: 2),
+            ),
+            title: Text(
+              AppLocale.confirmDeleteRave.getString(context),
+              style: GoogleFonts.sometypeMono(
+                textStyle: TextStyle(
+                  color: Palette.glazedWhite,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  AppLocale.deleteRaveWarning.getString(context),
+                  style: TextStyle(color: Palette.glazedWhite, fontSize: 14),
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Palette.shadowGrey.o(0.3),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Palette.forgedGold.o(0.3)),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        rave.name,
+                        style: TextStyle(
+                          color: Palette.forgedGold,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '${rave.location} • ${DateFormat('MMM dd, yyyy').format(rave.startDate)}',
+                        style: TextStyle(
+                          color: Palette.glazedWhite.o(0.7),
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(
+                  AppLocale.cancel.getString(context),
+                  style: TextStyle(color: Palette.glazedWhite),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () => _deleteRave(rave),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Palette.alarmRed,
+                  foregroundColor: Palette.glazedWhite,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: Text(
+                  AppLocale.deleteRave.getString(context),
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
+            ],
+          ),
+    );
+  }
+
+  Future<void> _deleteRave(Rave rave) async {
+    try {
+      // Close the confirmation dialog
+      Navigator.of(context).pop();
+
+      // Show loading dialog
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder:
+            (context) => AlertDialog(
+              backgroundColor: Palette.primalBlack,
+              content: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      Palette.forgedGold,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Text(
+                    'Deleting rave...',
+                    style: TextStyle(color: Palette.glazedWhite),
+                  ),
+                ],
+              ),
+            ),
+      );
+
+      // Delete the rave from Firebase
+      final db = context.read<DatabaseRepository>();
+      await db.deleteRave(rave.id);
+
+      // Close loading dialog
+      if (mounted) Navigator.of(context).pop();
+
+      // Show success message
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocale.raveDeleted.getString(context)),
+            backgroundColor: Palette.forgedGold,
+          ),
+        );
+      }
+    } catch (e) {
+      // Close loading dialog
+      if (mounted) Navigator.of(context).pop();
+
+      // Show error message
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              '${AppLocale.raveDeleteFailed.getString(context)}: $e',
+            ),
+            backgroundColor: Palette.alarmRed,
           ),
         );
       }
