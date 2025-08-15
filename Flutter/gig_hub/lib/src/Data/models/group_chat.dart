@@ -1,16 +1,46 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+/// Model representing a group chat associated with a rave event
+///
+/// Features:
+/// - Linked to a specific rave via raveId
+/// - Supports multiple members via memberIds list
+/// - Tracks last message for preview display
+/// - Auto-deletion after rave ends (48 hours)
+/// - Optional group image for customization
+/// - Active/inactive state management
 class GroupChat {
+  /// Unique identifier for the group chat
   final String id;
+
+  /// ID of the rave this group chat belongs to
   final String raveId;
+
+  /// Display name of the group chat
   final String name;
+
+  /// List of user IDs who are members of this group chat
   final List<String> memberIds;
+
+  /// Last message content (may be encrypted)
   final String? lastMessage;
+
+  /// User ID who sent the last message
   final String? lastMessageSenderId;
+
+  /// Timestamp of the last message
   final DateTime? lastMessageTimestamp;
+
+  /// When the group chat was created
   final DateTime createdAt;
-  final DateTime? autoDeleteAt; // 48 hours after rave end
+
+  /// When the group chat will be automatically deleted (48 hours after rave end)
+  final DateTime? autoDeleteAt;
+
+  /// Whether the group chat is currently active
   final bool isActive;
+
+  /// Optional custom image URL for the group chat
   final String? imageUrl;
 
   GroupChat({

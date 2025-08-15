@@ -162,14 +162,12 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget>
         _showSimpleWaveform();
         _downloadAndExtractWaveformInBackground(publicUrl);
       } catch (e) {
-        debugPrint('Direct streaming failed, falling back to download: $e');
         await _downloadAndSetupPlayer(publicUrl);
       }
     } catch (e) {
       if (mounted) {
         setState(() => _isLoading = false);
       }
-      debugPrint('Error while loading player: $e');
     }
   }
 
@@ -214,7 +212,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget>
 
       _extractWaveform(filePath);
     } catch (e) {
-      debugPrint('Background waveform extraction failed: $e');
+      // Silent error handling
     }
   }
 
@@ -225,7 +223,6 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget>
       const maxSizeForFullWaveform = 150 * 1024 * 1024;
 
       if (fileSize > maxSizeForFullWaveform) {
-        debugPrint('File too large, skipping waveform extraction');
         return;
       }
 
@@ -245,7 +242,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget>
         }
       }).asFuture();
     } catch (e) {
-      debugPrint('Waveform extraction failed: $e');
+      // Silent error handling
     }
   }
 

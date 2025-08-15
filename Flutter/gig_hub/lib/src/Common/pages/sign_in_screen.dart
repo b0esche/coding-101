@@ -540,7 +540,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             children: [
                               IconButton(
                                 onPressed: () {
-                                  debugPrint("mit apple einloggen");
+                                  // Apple sign-in functionality to be implemented
                                 },
                                 icon: Image.asset(
                                   'assets/images/apple_logo.png',

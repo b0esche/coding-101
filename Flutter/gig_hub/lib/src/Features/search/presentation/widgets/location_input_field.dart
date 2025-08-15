@@ -96,21 +96,16 @@ class _LocationAutocompleteFieldState extends State<LocationAutocompleteField> {
             });
           }
         } else {
-          debugPrint('Google Places API Error: ${data['status']}');
           setState(() {
             _bestSuggestion = null;
           });
         }
       } else {
-        debugPrint(
-          'HTTP Error fetching suggestion: ${response.statusCode} - ${response.reasonPhrase}',
-        );
         setState(() {
           _bestSuggestion = null;
         });
       }
     } catch (e) {
-      debugPrint('Exception while fetching location suggestion: $e');
       setState(() {
         _bestSuggestion = null;
       });

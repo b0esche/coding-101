@@ -1,32 +1,44 @@
 import 'dart:async';
 import '../firebase/firestore_repository.dart';
 
+/// Service responsible for automatically cleaning up expired group chats
+///
+/// Features:
+/// - Singleton pattern ensures only one cleanup service runs
+/// - Periodic cleanup every hour to remove expired group chats
+/// - Removes group chats that have passed their autoDeleteAt timestamp
+/// - Prevents database bloat from old group chat data
+/// - Configurable cleanup intervals
 class GroupChatCleanupService {
-  static const Duration _cleanupInterval = Duration(
-    hours: 1,
-  ); // Check every hour
+  /// How often to check for expired group chats (every hour)
+  static const Duration _cleanupInterval = Duration(hours: 1);
+
   Timer? _cleanupTimer;
   final FirestoreDatabaseRepository _db = FirestoreDatabaseRepository();
 
+  // Singleton implementation
   static final GroupChatCleanupService _instance =
       GroupChatCleanupService._internal();
   factory GroupChatCleanupService() => _instance;
   GroupChatCleanupService._internal();
 
-  /// Start the automatic cleanup service
+  /// Starts the automatic cleanup service
+  /// Performs an initial cleanup and then schedules periodic cleanups
   void startCleanupService() {
-    if (_cleanupTimer?.isActive == true) return; // Already running
+    // Prevent multiple cleanup timers from running
+    if (_cleanupTimer?.isActive == true) return;
 
-    // Run initial cleanup
+    // Run initial cleanup immediately
     _performCleanup();
 
-    // Schedule periodic cleanup
+    // Schedule periodic cleanup every hour
     _cleanupTimer = Timer.periodic(_cleanupInterval, (_) {
       _performCleanup();
     });
   }
 
-  /// Stop the automatic cleanup service
+  /// Stops the automatic cleanup service
+  /// Cancels the periodic timer to prevent further cleanups
   void stopCleanupService() {
     _cleanupTimer?.cancel();
     _cleanupTimer = null;

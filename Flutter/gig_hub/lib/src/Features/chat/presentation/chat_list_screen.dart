@@ -5,12 +5,22 @@ import 'package:encrypt/encrypt.dart' as encrypt;
 import '../../../Data/app_imports.dart';
 import 'widgets/group_chat_list_widget.dart';
 
+/// Arguments passed to the ChatListScreen via navigation
+/// Contains the current user information needed for chat operations
 class ChatListScreenArgs {
   final AppUser currentUser;
 
   ChatListScreenArgs({required this.currentUser});
 }
 
+/// Main chat list screen displaying both direct chats and group chats
+/// Features:
+/// - Tabbed interface (Direct Chats / Group Chats)
+/// - Real-time message updates via Firestore streams
+/// - AES-256 message encryption/decryption
+/// - Date-based message grouping
+/// - Chat deletion functionality
+/// - Unread message indicators
 class ChatListScreen extends StatefulWidget {
   const ChatListScreen({super.key, required this.currentUser});
 
@@ -22,8 +32,13 @@ class ChatListScreen extends StatefulWidget {
 
 class _ChatListScreenState extends State<ChatListScreen>
     with RouteAware, TickerProviderStateMixin {
+  // Database repository for Firestore operations
   final db = FirestoreDatabaseRepository();
+
+  // Route observer for detecting when user returns to this screen
   RouteObserver<PageRoute>? _routeObserver;
+
+  // Tab controller for switching between Direct and Group chats
   late TabController _tabController;
 
   @override
@@ -48,15 +63,21 @@ class _ChatListScreenState extends State<ChatListScreen>
 
   @override
   void didPopNext() {
+    // Refresh the chat list when user returns from a chat screen
+    // This ensures new messages are immediately visible
     setState(() {});
   }
 
+  /// Decrypts AES-256 encrypted messages using the environment key
+  /// Messages are stored with 'enc::' prefix followed by IV:encryptedData format
+  /// Returns error messages for malformed or undecryptable content
   String _decryptMessage(String text) {
     final keyString = dotenv.env['ENCRYPTION_KEY'];
     if (keyString == null || keyString.length != 32) {
       return '[key error]';
     }
 
+    // Skip decryption for non-encrypted messages
     if (!text.startsWith('enc::')) {
       return text;
     }
@@ -65,6 +86,7 @@ class _ChatListScreenState extends State<ChatListScreen>
       final key = encrypt.Key.fromUtf8(keyString);
       final encrypter = encrypt.Encrypter(encrypt.AES(key));
 
+      // Parse the IV and encrypted data from the message format
       final parts = text.substring(5).split(':');
       if (parts.length != 2) return '[format error]';
 
@@ -77,6 +99,8 @@ class _ChatListScreenState extends State<ChatListScreen>
     }
   }
 
+  /// Formats timestamps into human-readable relative time
+  /// Shows days (d), hours (h), minutes (m), or 'now' for recent messages
   String _formatTimestamp(DateTime timestamp) {
     final now = DateTime.now();
     final difference = now.difference(timestamp);
@@ -92,13 +116,18 @@ class _ChatListScreenState extends State<ChatListScreen>
     }
   }
 
+  /// Builds the chat entry list with date separators
+  /// Fetches user data for each chat partner and organizes by date
+  /// Returns a mixed list of DateTime objects (date headers) and ChatListItem objects
   Future<List<dynamic>> _buildChatEntries(
     List<ChatMessage> recentMessages,
   ) async {
     final List<ChatListItem> items = [];
 
+    // Build chat items by fetching partner user data for each message
     for (final msg in recentMessages) {
       try {
+        // Determine who the chat partner is (not the current user)
         final partnerId =
             msg.senderId == widget.currentUser.id
                 ? msg.receiverId
@@ -108,15 +137,18 @@ class _ChatListScreenState extends State<ChatListScreen>
 
         items.add(ChatListItem(user: partnerUser, recent: msg));
       } catch (e) {
+        // Skip messages where user data couldn't be fetched
         continue;
       }
     }
 
+    // Sort by most recent message first
     items.sort((a, b) => b.recent.timestamp.compareTo(a.recent.timestamp));
 
     final List<dynamic> entries = [];
     DateTime? lastDate;
 
+    // Group messages by date and add date headers
     for (final item in items) {
       final itemDate = DateTime(
         item.recent.timestamp.year,
@@ -124,6 +156,7 @@ class _ChatListScreenState extends State<ChatListScreen>
         item.recent.timestamp.day,
       );
 
+      // Add date separator if this is a new date
       if (lastDate == null || itemDate.isBefore(lastDate)) {
         entries.add(itemDate);
         lastDate = itemDate;
@@ -160,23 +193,30 @@ class _ChatListScreenState extends State<ChatListScreen>
       body: TabBarView(
         controller: _tabController,
         children: [
+          // Direct chats tab - shows 1-on-1 conversations
           _buildDirectChats(),
+          // Group chats tab - shows multi-user group conversations
           GroupChatListWidget(currentUserId: widget.currentUser.id),
         ],
       ),
     );
   }
 
+  /// Builds the direct chats tab content
+  /// Uses StreamBuilder for real-time updates and handles loading/error states
   Widget _buildDirectChats() {
     return StreamBuilder<List<ChatMessage>>(
+      // Real-time stream of the user's recent chat messages
       stream: db.getChatsStream(widget.currentUser.id),
       builder: (context, snapshot) {
+        // Show loading indicator while fetching data
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
             child: CircularProgressIndicator(color: Palette.forgedGold),
           );
         }
 
+        // Show error message if stream fails
         if (snapshot.hasError) {
           return Center(
             child: Text(
@@ -188,6 +228,7 @@ class _ChatListScreenState extends State<ChatListScreen>
 
         final recentMessages = snapshot.data ?? [];
 
+        // Show empty state if no chats exist
         if (recentMessages.isEmpty) {
           return Center(
             child: Text(
@@ -197,6 +238,7 @@ class _ChatListScreenState extends State<ChatListScreen>
           );
         }
 
+        // Build the chat list with date grouping
         return FutureBuilder<List<dynamic>>(
           future: _buildChatEntries(recentMessages),
           builder: (context, asyncSnapshot) {
@@ -206,11 +248,13 @@ class _ChatListScreenState extends State<ChatListScreen>
 
             final chatEntries = asyncSnapshot.data!;
             return ListView.builder(
+              // Consistent padding with group chat list
               padding: const EdgeInsets.only(top: 16, bottom: 16),
               itemCount: chatEntries.length,
               itemBuilder: (context, idx) {
                 final entry = chatEntries[idx];
 
+                // Render date header
                 if (entry is DateTime) {
                   final isToday = DateTime.now().difference(entry).inDays == 0;
                   final formattedDate =
@@ -233,6 +277,7 @@ class _ChatListScreenState extends State<ChatListScreen>
                   );
                 }
 
+                // Render individual chat tile
                 if (entry is ChatListItem) {
                   return Container(
                     margin: const EdgeInsets.symmetric(

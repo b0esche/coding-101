@@ -84,9 +84,6 @@ class _RaveListState extends State<RaveList> {
             }
 
             if (snapshot.hasError) {
-              // Log the error for debugging
-              print('Rave loading error: ${snapshot.error}');
-
               // Always show empty state instead of error for better UX
               // Most "errors" are actually just empty collections or permission issues
               return _buildEmptyState(targetUserId);
@@ -198,7 +195,6 @@ class _RaveListState extends State<RaveList> {
             updateCombinedRaves();
           },
           onError: (e) {
-            print('Error fetching organizer raves: $e');
             organizerRaves = [];
             updateCombinedRaves();
           },
@@ -215,7 +211,6 @@ class _RaveListState extends State<RaveList> {
             updateCombinedRaves();
           },
           onError: (e) {
-            print('Error fetching DJ raves: $e');
             djRaves = [];
             updateCombinedRaves();
           },
@@ -232,7 +227,6 @@ class _RaveListState extends State<RaveList> {
             updateCombinedRaves();
           },
           onError: (e) {
-            print('Error fetching collaborator raves: $e');
             collaboratorRaves = [];
             updateCombinedRaves();
           },
@@ -291,7 +285,7 @@ class _RaveListState extends State<RaveList> {
         return AppUser.fromJson(userId, userData);
       }
     } catch (e) {
-      print('Error fetching user $userId: $e');
+      // Silent error handling
     }
     return null;
   }

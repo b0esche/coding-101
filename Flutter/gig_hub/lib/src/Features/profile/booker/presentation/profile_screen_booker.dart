@@ -151,7 +151,6 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
       }
     } catch (e) {
       // Handle error gracefully
-      debugPrint('Error loading current user: $e');
     }
   }
 
@@ -165,7 +164,6 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
         });
       }
     } catch (e) {
-      print('Error loading status message: $e');
       // Don't crash the app if status messages aren't available
       if (mounted) {
         setState(() {
@@ -198,7 +196,6 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
         await db.createStatusMessage(statusMessage);
         await _loadStatusMessage();
       } catch (e) {
-        print('Error creating status message: $e');
         // Show user-friendly error
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(

@@ -5,12 +5,23 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:gig_hub/src/Data/services/notification_service.dart';
 import 'package:gig_hub/src/Data/services/group_chat_cleanup_service.dart';
 
+/// Main entry point for the GigHub application
+///
+/// Features:
+/// - Firebase integration for authentication and Firestore
+/// - Push notification setup for both foreground and background
+/// - Group chat cleanup service for expired chats
+/// - Multi-platform local notifications (Android/iOS)
+/// - Global app state management with Provider
+
+// Global instances for dependency injection
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
 final AuthRepository auth = FirebaseAuthRepository();
 final DatabaseRepository db = FirestoreDatabaseRepository();
 
+// Notification configuration for different platforms
 const AndroidInitializationSettings initializationSettingsAndroid =
     AndroidInitializationSettings('@mipmap/ic_launcher');
 const DarwinInitializationSettings initializationSettingsDarwin =
@@ -24,6 +35,8 @@ const InitializationSettings initializationSettings = InitializationSettings(
   iOS: initializationSettingsDarwin,
 );
 
+/// Background message handler for Firebase Cloud Messaging
+/// Processes push notifications when the app is terminated or in background
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   final notification = message.notification;

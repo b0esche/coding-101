@@ -1,14 +1,37 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+/// Model representing a message within a group chat
+///
+/// Features:
+/// - Links to parent group chat via groupChatId
+/// - Includes sender information (ID, name, avatar)
+/// - Supports encrypted message content
+/// - Tracks read status per user via readBy map
+/// - Firestore timestamp handling for cross-platform compatibility
 class GroupMessage {
+  /// Unique identifier for this message
   final String id;
+
+  /// ID of the group chat this message belongs to
   final String groupChatId;
+
+  /// User ID of the message sender
   final String senderId;
+
+  /// Display name of the message sender
   final String senderName;
+
+  /// Optional avatar URL of the message sender
   final String? senderAvatarUrl;
+
+  /// Message content (may be AES-256 encrypted with 'enc::' prefix)
   final String message;
+
+  /// When the message was sent
   final DateTime timestamp;
-  final Map<String, bool> readBy; // userId -> isRead
+
+  /// Map tracking which users have read this message (userId -> isRead)
+  final Map<String, bool> readBy;
 
   GroupMessage({
     required this.id,

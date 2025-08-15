@@ -139,16 +139,12 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
           _formKey.currentState?.validate();
         });
       } else {
-        debugPrint(
-          'Google Places API Error: ${data['status']} - ${data['error_message']}',
-        );
         setState(() {
           _locationError = ' ';
           _formKey.currentState?.validate();
         });
       }
     } catch (e) {
-      debugPrint('network error during city validation: $e');
       setState(() {
         _locationError = ' ';
         _formKey.currentState?.validate();

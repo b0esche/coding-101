@@ -3,6 +3,13 @@ import '../../../../Data/app_imports.dart';
 import '../group_chat_screen.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
 
+/// Widget displaying a list of group chats for the current user
+/// Features:
+/// - Real-time group chat updates via FutureBuilder with refresh mechanism
+/// - AES-256 encrypted message preview decryption
+/// - Group image display with fallback icons
+/// - Member count display
+/// - Navigation to individual group chat screens
 class GroupChatListWidget extends StatefulWidget {
   final String currentUserId;
 
@@ -14,8 +21,14 @@ class GroupChatListWidget extends StatefulWidget {
 
 class _GroupChatListWidgetState extends State<GroupChatListWidget> {
   final FirestoreDatabaseRepository _db = FirestoreDatabaseRepository();
-  int _refreshKey = 0; // Add refresh key to force FutureBuilder rebuild
 
+  /// Refresh key used to force FutureBuilder rebuild when returning from group chat
+  /// Incremented to trigger fresh data fetch and ensure UI shows latest changes
+  int _refreshKey = 0;
+
+  /// Decrypts encrypted group chat message previews for display
+  /// Handles the same AES-256 encryption format as direct chats
+  /// Returns error messages for malformed or undecryptable content
   String _decryptPreview(String text) {
     final keyString = dotenv.env['ENCRYPTION_KEY'];
     if (keyString == null || keyString.length != 32) {
