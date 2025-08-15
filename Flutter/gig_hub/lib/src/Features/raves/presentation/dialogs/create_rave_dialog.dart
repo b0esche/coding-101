@@ -4,11 +4,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'dart:async';
 import '../../../../Data/models/rave.dart';
 import '../../../../Data/models/users.dart';
 import '../../../../Data/models/group_chat.dart';
 import '../../../../Data/interfaces/database_repository.dart';
 import '../../../../Data/services/localization_service.dart';
+import '../../../../Data/services/places_validation_service.dart';
 import 'user_search_dialog.dart';
 
 class CreateRaveDialog extends StatefulWidget {
@@ -34,6 +36,9 @@ class _CreateRaveDialogState extends State<CreateRaveDialog> {
   List<AppUser> _selectedDJs = [];
   List<AppUser> _selectedCollaborators = [];
   bool _isLoading = false;
+  bool _isValidatingLocation = false;
+  String? _locationError;
+  Timer? _locationValidationTimer;
 
   @override
   void dispose() {
@@ -42,7 +47,69 @@ class _CreateRaveDialogState extends State<CreateRaveDialog> {
     _descriptionController.dispose();
     _ticketShopController.dispose();
     _additionalLinkController.dispose();
+    _locationValidationTimer?.cancel();
     super.dispose();
+  }
+
+  /// Validates location using Google Places API with debouncing
+  /// Ensures only real, existing locations are accepted
+  /// Uses a 800ms delay to prevent excessive API calls while typing
+  Future<void> _validateLocation(String value) async {
+    final trimmedValue = value.trim();
+
+    // Cancel any pending validation
+    _locationValidationTimer?.cancel();
+
+    // Clear previous error if field is empty
+    if (trimmedValue.isEmpty) {
+      setState(() {
+        _locationError = null;
+        _isValidatingLocation = false;
+      });
+      return;
+    }
+
+    // Set validation state immediately
+    setState(() {
+      _isValidatingLocation = true;
+      _locationError = null;
+    });
+
+    // Debounce the validation to avoid excessive API calls
+    _locationValidationTimer = Timer(
+      const Duration(milliseconds: 800),
+      () async {
+        try {
+          // Validate the location using Google Places API
+          final isValid = await PlacesValidationService.validateCity(
+            trimmedValue,
+          );
+
+          if (mounted) {
+            setState(() {
+              _isValidatingLocation = false;
+              if (!isValid) {
+                _locationError = 'Please enter a valid city name';
+              } else {
+                _locationError = null;
+              }
+            });
+
+            // Trigger form validation to show/hide error
+            _formKey.currentState?.validate();
+          }
+        } catch (e) {
+          if (mounted) {
+            setState(() {
+              _isValidatingLocation = false;
+              _locationError =
+                  'Unable to validate location. Please check your connection.';
+            });
+            _formKey.currentState?.validate();
+          }
+        }
+      },
+    );
   }
 
   @override
@@ -86,11 +153,17 @@ class _CreateRaveDialogState extends State<CreateRaveDialog> {
                 _buildTextField(
                   controller: _locationController,
                   label: AppLocale.raveLocation.getString(context),
-                  validator:
-                      (value) =>
-                          value?.trim().isEmpty == true
-                              ? 'Location is required'
-                              : null,
+                  validator: (value) {
+                    if (value?.trim().isEmpty == true) {
+                      return 'Location is required';
+                    }
+                    if (_locationError != null) {
+                      return _locationError;
+                    }
+                    return null;
+                  },
+                  onChanged: _validateLocation,
+                  isValidating: _isValidatingLocation,
                 ),
                 const SizedBox(height: 16),
 
@@ -162,11 +235,14 @@ class _CreateRaveDialogState extends State<CreateRaveDialog> {
     required TextEditingController controller,
     required String label,
     String? Function(String?)? validator,
+    void Function(String)? onChanged,
     int maxLines = 1,
+    bool isValidating = false,
   }) {
     return TextFormField(
       controller: controller,
       validator: validator,
+      onChanged: onChanged,
       maxLines: maxLines,
       style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
@@ -190,6 +266,23 @@ class _CreateRaveDialogState extends State<CreateRaveDialog> {
         ),
         filled: true,
         fillColor: const Color(0xFF1A1A1A),
+        // Add validation indicator
+        suffixIcon:
+            isValidating
+                ? const Padding(
+                  padding: EdgeInsets.all(12.0),
+                  child: SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Color(0xFFD4AF37),
+                      ),
+                    ),
+                  ),
+                )
+                : null,
       ),
     );
   }
@@ -512,6 +605,24 @@ class _CreateRaveDialogState extends State<CreateRaveDialog> {
     if (_startDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please select a start date')),
+      );
+      return;
+    }
+
+    // Check if location validation is still in progress
+    if (_isValidatingLocation) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please wait while we validate the location'),
+        ),
+      );
+      return;
+    }
+
+    // Ensure location is valid before proceeding
+    if (_locationError != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter a valid location')),
       );
       return;
     }
