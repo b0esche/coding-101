@@ -53,7 +53,7 @@ class ChatScreenState extends State<ChatScreen>
 
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  final db = FirestoreDatabaseRepository();
+  final db = CachedFirestoreRepository();
 
   String getPartnerAvatarUrl() => widget.chatPartner.avatarUrl;
   late encrypt.Encrypter _encrypter;

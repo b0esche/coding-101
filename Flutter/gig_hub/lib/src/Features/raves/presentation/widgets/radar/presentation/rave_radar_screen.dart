@@ -577,20 +577,7 @@ class _RaveRadarScreenState extends State<RaveRadarScreen> {
         }
       });
 
-      // Show success feedback
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              isCurrentlyAttending
-                  ? '${AppLocale.leftRave.getString(context)} ${rave.name}'
-                  : '${AppLocale.joinedRave.getString(context)} ${rave.name}',
-            ),
-            backgroundColor: Palette.forgedGold,
-            duration: Duration(seconds: 2),
-          ),
-        );
-      }
+      // Success - no snackbar needed since UI updates immediately
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

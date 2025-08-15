@@ -21,7 +21,7 @@ class _MainScreenState extends State<MainScreen> {
 
   List<int>? _currentSearchBpmRange;
   List<String>? _currentSearchGenres;
-  final db = FirestoreDatabaseRepository();
+  final db = CachedFirestoreRepository();
 
   AppUser? _loggedInUser;
 
@@ -145,12 +145,28 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Future<void> _fetchDJs() async {
-    final users = await db.getDJs();
-
     setState(() {
-      _usersDJ = users;
-      _sortedUsersDJ = List.from(_usersDJ);
+      _isLoading = true;
     });
+
+    try {
+      // Use cached repository for faster loading
+      final users = await db.getDJs();
+
+      if (mounted) {
+        setState(() {
+          _usersDJ = users;
+          _sortedUsersDJ = List.from(_usersDJ);
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   void _toggleExpanded() {
@@ -286,6 +302,10 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void dispose() {
     _sub?.cancel();
+
+    // Clean up cached repository resources
+    db.dispose();
+
     super.dispose();
   }
 

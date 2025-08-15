@@ -407,20 +407,7 @@ class _RaveListState extends State<RaveList> {
         });
       }
 
-      // Show success feedback
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              isCurrentlyAttending
-                  ? 'Left ${rave.name}'
-                  : 'Joined ${rave.name}',
-            ),
-            backgroundColor: Palette.forgedGold,
-            duration: Duration(seconds: 2),
-          ),
-        );
-      }
+      // Success - no snackbar needed since UI updates immediately
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

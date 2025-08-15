@@ -4,7 +4,7 @@ import '../../domain/rave.dart';
 import '../../../../Data/services/localization_service.dart';
 import '../../../../Data/app_imports.dart';
 
-class RaveDetailDialog extends StatelessWidget {
+class RaveDetailDialog extends StatefulWidget {
   final Rave rave;
   final bool isAttending;
   final VoidCallback? onAttendToggle;
@@ -25,6 +25,26 @@ class RaveDetailDialog extends StatelessWidget {
   });
 
   @override
+  State<RaveDetailDialog> createState() => _RaveDetailDialogState();
+}
+
+class _RaveDetailDialogState extends State<RaveDetailDialog> {
+  late bool _isAttending;
+
+  @override
+  void initState() {
+    super.initState();
+    _isAttending = widget.isAttending;
+  }
+
+  void _handleAttendToggle() {
+    setState(() {
+      _isAttending = !_isAttending;
+    });
+    widget.onAttendToggle?.call();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return AlertDialog(
       backgroundColor: Palette.primalBlack,
@@ -36,7 +56,7 @@ class RaveDetailDialog extends StatelessWidget {
         children: [
           Expanded(
             child: Text(
-              rave.name,
+              widget.rave.name,
               style: TextStyle(
                 color: Palette.forgedGold,
                 fontSize: 18,
@@ -57,48 +77,48 @@ class RaveDetailDialog extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              _buildInfoRow(Icons.location_on, rave.location),
+              _buildInfoRow(Icons.location_on, widget.rave.location),
               const SizedBox(height: 12),
               _buildInfoRow(Icons.calendar_today, _formatDate()),
-              if (rave.startTime.isNotEmpty) ...[
+              if (widget.rave.startTime.isNotEmpty) ...[
                 const SizedBox(height: 12),
-                _buildInfoRow(Icons.access_time, rave.startTime),
+                _buildInfoRow(Icons.access_time, widget.rave.startTime),
               ],
 
-              if (rave.description.isNotEmpty) ...[
+              if (widget.rave.description.isNotEmpty) ...[
                 const SizedBox(height: 16),
                 _buildSection(
                   AppLocale.raveDescription.getString(context),
-                  rave.description,
+                  widget.rave.description,
                 ),
               ],
 
               const SizedBox(height: 16),
               _buildSection(
                 AppLocale.organizer.getString(context),
-                organizerName,
+                widget.organizerName,
               ),
 
-              if (djs.isNotEmpty) ...[
+              if (widget.djs.isNotEmpty) ...[
                 const SizedBox(height: 16),
                 _buildDJSection(),
               ],
 
-              if (collaborators.isNotEmpty) ...[
+              if (widget.collaborators.isNotEmpty) ...[
                 const SizedBox(height: 16),
                 _buildCollaboratorsSection(),
               ],
 
-              if (rave.attendingUserIds.isNotEmpty) ...[
+              if (widget.rave.attendingUserIds.isNotEmpty) ...[
                 const SizedBox(height: 16),
                 _buildSection(
                   AppLocale.attending.getString(context),
-                  '${rave.attendingUserIds.length} people',
+                  '${widget.rave.attendingUserIds.length} people',
                 ),
               ],
 
-              if (rave.ticketShopLink != null ||
-                  rave.additionalLink != null) ...[
+              if (widget.rave.ticketShopLink != null ||
+                  widget.rave.additionalLink != null) ...[
                 const SizedBox(height: 16),
                 _buildLinksSection(),
               ],
@@ -107,16 +127,16 @@ class RaveDetailDialog extends StatelessWidget {
         ),
       ),
       actions: [
-        if (onAttendToggle != null)
+        if (widget.onAttendToggle != null)
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: onAttendToggle,
+              onPressed: _handleAttendToggle,
               style: ElevatedButton.styleFrom(
                 backgroundColor:
-                    isAttending ? Colors.transparent : const Color(0xFFD4AF37),
+                    _isAttending ? Colors.transparent : const Color(0xFFD4AF37),
                 foregroundColor:
-                    isAttending ? const Color(0xFFD4AF37) : Colors.black,
+                    _isAttending ? const Color(0xFFD4AF37) : Colors.black,
                 side: BorderSide(color: const Color(0xFFD4AF37), width: 1),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -124,7 +144,7 @@ class RaveDetailDialog extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 12),
               ),
               child: Text(
-                isAttending ? 'Leave Event' : 'Attend Event',
+                _isAttending ? 'leave event' : 'attend event',
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -188,7 +208,7 @@ class RaveDetailDialog extends StatelessWidget {
         Wrap(
           spacing: 8,
           runSpacing: 8,
-          children: djs.map((dj) => _buildUserAvatar(dj)).toList(),
+          children: widget.djs.map((dj) => _buildUserAvatar(dj)).toList(),
         ),
       ],
     );
@@ -199,7 +219,7 @@ class RaveDetailDialog extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Collaborators',
+          'collaborators',
           style: const TextStyle(
             color: Color(0xFFD4AF37),
             fontSize: 14,
@@ -211,46 +231,76 @@ class RaveDetailDialog extends StatelessWidget {
           spacing: 8,
           runSpacing: 8,
           children:
-              collaborators.map((user) => _buildUserAvatar(user)).toList(),
+              widget.collaborators
+                  .map((user) => _buildUserAvatar(user))
+                  .toList(),
         ),
       ],
     );
   }
 
   Widget _buildUserAvatar(AppUser user) {
-    return Container(
-      width: 60,
-      height: 60,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: const Color(0xFFD4AF37), width: 2),
-      ),
-      child: ClipOval(
-        child:
-            user.avatarUrl.isNotEmpty
-                ? Image.network(
-                  user.avatarUrl,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: const Color(0xFF333333),
-                      child: const Icon(
-                        Icons.person,
-                        color: Color(0xFFD4AF37),
-                        size: 25,
+    return Builder(
+      builder:
+          (context) => GestureDetector(
+            onTap: () => _navigateToUserProfile(user, context),
+            child: SizedBox(
+              width: 80, // Increased width to accommodate name
+              child: Column(
+                children: [
+                  Container(
+                    width: 60,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: const Color(0xFFD4AF37),
+                        width: 2,
                       ),
-                    );
-                  },
-                )
-                : Container(
-                  color: const Color(0xFF333333),
-                  child: const Icon(
-                    Icons.person,
-                    color: Color(0xFFD4AF37),
-                    size: 25,
+                    ),
+                    child: ClipOval(
+                      child:
+                          user.avatarUrl.isNotEmpty
+                              ? Image.network(
+                                user.avatarUrl,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Container(
+                                    color: const Color(0xFF333333),
+                                    child: const Icon(
+                                      Icons.person,
+                                      color: Color(0xFFD4AF37),
+                                      size: 25,
+                                    ),
+                                  );
+                                },
+                              )
+                              : Container(
+                                color: const Color(0xFF333333),
+                                child: const Icon(
+                                  Icons.person,
+                                  color: Color(0xFFD4AF37),
+                                  size: 25,
+                                ),
+                              ),
+                    ),
                   ),
-                ),
-      ),
+                  const SizedBox(height: 6),
+                  Text(
+                    user.displayName,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+          ),
     );
   }
 
@@ -259,7 +309,7 @@ class RaveDetailDialog extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Links',
+          'links',
           style: TextStyle(
             color: Color(0xFFD4AF37),
             fontSize: 14,
@@ -267,15 +317,19 @@ class RaveDetailDialog extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        if (rave.ticketShopLink != null)
+        if (widget.rave.ticketShopLink != null)
           _buildLinkButton(
-            'Tickets',
-            rave.ticketShopLink!,
+            'tickets',
+            widget.rave.ticketShopLink!,
             Icons.confirmation_number,
           ),
-        if (rave.additionalLink != null) ...[
-          if (rave.ticketShopLink != null) const SizedBox(height: 8),
-          _buildLinkButton('More Info', rave.additionalLink!, Icons.link),
+        if (widget.rave.additionalLink != null) ...[
+          if (widget.rave.ticketShopLink != null) const SizedBox(height: 8),
+          _buildLinkButton(
+            'More Info',
+            widget.rave.additionalLink!,
+            Icons.link,
+          ),
         ],
       ],
     );
@@ -299,16 +353,16 @@ class RaveDetailDialog extends StatelessWidget {
   }
 
   String _formatDate() {
-    if (rave.endDate != null) {
+    if (widget.rave.endDate != null) {
       final startFormat = DateFormat('MMM dd');
       final endFormat =
-          rave.startDate.year == rave.endDate!.year
+          widget.rave.startDate.year == widget.rave.endDate!.year
               ? DateFormat('MMM dd, yyyy')
               : DateFormat('MMM dd, yyyy');
 
-      return '${startFormat.format(rave.startDate)} - ${endFormat.format(rave.endDate!)}';
+      return '${startFormat.format(widget.rave.startDate)} - ${endFormat.format(widget.rave.endDate!)}';
     } else {
-      return DateFormat('EEEE, MMM dd, yyyy').format(rave.startDate);
+      return DateFormat('EEEE, MMM dd, yyyy').format(widget.rave.startDate);
     }
   }
 
@@ -321,5 +375,83 @@ class RaveDetailDialog extends StatelessWidget {
     } catch (e) {
       // Handle error silently or show a snackbar
     }
+  }
+
+  void _navigateToUserProfile(AppUser user, BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) {
+          if (user is DJ) {
+            return ProfileScreenDJ(
+              dj: user,
+              showChatButton:
+                  false, // Disable chat since we don't have current user context
+              showEditButton: false,
+              showFavoriteIcon: false,
+              currentUser: Guest(
+                id: '',
+                avatarImageUrl: '',
+              ), // Placeholder guest user
+            );
+          } else if (user is Booker) {
+            return ProfileScreenBooker(
+              booker: user,
+              showEditButton: false,
+              db: CachedFirestoreRepository(),
+            );
+          } else {
+            // For Guest users, you could show a simple info dialog or profile view
+            return Scaffold(
+              appBar: AppBar(
+                title: Text(user.displayName),
+                backgroundColor: Palette.primalBlack,
+                foregroundColor: Palette.glazedWhite,
+              ),
+              backgroundColor: Palette.primalBlack,
+              body: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      radius: 60,
+                      backgroundColor: Palette.forgedGold.o(0.2),
+                      backgroundImage:
+                          user.avatarUrl.isNotEmpty
+                              ? NetworkImage(user.avatarUrl)
+                              : null,
+                      child:
+                          user.avatarUrl.isEmpty
+                              ? Icon(
+                                Icons.person,
+                                size: 60,
+                                color: Palette.forgedGold,
+                              )
+                              : null,
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      user.displayName,
+                      style: TextStyle(
+                        color: Palette.glazedWhite,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      'guest user',
+                      style: TextStyle(
+                        color: Palette.glazedWhite.o(0.7),
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+        },
+      ),
+    );
   }
 }

@@ -67,7 +67,7 @@ class _SearchFunctionCardState extends State<SearchFunctionCard> {
   Future<void> _search() async {
     widget.onSearchLoading(true);
 
-    final repo = FirestoreDatabaseRepository();
+    final repo = CachedFirestoreRepository();
     final results = await repo.searchDJs(
       city: selectedCity,
       genres: selectedGenres,
