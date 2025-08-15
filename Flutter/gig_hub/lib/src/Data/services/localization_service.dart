@@ -826,6 +826,48 @@ mixin AppLocale {
     delete: 'excluir',
     edit: 'editar',
     enterPw: 'digite sua senha',
+
+    // radar and alerts
+    raveRadar: 'radar de raves',
+    raveAlerts: 'alertas de rave',
+    setupRaveAlert: 'configurar alerta de rave',
+    getNotifiedNewRaves:
+        'receba notificações quando novos raves forem criados perto de você',
+    location: 'localização',
+    currentLocationSelected: 'localização atual selecionada',
+    useCurrentLocation: 'usar localização atual',
+    orEnterCityName: 'ou digite o nome de uma cidade',
+    alertRadius: 'raio do alerta',
+    createAlert: 'criar alerta',
+    raveAlertCreatedSuccess: 'alerta de rave criado com sucesso!',
+    raveAlertCreationFailed: 'falha ao criar alerta de rave',
+    locationNotFound:
+        'localização não encontrada. tente uma cidade ou endereço diferente.',
+    failedValidateLocation:
+        'falha ao validar localização. verifique sua conexão com a internet.',
+    failedCurrentLocation: 'falha ao obter localização atual',
+
+    // search and loading
+    searchRavesDjsGenres: 'buscar raves, djs, gêneros, locais...',
+    loadingRaves: 'carregando raves...',
+    loadingDetails: 'carregando detalhes...',
+    noRavesFound: 'nenhum rave encontrado',
+    tryDifferentKeywords: 'tente palavras-chave diferentes',
+    noRavesAvailable: 'nenhum rave disponível',
+    checkBackLater: 'volte mais tarde para novos eventos',
+    failedLoadRaves: 'falha ao carregar raves',
+    failedLoadRaveDetails: 'falha ao carregar detalhes do rave',
+    failedUpdateAttendance: 'falha ao atualizar participação',
+    leftRave: 'saiu de',
+    joinedRave: 'juntou-se a',
+    retry: 'tentar novamente',
+
+    // general ui
+    error: 'erro',
+    close: 'fechar',
+    unknown: 'desconhecido',
+    guest: 'convidado',
+    km: 'km',
   };
 
   //  FRENCH
@@ -917,6 +959,48 @@ mixin AppLocale {
     delete: 'supprimer',
     edit: 'modifier',
     enterPw: 'entrez votre mot de passe',
+
+    // radar and alerts
+    raveRadar: 'radar rave',
+    raveAlerts: 'alertes rave',
+    setupRaveAlert: 'configurer alerte rave',
+    getNotifiedNewRaves:
+        'soyez notifié quand de nouveaux raves sont créés près de vous',
+    location: 'emplacement',
+    currentLocationSelected: 'emplacement actuel sélectionné',
+    useCurrentLocation: 'utiliser l\'emplacement actuel',
+    orEnterCityName: 'ou entrez le nom d\'une ville',
+    alertRadius: 'rayon d\'alerte',
+    createAlert: 'créer alerte',
+    raveAlertCreatedSuccess: 'alerte rave créée avec succès !',
+    raveAlertCreationFailed: 'échec de création de l\'alerte rave',
+    locationNotFound:
+        'emplacement non trouvé. essayez une ville ou adresse différente.',
+    failedValidateLocation:
+        'échec de validation de l\'emplacement. vérifiez votre connexion internet.',
+    failedCurrentLocation: 'échec d\'obtention de l\'emplacement actuel',
+
+    // search and loading
+    searchRavesDjsGenres: 'rechercher raves, djs, genres, lieux...',
+    loadingRaves: 'chargement des raves...',
+    loadingDetails: 'chargement des détails...',
+    noRavesFound: 'aucun rave trouvé',
+    tryDifferentKeywords: 'essayez des mots-clés différents',
+    noRavesAvailable: 'aucun rave disponible',
+    checkBackLater: 'revenez plus tard pour de nouveaux événements',
+    failedLoadRaves: 'échec du chargement des raves',
+    failedLoadRaveDetails: 'échec du chargement des détails du rave',
+    failedUpdateAttendance: 'échec de mise à jour de la participation',
+    leftRave: 'a quitté',
+    joinedRave: 'a rejoint',
+    retry: 'réessayer',
+
+    // general ui
+    error: 'erreur',
+    close: 'fermer',
+    unknown: 'inconnu',
+    guest: 'invité',
+    km: 'km',
   };
 
   // DUTCH
@@ -1007,6 +1091,48 @@ mixin AppLocale {
     delete: 'verwijderen',
     edit: 'bewerken',
     enterPw: 'voer je wachtwoord in',
+
+    // radar and alerts
+    raveRadar: 'rave radar',
+    raveAlerts: 'rave meldingen',
+    setupRaveAlert: 'rave melding instellen',
+    getNotifiedNewRaves:
+        'ontvang meldingen wanneer nieuwe raves bij jou in de buurt worden gemaakt',
+    location: 'locatie',
+    currentLocationSelected: 'huidige locatie geselecteerd',
+    useCurrentLocation: 'gebruik huidige locatie',
+    orEnterCityName: 'of voer een stadsnaam in',
+    alertRadius: 'melding radius',
+    createAlert: 'melding aanmaken',
+    raveAlertCreatedSuccess: 'rave melding succesvol aangemaakt!',
+    raveAlertCreationFailed: 'aanmaken rave melding mislukt',
+    locationNotFound:
+        'locatie niet gevonden. probeer een andere stad of adres.',
+    failedValidateLocation:
+        'locatie validatie mislukt. controleer je internetverbinding.',
+    failedCurrentLocation: 'huidige locatie ophalen mislukt',
+
+    // search and loading
+    searchRavesDjsGenres: 'zoek raves, djs, genres, locaties...',
+    loadingRaves: 'raves laden...',
+    loadingDetails: 'details laden...',
+    noRavesFound: 'geen raves gevonden',
+    tryDifferentKeywords: 'probeer andere zoekwoorden',
+    noRavesAvailable: 'geen raves beschikbaar',
+    checkBackLater: 'kom later terug voor nieuwe evenementen',
+    failedLoadRaves: 'raves laden mislukt',
+    failedLoadRaveDetails: 'rave details laden mislukt',
+    failedUpdateAttendance: 'deelname bijwerken mislukt',
+    leftRave: 'verliet',
+    joinedRave: 'sloot zich aan bij',
+    retry: 'opnieuw proberen',
+
+    // general ui
+    error: 'fout',
+    close: 'sluiten',
+    unknown: 'onbekend',
+    guest: 'gast',
+    km: 'km',
   };
 
   // POLISH
@@ -1097,6 +1223,48 @@ mixin AppLocale {
     delete: 'usuń',
     edit: 'edytuj',
     enterPw: 'wprowadź swoje hasło',
+
+    // radar and alerts
+    raveRadar: 'radar rave',
+    raveAlerts: 'alerty rave',
+    setupRaveAlert: 'skonfiguruj alert rave',
+    getNotifiedNewRaves:
+        'otrzymuj powiadomienia gdy nowe rave są tworzone w twojej okolicy',
+    location: 'lokalizacja',
+    currentLocationSelected: 'wybrano bieżącą lokalizację',
+    useCurrentLocation: 'użyj bieżącej lokalizacji',
+    orEnterCityName: 'lub wprowadź nazwę miasta',
+    alertRadius: 'promień alertu',
+    createAlert: 'utwórz alert',
+    raveAlertCreatedSuccess: 'alert rave utworzony pomyślnie!',
+    raveAlertCreationFailed: 'nie udało się utworzyć alertu rave',
+    locationNotFound:
+        'lokalizacja nie znaleziona. spróbuj innego miasta lub adresu.',
+    failedValidateLocation:
+        'nie udało się zweryfikować lokalizacji. sprawdź połączenie internetowe.',
+    failedCurrentLocation: 'nie udało się pobrać bieżącej lokalizacji',
+
+    // search and loading
+    searchRavesDjsGenres: 'szukaj rave, dj, gatunki, lokalizacje...',
+    loadingRaves: 'ładowanie rave...',
+    loadingDetails: 'ładowanie szczegółów...',
+    noRavesFound: 'nie znaleziono rave',
+    tryDifferentKeywords: 'spróbuj innych słów kluczowych',
+    noRavesAvailable: 'brak dostępnych rave',
+    checkBackLater: 'sprawdź później nowe wydarzenia',
+    failedLoadRaves: 'nie udało się załadować rave',
+    failedLoadRaveDetails: 'nie udało się załadować szczegółów rave',
+    failedUpdateAttendance: 'nie udało się zaktualizować uczestnictwa',
+    leftRave: 'opuścił',
+    joinedRave: 'dołączył do',
+    retry: 'spróbuj ponownie',
+
+    // general ui
+    error: 'błąd',
+    close: 'zamknij',
+    unknown: 'nieznany',
+    guest: 'gość',
+    km: 'km',
   };
 
   // UKRAINIAN
@@ -1188,6 +1356,48 @@ mixin AppLocale {
     delete: 'видалити',
     edit: 'редагувати',
     enterPw: 'введіть ваш пароль',
+
+    // radar and alerts
+    raveRadar: 'радар рейвів',
+    raveAlerts: 'сповіщення рейвів',
+    setupRaveAlert: 'налаштувати сповіщення рейву',
+    getNotifiedNewRaves:
+        'отримуйте сповіщення коли нові рейви створюються поруч з вами',
+    location: 'місцезнаходження',
+    currentLocationSelected: 'поточне місцезнаходження вибрано',
+    useCurrentLocation: 'використати поточне місцезнаходження',
+    orEnterCityName: 'або введіть назву міста',
+    alertRadius: 'радіус сповіщення',
+    createAlert: 'створити сповіщення',
+    raveAlertCreatedSuccess: 'сповіщення рейву успішно створено!',
+    raveAlertCreationFailed: 'не вдалося створити сповіщення рейву',
+    locationNotFound:
+        'місцезнаходження не знайдено. спробуйте інше місто або адресу.',
+    failedValidateLocation:
+        'не вдалося перевірити місцезнаходження. перевірте ваше інтернет-з\'єднання.',
+    failedCurrentLocation: 'не вдалося отримати поточне місцезнаходження',
+
+    // search and loading
+    searchRavesDjsGenres: 'пошук рейвів, dj, жанрів, місць...',
+    loadingRaves: 'завантаження рейвів...',
+    loadingDetails: 'завантаження деталей...',
+    noRavesFound: 'рейвів не знайдено',
+    tryDifferentKeywords: 'спробуйте інші ключові слова',
+    noRavesAvailable: 'немає доступних рейвів',
+    checkBackLater: 'перевірте пізніше нові події',
+    failedLoadRaves: 'не вдалося завантажити рейви',
+    failedLoadRaveDetails: 'не вдалося завантажити деталі рейву',
+    failedUpdateAttendance: 'не вдалося оновити участь',
+    leftRave: 'покинув',
+    joinedRave: 'приєднався до',
+    retry: 'спробувати знову',
+
+    // general ui
+    error: 'помилка',
+    close: 'закрити',
+    unknown: 'невідомий',
+    guest: 'гість',
+    km: 'км',
   };
 
   // ARABIC
@@ -1278,6 +1488,46 @@ mixin AppLocale {
     delete: 'حذف',
     edit: 'تعديل',
     enterPw: 'أدخل كلمة المرور الخاصة بك',
+
+    // radar and alerts
+    raveRadar: 'رادار الرقص',
+    raveAlerts: 'تنبيهات الرقص',
+    setupRaveAlert: 'إعداد تنبيه الرقص',
+    getNotifiedNewRaves: 'احصل على إشعارات عند إنشاء رقصات جديدة بالقرب منك',
+    location: 'الموقع',
+    currentLocationSelected: 'تم تحديد الموقع الحالي',
+    useCurrentLocation: 'استخدم الموقع الحالي',
+    orEnterCityName: 'أو أدخل اسم المدينة',
+    alertRadius: 'نطاق التنبيه',
+    createAlert: 'إنشاء تنبيه',
+    raveAlertCreatedSuccess: 'تم إنشاء تنبيه الرقص بنجاح!',
+    raveAlertCreationFailed: 'فشل في إنشاء تنبيه الرقص',
+    locationNotFound: 'الموقع غير موجود. يرجى تجربة مدينة أو عنوان مختلف.',
+    failedValidateLocation:
+        'فشل في التحقق من الموقع. يرجى فحص اتصالك بالإنترنت.',
+    failedCurrentLocation: 'فشل في الحصول على الموقع الحالي',
+
+    // search and loading
+    searchRavesDjsGenres: 'البحث عن رقصات، dj، أنواع، مواقع...',
+    loadingRaves: 'تحميل الرقصات...',
+    loadingDetails: 'تحميل التفاصيل...',
+    noRavesFound: 'لم يتم العثور على رقصات',
+    tryDifferentKeywords: 'جرب كلمات مفتاحية مختلفة',
+    noRavesAvailable: 'لا توجد رقصات متاحة',
+    checkBackLater: 'تحقق لاحقاً للأحداث الجديدة',
+    failedLoadRaves: 'فشل تحميل الرقصات',
+    failedLoadRaveDetails: 'فشل تحميل تفاصيل الرقص',
+    failedUpdateAttendance: 'فشل تحديث الحضور',
+    leftRave: 'غادر',
+    joinedRave: 'انضم إلى',
+    retry: 'إعادة المحاولة',
+
+    // general ui
+    error: 'خطأ',
+    close: 'إغلاق',
+    unknown: 'غير معروف',
+    guest: 'ضيف',
+    km: 'كم',
   };
 
   // TURKISH
@@ -1368,6 +1618,47 @@ mixin AppLocale {
     delete: 'sil',
     edit: 'düzenle',
     enterPw: 'parolanızı girin',
+
+    // radar and alerts
+    raveRadar: 'rave radarı',
+    raveAlerts: 'rave uyarıları',
+    setupRaveAlert: 'rave uyarısı kur',
+    getNotifiedNewRaves:
+        'yakınında yeni rave\'ler oluşturulduğunda bildirim al',
+    location: 'konum',
+    currentLocationSelected: 'mevcut konum seçildi',
+    useCurrentLocation: 'mevcut konumu kullan',
+    orEnterCityName: 'veya şehir adı girin',
+    alertRadius: 'uyarı yarıçapı',
+    createAlert: 'uyarı oluştur',
+    raveAlertCreatedSuccess: 'rave uyarısı başarıyla oluşturuldu!',
+    raveAlertCreationFailed: 'rave uyarısı oluşturma başarısız',
+    locationNotFound: 'konum bulunamadı. farklı bir şehir veya adres deneyin.',
+    failedValidateLocation:
+        'konum doğrulama başarısız. internet bağlantınızı kontrol edin.',
+    failedCurrentLocation: 'mevcut konum alma başarısız',
+
+    // search and loading
+    searchRavesDjsGenres: 'rave, dj, tür, konum ara...',
+    loadingRaves: 'rave\'ler yükleniyor...',
+    loadingDetails: 'detaylar yükleniyor...',
+    noRavesFound: 'rave bulunamadı',
+    tryDifferentKeywords: 'farklı anahtar kelimeler deneyin',
+    noRavesAvailable: 'mevcut rave yok',
+    checkBackLater: 'yeni etkinlikler için daha sonra kontrol edin',
+    failedLoadRaves: 'rave yükleme başarısız',
+    failedLoadRaveDetails: 'rave detay yükleme başarısız',
+    failedUpdateAttendance: 'katılım güncelleme başarısız',
+    leftRave: 'ayrıldı',
+    joinedRave: 'katıldı',
+    retry: 'tekrar dene',
+
+    // general ui
+    error: 'hata',
+    close: 'kapat',
+    unknown: 'bilinmeyen',
+    guest: 'misafir',
+    km: 'km',
   };
 
   // JAPANESE
@@ -1454,6 +1745,45 @@ mixin AppLocale {
     delete: '削除',
     edit: '編集',
     enterPw: 'パスワードを入力してください',
+
+    // radar and alerts
+    raveRadar: 'レイブレーダー',
+    raveAlerts: 'レイブアラート',
+    setupRaveAlert: 'レイブアラート設定',
+    getNotifiedNewRaves: 'あなたの近くで新しいレイブが作成されたときに通知を受け取る',
+    location: '場所',
+    currentLocationSelected: '現在の場所が選択されました',
+    useCurrentLocation: '現在の場所を使用',
+    orEnterCityName: 'または都市名を入力',
+    alertRadius: 'アラート半径',
+    createAlert: 'アラート作成',
+    raveAlertCreatedSuccess: 'レイブアラートが正常に作成されました！',
+    raveAlertCreationFailed: 'レイブアラートの作成に失敗しました',
+    locationNotFound: '場所が見つかりません。別の都市または住所を試してください。',
+    failedValidateLocation: '場所の検証に失敗しました。インターネット接続を確認してください。',
+    failedCurrentLocation: '現在の場所の取得に失敗しました',
+
+    // search and loading
+    searchRavesDjsGenres: 'レイブ、DJ、ジャンル、場所を検索...',
+    loadingRaves: 'レイブを読み込み中...',
+    loadingDetails: '詳細を読み込み中...',
+    noRavesFound: 'レイブが見つかりません',
+    tryDifferentKeywords: '異なるキーワードを試してください',
+    noRavesAvailable: '利用可能なレイブがありません',
+    checkBackLater: '新しいイベントについては後で確認してください',
+    failedLoadRaves: 'レイブの読み込みに失敗しました',
+    failedLoadRaveDetails: 'レイブの詳細の読み込みに失敗しました',
+    failedUpdateAttendance: '参加状況の更新に失敗しました',
+    leftRave: '退出しました',
+    joinedRave: '参加しました',
+    retry: '再試行',
+
+    // general ui
+    error: 'エラー',
+    close: '閉じる',
+    unknown: '不明',
+    guest: 'ゲスト',
+    km: 'km',
   };
 
   // KOREAN
@@ -1540,6 +1870,45 @@ mixin AppLocale {
     delete: '삭제',
     edit: '편집',
     enterPw: '비밀번호를 입력하세요',
+
+    // radar and alerts
+    raveRadar: '레이브 레이더',
+    raveAlerts: '레이브 알림',
+    setupRaveAlert: '레이브 알림 설정',
+    getNotifiedNewRaves: '근처에 새로운 레이브가 생성될 때 알림 받기',
+    location: '위치',
+    currentLocationSelected: '현재 위치가 선택됨',
+    useCurrentLocation: '현재 위치 사용',
+    orEnterCityName: '또는 도시 이름 입력',
+    alertRadius: '알림 반경',
+    createAlert: '알림 생성',
+    raveAlertCreatedSuccess: '레이브 알림이 성공적으로 생성되었습니다!',
+    raveAlertCreationFailed: '레이브 알림 생성 실패',
+    locationNotFound: '위치를 찾을 수 없습니다. 다른 도시나 주소를 시도해보세요.',
+    failedValidateLocation: '위치 검증에 실패했습니다. 인터넷 연결을 확인해주세요.',
+    failedCurrentLocation: '현재 위치 가져오기 실패',
+
+    // search and loading
+    searchRavesDjsGenres: '레이브, dj, 장르, 위치 검색...',
+    loadingRaves: '레이브 로딩 중...',
+    loadingDetails: '세부사항 로딩 중...',
+    noRavesFound: '레이브를 찾을 수 없음',
+    tryDifferentKeywords: '다른 키워드를 시도해보세요',
+    noRavesAvailable: '사용 가능한 레이브 없음',
+    checkBackLater: '새로운 이벤트를 위해 나중에 확인하세요',
+    failedLoadRaves: '레이브 로딩 실패',
+    failedLoadRaveDetails: '레이브 세부사항 로딩 실패',
+    failedUpdateAttendance: '참석 업데이트 실패',
+    leftRave: '떠났습니다',
+    joinedRave: '참가했습니다',
+    retry: '다시 시도',
+
+    // general ui
+    error: '오류',
+    close: '닫기',
+    unknown: '알 수 없음',
+    guest: '게스트',
+    km: 'km',
   };
 
   // CHINESE
@@ -1626,5 +1995,44 @@ mixin AppLocale {
     delete: '删除',
     edit: '编辑',
     enterPw: '输入您的密码',
+
+    // radar and alerts
+    raveRadar: '狂欢雷达',
+    raveAlerts: '狂欢提醒',
+    setupRaveAlert: '设置狂欢提醒',
+    getNotifiedNewRaves: '当您附近创建新的狂欢时接收通知',
+    location: '位置',
+    currentLocationSelected: '已选择当前位置',
+    useCurrentLocation: '使用当前位置',
+    orEnterCityName: '或输入城市名称',
+    alertRadius: '提醒半径',
+    createAlert: '创建提醒',
+    raveAlertCreatedSuccess: '狂欢提醒创建成功！',
+    raveAlertCreationFailed: '狂欢提醒创建失败',
+    locationNotFound: '未找到位置。请尝试不同的城市或地址。',
+    failedValidateLocation: '位置验证失败。请检查您的互联网连接。',
+    failedCurrentLocation: '获取当前位置失败',
+
+    // search and loading
+    searchRavesDjsGenres: '搜索狂欢、dj、类型、位置...',
+    loadingRaves: '正在加载狂欢...',
+    loadingDetails: '正在加载详情...',
+    noRavesFound: '未找到狂欢',
+    tryDifferentKeywords: '尝试不同的关键词',
+    noRavesAvailable: '没有可用的狂欢',
+    checkBackLater: '稍后查看新活动',
+    failedLoadRaves: '加载狂欢失败',
+    failedLoadRaveDetails: '加载狂欢详情失败',
+    failedUpdateAttendance: '更新参加状态失败',
+    leftRave: '离开了',
+    joinedRave: '加入了',
+    retry: '重试',
+
+    // general ui
+    error: '错误',
+    close: '关闭',
+    unknown: '未知',
+    guest: '访客',
+    km: '公里',
   };
 }

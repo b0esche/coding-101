@@ -1,7 +1,7 @@
-import '../../../Data/app_imports.dart';
-import '../../raves/domain/rave.dart';
-import '../../raves/presentation/widgets/rave_tile.dart';
-import '../../raves/presentation/dialogs/rave_detail_dialog.dart';
+import '../../../../../../Data/app_imports.dart';
+import '../../../../domain/rave.dart';
+import '../../rave_tile.dart';
+import '../../../dialogs/rave_detail_dialog.dart';
 import '../rave_alerts/presentation/setup_rave_alert_dialog.dart';
 
 /// Rave Radar Screen - Discover all raves with advanced search capabilities

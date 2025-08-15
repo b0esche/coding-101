@@ -1,5 +1,5 @@
 import 'package:gig_hub/src/Data/app_imports.dart';
-import '../../Features/radar/presentation/rave_radar_screen.dart';
+import '../../Features/raves/presentation/widgets/radar/presentation/rave_radar_screen.dart';
 
 class CustomNavBar extends StatefulWidget {
   final AppUser currentUser;
