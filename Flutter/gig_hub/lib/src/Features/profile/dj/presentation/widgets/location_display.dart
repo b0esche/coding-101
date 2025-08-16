@@ -9,10 +9,12 @@ class LocationDisplay extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       widget.dj.city,
-      style: TextStyle(
-        fontSize: 15,
-        fontWeight: FontWeight.w700,
-        color: Palette.primalBlack,
+      style: GoogleFonts.sometypeMono(
+        textStyle: TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.w700,
+          color: Palette.primalBlack,
+        ),
       ),
     );
   }

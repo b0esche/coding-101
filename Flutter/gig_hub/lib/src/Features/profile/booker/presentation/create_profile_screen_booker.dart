@@ -335,7 +335,7 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  const Icon(Icons.location_pin, size: 18),
+                                  const Icon(Icons.location_on, size: 16),
                                   const SizedBox(width: 4),
                                   SizedBox(
                                     width: 138,
@@ -413,10 +413,7 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                               padding: const EdgeInsets.all(6.0),
                               child: Row(
                                 children: [
-                                  const Icon(
-                                    Icons.house_siding_rounded,
-                                    size: 22,
-                                  ),
+                                  const Icon(Icons.nightlife_rounded, size: 20),
                                   const SizedBox(width: 4),
                                   SizedBox(
                                     width: 138,

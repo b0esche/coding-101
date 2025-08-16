@@ -643,14 +643,16 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                               padding: const EdgeInsets.all(6.0),
                               child: Row(
                                 children: [
-                                  const Icon(Icons.location_pin, size: 18),
+                                  const Icon(Icons.location_on, size: 16),
                                   const SizedBox(width: 4),
                                   !editMode
                                       ? Text(
                                         widget.booker.city,
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Palette.primalBlack,
+                                        style: GoogleFonts.sometypeMono(
+                                          textStyle: TextStyle(
+                                            fontSize: 14,
+                                            color: Palette.primalBlack,
+                                          ),
                                         ),
                                       )
                                       : SizedBox(
@@ -717,17 +719,16 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                               padding: const EdgeInsets.all(6.0),
                               child: Row(
                                 children: [
-                                  const Icon(
-                                    Icons.house_siding_rounded,
-                                    size: 22,
-                                  ),
+                                  const Icon(Icons.nightlife_rounded, size: 20),
                                   const SizedBox(width: 4),
                                   !editMode
                                       ? Text(
                                         widget.booker.category,
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Palette.primalBlack,
+                                        style: GoogleFonts.sometypeMono(
+                                          textStyle: TextStyle(
+                                            fontSize: 14,
+                                            color: Palette.primalBlack,
+                                          ),
                                         ),
                                       )
                                       : SizedBox(

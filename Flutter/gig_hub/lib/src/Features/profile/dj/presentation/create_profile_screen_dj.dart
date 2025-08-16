@@ -399,7 +399,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  const Icon(Icons.place, size: 20),
+                                  const Icon(Icons.location_on, size: 16),
                                   const SizedBox(width: 4),
                                   SizedBox(
                                     width: 138,
@@ -477,7 +477,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                               padding: const EdgeInsets.all(6.0),
                               child: Row(
                                 children: [
-                                  const Icon(Icons.speed, size: 24),
+                                  const Icon(Icons.speed, size: 20),
                                   const SizedBox(width: 4),
                                   SizedBox(
                                     width: 138,

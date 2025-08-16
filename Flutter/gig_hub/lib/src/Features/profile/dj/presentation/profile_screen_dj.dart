@@ -757,8 +757,8 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                   child: Row(
                                     children: [
                                       Icon(
-                                        Icons.location_pin,
-                                        size: 17,
+                                        Icons.location_on,
+                                        size: 16,
                                         color: Palette.primalBlack,
                                       ),
                                       const SizedBox(width: 4),
@@ -793,7 +793,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                   padding: const EdgeInsets.all(6.0),
                                   child: Row(
                                     children: [
-                                      const Icon(Icons.speed, size: 22),
+                                      const Icon(Icons.speed, size: 20),
                                       const SizedBox(width: 4),
                                       !editMode
                                           ? BpmDisplay(widget: widget)

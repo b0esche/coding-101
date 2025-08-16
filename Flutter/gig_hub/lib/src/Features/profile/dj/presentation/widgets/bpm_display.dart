@@ -9,10 +9,13 @@ class BpmDisplay extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       '${widget.dj.bpm.first}-${widget.dj.bpm.last} bpm',
-      style: TextStyle(
-        fontSize: 15,
-        fontWeight: FontWeight.w700,
-        color: Palette.primalBlack,
+      style: GoogleFonts.sometypeMono(
+        textStyle: TextStyle(
+          wordSpacing: -5,
+          fontSize: 15,
+          fontWeight: FontWeight.w700,
+          color: Palette.primalBlack,
+        ),
       ),
     );
   }
