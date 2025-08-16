@@ -400,12 +400,19 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
     String currentUserId,
   ) async {
     final chatId = getChatId(userId, partnerId);
-    final ref = _firestore
+
+    // Update the individual message read status
+    final messageRef = _firestore
         .collection('chats')
         .doc(chatId)
         .collection('messages')
         .doc(messageId);
-    await ref.update({'read': true});
+    await messageRef.update({'read': true});
+
+    // CRITICAL: Also update the chat document's lastRead status
+    // This is what the chat list uses for the unread indicator
+    final chatRef = _firestore.collection('chats').doc(chatId);
+    await chatRef.update({'lastRead': true});
   }
 
   @override

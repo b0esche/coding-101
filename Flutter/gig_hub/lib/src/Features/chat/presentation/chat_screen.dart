@@ -44,6 +44,9 @@ class ChatScreenState extends State<ChatScreen>
           widget.chatPartner.id,
           widget.currentUser.id,
         );
+
+        // Force refresh the chat list cache to update unread indicators
+        db.forceRefreshChatList(widget.currentUser.id);
       }
     }
   }
