@@ -99,34 +99,37 @@ class _GroupChatListWidgetState extends State<GroupChatListWidget> {
         final groupChats = snapshot.data ?? [];
 
         if (groupChats.isEmpty) {
-          return Container(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                Icon(
-                  Icons.group_outlined,
-                  color: Palette.glazedWhite.o(0.3),
-                  size: 48,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'no group chats yet',
-                  style: TextStyle(
-                    color: Palette.glazedWhite.o(0.7),
-                    fontSize: 14,
+          return Center(
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.group_outlined,
+                    color: Palette.glazedWhite.o(0.3),
+                    size: 48,
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'group chats will appear here when you create raves with group chat enabled',
-                  style: TextStyle(
-                    color: Palette.glazedWhite.o(0.5),
-                    fontSize: 12,
+                  const SizedBox(height: 8),
+                  Text(
+                    'no group chats yet',
+                    style: TextStyle(
+                      color: Palette.glazedWhite.o(0.7),
+                      fontSize: 14,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
+                  const SizedBox(height: 4),
+                  Text(
+                    'group chats will appear here when you create raves with group chat enabled',
+                    style: TextStyle(
+                      color: Palette.glazedWhite.o(0.5),
+                      fontSize: 12,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
             ),
           );
         }

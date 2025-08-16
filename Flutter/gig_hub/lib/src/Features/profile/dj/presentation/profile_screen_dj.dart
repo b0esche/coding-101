@@ -52,6 +52,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
   bool editMode = false;
   Timer? _debounceTimer;
   StatusMessage? _currentStatusMessage;
+  int _pinchZoomResetCounter = 0; // Add counter to force PinchZoom recreation
 
   // Separate ValueNotifier for slideshow index to avoid full rebuilds
   late final ValueNotifier<int> _slideshowIndexNotifier = ValueNotifier(0);
@@ -1335,21 +1336,32 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
         },
         children: [
           if (widget.dj.mediaImageUrls.isNotEmpty)
-            for (String path in widget.dj.mediaImageUrls)
+            for (
+              int index = 0;
+              index < widget.dj.mediaImageUrls.length;
+              index++
+            )
               PinchZoom(
+                key: ValueKey('pinch_zoom_${index}_$_pinchZoomResetCounter'),
                 onZoomEnd: () {
-                  // Reset zoom state when zoom gesture ends
-                  // This prevents the image from getting stuck in zoomed state
+                  // TODO: if working - add to booker
+                  // Reset zoom state by forcing recreation of PinchZoom widgets
                   setState(() {
-                    // Force a rebuild to reset any zoom transformation
+                    _pinchZoomResetCounter++;
                   });
                 },
                 zoomEnabled: true,
                 maxScale: 2.5,
                 child:
-                    path.startsWith('http')
-                        ? Image.network(path, fit: BoxFit.cover)
-                        : Image.file(File(path), fit: BoxFit.cover),
+                    widget.dj.mediaImageUrls[index].startsWith('http')
+                        ? Image.network(
+                          widget.dj.mediaImageUrls[index],
+                          fit: BoxFit.cover,
+                        )
+                        : Image.file(
+                          File(widget.dj.mediaImageUrls[index]),
+                          fit: BoxFit.cover,
+                        ),
               ),
         ],
       ),
