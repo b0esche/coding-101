@@ -298,9 +298,36 @@ class _ChatListScreenState extends State<ChatListScreen>
     // Show empty state if no chats exist
     if (recentMessages.isEmpty) {
       return Center(
-        child: Text(
-          AppLocale.noChats.getString(context),
-          style: TextStyle(color: Palette.glazedWhite, fontSize: 16),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.chat_outlined,
+                color: Palette.glazedWhite.o(0.3),
+                size: 48,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                AppLocale.noChats.getString(context),
+                style: TextStyle(
+                  color: Palette.glazedWhite.o(0.7),
+                  fontSize: 14,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'start chatting by visiting profiles and tapping the chat button',
+                style: TextStyle(
+                  color: Palette.glazedWhite.o(0.5),
+                  fontSize: 12,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       );
     }
