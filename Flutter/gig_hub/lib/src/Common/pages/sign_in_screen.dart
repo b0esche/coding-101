@@ -95,11 +95,11 @@ class _LoginScreenState extends State<LoginScreen> {
         return;
       }
 
-      // Check if this is a new user by comparing user IDs
-      final newUser = FirebaseAuth.instance.currentUser;
+      // Get the authenticated user
+      final user = FirebaseAuth.instance.currentUser;
 
-      if (newUser != null) {
-        // Check if user document exists regardless of whether it's a new authentication
+      if (user != null) {
+        // Check if user document exists
         try {
           await db.getCurrentUser();
           // User document exists, app.dart will handle navigation automatically
@@ -109,7 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
           // Get the selected user type and user email
           final selectedUserType = selected.first; // 'dj' or 'booker'
-          final userEmail = newUser.email ?? '';
+          final userEmail = user.email ?? '';
 
           // Use Future.microtask for immediate execution after current event loop
           // This executes faster than addPostFrameCallback and avoids widget unmounting
