@@ -415,31 +415,35 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
                   Stack(
                     children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Palette.glazedWhite,
-                            width: 1.5,
+                      GestureDetector(
+                        onTap: _pickNewImage,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Palette.glazedWhite,
+                              width: 1.5,
+                            ),
                           ),
-                        ),
-                        child: CircleAvatar(
-                          radius: 80,
-                          backgroundImage: avatarProvider,
+                          child: CircleAvatar(
+                            radius: 80,
+                            backgroundImage: avatarProvider,
+                          ),
                         ),
                       ),
                       Positioned(
-                        bottom: 0,
-                        right: 0,
+                        bottom: -8,
+                        right: -8,
                         child: IconButton(
                           style: ButtonStyle(
                             splashFactory: NoSplash.splashFactory,
+                            tapTargetSize: MaterialTapTargetSize.padded,
                           ),
                           onPressed: _pickNewImage,
                           icon: Icon(
                             Icons.upload_file_rounded,
-                            color: Palette.shadowGrey,
-                            size: 32,
+                            color: Palette.forgedGold,
+                            size: 36,
                             shadows: [
                               BoxShadow(
                                 blurRadius: 2,
