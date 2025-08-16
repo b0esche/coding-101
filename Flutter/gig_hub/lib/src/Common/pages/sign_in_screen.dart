@@ -229,12 +229,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             borderRadius: Radius.circular(16),
                           ),
                           settings: LiquidGlassSettings(
-                            thickness: 16,
+                            thickness: 30,
                             refractiveIndex: 1.1,
-                            chromaticAberration: 0.2,
+                            chromaticAberration: 1.3,
                           ),
                           child: SegmentedButton<String>(
-                            expandedInsets: EdgeInsets.all(2),
                             showSelectedIcon: false,
                             segments: const [
                               ButtonSegment<String>(
@@ -534,9 +533,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                   borderRadius: Radius.circular(16),
                                 ),
                                 settings: LiquidGlassSettings(
-                                  thickness: 24,
+                                  thickness: 28,
                                   refractiveIndex: 1.1,
                                   chromaticAberration: 0.35,
+                                  glassColor: Palette.forgedGold.o(0.025),
                                 ),
                                 child: ElevatedButton(
                                   style: ButtonStyle(
@@ -545,7 +545,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     >(EdgeInsets.only(left: 90, right: 90)),
                                     backgroundColor:
                                         WidgetStateProperty.all<Color>(
-                                          Palette.forgedGold.o(0.8),
+                                          Palette.forgedGold.o(0.65),
                                         ),
                                     shape: WidgetStateProperty.all<
                                       OutlinedBorder
@@ -686,7 +686,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           borderRadius: Radius.circular(16),
                         ),
                         settings: LiquidGlassSettings(
-                          thickness: 20,
+                          thickness: 24,
                           refractiveIndex: 1.1,
                           chromaticAberration: 0.35,
                         ),

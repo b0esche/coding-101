@@ -346,7 +346,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget>
                     ),
                   ),
                   SizedBox(
-                    width: 280,
+                    width: MediaQuery.of(context).size.width * 0.66,
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
                       child: CustomWaveformWidget(

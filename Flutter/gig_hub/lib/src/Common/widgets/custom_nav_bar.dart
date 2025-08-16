@@ -62,8 +62,9 @@ class _CustomNavBarState extends State<CustomNavBar> with RouteAware {
               child: LiquidGlass(
                 shape: LiquidRoundedRectangle(borderRadius: Radius.circular(8)),
                 settings: LiquidGlassSettings(
-                  thickness: 16,
-                  refractiveIndex: 1.275,
+                  thickness: 20,
+                  refractiveIndex: 1.1,
+                  glassColor: Palette.forgedGold.o(0.025),
                 ),
                 child: Container(
                   color: Palette.glazedWhite.o(0.075),

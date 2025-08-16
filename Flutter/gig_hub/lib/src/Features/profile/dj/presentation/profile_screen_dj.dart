@@ -588,7 +588,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                     if (_currentStatusMessage == null ||
                         _currentStatusMessage!.isExpired)
                       Positioned(
-                        top: 36,
+                        top: 52,
                         right: 4,
                         child: Container(
                           height: 38,
@@ -617,7 +617,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                       )
                     else
                       Positioned(
-                        top: 36,
+                        top: 52,
                         right: 2,
                         child: GestureDetector(
                           onTap: _showEditStatusDialog,
@@ -676,7 +676,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                       _currentStatusMessage != null &&
                       !_currentStatusMessage!.isExpired)
                     Positioned(
-                      top: 36,
+                      top: 52,
                       right: 2,
                       child: Container(
                         constraints: BoxConstraints(maxWidth: 280),

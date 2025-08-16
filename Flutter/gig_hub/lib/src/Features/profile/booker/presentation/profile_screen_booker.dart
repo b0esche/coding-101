@@ -484,7 +484,7 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                   if (_currentStatusMessage == null ||
                       _currentStatusMessage!.isExpired)
                     Positioned(
-                      top: 36,
+                      top: 52,
                       right: 4,
                       child: Container(
                         height: 42,
@@ -513,7 +513,7 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                     )
                   else
                     Positioned(
-                      top: 36,
+                      top: 52,
                       right: 4,
                       child: GestureDetector(
                         onTap: _showEditStatusDialog,
@@ -573,7 +573,7 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                     _currentStatusMessage != null &&
                     !_currentStatusMessage!.isExpired)
                   Positioned(
-                    top: 36,
+                    top: 52,
                     right: 4,
                     child: Container(
                       constraints: BoxConstraints(maxWidth: 280),

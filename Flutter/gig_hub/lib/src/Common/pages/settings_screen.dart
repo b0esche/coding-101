@@ -386,10 +386,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             Center(
               child: Column(
-                spacing: 12,
+                spacing: 8,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SizedBox(height: 2),
+                  SizedBox(height: 16),
                   Align(
                     alignment: Alignment.topLeft,
                     child: IconButton(
