@@ -8,7 +8,6 @@ import 'package:gig_hub/src/data/services/image_compression_service.dart';
 import 'package:gig_hub/src/Features/raves/presentation/widgets/rave_list.dart';
 import "../../../../Data/app_imports.dart";
 import "../../../../Data/app_imports.dart" as http;
-import 'package:gig_hub/src/data/services/places_validation_service.dart';
 
 class ProfileScreenDJArgs {
   final DJ dj;

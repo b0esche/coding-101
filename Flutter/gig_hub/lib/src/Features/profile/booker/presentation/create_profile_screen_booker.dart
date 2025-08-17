@@ -85,67 +85,40 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
   }
 
   Future<void> _validateCity(String value) async {
-    final apiKey = dotenv.env['GOOGLE_API_KEY'];
     final trimmedValue = value.trim();
 
     if (trimmedValue.isEmpty) {
-      setState(() => _locationError = ' ');
+      setState(() {
+        _locationError = null;
+      });
+      // Trigger form validation to update UI
       _formKey.currentState?.validate();
       return;
     }
-
-    final query = Uri.encodeComponent(trimmedValue);
-    final url = Uri.parse(
-      'https://maps.googleapis.com/maps/api/place/autocomplete/json'
-      '?input=$query&types=(cities)&language=en&key=$apiKey',
-    );
 
     setState(() {
       _locationError = null;
     });
 
     try {
-      final response = await http.get(url);
-      final data = jsonDecode(response.body);
+      // Use the new PlacesValidationService
+      final isValid = await PlacesValidationService.validateCity(trimmedValue);
 
-      bool isValidCityFound = false;
-      if (response.statusCode == 200 && data['status'] == 'OK') {
-        final predictions = data['predictions'] as List;
-
-        if (predictions.isNotEmpty) {
-          for (var prediction in predictions) {
-            final String mainText =
-                prediction['structured_formatting']['main_text']
-                    ?.toString()
-                    .trim() ??
-                '';
-            final List types = prediction['types'] ?? [];
-
-            if (mainText.toLowerCase() == trimmedValue.toLowerCase() &&
-                (types.contains('locality') ||
-                    types.contains('administrative_area_level_3') ||
-                    types.contains('political'))) {
-              isValidCityFound = true;
-              break;
-            }
-          }
-        }
-
+      if (mounted) {
         setState(() {
-          _locationError = isValidCityFound ? null : ' ';
-          _formKey.currentState?.validate();
+          _locationError = isValid ? null : 'Please enter a valid city name';
         });
-      } else {
-        setState(() {
-          _locationError = ' ';
-          _formKey.currentState?.validate();
-        });
+        // Trigger form validation to update the UI
+        _formKey.currentState?.validate();
       }
     } catch (e) {
-      setState(() {
-        _locationError = ' ';
+      if (mounted) {
+        setState(() {
+          _locationError = 'Error validating location';
+        });
+        // Trigger form validation to update the UI
         _formKey.currentState?.validate();
-      });
+      }
     }
   }
 
@@ -350,10 +323,11 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                                       controller: _locationController,
                                       focusNode: _locationFocusNode,
                                       validator: (value) {
+                                        // Return null if valid (no error), return error message if invalid
                                         return _locationError;
                                       },
                                       autovalidateMode:
-                                          AutovalidateMode.onUnfocus,
+                                          AutovalidateMode.onUserInteraction,
                                       decoration: InputDecoration(
                                         contentPadding: EdgeInsets.only(
                                           bottom: 12,

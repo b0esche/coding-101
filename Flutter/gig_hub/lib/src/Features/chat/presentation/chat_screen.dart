@@ -203,11 +203,11 @@ class ChatScreenState extends State<ChatScreen>
             ),
             const SizedBox(width: 16),
             SizedBox(
-              width: 172,
+              width: 164,
               child: Text(
                 widget.chatPartner.displayName,
 
-                maxLines: 2,
+                maxLines: 3,
                 style: GoogleFonts.sometypeMono(
                   textStyle: TextStyle(
                     wordSpacing: -3,
@@ -221,11 +221,11 @@ class ChatScreenState extends State<ChatScreen>
             ),
           ],
         ),
-        leadingWidth: 32,
+        leadingWidth: 24,
         actionsPadding: EdgeInsets.only(bottom: 42),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 8),
+            padding: const EdgeInsets.only(right: 2),
             child: IconButton(
               onPressed: () {
                 Navigator.of(context).push(

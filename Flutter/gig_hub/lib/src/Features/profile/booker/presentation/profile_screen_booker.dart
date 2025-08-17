@@ -1,6 +1,5 @@
 import 'package:gig_hub/src/Data/app_imports.dart' hide UserStarRating;
 import 'package:gig_hub/src/data/services/image_compression_service.dart';
-import 'package:gig_hub/src/data/services/places_validation_service.dart';
 import 'package:gig_hub/src/Features/profile/booker/presentation/widgets/star_rating_booker.dart';
 import 'package:gig_hub/src/Features/raves/presentation/widgets/rave_list.dart';
 
@@ -177,7 +176,7 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
       builder: (context) => StatusMessageDialog(),
     );
 
-    if (result != null) {
+    if (result != null && mounted) {
       try {
         final message = result['message'] as String;
         final days = result['days'] as int;
