@@ -225,11 +225,34 @@ exports.notifyRaveAlerts = onDocumentCreated(
     const snapshot = event.data;
     const raveData = snapshot.data();
 
+    // Debug logging
+    console.log("=== RAVE ALERT FUNCTION TRIGGERED ===");
+    console.log("Rave ID:", snapshot.id);
+    console.log("Rave data keys:", Object.keys(raveData || {}));
+    console.log("Full rave data:", JSON.stringify(raveData, null, 2));
+
     // Validate rave data
-    if (!raveData || !raveData.geoPoint || !raveData.name ||
-      !raveData.organizerId) {
+    if (!raveData) {
+      console.log("❌ No rave data found");
       return;
     }
+
+    if (!raveData.geoPoint) {
+      console.log("❌ No geoPoint found in rave data");
+      return;
+    }
+
+    if (!raveData.name) {
+      console.log("❌ No name found in rave data");
+      return;
+    }
+
+    if (!raveData.organizerId) {
+      console.log("❌ No organizerId found in rave data");
+      return;
+    }
+
+    console.log("✅ Rave data validation passed");
 
     const ravelat = raveData.geoPoint.latitude;
     const raveLng = raveData.geoPoint.longitude;
@@ -237,18 +260,28 @@ exports.notifyRaveAlerts = onDocumentCreated(
     const raveLocation = raveData.location || "Unknown Location";
     const organizerId = raveData.organizerId;
 
+    console.log(`📍 Rave coordinates: ${ravelat}, ${raveLng}`);
+    console.log(`🎉 Rave name: ${raveName}`);
+    console.log(`📍 Rave location: ${raveLocation}`);
+    console.log(`👤 Organizer ID: ${organizerId}`);
+
     try {
       // Get all active rave alerts
+      console.log("🔍 Searching for active rave alerts...");
       const alertsSnapshot = await getFirestore()
         .collection("rave_alerts")
         .where("isActive", "==", true)
         .get();
 
+      console.log(`📋 Found ${alertsSnapshot.size} active rave alerts`);
+
       if (alertsSnapshot.empty) {
+        console.log("❌ No active rave alerts found, exiting");
         return;
       }
 
       // Get organizer details for the notification
+      console.log("👤 Fetching organizer details...");
       const organizerDoc = await getFirestore()
         .collection("users")
         .doc(organizerId)
@@ -258,8 +291,12 @@ exports.notifyRaveAlerts = onDocumentCreated(
       if (organizerDoc.exists) {
         const organizerData = organizerDoc.data();
         organizerName = organizerData.name || "Unknown Organizer";
+        console.log(`✅ Organizer name: ${organizerName}`);
+      } else {
+        console.log("⚠️ Organizer document not found");
       }
 
+      console.log("🚀 Processing notifications...");
       const notificationPromises = alertsSnapshot.docs.map(
         async (alertDoc) => {
           const alertData = alertDoc.data();
@@ -268,8 +305,13 @@ exports.notifyRaveAlerts = onDocumentCreated(
           const centerLng = alertData.centerPoint.longitude;
           const radiusKm = alertData.radiusKm;
 
+          console.log(`🎯 Processing alert for user ${userId}`);
+          console.log(`📍 Alert center: ${centerLat}, ${centerLng}`);
+          console.log(`📏 Alert radius: ${radiusKm}km`);
+
           // Skip if this is the organizer's own rave
           if (userId === organizerId) {
+            console.log("⏭️ Skipping organizer's own rave");
             return;
           }
 
@@ -277,8 +319,13 @@ exports.notifyRaveAlerts = onDocumentCreated(
           const distance = calculateDistance(
             ravelat, raveLng, centerLat, centerLng);
 
+          console.log(`📐 Distance: ${distance.toFixed(2)}km`);
+
           // Check if rave is within alert radius
           if (distance <= radiusKm) {
+            console.log(`✅ Rave is within alert radius! ` +
+              `Sending notification...`);
+
             // Get user's FCM token
             const userDoc = await getFirestore()
               .collection("users")
@@ -290,6 +337,8 @@ exports.notifyRaveAlerts = onDocumentCreated(
               const fcmToken = userData.fcmToken;
 
               if (fcmToken) {
+                console.log(`📱 Sending push notification to ` +
+                  `user ${userId}`);
                 const payload = {
                   notification: {
                     title: "🎵 New Rave Alert!",
@@ -323,8 +372,15 @@ exports.notifyRaveAlerts = onDocumentCreated(
                 };
 
                 return getMessaging().send(payload);
+              } else {
+                console.log(`❌ No FCM token found for user ${userId}`);
               }
+            } else {
+              console.log(`❌ User document not found for ${userId}`);
             }
+          } else {
+            console.log(`❌ Rave is outside alert radius ` +
+              `(${distance.toFixed(2)}km > ${radiusKm}km)`);
           }
         });
 
@@ -337,6 +393,7 @@ exports.notifyRaveAlerts = onDocumentCreated(
         (result) => result.status === "fulfilled").length;
       const failed = results.filter(
         (result) => result.status === "rejected").length;
+      console.log(`✅ Notifications: ${successful} sent, ${failed} failed`);
     } catch (error) {
       console.error("Error processing rave alerts:", error);
     }

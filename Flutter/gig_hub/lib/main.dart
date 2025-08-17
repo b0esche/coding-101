@@ -18,7 +18,7 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
 final AuthRepository auth = FirebaseAuthRepository();
-final DatabaseRepository db = FirestoreDatabaseRepository();
+final DatabaseRepository db = CachedFirestoreRepository();
 
 // Global navigator key for app-wide navigation
 final GlobalKey<NavigatorState> globalNavigatorKey =

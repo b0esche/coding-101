@@ -13,7 +13,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   XFile? _pickedImage;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
-  final db = FirestoreDatabaseRepository();
+  late DatabaseRepository db;
 
   final List<Map<String, String>> _languages = [
     {'code': 'en', 'name': 'English', 'flag': '🇺🇸'},
@@ -37,6 +37,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   void initState() {
     super.initState();
+    db = Provider.of<DatabaseRepository>(context, listen: false);
     _currentLanguage =
         FlutterLocalization.instance.currentLocale?.languageCode ?? 'en';
     _loadCurrentUser();

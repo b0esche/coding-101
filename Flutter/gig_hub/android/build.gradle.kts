@@ -21,7 +21,7 @@ tasks.register<Delete>("clean") {
 }
 
 plugins {
-  id("com.android.application") version "8.3.0" apply false
+  id("com.android.application") version "8.5.2" apply false
   // ...
 
   // Add the dependency for the Google services Gradle plugin

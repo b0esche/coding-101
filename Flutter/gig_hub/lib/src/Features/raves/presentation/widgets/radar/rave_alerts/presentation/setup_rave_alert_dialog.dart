@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:geolocator/geolocator.dart';
 import '../../../../../../../Data/app_imports.dart';
 import '../domain/rave_alert.dart';
@@ -117,7 +118,7 @@ class _SetupRaveAlertDialogState extends State<SetupRaveAlertDialog> {
   /// Reverse geocodes coordinates to get a readable address
   Future<String?> _reverseGeocode(double latitude, double longitude) async {
     try {
-      final apiKey = dotenv.env['GOOGLE_PLACES_API_KEY'];
+      final apiKey = dotenv.env['GOOGLE_API_KEY'];
       if (apiKey == null) return null;
 
       final url = Uri.parse(
@@ -170,6 +171,13 @@ class _SetupRaveAlertDialogState extends State<SetupRaveAlertDialog> {
       _locationError = null;
     });
 
+    // Debug: Check if environment is loaded
+    print('DEBUG: Environment variables loaded:');
+    print(
+      'DEBUG: GOOGLE_API_KEY exists: ${dotenv.env['GOOGLE_API_KEY'] != null}',
+    );
+    print('DEBUG: All env keys: ${dotenv.env.keys.toList()}');
+
     try {
       final result = await _geocodeLocation(location);
 
@@ -182,12 +190,29 @@ class _SetupRaveAlertDialogState extends State<SetupRaveAlertDialog> {
           _isValidatingLocation = false;
         });
       } else {
-        setState(() {
-          _locationError = AppLocale.locationNotFound.getString(context);
-          _isValidatingLocation = false;
-        });
+        // Fallback: Accept location if it looks like a city name (basic validation)
+        if (_isValidLocationFormat(location)) {
+          setState(() {
+            _selectedGeoPoint = GeoPoint(0.0, 0.0); // Placeholder coordinates
+            _validatedLocationName = location;
+            _isValidatingLocation = false;
+            _locationError = null; // Clear any error
+          });
+        } else {
+          setState(() {
+            // Provide more specific error messages based on the likely cause
+            if (dotenv.env['GOOGLE_API_KEY'] == null) {
+              _locationError = 'Configuration error: Google API key not found';
+            } else {
+              _locationError =
+                  'Unable to validate location. Please check spelling or try a different location.';
+            }
+            _isValidatingLocation = false;
+          });
+        }
       }
     } catch (e) {
+      print('DEBUG: Exception in _validateManualLocation: $e');
       setState(() {
         _locationError = AppLocale.failedValidateLocation.getString(context);
         _isValidatingLocation = false;
@@ -195,39 +220,176 @@ class _SetupRaveAlertDialogState extends State<SetupRaveAlertDialog> {
     }
   }
 
-  /// Geocodes a location string to coordinates using Places API
+  /// Basic validation for location format (fallback)
+  bool _isValidLocationFormat(String location) {
+    // Basic checks: not empty, contains letters, reasonable length
+    if (location.trim().length < 2 || location.trim().length > 100) {
+      return false;
+    }
+
+    // Should contain at least some letters (not just numbers or symbols)
+    if (!RegExp(r'[a-zA-Z]').hasMatch(location)) {
+      return false;
+    }
+
+    // Common city/location patterns
+    return true; // Accept most reasonable inputs as fallback
+  }
+
+  /// Geocodes a location string to coordinates using Places API with Nominatim fallback
   Future<_LocationResult> _geocodeLocation(String location) async {
+    // Try Google API first
+    final googleResult = await _geocodeWithGoogle(location);
+    if (googleResult.isValid) {
+      return googleResult;
+    }
+
+    print('DEBUG: Google API failed, trying Nominatim fallback...');
+    // Fallback to Nominatim (OpenStreetMap)
+    return await _geocodeWithNominatim(location);
+  }
+
+  /// Geocodes using Google Places API
+  Future<_LocationResult> _geocodeWithGoogle(String location) async {
     try {
-      final apiKey = dotenv.env['GOOGLE_PLACES_API_KEY'];
+      // Get platform-specific API key
+      String? apiKey;
+      if (Platform.isIOS) {
+        apiKey = dotenv.env['GOOGLE_API_KEY_IOS'];
+        print('DEBUG: Using iOS API key');
+      } else if (Platform.isAndroid) {
+        apiKey = dotenv.env['GOOGLE_API_KEY_ANDROID'];
+        print('DEBUG: Using Android API key');
+      } else {
+        // Fallback to generic key for other platforms
+        apiKey = dotenv.env['GOOGLE_API_KEY'];
+        print('DEBUG: Using fallback API key');
+      }
+
       if (apiKey == null) {
+        print(
+          'DEBUG: Google API key not found for platform: ${Platform.operatingSystem}',
+        );
         return const _LocationResult(isValid: false);
       }
 
+      print('DEBUG: Geocoding with Google: $location');
       final url = Uri.parse(
         'https://maps.googleapis.com/maps/api/geocode/json'
         '?address=${Uri.encodeComponent(location)}'
         '&key=$apiKey',
       );
 
+      print(
+        'DEBUG: Making request to: ${url.toString().replaceAll(apiKey, '[API_KEY]')}',
+      );
       final response = await http.get(url);
+      print('DEBUG: Response status: ${response.statusCode}');
+      print('DEBUG: Response body: ${response.body}');
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
+
+        // Check API response status
+        final status = data['status'] as String?;
+        print('DEBUG: API status: $status');
+
+        if (status == 'REQUEST_DENIED') {
+          print(
+            'DEBUG: API request denied - check API key and enabled services',
+          );
+          return const _LocationResult(isValid: false);
+        } else if (status == 'OVER_QUERY_LIMIT') {
+          print('DEBUG: API quota exceeded');
+          return const _LocationResult(isValid: false);
+        } else if (status == 'ZERO_RESULTS') {
+          print('DEBUG: No results found for this location');
+          return const _LocationResult(isValid: false);
+        } else if (status != 'OK') {
+          print('DEBUG: API returned status: $status');
+          if (data['error_message'] != null) {
+            print('DEBUG: API error message: ${data['error_message']}');
+          }
+          return const _LocationResult(isValid: false);
+        }
 
         if (data['results']?.isNotEmpty == true) {
           final result = data['results'][0];
           final geometry = result['geometry'];
           final location = geometry['location'];
 
+          print(
+            'DEBUG: Successfully geocoded with Google: ${result['formatted_address']}',
+          );
           return _LocationResult(
             isValid: true,
             latitude: location['lat']?.toDouble(),
             longitude: location['lng']?.toDouble(),
             formattedAddress: result['formatted_address'],
           );
+        } else {
+          print('DEBUG: No results found for location');
         }
+      } else {
+        print(
+          'DEBUG: HTTP error: ${response.statusCode} - ${response.reasonPhrase}',
+        );
       }
     } catch (e) {
-      // Return invalid result on error
+      print('DEBUG: Exception during Google geocoding: $e');
+    }
+
+    return const _LocationResult(isValid: false);
+  }
+
+  /// Geocodes using free Nominatim service (OpenStreetMap)
+  Future<_LocationResult> _geocodeWithNominatim(String location) async {
+    try {
+      print('DEBUG: Geocoding with Nominatim: $location');
+      final url = Uri.parse(
+        'https://nominatim.openstreetmap.org/search'
+        '?q=${Uri.encodeComponent(location)}'
+        '&format=json'
+        '&limit=1'
+        '&addressdetails=1',
+      );
+
+      final response = await http.get(
+        url,
+        headers: {
+          'User-Agent': 'GigHub/1.0 (Flutter App)', // Required by Nominatim
+        },
+      );
+
+      print('DEBUG: Nominatim response status: ${response.statusCode}');
+      print('DEBUG: Nominatim response: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+
+        if (data.isNotEmpty) {
+          final result = data[0];
+          final lat = double.tryParse(result['lat'].toString());
+          final lon = double.tryParse(result['lon'].toString());
+          final displayName = result['display_name'] as String?;
+
+          if (lat != null && lon != null) {
+            print('DEBUG: Successfully geocoded with Nominatim: $displayName');
+            return _LocationResult(
+              isValid: true,
+              latitude: lat,
+              longitude: lon,
+              formattedAddress: displayName ?? location,
+            );
+          }
+        } else {
+          print('DEBUG: Nominatim returned no results');
+        }
+      } else {
+        print('DEBUG: Nominatim HTTP error: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('DEBUG: Exception during Nominatim geocoding: $e');
     }
 
     return const _LocationResult(isValid: false);

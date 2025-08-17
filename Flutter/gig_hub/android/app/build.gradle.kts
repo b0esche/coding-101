@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.b0esche.gig_hub"
-    compileSdk = 34  // Updated for background audio compatibility
+    compileSdk = 35  // Updated for latest Android dependencies
     ndkVersion = "27.0.12077973"
 
     compileOptions {
@@ -29,7 +29,7 @@ android {
     defaultConfig {
         applicationId = "com.b0esche.gig_hub"
         minSdk = 23
-        targetSdk = 34  // Updated for latest Android features
+        targetSdk = 35  // Updated for latest Android features
         versionCode = flutter.versionCode
         versionName = flutter.versionName
 

@@ -338,8 +338,18 @@ class _MainScreenState extends State<MainScreen> {
                                       fullscreenDialog: true,
                                     ),
                                   )
-                                  .then((_) {
-                                    _loadLoggedInUser();
+                                  .then((_) async {
+                                    // Clear all image caches to ensure avatar updates are shown
+                                    imageCache.clear();
+                                    imageCache.clearLiveImages();
+                                    // Force reload user data
+                                    await _loadLoggedInUser();
+                                    // Force widget rebuild with setState
+                                    if (mounted) {
+                                      setState(() {
+                                        // This will trigger a rebuild with fresh data
+                                      });
+                                    }
                                   });
                             },
                             child: Container(
@@ -351,17 +361,47 @@ class _MainScreenState extends State<MainScreen> {
                                 ),
                               ),
                               child: ClipOval(
-                                child: FadeInImage.assetNetwork(
-                                  fadeInCurve: Curves.easeIn,
-                                  fadeInDuration: Duration(milliseconds: 150),
-                                  placeholder:
-                                      'assets/images/default_avatar.jpg',
-                                  image:
-                                      currentUser?.avatarUrl ??
+                                child: Image.network(
+                                  currentUser?.avatarUrl ??
                                       'https://firebasestorage.googleapis.com/v0/b/gig-hub-8ac24.firebasestorage.app/o/default%2Fdefault_avatar.jpg?alt=media&token=9c48f377-736e-4a9a-bf31-6ffc3ed020f7',
+                                  key: ValueKey(
+                                    '${currentUser?.avatarUrl ?? 'default'}_${DateTime.now().millisecondsSinceEpoch}',
+                                  ),
                                   height: 68,
                                   width: 68,
                                   fit: BoxFit.cover,
+                                  cacheWidth: null,
+                                  cacheHeight: null,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Image.asset(
+                                      'assets/images/default_avatar.jpg',
+                                      height: 68,
+                                      width: 68,
+                                      fit: BoxFit.cover,
+                                    );
+                                  },
+                                  loadingBuilder: (
+                                    context,
+                                    child,
+                                    loadingProgress,
+                                  ) {
+                                    if (loadingProgress == null) return child;
+                                    return Container(
+                                      height: 68,
+                                      width: 68,
+                                      child: CircularProgressIndicator(
+                                        value:
+                                            loadingProgress
+                                                        .expectedTotalBytes !=
+                                                    null
+                                                ? loadingProgress
+                                                        .cumulativeBytesLoaded /
+                                                    loadingProgress
+                                                        .expectedTotalBytes!
+                                                : null,
+                                      ),
+                                    );
+                                  },
                                 ),
                               ),
                             ),

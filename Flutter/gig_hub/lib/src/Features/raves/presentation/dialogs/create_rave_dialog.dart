@@ -5,6 +5,10 @@ import 'package:flutter_localization/flutter_localization.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
+import 'dart:io';
+import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart' as http;
 import '../../domain/rave.dart';
 import '../../../../Data/models/users.dart';
 import '../../../../Data/models/group_chat.dart';
@@ -12,6 +16,21 @@ import '../../../../Data/interfaces/database_repository.dart';
 import '../../../../Data/services/localization_service.dart';
 import '../../../../Data/services/places_validation_service.dart';
 import 'user_search_dialog.dart';
+
+/// Simple location result class for geocoding responses
+class _LocationResult {
+  final bool isValid;
+  final double? latitude;
+  final double? longitude;
+  final String? formattedAddress;
+
+  const _LocationResult({
+    required this.isValid,
+    this.latitude,
+    this.longitude,
+    this.formattedAddress,
+  });
+}
 
 class CreateRaveDialog extends StatefulWidget {
   const CreateRaveDialog({super.key});
@@ -39,6 +58,7 @@ class _CreateRaveDialogState extends State<CreateRaveDialog> {
   bool _isValidatingLocation = false;
   String? _locationError;
   Timer? _locationValidationTimer;
+  GeoPoint? _validatedGeoPoint; // Store geocoded coordinates
 
   @override
   void dispose() {
@@ -54,6 +74,7 @@ class _CreateRaveDialogState extends State<CreateRaveDialog> {
   /// Validates location using Google Places API with debouncing
   /// Ensures only real, existing locations are accepted
   /// Uses a 800ms delay to prevent excessive API calls while typing
+  /// Also geocodes the location to get coordinates for rave alerts
   Future<void> _validateLocation(String value) async {
     final trimmedValue = value.trim();
 
@@ -65,6 +86,7 @@ class _CreateRaveDialogState extends State<CreateRaveDialog> {
       setState(() {
         _locationError = null;
         _isValidatingLocation = false;
+        _validatedGeoPoint = null;
       });
       return;
     }
@@ -73,43 +95,178 @@ class _CreateRaveDialogState extends State<CreateRaveDialog> {
     setState(() {
       _isValidatingLocation = true;
       _locationError = null;
+      _validatedGeoPoint = null;
     });
 
     // Debounce the validation to avoid excessive API calls
-    _locationValidationTimer = Timer(
-      const Duration(milliseconds: 800),
-      () async {
-        try {
-          // Validate the location using Google Places API
-          final isValid = await PlacesValidationService.validateCity(
-            trimmedValue,
-          );
+    _locationValidationTimer = Timer(const Duration(milliseconds: 800), () async {
+      try {
+        // First validate the location using the existing service
+        final isValid = await PlacesValidationService.validateCity(
+          trimmedValue,
+        );
 
-          if (mounted) {
-            setState(() {
-              _isValidatingLocation = false;
-              if (!isValid) {
-                _locationError = 'Please enter a valid city name';
-              } else {
-                _locationError = null;
-              }
-            });
+        if (mounted) {
+          setState(() {
+            _isValidatingLocation = false;
+            _locationError = isValid ? null : 'Please enter a valid city name';
+          });
+        }
 
-            // Trigger form validation to show/hide error
-            _formKey.currentState?.validate();
+        // If validation passed, try to geocode (but don't fail if geocoding fails)
+        if (isValid) {
+          try {
+            final geocodeResult = await _geocodeLocation(trimmedValue);
+            if (mounted) {
+              setState(() {
+                _validatedGeoPoint =
+                    geocodeResult.isValid &&
+                            geocodeResult.latitude != null &&
+                            geocodeResult.longitude != null
+                        ? GeoPoint(
+                          geocodeResult.latitude!,
+                          geocodeResult.longitude!,
+                        )
+                        : null;
+              });
+            }
+          } catch (e) {
+            // Geocoding failed, but that's okay - we'll just create rave without geoPoint
+            if (mounted) {
+              setState(() {
+                _validatedGeoPoint = null;
+              });
+            }
           }
-        } catch (e) {
+        } else {
           if (mounted) {
             setState(() {
-              _isValidatingLocation = false;
-              _locationError =
-                  'Unable to validate location. Please check your connection.';
+              _validatedGeoPoint = null;
             });
-            _formKey.currentState?.validate();
           }
         }
-      },
-    );
+
+        if (mounted) {
+          // Trigger form validation to show/hide error
+          _formKey.currentState?.validate();
+        }
+      } catch (e) {
+        if (mounted) {
+          setState(() {
+            _isValidatingLocation = false;
+            _locationError = 'Network error. Please try again.';
+            _validatedGeoPoint = null;
+          });
+          _formKey.currentState?.validate();
+        }
+      }
+    });
+  }
+
+  /// Geocodes a location string to coordinates using Places API with Nominatim fallback
+  Future<_LocationResult> _geocodeLocation(String location) async {
+    // Try Google API first
+    final googleResult = await _geocodeWithGoogle(location);
+    if (googleResult.isValid) {
+      return googleResult;
+    }
+
+    // Fallback to Nominatim (OpenStreetMap)
+    return await _geocodeWithNominatim(location);
+  }
+
+  /// Geocodes using Google Places API
+  Future<_LocationResult> _geocodeWithGoogle(String location) async {
+    try {
+      // Get platform-specific API key
+      String? apiKey;
+      if (Platform.isIOS) {
+        apiKey = dotenv.env['GOOGLE_API_KEY_IOS'];
+      } else if (Platform.isAndroid) {
+        apiKey = dotenv.env['GOOGLE_API_KEY_ANDROID'];
+      } else {
+        // Fallback to generic key for other platforms
+        apiKey = dotenv.env['GOOGLE_API_KEY'];
+      }
+
+      if (apiKey == null) {
+        return const _LocationResult(isValid: false);
+      }
+
+      final url = Uri.parse(
+        'https://maps.googleapis.com/maps/api/geocode/json'
+        '?address=${Uri.encodeComponent(location)}'
+        '&key=$apiKey',
+      );
+
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final status = data['status'] as String?;
+
+        if (status == 'OK' && data['results']?.isNotEmpty == true) {
+          final result = data['results'][0];
+          final geometry = result['geometry'];
+          final location = geometry['location'];
+
+          return _LocationResult(
+            isValid: true,
+            latitude: location['lat']?.toDouble(),
+            longitude: location['lng']?.toDouble(),
+            formattedAddress: result['formatted_address'],
+          );
+        }
+      }
+    } catch (e) {
+      // Google API failed, will try fallback
+    }
+
+    return const _LocationResult(isValid: false);
+  }
+
+  /// Geocodes using free Nominatim service (OpenStreetMap)
+  Future<_LocationResult> _geocodeWithNominatim(String location) async {
+    try {
+      final url = Uri.parse(
+        'https://nominatim.openstreetmap.org/search'
+        '?q=${Uri.encodeComponent(location)}'
+        '&format=json'
+        '&limit=1'
+        '&addressdetails=1',
+      );
+
+      final response = await http.get(
+        url,
+        headers: {
+          'User-Agent': 'GigHub/1.0 (Flutter App)', // Required by Nominatim
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+
+        if (data.isNotEmpty) {
+          final result = data[0];
+          final lat = double.tryParse(result['lat'].toString());
+          final lon = double.tryParse(result['lon'].toString());
+          final displayName = result['display_name'] as String?;
+
+          if (lat != null && lon != null) {
+            return _LocationResult(
+              isValid: true,
+              latitude: lat,
+              longitude: lon,
+              formattedAddress: displayName ?? location,
+            );
+          }
+        }
+      }
+    } catch (e) {
+      // Fallback failed
+    }
+
+    return const _LocationResult(isValid: false);
   }
 
   @override
@@ -619,7 +776,7 @@ class _CreateRaveDialogState extends State<CreateRaveDialog> {
       return;
     }
 
-    // Ensure location is valid before proceeding
+    // Ensure location is valid and geocoded before proceeding
     if (_locationError != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please enter a valid location')),
@@ -653,6 +810,7 @@ class _CreateRaveDialogState extends State<CreateRaveDialog> {
         endDate: _endDate,
         startTime: _startTime?.format(context) ?? '00:00',
         location: _locationController.text.trim(),
+        geoPoint: _validatedGeoPoint, // Include geocoded coordinates
         description: _descriptionController.text.trim(),
         ticketShopLink:
             _ticketShopController.text.trim().isNotEmpty
