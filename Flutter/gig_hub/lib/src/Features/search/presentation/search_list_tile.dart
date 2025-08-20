@@ -67,6 +67,7 @@ class _SearchListTileState extends State<SearchListTile> {
           });
         },
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
@@ -108,6 +109,7 @@ class _SearchListTileState extends State<SearchListTile> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(

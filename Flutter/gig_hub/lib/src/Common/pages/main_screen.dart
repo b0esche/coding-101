@@ -19,7 +19,6 @@ class _MainScreenState extends State<MainScreen> {
   List<int>? _currentSearchBpmRange;
   List<String>? _currentSearchGenres;
   final db = CachedFirestoreRepository();
-
   AppUser? _loggedInUser;
 
   late AppLinks _appLinks;
@@ -554,32 +553,30 @@ class _MainScreenState extends State<MainScreen> {
                           )
                           : Stack(
                             children: [
-                              ListView.builder(
+                              SingleChildScrollView(
                                 padding: const EdgeInsets.only(
                                   top: 28,
                                   left: 4,
                                   right: 4,
                                   bottom: 164,
                                 ),
-                                itemCount: _sortedUsersDJ.length,
-                                itemBuilder: (context, index) {
-                                  final DJ currentUserDJ =
-                                      _sortedUsersDJ[index];
-                                  return SearchListTile(
-                                    currentUser: widget.initialUser!,
-
-                                    user: currentUserDJ,
-                                    name: currentUserDJ.name,
-                                    genres: currentUserDJ.genres,
-                                    imagePath: currentUserDJ.avatarImageUrl,
-
-                                    about: currentUserDJ.about,
-                                    location: currentUserDJ.city,
-                                    bpm: currentUserDJ.bpm,
-
-                                    rating: currentUserDJ.avgRating,
-                                  );
-                                },
+                                child: Column(
+                                  children:
+                                      _sortedUsersDJ.map((currentUserDJ) {
+                                        return SearchListTile(
+                                          currentUser: widget.initialUser!,
+                                          user: currentUserDJ,
+                                          name: currentUserDJ.name,
+                                          genres: currentUserDJ.genres,
+                                          imagePath:
+                                              currentUserDJ.avatarImageUrl,
+                                          about: currentUserDJ.about,
+                                          location: currentUserDJ.city,
+                                          bpm: currentUserDJ.bpm,
+                                          rating: currentUserDJ.avgRating,
+                                        );
+                                      }).toList(),
+                                ),
                               ),
                               Positioned(
                                 top: 0,

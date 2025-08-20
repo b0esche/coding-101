@@ -18,8 +18,6 @@ export 'package:gig_hub/src/Data/services/reporting_service.dart';
 export 'package:gig_hub/src/Data/services/localization_service.dart';
 export 'package:gig_hub/src/Data/services/cache_service.dart';
 export 'package:gig_hub/src/Data/services/places_validation_service.dart';
-export 'package:gig_hub/src/Data/services/firebase_query_optimizer.dart';
-export 'package:gig_hub/src/Data/services/firebase_cost_manager.dart';
 export 'package:pinch_zoom/pinch_zoom.dart';
 export 'package:shimmer/shimmer.dart';
 export 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
