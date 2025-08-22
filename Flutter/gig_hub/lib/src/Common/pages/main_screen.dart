@@ -385,7 +385,7 @@ class _MainScreenState extends State<MainScreen> {
                                     loadingProgress,
                                   ) {
                                     if (loadingProgress == null) return child;
-                                    return Container(
+                                    return SizedBox(
                                       height: 68,
                                       width: 68,
                                       child: CircularProgressIndicator(

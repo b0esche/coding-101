@@ -29,20 +29,18 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
     await initFirebaseMessaging(); // Initialize FCM token after user creation
   }
 
-  /// Creates a new DJ user document in Firestore
   @override
   Future<void> createDJ(DJ dj) async {
     final docRef = _firestore.collection('users').doc(dj.id);
     await docRef.set(dj.toJson());
-    await initFirebaseMessaging(); // Initialize FCM token after user creation
+    await initFirebaseMessaging();
   }
 
-  /// Creates a new Booker user document in Firestore
   @override
   Future<void> createBooker(Booker booker) async {
     final docRef = _firestore.collection('users').doc(booker.id);
     await docRef.set(booker.toJson());
-    await initFirebaseMessaging(); // Initialize FCM token after user creation
+    await initFirebaseMessaging();
   }
 
   // delete ###
@@ -85,7 +83,6 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
       'mediaImageUrls': dj.mediaImageUrls,
       'favoriteUIds': dj.favoriteUIds,
     });
-    notifyListeners();
   }
 
   @override
@@ -544,8 +541,7 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
               .set({'fcmToken': newToken}, SetOptions(merge: true));
         }
       });
-    } catch (e) {
-      print('Error initializing Firebase Messaging: $e');
+    } catch (_) {
       // Don't rethrow - this is not critical for app functionality
     }
   }
