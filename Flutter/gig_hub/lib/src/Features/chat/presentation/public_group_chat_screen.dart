@@ -154,7 +154,7 @@ class _PublicGroupChatScreenState extends State<PublicGroupChatScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to send message: $e'),
+            content: Center(child: Text('Failed to send message: $e')),
             backgroundColor: Palette.alarmRed,
           ),
         );
@@ -186,7 +186,7 @@ class _PublicGroupChatScreenState extends State<PublicGroupChatScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('failed to update FLINTA* status'),
+            content: Center(child: Text('failed to update FLINTA* status')),
             backgroundColor: Palette.alarmRed,
           ),
         );
@@ -207,8 +207,13 @@ class _PublicGroupChatScreenState extends State<PublicGroupChatScreen> {
         if (senderUser is! Guest) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('guest users can only chat with other guests'),
-              backgroundColor: Palette.gigGrey,
+              content: Center(
+                child: Text(
+                  'guest users can only chat with other guests',
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+              backgroundColor: Palette.forgedGold,
             ),
           );
           return;
@@ -218,8 +223,13 @@ class _PublicGroupChatScreenState extends State<PublicGroupChatScreen> {
         if (senderUser is Guest && mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Cannot start chat with guest users'),
-              backgroundColor: Palette.gigGrey,
+              content: Center(
+                child: Text(
+                  'cannot start chat with guest users',
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+              backgroundColor: Palette.forgedGold,
             ),
           );
           return;
@@ -237,7 +247,7 @@ class _PublicGroupChatScreenState extends State<PublicGroupChatScreen> {
                 side: BorderSide(color: Palette.forgedGold, width: 2),
               ),
               title: Text(
-                'Start Direct Chat?',
+                'start direct chat?',
                 style: TextStyle(
                   color: Palette.glazedWhite,
                   fontSize: 18,
@@ -255,7 +265,7 @@ class _PublicGroupChatScreenState extends State<PublicGroupChatScreen> {
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(false),
                   child: Text(
-                    'Cancel',
+                    'cancel',
                     style: TextStyle(color: Palette.glazedWhite.o(0.7)),
                   ),
                 ),
@@ -296,7 +306,12 @@ class _PublicGroupChatScreenState extends State<PublicGroupChatScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('failed to get user information'),
+            content: Center(
+              child: Text(
+                'failed to get user information',
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
             backgroundColor: Palette.alarmRed,
           ),
         );
@@ -514,8 +529,13 @@ class _PublicGroupChatScreenState extends State<PublicGroupChatScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('left the public group chat'),
-            backgroundColor: Palette.okGreen,
+            content: Center(
+              child: Text(
+                'left the public group chat',
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
+            backgroundColor: Palette.forgedGold,
           ),
         );
         Navigator.of(context).pop();
@@ -524,7 +544,7 @@ class _PublicGroupChatScreenState extends State<PublicGroupChatScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('failed to leave chat: $e'),
+            content: Center(child: Text('failed to leave chat: $e')),
             backgroundColor: Palette.alarmRed,
           ),
         );
@@ -591,8 +611,13 @@ class _PublicGroupChatScreenState extends State<PublicGroupChatScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('group image updated successfully!'),
-            backgroundColor: Palette.okGreen,
+            content: Center(
+              child: Text(
+                'group image updated successfully!',
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
+            backgroundColor: Palette.forgedGold,
           ),
         );
       }
@@ -600,7 +625,12 @@ class _PublicGroupChatScreenState extends State<PublicGroupChatScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('failed to upload image: ${e.toString()}'),
+            content: Center(
+              child: Text(
+                'failed to upload image: ${e.toString()}',
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
             backgroundColor: Palette.alarmRed,
           ),
         );
@@ -742,27 +772,26 @@ class _PublicGroupChatScreenState extends State<PublicGroupChatScreen> {
                     ],
                   ),
                 ),
-                TextButton(
-                  onPressed:
-                      null, // Disable button press, only checkbox should work
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Checkbox(
-                        value: _isFlinta,
-                        onChanged: (bool? value) {
-                          _toggleFlintaStatus(); // Don't close dialog
-                        },
-                        activeColor: Colors.deepPurple,
-                      ),
-                      Icon(Icons.favorite, color: Colors.deepPurple, size: 16),
-                      const SizedBox(width: 4),
-                      Text(
-                        'mark yourself as FLINTA*',
-                        style: TextStyle(color: Colors.deepPurple),
-                      ),
-                    ],
-                  ),
+                StatefulBuilder(
+                  builder: (context, setDialogState) {
+                    return Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Checkbox(
+                          value: _isFlinta,
+                          onChanged: (bool? value) async {
+                            await _toggleFlintaStatus();
+                            setDialogState(() {}); // Rebuild dialog
+                          },
+                          activeColor: Colors.deepPurple,
+                        ),
+                        Text(
+                          'mark yourself as FLINTA*',
+                          style: TextStyle(color: Palette.primalBlack),
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ],
               TextButton(

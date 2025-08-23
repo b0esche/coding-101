@@ -1,7 +1,5 @@
-import '../../../../Data/models/group_chat.dart';
 import '../../../../Data/app_imports.dart';
 import '../group_chat_screen.dart';
-import '../public_group_chat_screen.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
 
 /// Widget displaying a list of group chats for the current user
@@ -279,18 +277,31 @@ class _GroupChatListWidgetState extends State<GroupChatListWidget> {
       decoration: BoxDecoration(
         color: Palette.gigGrey.o(0.3),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.deepPurple.o(0.5), width: 1),
+        border: Border.all(color: Palette.forgedGold.o(0.5), width: 1),
       ),
       child: ListTile(
         leading: Container(
           width: 50,
           height: 50,
           decoration: BoxDecoration(
-            color: Colors.deepPurple.o(0.2),
+            color:
+                publicGroupChat.imageUrl != null
+                    ? Colors.transparent
+                    : Palette.forgedGold.o(0.2),
             borderRadius: BorderRadius.circular(25),
-            border: Border.all(color: Colors.deepPurple, width: 2),
+            border: Border.all(color: Palette.forgedGold, width: 2),
+            image:
+                publicGroupChat.imageUrl != null
+                    ? DecorationImage(
+                      image: NetworkImage(publicGroupChat.imageUrl!),
+                      fit: BoxFit.cover,
+                    )
+                    : null,
           ),
-          child: Icon(Icons.public, color: Colors.deepPurple, size: 24),
+          child:
+              publicGroupChat.imageUrl == null
+                  ? Icon(Icons.public, color: Palette.forgedGold, size: 24)
+                  : null,
         ),
         title: Text(
           publicGroupChat.name,
@@ -354,6 +365,7 @@ class _GroupChatListWidgetState extends State<GroupChatListWidget> {
           final currentUser = await _db.getUserById(widget.currentUserId);
 
           // Navigate to public group chat
+
           final result = await Navigator.push(
             context,
             MaterialPageRoute(

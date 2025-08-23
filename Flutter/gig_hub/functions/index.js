@@ -364,8 +364,6 @@ exports.cleanupExpiredContent = onSchedule("0 2 * * *", async (event) => {
   );
 
   try {
-    console.log("Starting cleanup of expired raves and group chats...");
-
     // 1. Find expired raves (ended more than 24 hours ago)
     const expiredRavesQuery = await db.collection("raves")
       .where("startDate", "<", twentyFourHoursAgo)
@@ -393,10 +391,6 @@ exports.cleanupExpiredContent = onSchedule("0 2 * * *", async (event) => {
 
       // Only delete if ended more than 24 hours ago
       if (raveEndTime.toDate() < twentyFourHoursAgo.toDate()) {
-        console.log(
-          `Deleting expired rave: ${raveData.name} (ID: ${raveDoc.id})`,
-        );
-
         // Delete the rave
         batch.delete(raveDoc.ref);
         deletedRavesCount++;
@@ -424,8 +418,6 @@ exports.cleanupExpiredContent = onSchedule("0 2 * * *", async (event) => {
       .get();
 
     for (const groupChatDoc of expiredGroupChatsQuery.docs) {
-      console.log(`Cleaning up expired group chat: ${groupChatDoc.id}`);
-
       // Mark as inactive
       batch.update(groupChatDoc.ref, { isActive: false });
 
@@ -440,17 +432,12 @@ exports.cleanupExpiredContent = onSchedule("0 2 * * *", async (event) => {
     // Execute all deletions
     await batch.commit();
 
-    console.log(`Cleanup completed successfully:`);
-    console.log(`- Deleted ${deletedRavesCount} expired raves`);
-    console.log(`- Cleaned up ${deletedGroupChatsCount} group chats`);
-
     return {
       success: true,
       deletedRaves: deletedRavesCount,
       deletedGroupChats: deletedGroupChatsCount,
     };
   } catch (error) {
-    console.error("Error during cleanup:", error);
     throw new Error(`Cleanup failed: ${error.message}`);
   }
 });
@@ -471,8 +458,6 @@ exports.triggerCleanup = onCall(async (request, context) => {
     const twentyFourHoursAgo = admin.firestore.Timestamp.fromDate(
       new Date(Date.now() - 24 * 60 * 60 * 1000),
     );
-
-    console.log("Manual cleanup triggered by user:", context.auth.uid);
 
     // Reuse the same cleanup logic as the scheduled function
     const expiredRavesQuery = await db.collection("raves")
@@ -541,7 +526,6 @@ exports.triggerCleanup = onCall(async (request, context) => {
       deletedGroupChats: deletedGroupChatsCount,
     };
   } catch (error) {
-    console.error("Manual cleanup error:", error);
     throw new HttpsError("internal", `Cleanup failed: ${error.message}`);
   }
 });
