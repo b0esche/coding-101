@@ -1,6 +1,7 @@
 import '../../../../Data/models/group_chat.dart';
 import '../../../../Data/app_imports.dart';
 import '../group_chat_screen.dart';
+import '../public_group_chat_screen.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
 
 /// Widget displaying a list of group chats for the current user
@@ -25,6 +26,16 @@ class _GroupChatListWidgetState extends State<GroupChatListWidget> {
   /// Refresh key used to force FutureBuilder rebuild when returning from group chat
   /// Incremented to trigger fresh data fetch and ensure UI shows latest changes
   int _refreshKey = 0;
+
+  /// Fetches both regular group chats and public group chats
+  Future<Map<String, dynamic>> _fetchAllChats() async {
+    final groupChats = await _db.getUserGroupChats(widget.currentUserId);
+    final publicGroupChats = await _db.getUserPublicGroupChats(
+      widget.currentUserId,
+    );
+
+    return {'groupChats': groupChats, 'publicGroupChats': publicGroupChats};
+  }
 
   /// Decrypts encrypted group chat message previews for display
   /// Handles the same AES-256 encryption format as direct chats
@@ -57,9 +68,9 @@ class _GroupChatListWidgetState extends State<GroupChatListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<GroupChat>>(
+    return FutureBuilder<Map<String, dynamic>>(
       key: ValueKey(_refreshKey), // Use refresh key to force rebuild
-      future: _db.getUserGroupChats(widget.currentUserId),
+      future: _fetchAllChats(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
@@ -96,9 +107,13 @@ class _GroupChatListWidgetState extends State<GroupChatListWidget> {
           );
         }
 
-        final groupChats = snapshot.data ?? [];
+        final chatsData = snapshot.data ?? {};
+        final groupChats = (chatsData['groupChats'] as List<GroupChat>?) ?? [];
+        final publicGroupChats =
+            (chatsData['publicGroupChats'] as List<PublicGroupChat>?) ?? [];
+        final totalChats = groupChats.length + publicGroupChats.length;
 
-        if (groupChats.isEmpty) {
+        if (totalChats == 0) {
           return Center(
             child: Container(
               padding: const EdgeInsets.all(16),
@@ -138,10 +153,16 @@ class _GroupChatListWidgetState extends State<GroupChatListWidget> {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           padding: const EdgeInsets.only(top: 16, bottom: 16),
-          itemCount: groupChats.length,
+          itemCount: totalChats,
           itemBuilder: (context, index) {
-            final groupChat = groupChats[index];
-            return _buildGroupChatTile(groupChat);
+            if (index < groupChats.length) {
+              // Display regular group chat
+              return _buildGroupChatTile(groupChats[index]);
+            } else {
+              // Display public group chat
+              final publicIndex = index - groupChats.length;
+              return _buildPublicGroupChatTile(publicGroupChats[publicIndex]);
+            }
           },
         );
       },
@@ -247,6 +268,109 @@ class _GroupChatListWidgetState extends State<GroupChatListWidget> {
           setState(() {
             _refreshKey++; // Increment to force FutureBuilder rebuild
           });
+        },
+      ),
+    );
+  }
+
+  Widget _buildPublicGroupChatTile(PublicGroupChat publicGroupChat) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      decoration: BoxDecoration(
+        color: Palette.gigGrey.o(0.3),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.deepPurple.o(0.5), width: 1),
+      ),
+      child: ListTile(
+        leading: Container(
+          width: 50,
+          height: 50,
+          decoration: BoxDecoration(
+            color: Colors.deepPurple.o(0.2),
+            borderRadius: BorderRadius.circular(25),
+            border: Border.all(color: Colors.deepPurple, width: 2),
+          ),
+          child: Icon(Icons.public, color: Colors.deepPurple, size: 24),
+        ),
+        title: Text(
+          publicGroupChat.name,
+          style: TextStyle(
+            color: Palette.glazedWhite,
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (publicGroupChat.lastMessage != null) ...[
+              Text(
+                publicGroupChat.lastMessage!,
+                style: TextStyle(
+                  color: Palette.glazedWhite.o(0.7),
+                  fontSize: 14,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ] else ...[
+              Text(
+                'no messages yet',
+                style: TextStyle(
+                  color: Palette.glazedWhite.o(0.5),
+                  fontSize: 12,
+                ),
+              ),
+            ],
+            const SizedBox(height: 4),
+            Row(
+              children: [
+                Icon(Icons.people, color: Palette.glazedWhite.o(0.5), size: 12),
+                const SizedBox(width: 4),
+                Text(
+                  '${publicGroupChat.memberCount} members',
+                  style: TextStyle(
+                    color: Palette.glazedWhite.o(0.5),
+                    fontSize: 12,
+                  ),
+                ),
+                const Spacer(),
+                if (publicGroupChat.lastMessageTimestamp != null)
+                  Text(
+                    _formatTimestamp(publicGroupChat.lastMessageTimestamp!),
+                    style: TextStyle(
+                      color: Palette.glazedWhite.o(0.5),
+                      fontSize: 12,
+                    ),
+                  ),
+              ],
+            ),
+          ],
+        ),
+        onTap: () async {
+          // Need to get current user data for navigation
+          final currentUser = await _db.getUserById(widget.currentUserId);
+
+          // Navigate to public group chat
+          final result = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder:
+                  (context) => PublicGroupChatScreen(
+                    publicGroupChat: publicGroupChat,
+                    currentUser: currentUser,
+                  ),
+            ),
+          );
+
+          // Increment refresh key to trigger rebuild when returning
+          if (result == 'refresh' || result == null) {
+            setState(() {
+              _refreshKey++;
+            });
+          }
         },
       ),
     );

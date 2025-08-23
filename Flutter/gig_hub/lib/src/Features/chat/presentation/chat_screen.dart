@@ -67,7 +67,6 @@ class ChatScreenState extends State<ChatScreen>
   void initState() {
     super.initState();
     _initEncryption();
-    _bottomsheetAnimationController = AnimationController(vsync: this);
   }
 
   Future<void> _initEncryption() async {
@@ -146,8 +145,6 @@ class ChatScreenState extends State<ChatScreen>
       });
     });
   }
-
-  late final AnimationController _bottomsheetAnimationController;
 
   @override
   Widget build(BuildContext context) {
@@ -228,188 +225,98 @@ class ChatScreenState extends State<ChatScreen>
             padding: const EdgeInsets.only(right: 2),
             child: IconButton(
               onPressed: () {
-                Navigator.of(context).push(
-                  ModalBottomSheetRoute(
-                    isDismissible: true,
-                    scrollControlDisabledMaxHeightRatio: 0.7,
-                    backgroundColor: Palette.forgedGold.o(0.935),
-                    builder: (context) {
-                      return BottomSheet(
-                        backgroundColor: Colors.transparent,
-                        animationController: _bottomsheetAnimationController,
-                        onDragEnd:
-                            (details, {required isClosing}) =>
-                                Navigator.pop(context),
-                        enableDrag: true,
-                        showDragHandle: true,
-                        dragHandleColor: Palette.shadowGrey,
-                        onClosing: () {},
-                        builder: (context) {
-                          return Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              spacing: 24,
+                showDialog(
+                  context: context,
+                  builder:
+                      (context) => AlertDialog(
+                        backgroundColor: Palette.glazedWhite,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          side: BorderSide(color: Palette.forgedGold, width: 2),
+                        ),
+                        title: Text(
+                          'chat info',
+                          style: TextStyle(
+                            color: Palette.primalBlack,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            // User Avatar Section
+                            Center(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: Palette.forgedGold,
+                                    width: 3,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Palette.primalBlack.o(0.1),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                                child: CircleAvatar(
+                                  radius: 80,
+                                  backgroundColor: Palette.forgedGold.o(0.2),
+                                  backgroundImage:
+                                      widget.chatPartner.avatarUrl.isNotEmpty
+                                          ? NetworkImage(
+                                            widget.chatPartner.avatarUrl,
+                                          )
+                                          : null,
+                                  child:
+                                      widget.chatPartner.avatarUrl.isEmpty
+                                          ? Icon(
+                                            Icons.person,
+                                            color: Palette.forgedGold,
+                                            size: 80,
+                                          )
+                                          : null,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              widget.chatPartner.displayName,
+                              style: TextStyle(
+                                color: Palette.primalBlack,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 24),
+                            // Action Buttons
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                Text(
-                                  widget.chatPartner.displayName,
-                                  style: TextStyle(
-                                    fontSize: 26,
-                                    fontWeight: FontWeight.w800,
-                                    color: Palette.shadowGrey,
-                                    decoration: TextDecoration.underline,
-                                    decorationColor: Palette.shadowGrey,
-                                  ),
-                                ),
-                                PinchZoom(
-                                  onZoomEnd: () {
-                                    // Reset zoom state when zoom gesture ends
-                                    // This prevents the avatar from getting stuck in zoomed state
-                                    setState(() {
-                                      // Force a rebuild to reset any zoom transformation
-                                    });
-                                  },
-                                  maxScale: 2,
-                                  zoomEnabled: true,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        color: Palette.shadowGrey,
-                                        width: 2.35,
-                                      ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Palette.gigGrey.o(0.65),
-                                          blurRadius: 3,
-                                          offset: Offset(1, 1),
-                                          spreadRadius: 1,
-                                        ),
-                                      ],
-                                    ),
-                                    child: CircleAvatar(
-                                      backgroundImage:
-                                          partnerAvatarUrl.isNotEmpty
-                                              ? NetworkImage(partnerAvatarUrl)
-                                              : const AssetImage(
-                                                    'assets/images/default_avatar.jpg',
-                                                  )
-                                                  as ImageProvider<Object>,
-                                      radius: 108,
-                                    ),
-                                  ),
-                                ),
-                                Spacer(),
                                 ElevatedButton(
-                                  style: ButtonStyle(
-                                    backgroundColor: WidgetStatePropertyAll(
-                                      Palette.glazedWhite,
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Palette.forgedGold.o(0.15),
+                                    foregroundColor: Palette.primalBlack,
+                                    side: BorderSide(
+                                      color: Palette.forgedGold,
+                                      width: 1.5,
                                     ),
-                                  ),
-                                  onPressed: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return AlertDialog(
-                                          backgroundColor: Palette.primalBlack,
-                                          surfaceTintColor: Palette.forgedGold,
-                                          title: Text(
-                                            AppLocale.blockUser.getString(
-                                              context,
-                                            ),
-                                            style: GoogleFonts.sometypeMono(
-                                              textStyle: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.w500,
-                                                color: Palette.glazedWhite,
-                                              ),
-                                            ),
-                                          ),
-                                          content: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              ElevatedButton(
-                                                style: ButtonStyle(
-                                                  backgroundColor:
-                                                      WidgetStatePropertyAll(
-                                                        Palette.glazedWhite,
-                                                      ),
-                                                ),
-                                                onPressed:
-                                                    () =>
-                                                        Navigator.of(
-                                                          context,
-                                                        ).pop(),
-                                                child: Text(
-                                                  AppLocale.cancel.getString(
-                                                    context,
-                                                  ),
-                                                  style: TextStyle(
-                                                    color: Palette.primalBlack,
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(width: 8),
-                                              ElevatedButton(
-                                                style: ButtonStyle(
-                                                  backgroundColor:
-                                                      WidgetStatePropertyAll(
-                                                        Palette.glazedWhite,
-                                                      ),
-                                                ),
-                                                onPressed: () async {
-                                                  await db.blockUser(
-                                                    widget.currentUser.id,
-                                                    widget.chatPartner.id,
-                                                  );
-                                                  await db.deleteChat(
-                                                    widget.currentUser.id,
-                                                    widget.chatPartner.id,
-                                                  );
-                                                  if (context.mounted) {
-                                                    Navigator.of(context).pop();
-                                                    Navigator.of(context).pop();
-                                                    Navigator.of(context).pop();
-                                                  }
-                                                },
-                                                child: Text(
-                                                  AppLocale.blockAndDelete
-                                                      .getString(context),
-                                                  style: TextStyle(
-                                                    color: Palette.primalBlack,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                      left: 24,
-                                      right: 24,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
                                     ),
-                                    child: Text(
-                                      AppLocale.block.getString(context),
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color: Palette.primalBlack,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                ElevatedButton(
-                                  style: ButtonStyle(
-                                    backgroundColor: WidgetStatePropertyAll(
-                                      Palette.glazedWhite,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 20,
+                                      vertical: 12,
                                     ),
                                   ),
                                   onPressed: () async {
                                     Navigator.of(
                                       context,
-                                    ).pop(); // Close the bottom sheet first
+                                    ).pop(); // Close dialog first
 
                                     await showDialog(
                                       context: context,
@@ -417,50 +324,154 @@ class ChatScreenState extends State<ChatScreen>
                                           (context) => ReportUserDialog(
                                             reportedUser: widget.chatPartner,
                                             currentUser: widget.currentUser,
-                                            onReportComplete: () async {
-                                              // Block user and delete chat after successful report
-                                              await db.blockUser(
-                                                widget.currentUser.id,
-                                                widget.chatPartner.id,
-                                              );
-                                              await db.deleteChat(
-                                                widget.currentUser.id,
-                                                widget.chatPartner.id,
-                                              );
-                                              if (context.mounted) {
-                                                Navigator.of(
-                                                  context,
-                                                ).pop(); // Close chat screen
-                                              }
-                                            },
                                           ),
                                     );
                                   },
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                      left: 24,
-                                      right: 24,
-                                    ),
-                                    child: Text(
-                                      AppLocale.report.getString(context),
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color: Palette.primalBlack,
-                                      ),
+                                  child: Text(
+                                    AppLocale.report.getString(context),
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color: Palette.primalBlack,
                                     ),
                                   ),
                                 ),
-                                SizedBox(height: 36),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Palette.alarmRed.o(0.15),
+                                    foregroundColor: Palette.alarmRed,
+                                    side: BorderSide(
+                                      color: Palette.alarmRed,
+                                      width: 1.5,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 20,
+                                      vertical: 12,
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(
+                                      context,
+                                    ).pop(); // Close dialog first
+
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          backgroundColor: Palette.glazedWhite,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              16,
+                                            ),
+                                            side: BorderSide(
+                                              color: Palette.forgedGold,
+                                              width: 2,
+                                            ),
+                                          ),
+                                          title: Text(
+                                            AppLocale.blockUser.getString(
+                                              context,
+                                            ),
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w600,
+                                              color: Palette.primalBlack,
+                                            ),
+                                          ),
+                                          content: Text(
+                                            'are you sure you want to block this user? this will also delete your chat.',
+                                            style: TextStyle(
+                                              color: Palette.primalBlack.o(0.8),
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              onPressed:
+                                                  () =>
+                                                      Navigator.of(
+                                                        context,
+                                                      ).pop(),
+                                              child: Text(
+                                                AppLocale.cancel.getString(
+                                                  context,
+                                                ),
+                                                style: TextStyle(
+                                                  color: Palette.primalBlack.o(
+                                                    0.6,
+                                                  ),
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ),
+                                            ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    Palette.alarmRed,
+                                                foregroundColor:
+                                                    Palette.glazedWhite,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                ),
+                                              ),
+                                              onPressed: () async {
+                                                await db.blockUser(
+                                                  widget.currentUser.id,
+                                                  widget.chatPartner.id,
+                                                );
+                                                await db.deleteChat(
+                                                  widget.currentUser.id,
+                                                  widget.chatPartner.id,
+                                                );
+                                                if (context.mounted) {
+                                                  Navigator.of(
+                                                    context,
+                                                  ).pop(); // Close block dialog
+                                                  Navigator.of(
+                                                    context,
+                                                  ).pop(); // Close chat screen
+                                                }
+                                              },
+                                              child: Text(
+                                                AppLocale.blockAndDelete
+                                                    .getString(context),
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  },
+                                  child: Text(
+                                    AppLocale.block.getString(context),
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color: Palette.alarmRed,
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
-                          );
-                        },
-                      );
-                    },
-                    elevation: 2,
-                    enableDrag: true,
-                    isScrollControlled: false,
-                  ),
+                          ],
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: Text(
+                              'close',
+                              style: TextStyle(color: Palette.forgedGold),
+                            ),
+                          ),
+                        ],
+                      ),
                 );
               },
               style: ButtonStyle(

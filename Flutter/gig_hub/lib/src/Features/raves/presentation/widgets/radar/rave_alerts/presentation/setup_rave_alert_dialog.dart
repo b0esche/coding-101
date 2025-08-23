@@ -170,13 +170,6 @@ class _SetupRaveAlertDialogState extends State<SetupRaveAlertDialog> {
       _locationError = null;
     });
 
-    // Debug: Check if environment is loaded
-    print('DEBUG: Environment variables loaded:');
-    print(
-      'DEBUG: GOOGLE_API_KEY exists: ${dotenv.env['GOOGLE_API_KEY'] != null}',
-    );
-    print('DEBUG: All env keys: ${dotenv.env.keys.toList()}');
-
     try {
       final result = await _geocodeLocation(location);
 
@@ -211,7 +204,6 @@ class _SetupRaveAlertDialogState extends State<SetupRaveAlertDialog> {
         }
       }
     } catch (e) {
-      print('DEBUG: Exception in _validateManualLocation: $e');
       setState(() {
         _locationError = AppLocale.failedValidateLocation.getString(context);
         _isValidatingLocation = false;
@@ -243,7 +235,6 @@ class _SetupRaveAlertDialogState extends State<SetupRaveAlertDialog> {
       return googleResult;
     }
 
-    print('DEBUG: Google API failed, trying Nominatim fallback...');
     // Fallback to Nominatim (OpenStreetMap)
     return await _geocodeWithNominatim(location);
   }
@@ -255,60 +246,39 @@ class _SetupRaveAlertDialogState extends State<SetupRaveAlertDialog> {
       String? apiKey;
       if (Platform.isIOS) {
         apiKey = dotenv.env['GOOGLE_API_KEY_IOS'];
-        print('DEBUG: Using iOS API key');
       } else if (Platform.isAndroid) {
         apiKey = dotenv.env['GOOGLE_API_KEY_ANDROID'];
-        print('DEBUG: Using Android API key');
       } else {
         // Fallback to generic key for other platforms
         apiKey = dotenv.env['GOOGLE_API_KEY'];
-        print('DEBUG: Using fallback API key');
       }
 
       if (apiKey == null) {
-        print(
-          'DEBUG: Google API key not found for platform: ${Platform.operatingSystem}',
-        );
         return const _LocationResult(isValid: false);
       }
 
-      print('DEBUG: Geocoding with Google: $location');
       final url = Uri.parse(
         'https://maps.googleapis.com/maps/api/geocode/json'
         '?address=${Uri.encodeComponent(location)}'
         '&key=$apiKey',
       );
 
-      print(
-        'DEBUG: Making request to: ${url.toString().replaceAll(apiKey, '[API_KEY]')}',
-      );
       final response = await http.get(url);
-      print('DEBUG: Response status: ${response.statusCode}');
-      print('DEBUG: Response body: ${response.body}');
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
 
         // Check API response status
         final status = data['status'] as String?;
-        print('DEBUG: API status: $status');
 
         if (status == 'REQUEST_DENIED') {
-          print(
-            'DEBUG: API request denied - check API key and enabled services',
-          );
           return const _LocationResult(isValid: false);
         } else if (status == 'OVER_QUERY_LIMIT') {
-          print('DEBUG: API quota exceeded');
           return const _LocationResult(isValid: false);
         } else if (status == 'ZERO_RESULTS') {
-          print('DEBUG: No results found for this location');
           return const _LocationResult(isValid: false);
         } else if (status != 'OK') {
-          print('DEBUG: API returned status: $status');
-          if (data['error_message'] != null) {
-            print('DEBUG: API error message: ${data['error_message']}');
-          }
+          if (data['error_message'] != null) {}
           return const _LocationResult(isValid: false);
         }
 
@@ -317,26 +287,15 @@ class _SetupRaveAlertDialogState extends State<SetupRaveAlertDialog> {
           final geometry = result['geometry'];
           final location = geometry['location'];
 
-          print(
-            'DEBUG: Successfully geocoded with Google: ${result['formatted_address']}',
-          );
           return _LocationResult(
             isValid: true,
             latitude: location['lat']?.toDouble(),
             longitude: location['lng']?.toDouble(),
             formattedAddress: result['formatted_address'],
           );
-        } else {
-          print('DEBUG: No results found for location');
-        }
-      } else {
-        print(
-          'DEBUG: HTTP error: ${response.statusCode} - ${response.reasonPhrase}',
-        );
-      }
-    } catch (e) {
-      print('DEBUG: Exception during Google geocoding: $e');
-    }
+        } else {}
+      } else {}
+    } catch (e) {}
 
     return const _LocationResult(isValid: false);
   }
@@ -344,7 +303,6 @@ class _SetupRaveAlertDialogState extends State<SetupRaveAlertDialog> {
   /// Geocodes using free Nominatim service (OpenStreetMap)
   Future<_LocationResult> _geocodeWithNominatim(String location) async {
     try {
-      print('DEBUG: Geocoding with Nominatim: $location');
       final url = Uri.parse(
         'https://nominatim.openstreetmap.org/search'
         '?q=${Uri.encodeComponent(location)}'
@@ -360,9 +318,6 @@ class _SetupRaveAlertDialogState extends State<SetupRaveAlertDialog> {
         },
       );
 
-      print('DEBUG: Nominatim response status: ${response.statusCode}');
-      print('DEBUG: Nominatim response: ${response.body}');
-
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
 
@@ -373,7 +328,6 @@ class _SetupRaveAlertDialogState extends State<SetupRaveAlertDialog> {
           final displayName = result['display_name'] as String?;
 
           if (lat != null && lon != null) {
-            print('DEBUG: Successfully geocoded with Nominatim: $displayName');
             return _LocationResult(
               isValid: true,
               latitude: lat,
@@ -381,15 +335,9 @@ class _SetupRaveAlertDialogState extends State<SetupRaveAlertDialog> {
               formattedAddress: displayName ?? location,
             );
           }
-        } else {
-          print('DEBUG: Nominatim returned no results');
-        }
-      } else {
-        print('DEBUG: Nominatim HTTP error: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('DEBUG: Exception during Nominatim geocoding: $e');
-    }
+        } else {}
+      } else {}
+    } catch (e) {}
 
     return const _LocationResult(isValid: false);
   }

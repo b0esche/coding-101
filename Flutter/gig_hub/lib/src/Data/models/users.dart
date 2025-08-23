@@ -26,24 +26,33 @@ abstract class AppUser {
 
 class Guest extends AppUser {
   String avatarImageUrl;
+  String name; // Username for group chats
   List<String> favoriteUIds;
+  bool
+  isFlinta; // FLINTA* (Frauen, Lesben, Inter, Non-binary, Trans, Agender) marking
 
   Guest({
     required super.id,
     required this.avatarImageUrl,
+    this.name = '', // Empty by default, set when joining first group chat
     this.favoriteUIds = const [],
+    this.isFlinta = false,
   }) : super(type: UserType.guest);
 
   Map<String, dynamic> toJson() => {
     'type': type.name,
+    'name': name,
     'favoriteUIds': favoriteUIds,
     'avatarImageUrl': avatarImageUrl,
+    'isFlinta': isFlinta,
   };
 
   factory Guest.fromJson(String id, Map<String, dynamic> json) => Guest(
     id: id,
+    name: json['name'] as String? ?? '',
     favoriteUIds: List<String>.from(json['favoriteUIds'] ?? []),
     avatarImageUrl: json['avatarImageUrl'] as String,
+    isFlinta: json['isFlinta'] as bool? ?? false,
   );
 }
 
@@ -180,6 +189,10 @@ extension AppUserView on AppUser {
   String get displayName {
     if (this is DJ) return (this as DJ).name;
     if (this is Booker) return (this as Booker).name;
+    if (this is Guest) {
+      final guestName = (this as Guest).name;
+      return guestName.isNotEmpty ? guestName : 'Guest';
+    }
     return 'unknown user';
   }
 

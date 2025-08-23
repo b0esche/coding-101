@@ -62,6 +62,8 @@ abstract class DatabaseRepository with ChangeNotifier {
   // group chats ###
   Future<GroupChat> createGroupChat(GroupChat groupChat);
   Future<GroupChat?> getGroupChatByRaveId(String raveId);
+  Future<GroupChat?> getGroupChatById(String groupChatId);
+  Future<void> updateGroupChat(GroupChat groupChat);
   Future<List<GroupChat>> getUserGroupChats(String userId);
   Future<void> sendGroupMessage(GroupMessage message);
   Stream<List<GroupMessage>> getGroupMessagesStream(String groupChatId);
@@ -76,6 +78,24 @@ abstract class DatabaseRepository with ChangeNotifier {
     GroupMessage message,
   );
   Future<void> updateGroupChatImage(String groupChatId, String imageUrl);
+
+  // public group chats (for rave attendees) ###
+  Future<PublicGroupChat> createPublicGroupChat(
+    PublicGroupChat publicGroupChat,
+  );
+  Future<PublicGroupChat?> getPublicGroupChatByRaveId(String raveId);
+  Future<PublicGroupChat?> getPublicGroupChatById(String publicGroupChatId);
+  Future<void> updatePublicGroupChat(PublicGroupChat publicGroupChat);
+  Future<List<PublicGroupChat>> getUserPublicGroupChats(String userId);
+  Future<void> sendPublicGroupMessage(PublicGroupMessage message);
+  Stream<List<PublicGroupMessage>> getPublicGroupMessagesStream(
+    String publicGroupChatId,
+  );
+  Future<void> deleteExpiredPublicGroupChats();
+  Future<void> updatePublicGroupChatLastMessage(
+    String publicGroupChatId,
+    PublicGroupMessage message,
+  );
 
   // raves ###
   Future<void> updateRave(String raveId, Map<String, dynamic> updates);

@@ -2,6 +2,7 @@ import '../../../Data/models/group_chat.dart';
 import '../../../Data/models/group_message.dart';
 
 import '../../../Data/app_imports.dart';
+import '../../auth/presentation/guest_username_dialog.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:gig_hub/src/Data/services/image_compression_service.dart';
 
@@ -382,7 +383,6 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
           Flexible(
             child: Container(
               constraints: BoxConstraints(
-                minWidth: 96,
                 maxWidth: MediaQuery.of(context).size.width * 0.75,
               ),
               margin: const EdgeInsets.symmetric(vertical: 5),
@@ -421,20 +421,36 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                         if (showSenderInfo && !isOwnMessage)
                           Padding(
                             padding: const EdgeInsets.only(bottom: 4),
-                            child: Text(
-                              message.senderName,
-                              style: TextStyle(
-                                color: Palette.primalBlack.o(0.7),
-                                fontSize: 11,
-                                fontWeight: FontWeight.w600,
-                              ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    message.senderName,
+                                    style: TextStyle(
+                                      color: Palette.primalBlack.o(0.7),
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                SizedBox(width: 8),
+                                Text(
+                                  '${message.timestamp.hour.toString().padLeft(2, '0')}:${message.timestamp.minute.toString().padLeft(2, '0')}',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: Palette.primalBlack.o(0.8),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         Padding(
-                          padding: const EdgeInsets.only(
+                          padding: EdgeInsets.only(
                             top: 2,
                             bottom: 2,
-                            right: 60,
+                            right: showSenderInfo && !isOwnMessage ? 0 : 60,
                           ),
                           child: Text(
                             _decryptMessage(message.message),
@@ -448,17 +464,24 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                       ],
                     ),
                   ),
-                  Positioned(
-                    top: showSenderInfo && !isOwnMessage ? 24 : 8,
-                    right: 10,
-                    child: Text(
-                      '${message.timestamp.hour.toString().padLeft(2, '0')}:${message.timestamp.minute.toString().padLeft(2, '0')}',
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: Palette.primalBlack.o(0.8),
+                  // Only show positioned timestamp for own messages or when sender info is not shown
+                  if (isOwnMessage || !showSenderInfo)
+                    Positioned(
+                      top: 8,
+                      right: 10,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            '${message.timestamp.hour.toString().padLeft(2, '0')}:${message.timestamp.minute.toString().padLeft(2, '0')}',
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: Palette.primalBlack.o(0.8),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
                 ],
               ),
             ),
@@ -537,6 +560,10 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
         final booker = _currentUser as Booker;
         senderName = booker.name;
         senderAvatarUrl = booker.avatarImageUrl;
+      } else if (_currentUser is Guest) {
+        final guest = _currentUser as Guest;
+        senderName = guest.name.isNotEmpty ? guest.name : 'Guest';
+        senderAvatarUrl = guest.avatarImageUrl;
       }
 
       // Encrypt the message
@@ -755,6 +782,41 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                   ],
                 ),
                 actions: [
+                  // Show username change option for Guest users
+                  if (_currentUser is Guest) ...[
+                    TextButton(
+                      onPressed: () => _showGuestUsernameDialog(),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.edit, color: Palette.forgedGold, size: 16),
+                          const SizedBox(width: 4),
+                          Text(
+                            'change username',
+                            style: TextStyle(color: Palette.forgedGold),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                  TextButton(
+                    onPressed: () => _showLeaveGroupDialog(),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.exit_to_app,
+                          color: Palette.alarmRed,
+                          size: 16,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          'leave chat',
+                          style: TextStyle(color: Palette.alarmRed),
+                        ),
+                      ],
+                    ),
+                  ),
                   TextButton(
                     onPressed: () => Navigator.of(context).pop(),
                     child: Text(
@@ -861,6 +923,206 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
           SnackBar(
             content: Text('failed to upload image: $e'),
             backgroundColor: Palette.alarmRed,
+          ),
+        );
+      }
+    }
+  }
+
+  /// Shows username dialog for Guest users
+  Future<void> _showGuestUsernameDialog() async {
+    if (_currentUser is! Guest) return;
+
+    Navigator.of(context).pop(); // Close group info dialog first
+
+    final updatedGuest = await showDialog<Guest>(
+      context: context,
+      barrierDismissible: false,
+      builder:
+          (context) => GuestUsernameDialog(guestUser: _currentUser as Guest),
+    );
+
+    if (updatedGuest != null) {
+      setState(() {
+        _currentUser = updatedGuest;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Palette.okGreen,
+          content: Text(
+            'Username updated!',
+            style: TextStyle(color: Palette.primalBlack),
+          ),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
+  }
+
+  /// Shows confirmation dialog for leaving the group chat
+  Future<void> _showLeaveGroupDialog() async {
+    Navigator.of(context).pop(); // Close group info dialog first
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            backgroundColor: Palette.primalBlack,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+              side: BorderSide(color: Palette.alarmRed, width: 2),
+            ),
+            title: Text(
+              'Leave Group Chat?',
+              style: TextStyle(
+                color: Palette.glazedWhite,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Are you sure you want to leave "${widget.groupChat.name}"?',
+                  style: TextStyle(
+                    color: Palette.glazedWhite.o(0.8),
+                    fontSize: 14,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Container(
+                  padding: EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Palette.alarmRed.o(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: Palette.alarmRed.o(0.3),
+                      width: 1,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.warning_outlined,
+                        color: Palette.alarmRed,
+                        size: 16,
+                      ),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'You can rejoin by attending the rave again.',
+                          style: TextStyle(
+                            color: Palette.glazedWhite.o(0.7),
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text(
+                  'Cancel',
+                  style: TextStyle(color: Palette.glazedWhite.o(0.7)),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Palette.alarmRed,
+                  foregroundColor: Palette.glazedWhite,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: Text(
+                  'Leave Chat',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
+    );
+
+    if (confirmed == true) {
+      await _leaveGroupChat();
+    }
+  }
+
+  /// Removes the current user from the group chat
+  Future<void> _leaveGroupChat() async {
+    try {
+      // Show loading
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder:
+            (context) => AlertDialog(
+              backgroundColor: Palette.primalBlack,
+              content: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircularProgressIndicator(color: Palette.forgedGold),
+                  const SizedBox(width: 16),
+                  Text(
+                    'Leaving chat...',
+                    style: TextStyle(color: Palette.glazedWhite),
+                  ),
+                ],
+              ),
+            ),
+      );
+
+      // Remove user from group chat members
+      final updatedMemberIds = List<String>.from(widget.groupChat.memberIds)
+        ..remove(widget.currentUserId);
+
+      final updatedChat = widget.groupChat.copyWith(
+        memberIds: updatedMemberIds,
+      );
+
+      final db = context.read<DatabaseRepository>();
+      await db.updateGroupChat(updatedChat);
+
+      // Close loading dialog
+      if (mounted) Navigator.of(context).pop();
+
+      // Go back to chat list
+      if (mounted) {
+        Navigator.of(context).pop(); // Exit group chat screen
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Palette.okGreen,
+            content: Text(
+              'Left group chat successfully',
+              style: TextStyle(color: Palette.primalBlack),
+            ),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    } catch (e) {
+      // Close loading dialog
+      if (mounted) Navigator.of(context).pop();
+
+      // Show error
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Palette.alarmRed,
+            content: Text(
+              'Failed to leave chat. Please try again.',
+              style: TextStyle(color: Palette.glazedWhite),
+            ),
+            duration: Duration(seconds: 3),
           ),
         );
       }

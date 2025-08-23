@@ -1,6 +1,8 @@
 import '../../../../../../Data/app_imports.dart';
+import '../../../../../../Data/services/rave_cleanup_service.dart';
 import '../../../../domain/rave.dart';
 import '../../rave_tile.dart';
+import '../../join_public_group_chat_dialog.dart';
 import '../../../dialogs/rave_detail_dialog.dart';
 import '../rave_alerts/presentation/setup_rave_alert_dialog.dart';
 
@@ -61,12 +63,21 @@ class _RaveRadarScreenState extends State<RaveRadarScreen> {
       final raves =
           ravesSnapshot.docs.map((doc) => Rave.fromJson(doc.data())).toList();
 
+      // Filter out expired raves (ended more than 24 hours ago)
+      final activeRaves =
+          raves.where((rave) {
+            return !RaveCleanupService.shouldCleanupRave(
+              rave.startDate,
+              rave.endDate,
+            );
+          }).toList();
+
       // Preload user data for better search performance
-      await _preloadUserData(raves);
+      await _preloadUserData(activeRaves);
 
       setState(() {
-        _allRaves = raves;
-        _filteredRaves = raves;
+        _allRaves = activeRaves;
+        _filteredRaves = activeRaves;
         _isLoading = false;
       });
     } catch (e) {
@@ -559,6 +570,22 @@ class _RaveRadarScreenState extends State<RaveRadarScreen> {
           'attendingUserIds': FieldValue.arrayUnion([currentUser!.uid]),
           'updatedAt': DateTime.now().toIso8601String(),
         });
+
+        // After successfully joining rave, ask if user wants to join public group chat
+        if (mounted) {
+          final db = context.read<DatabaseRepository>();
+          final appUser = await db.getCurrentUser();
+
+          await showDialog(
+            context: context,
+            builder:
+                (context) => JoinPublicGroupChatDialog(
+                  raveId: rave.id,
+                  raveTitle: rave.name,
+                  currentUser: appUser,
+                ),
+          );
+        }
       }
 
       // Update local state

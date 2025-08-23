@@ -135,55 +135,42 @@ class _CustomNavBarState extends State<CustomNavBar> with RouteAware {
                             color: Palette.glazedWhite,
                           ),
                         ),
-                      if (widget.currentUser is! Guest)
-                        VerticalDivider(color: Palette.primalBlack),
-                      if (widget.currentUser is! Guest)
-                        Stack(
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                if (widget.currentUser is Guest) {
-                                  showModalBottomSheet(
-                                    showDragHandle: true,
-                                    backgroundColor: Colors.transparent,
-                                    context: context,
-                                    isScrollControlled: true,
-                                    builder: (BuildContext context) {
-                                      return SignUpSheet();
-                                    },
-                                  );
-                                  return;
-                                }
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder:
-                                        (context) => ChatListScreen(
-                                          currentUser: widget.currentUser,
-                                        ),
-                                  ),
-                                );
-                              },
-                              icon: Icon(
-                                Icons.question_answer_outlined,
-                                color: Palette.glazedWhite,
-                              ),
+                      VerticalDivider(color: Palette.primalBlack),
+                      Stack(
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              // Allow all users (including guests) to access chat
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => ChatListScreen(
+                                        currentUser: widget.currentUser,
+                                      ),
+                                ),
+                              );
+                            },
+                            icon: Icon(
+                              Icons.question_answer_outlined,
+                              color: Palette.glazedWhite,
                             ),
-                            if (hasUnreadMessages)
-                              Positioned(
-                                right: 2,
-                                bottom: 12,
-                                child: Container(
-                                  height: 8,
-                                  width: 8,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Palette.forgedGold,
-                                  ),
+                          ),
+                          if (hasUnreadMessages)
+                            Positioned(
+                              right: 2,
+                              bottom: 12,
+                              child: Container(
+                                height: 8,
+                                width: 8,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Palette.forgedGold,
                                 ),
                               ),
-                          ],
-                        ),
+                            ),
+                        ],
+                      ),
 
                       VerticalDivider(color: Palette.primalBlack),
 

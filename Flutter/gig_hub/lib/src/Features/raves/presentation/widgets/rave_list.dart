@@ -1,10 +1,12 @@
 import 'package:intl/intl.dart';
 import '../../domain/rave.dart';
 import 'rave_tile.dart';
+import 'join_public_group_chat_dialog.dart';
 import '../dialogs/rave_detail_dialog.dart';
 import '../dialogs/create_rave_dialog.dart';
 import '../dialogs/edit_rave_dialog.dart';
 import '../../../../Data/app_imports.dart';
+import '../../../../Data/services/rave_cleanup_service.dart';
 
 class RaveList extends StatefulWidget {
   final String? userId; // If null, shows current user's raves
@@ -262,6 +264,15 @@ class _RaveListState extends State<RaveList> {
   List<Rave> _filterAndSortRaves(List<Rave> raves) {
     var filtered = raves;
 
+    // Always filter out expired raves (ended more than 24 hours ago)
+    filtered =
+        filtered.where((rave) {
+          return !RaveCleanupService.shouldCleanupRave(
+            rave.startDate,
+            rave.endDate,
+          );
+        }).toList();
+
     if (widget.showOnlyUpcoming) {
       final now = DateTime.now();
       filtered = filtered.where((rave) => rave.startDate.isAfter(now)).toList();
@@ -420,6 +431,22 @@ class _RaveListState extends State<RaveList> {
           'attendingUserIds': FieldValue.arrayUnion([currentUser!.uid]),
           'updatedAt': DateTime.now().toIso8601String(),
         });
+
+        // After successfully joining rave, ask if user wants to join public group chat
+        if (mounted) {
+          final db = context.read<DatabaseRepository>();
+          final appUser = await db.getCurrentUser();
+
+          await showDialog(
+            context: context,
+            builder:
+                (context) => JoinPublicGroupChatDialog(
+                  raveId: rave.id,
+                  raveTitle: rave.name,
+                  currentUser: appUser,
+                ),
+          );
+        }
       }
 
       // Success - no snackbar needed since UI updates immediately

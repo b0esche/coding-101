@@ -14,6 +14,7 @@
 
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const { onDocumentCreated } = require("firebase-functions/v2/firestore");
+const { onSchedule } = require("firebase-functions/v2/scheduler");
 const { getFirestore } = require("firebase-admin/firestore");
 const { getMessaging } = require("firebase-admin/messaging");
 const admin = require("firebase-admin");
@@ -346,6 +347,204 @@ exports.notifyRaveAlerts = onDocumentCreated(
       // Silent error handling - could add minimal error reporting if needed
     }
   });
+
+/**
+ * Scheduled function to clean up expired raves and group chats
+ *
+ * Runs daily at 2 AM UTC to remove:
+ * - Raves that ended more than 24 hours ago
+ * - Associated group chats for deleted raves
+ * - Expired group chats based on autoDeleteAt timestamp
+ */
+exports.cleanupExpiredContent = onSchedule("0 2 * * *", async (event) => {
+  const db = getFirestore();
+  const now = admin.firestore.Timestamp.now();
+  const twentyFourHoursAgo = admin.firestore.Timestamp.fromDate(
+    new Date(Date.now() - 24 * 60 * 60 * 1000),
+  );
+
+  try {
+    console.log("Starting cleanup of expired raves and group chats...");
+
+    // 1. Find expired raves (ended more than 24 hours ago)
+    const expiredRavesQuery = await db.collection("raves")
+      .where("startDate", "<", twentyFourHoursAgo)
+      .get();
+
+    const batch = db.batch();
+    let deletedRavesCount = 0;
+    let deletedGroupChatsCount = 0;
+
+    // Process expired raves
+    for (const raveDoc of expiredRavesQuery.docs) {
+      const raveData = raveDoc.data();
+
+      // Check if it's a multi-day event
+      let raveEndTime;
+      if (raveData.endDate) {
+        raveEndTime = admin.firestore.Timestamp.fromDate(
+          new Date(raveData.endDate),
+        );
+      } else {
+        raveEndTime = admin.firestore.Timestamp.fromDate(
+          new Date(raveData.startDate),
+        );
+      }
+
+      // Only delete if ended more than 24 hours ago
+      if (raveEndTime.toDate() < twentyFourHoursAgo.toDate()) {
+        console.log(
+          `Deleting expired rave: ${raveData.name} (ID: ${raveDoc.id})`,
+        );
+
+        // Delete the rave
+        batch.delete(raveDoc.ref);
+        deletedRavesCount++;
+
+        // If there's an associated group chat, mark it for deletion
+        if (raveData.groupChatId) {
+          const groupChatRef = db.collection("group_chats")
+            .doc(raveData.groupChatId);
+          batch.update(groupChatRef, { isActive: false });
+
+          // Delete all messages in the group chat
+          const messagesQuery = await groupChatRef.collection("messages").get();
+          for (const messageDoc of messagesQuery.docs) {
+            batch.delete(messageDoc.ref);
+          }
+          deletedGroupChatsCount++;
+        }
+      }
+    }
+
+    // 2. Clean up expired group chats (based on autoDeleteAt)
+    const expiredGroupChatsQuery = await db.collection("group_chats")
+      .where("autoDeleteAt", "<", now)
+      .where("isActive", "==", true)
+      .get();
+
+    for (const groupChatDoc of expiredGroupChatsQuery.docs) {
+      console.log(`Cleaning up expired group chat: ${groupChatDoc.id}`);
+
+      // Mark as inactive
+      batch.update(groupChatDoc.ref, { isActive: false });
+
+      // Delete all messages
+      const messagesQuery = await groupChatDoc.ref.collection("messages").get();
+      for (const messageDoc of messagesQuery.docs) {
+        batch.delete(messageDoc.ref);
+      }
+      deletedGroupChatsCount++;
+    }
+
+    // Execute all deletions
+    await batch.commit();
+
+    console.log(`Cleanup completed successfully:`);
+    console.log(`- Deleted ${deletedRavesCount} expired raves`);
+    console.log(`- Cleaned up ${deletedGroupChatsCount} group chats`);
+
+    return {
+      success: true,
+      deletedRaves: deletedRavesCount,
+      deletedGroupChats: deletedGroupChatsCount,
+    };
+  } catch (error) {
+    console.error("Error during cleanup:", error);
+    throw new Error(`Cleanup failed: ${error.message}`);
+  }
+});
+
+/**
+ * Manual cleanup function that can be called on-demand
+ * Useful for testing or immediate cleanup when needed
+ */
+exports.triggerCleanup = onCall(async (request, context) => {
+  // Only allow authenticated admin users to trigger cleanup
+  if (!context.auth) {
+    throw new HttpsError("unauthenticated", "Authentication required");
+  }
+
+  try {
+    const db = getFirestore();
+    const now = admin.firestore.Timestamp.now();
+    const twentyFourHoursAgo = admin.firestore.Timestamp.fromDate(
+      new Date(Date.now() - 24 * 60 * 60 * 1000),
+    );
+
+    console.log("Manual cleanup triggered by user:", context.auth.uid);
+
+    // Reuse the same cleanup logic as the scheduled function
+    const expiredRavesQuery = await db.collection("raves")
+      .where("startDate", "<", twentyFourHoursAgo)
+      .get();
+
+    const batch = db.batch();
+    let deletedRavesCount = 0;
+    let deletedGroupChatsCount = 0;
+
+    // Process expired raves
+    for (const raveDoc of expiredRavesQuery.docs) {
+      const raveData = raveDoc.data();
+
+      let raveEndTime;
+      if (raveData.endDate) {
+        raveEndTime = admin.firestore.Timestamp.fromDate(
+          new Date(raveData.endDate),
+        );
+      } else {
+        raveEndTime = admin.firestore.Timestamp.fromDate(
+          new Date(raveData.startDate),
+        );
+      }
+
+      if (raveEndTime.toDate() < twentyFourHoursAgo.toDate()) {
+        batch.delete(raveDoc.ref);
+        deletedRavesCount++;
+
+        if (raveData.groupChatId) {
+          const groupChatRef = db.collection("group_chats")
+            .doc(raveData.groupChatId);
+          batch.update(groupChatRef, { isActive: false });
+
+          const messagesQuery = await groupChatRef.collection("messages").get();
+          for (const messageDoc of messagesQuery.docs) {
+            batch.delete(messageDoc.ref);
+          }
+          deletedGroupChatsCount++;
+        }
+      }
+    }
+
+    // Clean up expired group chats
+    const expiredGroupChatsQuery = await db.collection("group_chats")
+      .where("autoDeleteAt", "<", now)
+      .where("isActive", "==", true)
+      .get();
+
+    for (const groupChatDoc of expiredGroupChatsQuery.docs) {
+      batch.update(groupChatDoc.ref, { isActive: false });
+
+      const messagesQuery = await groupChatDoc.ref.collection("messages").get();
+      for (const messageDoc of messagesQuery.docs) {
+        batch.delete(messageDoc.ref);
+      }
+      deletedGroupChatsCount++;
+    }
+
+    await batch.commit();
+
+    return {
+      success: true,
+      message: "Cleanup completed successfully",
+      deletedRaves: deletedRavesCount,
+      deletedGroupChats: deletedGroupChatsCount,
+    };
+  } catch (error) {
+    console.error("Manual cleanup error:", error);
+    throw new HttpsError("internal", `Cleanup failed: ${error.message}`);
+  }
+});
 
 /**
  * Calculates the distance between two geographic points using the Haversine

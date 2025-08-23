@@ -63,8 +63,10 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
   @override
   Future<void> updateGuest(Guest guest) async {
     await _firestore.collection('users').doc(guest.id).update({
+      'name': guest.name,
       'favoriteUIds': guest.favoriteUIds,
       'avatarImageUrl': guest.avatarImageUrl,
+      'isFlinta': guest.isFlinta,
     });
   }
 
@@ -649,6 +651,35 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
   }
 
   @override
+  Future<GroupChat?> getGroupChatById(String groupChatId) async {
+    try {
+      final doc =
+          await _firestore.collection('group_chats').doc(groupChatId).get();
+
+      if (!doc.exists) return null;
+
+      final data = doc.data();
+      if (data == null) return null;
+
+      return GroupChat.fromJson(doc.id, data);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  @override
+  Future<void> updateGroupChat(GroupChat groupChat) async {
+    try {
+      await _firestore
+          .collection('group_chats')
+          .doc(groupChat.id)
+          .update(groupChat.toJson());
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
   Future<List<GroupChat>> getUserGroupChats(String userId) async {
     try {
       final query =
@@ -854,6 +885,200 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
           for (final messageDoc in messagesQuery.docs) {
             batch.delete(messageDoc.reference);
           }
+        }
+
+        await batch.commit();
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // ============================================================================
+  // PUBLIC GROUP CHAT METHODS (for rave attendees)
+  // ============================================================================
+
+  @override
+  Future<PublicGroupChat> createPublicGroupChat(
+    PublicGroupChat publicGroupChat,
+  ) async {
+    try {
+      final docRef = await _firestore
+          .collection('public_group_chats')
+          .add(publicGroupChat.toJson());
+
+      return publicGroupChat.copyWith(id: docRef.id);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<PublicGroupChat?> getPublicGroupChatByRaveId(String raveId) async {
+    try {
+      final query =
+          await _firestore
+              .collection('public_group_chats')
+              .where('raveId', isEqualTo: raveId)
+              .where('isActive', isEqualTo: true)
+              .limit(1)
+              .get();
+
+      if (query.docs.isNotEmpty) {
+        final doc = query.docs.first;
+        return PublicGroupChat.fromJson(doc.id, doc.data());
+      }
+      return null;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<PublicGroupChat?> getPublicGroupChatById(
+    String publicGroupChatId,
+  ) async {
+    try {
+      final doc =
+          await _firestore
+              .collection('public_group_chats')
+              .doc(publicGroupChatId)
+              .get();
+
+      if (doc.exists && doc.data() != null) {
+        return PublicGroupChat.fromJson(doc.id, doc.data()!);
+      }
+      return null;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> updatePublicGroupChat(PublicGroupChat publicGroupChat) async {
+    try {
+      await _firestore
+          .collection('public_group_chats')
+          .doc(publicGroupChat.id)
+          .update(publicGroupChat.toJson());
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<PublicGroupChat>> getUserPublicGroupChats(String userId) async {
+    try {
+      final query =
+          await _firestore
+              .collection('public_group_chats')
+              .where('memberIds', arrayContains: userId)
+              .get();
+
+      // Filter active chats and sort in memory
+      final publicChats =
+          query.docs
+              .map((doc) => PublicGroupChat.fromJson(doc.id, doc.data()))
+              .where((chat) => chat.isActive)
+              .toList();
+
+      // Sort by lastMessageTimestamp in memory
+      publicChats.sort((a, b) {
+        if (a.lastMessageTimestamp == null && b.lastMessageTimestamp == null)
+          return 0;
+        if (a.lastMessageTimestamp == null) return 1;
+        if (b.lastMessageTimestamp == null) return -1;
+        return b.lastMessageTimestamp!.compareTo(a.lastMessageTimestamp!);
+      });
+
+      return publicChats;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> sendPublicGroupMessage(PublicGroupMessage message) async {
+    try {
+      await _firestore
+          .collection('public_group_chats')
+          .doc(message.publicGroupChatId)
+          .collection('messages')
+          .add(message.toJson());
+
+      // Update the public group chat's last message
+      await updatePublicGroupChatLastMessage(
+        message.publicGroupChatId,
+        message,
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Stream<List<PublicGroupMessage>> getPublicGroupMessagesStream(
+    String publicGroupChatId,
+  ) {
+    return _firestore
+        .collection('public_group_chats')
+        .doc(publicGroupChatId)
+        .collection('messages')
+        .orderBy('timestamp')
+        .snapshots()
+        .map(
+          (snapshot) =>
+              snapshot.docs
+                  .map((doc) => PublicGroupMessage.fromJson(doc.id, doc.data()))
+                  .toList(),
+        );
+  }
+
+  @override
+  Future<void> updatePublicGroupChatLastMessage(
+    String publicGroupChatId,
+    PublicGroupMessage message,
+  ) async {
+    try {
+      await _firestore
+          .collection('public_group_chats')
+          .doc(publicGroupChatId)
+          .update({
+            'lastMessage': message.content,
+            'lastMessageSenderId': message.senderId,
+            'lastMessageTimestamp': Timestamp.fromDate(message.timestamp),
+            'autoDeleteAt': Timestamp.fromDate(
+              DateTime.now().add(
+                Duration(hours: 24),
+              ), // Reset auto-delete timer
+            ),
+          });
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> deleteExpiredPublicGroupChats() async {
+    try {
+      final now = DateTime.now();
+      final query =
+          await _firestore
+              .collection('public_group_chats')
+              .where('autoDeleteAt', isLessThan: Timestamp.fromDate(now))
+              .where('isActive', isEqualTo: true)
+              .get();
+
+      for (final doc in query.docs) {
+        final batch = _firestore.batch();
+
+        // Mark public group chat as inactive
+        batch.update(doc.reference, {'isActive': false});
+
+        // Delete all messages in this public group chat
+        final messagesQuery = await doc.reference.collection('messages').get();
+        for (final messageDoc in messagesQuery.docs) {
+          batch.delete(messageDoc.reference);
         }
 
         await batch.commit();
