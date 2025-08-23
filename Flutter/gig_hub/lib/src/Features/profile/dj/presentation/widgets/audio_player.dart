@@ -17,16 +17,16 @@ class AudioPlayerCoordinator {
 
   AudioPlayerCoordinator._();
 
-  _AudioPlayerWidgetState? _currentlyPlaying;
+  AudioPlayerWidgetState? _currentlyPlaying;
 
-  void requestPlayback(_AudioPlayerWidgetState player) {
+  void requestPlayback(AudioPlayerWidgetState player) {
     if (_currentlyPlaying != null && _currentlyPlaying != player) {
       _currentlyPlaying!._stopFromCoordinator();
     }
     _currentlyPlaying = player;
   }
 
-  void playerStopped(_AudioPlayerWidgetState player) {
+  void playerStopped(AudioPlayerWidgetState player) {
     if (_currentlyPlaying == player) {
       _currentlyPlaying = null;
     }
@@ -39,7 +39,7 @@ class AudioPlayerWidget extends StatefulWidget {
   const AudioPlayerWidget({super.key, required this.audioUrl});
 
   @override
-  State<AudioPlayerWidget> createState() => _AudioPlayerWidgetState();
+  State<AudioPlayerWidget> createState() => AudioPlayerWidgetState();
 
   static Future<String> downloadAndSaveAudio(
     Map<String, dynamic> params,
@@ -79,7 +79,7 @@ class AudioPlayerWidget extends StatefulWidget {
   }
 }
 
-class _AudioPlayerWidgetState extends State<AudioPlayerWidget>
+class AudioPlayerWidgetState extends State<AudioPlayerWidget>
     with TickerProviderStateMixin {
   AudioPlayer? _audioPlayer;
   late AnimationController _controller;

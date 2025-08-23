@@ -295,7 +295,7 @@ class _SetupRaveAlertDialogState extends State<SetupRaveAlertDialog> {
           );
         } else {}
       } else {}
-    } catch (e) {}
+    } catch (_) {}
 
     return const _LocationResult(isValid: false);
   }
@@ -337,7 +337,7 @@ class _SetupRaveAlertDialogState extends State<SetupRaveAlertDialog> {
           }
         } else {}
       } else {}
-    } catch (e) {}
+    } catch (_) {}
 
     return const _LocationResult(isValid: false);
   }

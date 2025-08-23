@@ -1,6 +1,5 @@
 import 'package:gig_hub/src/Data/app_imports.dart';
 
-import '../models/group_message.dart';
 
 /// Enhanced Firestore repository with intelligent caching to reduce Firebase costs
 ///
@@ -719,57 +718,12 @@ class CachedFirestoreRepository extends FirestoreDatabaseRepository {
   // PUBLIC GROUP CHAT METHODS (delegate to base repository)
   // =============================================================================
 
-  @override
-  Future<PublicGroupChat> createPublicGroupChat(
-    PublicGroupChat publicGroupChat,
-  ) async {
-    return super.createPublicGroupChat(publicGroupChat);
-  }
 
-  @override
-  Future<PublicGroupChat?> getPublicGroupChatByRaveId(String raveId) async {
-    return super.getPublicGroupChatByRaveId(raveId);
-  }
 
-  @override
-  Future<PublicGroupChat?> getPublicGroupChatById(
-    String publicGroupChatId,
-  ) async {
-    return super.getPublicGroupChatById(publicGroupChatId);
-  }
 
-  @override
-  Future<void> updatePublicGroupChat(PublicGroupChat publicGroupChat) async {
-    return super.updatePublicGroupChat(publicGroupChat);
-  }
 
-  @override
-  Future<List<PublicGroupChat>> getUserPublicGroupChats(String userId) async {
-    return super.getUserPublicGroupChats(userId);
-  }
 
-  @override
-  Future<void> sendPublicGroupMessage(PublicGroupMessage message) async {
-    return super.sendPublicGroupMessage(message);
-  }
 
-  @override
-  Stream<List<PublicGroupMessage>> getPublicGroupMessagesStream(
-    String publicGroupChatId,
-  ) {
-    return super.getPublicGroupMessagesStream(publicGroupChatId);
-  }
 
-  @override
-  Future<void> deleteExpiredPublicGroupChats() async {
-    return super.deleteExpiredPublicGroupChats();
-  }
 
-  @override
-  Future<void> updatePublicGroupChatLastMessage(
-    String publicGroupChatId,
-    PublicGroupMessage message,
-  ) async {
-    return super.updatePublicGroupChatLastMessage(publicGroupChatId, message);
-  }
 }

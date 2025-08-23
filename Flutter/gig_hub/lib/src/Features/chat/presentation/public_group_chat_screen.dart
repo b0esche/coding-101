@@ -608,6 +608,13 @@ class _PublicGroupChatScreenState extends State<PublicGroupChatScreen> {
             'lastUpdated': FieldValue.serverTimestamp(),
           });
 
+      // Update local chat data to immediately reflect the change
+      if (mounted) {
+        setState(() {
+          _currentChat = _currentChat?.copyWith(imageUrl: downloadUrl);
+        });
+      }
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -839,9 +846,20 @@ class _PublicGroupChatScreenState extends State<PublicGroupChatScreen> {
                 border: Border.all(color: Palette.primalBlack, width: 1.5),
               ),
               child: CircleAvatar(
-                backgroundColor: Colors.deepPurple.o(0.2),
+                backgroundColor: Palette.forgedGold.o(0.2),
                 radius: 42,
-                child: Icon(Icons.public, color: Colors.deepPurple, size: 32),
+                backgroundImage:
+                    _currentChat?.imageUrl != null
+                        ? NetworkImage(_currentChat!.imageUrl!)
+                        : null,
+                child:
+                    _currentChat?.imageUrl == null
+                        ? Icon(
+                          Icons.public,
+                          color: Palette.forgedGold,
+                          size: 32,
+                        )
+                        : null,
               ),
             ),
             const SizedBox(width: 16),

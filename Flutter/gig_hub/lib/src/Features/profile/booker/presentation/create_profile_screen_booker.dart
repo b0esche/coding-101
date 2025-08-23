@@ -404,7 +404,7 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                                         }
                                         return null;
                                       },
-                                      value: _selectedCategory,
+                                      initialValue: _selectedCategory,
                                       items:
                                           [
                                                 'Club',

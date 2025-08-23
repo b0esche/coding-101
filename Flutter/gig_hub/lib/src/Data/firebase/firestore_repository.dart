@@ -1,7 +1,5 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:gig_hub/src/Data/app_imports.dart';
-import '../models/group_chat.dart';
-import '../models/group_message.dart';
 
 /// Main Firestore database repository implementing all database operations
 /// Handles user management, chat messaging, rave management, group chats, and notifications
@@ -984,8 +982,9 @@ class FirestoreDatabaseRepository extends DatabaseRepository {
 
       // Sort by lastMessageTimestamp in memory
       publicChats.sort((a, b) {
-        if (a.lastMessageTimestamp == null && b.lastMessageTimestamp == null)
+        if (a.lastMessageTimestamp == null && b.lastMessageTimestamp == null) {
           return 0;
+        }
         if (a.lastMessageTimestamp == null) return 1;
         if (b.lastMessageTimestamp == null) return -1;
         return b.lastMessageTimestamp!.compareTo(a.lastMessageTimestamp!);

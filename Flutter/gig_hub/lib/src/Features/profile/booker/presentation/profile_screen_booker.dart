@@ -734,7 +734,7 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                                         width: 136,
                                         height: 24,
                                         child: DropdownButtonFormField<String>(
-                                          value:
+                                          initialValue:
                                               widget.booker.category.isNotEmpty
                                                   ? widget.booker.category
                                                   : 'Club',
