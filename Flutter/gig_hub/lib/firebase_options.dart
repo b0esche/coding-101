@@ -50,22 +50,22 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDVCwA1EjSdy_h8lHBXpXq2DZYS4FmIM8Y',
-    appId: '1:753984654569:android:5fe8786a6dd657c734f478',
+    apiKey: 'AIzaSyCMYtBUmFo01Q310eGWX6dwRbwr__61WbM',
+    appId: '1:753984654569:android:190b4c5e54998de734f478',
     messagingSenderId: '753984654569',
     projectId: 'gig-hub-8ac24',
     storageBucket: 'gig-hub-8ac24.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCf8E5xs7QDberuNjCIWB_bzVlmdLOZg74',
-    appId: '1:753984654569:ios:52d1598582256bda34f478',
+    apiKey: 'AIzaSyCC3gpbsi0WJPW-YWQ1cLFptFvphiFogsE',
+    appId: '1:753984654569:ios:9b96ff8caa99e81b34f478',
     messagingSenderId: '753984654569',
     projectId: 'gig-hub-8ac24',
     storageBucket: 'gig-hub-8ac24.firebasestorage.app',
     androidClientId: '753984654569-4rqmmfs1lqcre7aj8lrt7149j6ncq2ek.apps.googleusercontent.com',
-    iosClientId: '753984654569-49vkjnsevln5u2c5ss6fspapm9lc0jar.apps.googleusercontent.com',
-    iosBundleId: 'com.b0esche.gigHub',
+    iosClientId: '753984654569-9da6clav6eamkjt0l2b27mehkl2l1spj.apps.googleusercontent.com',
+    iosBundleId: 'com.example.gigHub',
   );
 
 }
