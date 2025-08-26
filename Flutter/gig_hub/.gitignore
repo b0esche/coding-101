@@ -14,7 +14,7 @@ migrate_working_dir/
 .env
 firebase.json
 /android/app/google-services.json
-lib/firebase_options.dart
+
 
 # IntelliJ related
 *.iml
@@ -38,6 +38,7 @@ lib/firebase_options.dart
 /build/
 /android/app/src/google-services.json
 /ios/Runner/GoogleService-Info.plist
+/lib/firebase_options.dart
 
 # Symbolication related
 app.*.symbols
