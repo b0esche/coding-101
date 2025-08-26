@@ -52,6 +52,9 @@ class _NotificationHandlerAppState extends State<NotificationHandlerApp> {
       case 'rave_alert':
         _handleRaveAlertNavigation(message);
         break;
+      case 'rave_collaboration':
+        _handleRaveCollaborationNavigation(message);
+        break;
       default:
         // Handle existing chat notifications
         if (screen == 'chat_list_screen') {
@@ -78,6 +81,29 @@ class _NotificationHandlerAppState extends State<NotificationHandlerApp> {
     }
 
     // Navigate directly to the booker's profile screen
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      globalNavigatorKey.currentState?.push(
+        MaterialPageRoute(
+          builder:
+              (_) => BookerProfileLoaderScreen(
+                bookerId: organizerId,
+                highlightedRaveId: raveId,
+              ),
+        ),
+      );
+    });
+  }
+
+  /// Handle rave collaboration notification navigation
+  void _handleRaveCollaborationNavigation(RemoteMessage message) {
+    final organizerId = message.data['organizerId'];
+    final raveId = message.data['raveId'];
+
+    if (organizerId == null) {
+      return;
+    }
+
+    // Navigate directly to the booker's profile screen with the specific rave highlighted
     WidgetsBinding.instance.addPostFrameCallback((_) {
       globalNavigatorKey.currentState?.push(
         MaterialPageRoute(

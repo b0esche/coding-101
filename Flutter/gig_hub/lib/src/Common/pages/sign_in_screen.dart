@@ -1,4 +1,5 @@
 import 'package:gig_hub/src/Data/app_imports.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import '../../../main.dart' show globalNavigatorKey;
 
 import '../../Data/app_imports.dart' as http;
@@ -146,10 +147,280 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  Future<void> _continueAsGuest() async {
+    final db = context.read<DatabaseRepository>();
+
+    try {
+      // Get current FCM token to check for existing guest
+      String? fcmToken;
+      try {
+        fcmToken = await FirebaseMessaging.instance.getToken();
+      } catch (e) {
+        // If FCM token fails, proceed with regular guest creation
+        fcmToken = null;
+      }
+
+      Guest? existingGuest;
+
+      // Try to find existing guest user with same FCM token
+      if (fcmToken != null) {
+        try {
+          existingGuest = await _findExistingGuestByFCMToken(fcmToken);
+        } catch (e) {
+          // If search fails, proceed with new guest creation
+          existingGuest = null;
+        }
+      }
+
+      Guest guestUser;
+
+      if (existingGuest != null) {
+        // Reuse existing guest - no need to create new Firebase Auth user
+        // Just sign in anonymously and then update the existing document with new auth UID
+        final userCredential = await FirebaseAuth.instance.signInAnonymously();
+        final newUid = userCredential.user?.uid;
+
+        if (newUid == null) {
+          throw Exception("Failed to create guest authentication");
+        }
+
+        // Create guest with existing data but new auth UID
+        guestUser = Guest(
+          id: newUid,
+          name: existingGuest.name,
+          favoriteUIds: existingGuest.favoriteUIds,
+          avatarImageUrl: existingGuest.avatarImageUrl,
+          isFlinta: existingGuest.isFlinta,
+        );
+
+        // Update all chat references to use the new UID
+        await _migrateChatReferences(existingGuest.id, newUid);
+
+        // Update the user document with new UID (this preserves chat history)
+        await _migrateUserDocument(existingGuest.id, newUid, guestUser);
+      } else {
+        // Create new guest user
+        final userCredential = await FirebaseAuth.instance.signInAnonymously();
+        final uid = userCredential.user?.uid;
+
+        if (uid == null) {
+          throw Exception("Failed to create guest authentication");
+        }
+
+        guestUser = Guest(
+          id: uid,
+          name: '',
+          favoriteUIds: [],
+          avatarImageUrl:
+              'https://firebasestorage.googleapis.com/v0/b/gig-hub-8ac24.firebasestorage.app/o/default%2Fdefault_avatar.jpg?alt=media&token=9c48f377-736e-4a9a-bf31-6ffc3ed020f7',
+        );
+      }
+
+      await db.createGuest(guestUser);
+
+      if (!context.mounted) return;
+
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => MainScreen(initialUser: guestUser),
+        ),
+      );
+    } catch (e) {
+      if (!context.mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Palette.alarmRed,
+          content: Center(
+            child: Text(
+              'Failed to continue as guest: ${e.toString()}',
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+        ),
+      );
+    }
+  }
+
+  /// Migrates chat references from old UID to new UID
+  Future<void> _migrateChatReferences(String oldUid, String newUid) async {
+    try {
+      final batch = FirebaseFirestore.instance.batch();
+
+      // 1. Update direct chat messages where user is sender
+      final directChatsQuery =
+          await FirebaseFirestore.instance
+              .collectionGroup('messages')
+              .where('senderId', isEqualTo: oldUid)
+              .get();
+
+      for (final doc in directChatsQuery.docs) {
+        batch.update(doc.reference, {'senderId': newUid});
+      }
+
+      // 2. Update direct chat messages where user is receiver
+      final receivedChatsQuery =
+          await FirebaseFirestore.instance
+              .collectionGroup('messages')
+              .where('receiverId', isEqualTo: oldUid)
+              .get();
+
+      for (final doc in receivedChatsQuery.docs) {
+        batch.update(doc.reference, {'receiverId': newUid});
+      }
+
+      // 3. Update group chat memberships
+      final groupChatsQuery =
+          await FirebaseFirestore.instance
+              .collection('group_chats')
+              .where('memberIds', arrayContains: oldUid)
+              .get();
+
+      for (final doc in groupChatsQuery.docs) {
+        final data = doc.data();
+        final memberIds = List<String>.from(data['memberIds'] ?? []);
+        final updatedMemberIds =
+            memberIds.map((id) => id == oldUid ? newUid : id).toList();
+
+        batch.update(doc.reference, {'memberIds': updatedMemberIds});
+      }
+
+      // 4. Update group chat messages where user is sender
+      final groupMessagesQuery =
+          await FirebaseFirestore.instance
+              .collectionGroup('messages')
+              .where('senderId', isEqualTo: oldUid)
+              .get();
+
+      for (final doc in groupMessagesQuery.docs) {
+        batch.update(doc.reference, {'senderId': newUid});
+      }
+
+      // 5. Update public group chat memberships
+      final publicGroupChatsQuery =
+          await FirebaseFirestore.instance
+              .collection('public_group_chats')
+              .where('memberIds', arrayContains: oldUid)
+              .get();
+
+      for (final doc in publicGroupChatsQuery.docs) {
+        final data = doc.data();
+        final memberIds = List<String>.from(data['memberIds'] ?? []);
+        final updatedMemberIds =
+            memberIds.map((id) => id == oldUid ? newUid : id).toList();
+
+        batch.update(doc.reference, {'memberIds': updatedMemberIds});
+      }
+
+      // 6. Update chat documents that use the user ID in document IDs
+      // For direct chats, we need to find chat documents where the user ID is part of the document ID
+      final allChatsQuery =
+          await FirebaseFirestore.instance.collection('chats').get();
+
+      for (final doc in allChatsQuery.docs) {
+        final chatId = doc.id;
+        if (chatId.contains(oldUid)) {
+          // This chat involves the old user ID
+          final data = doc.data();
+          final participants = chatId.split('_');
+
+          if (participants.contains(oldUid)) {
+            // Create new chat document with updated ID
+            final newParticipants =
+                participants.map((id) => id == oldUid ? newUid : id).toList();
+            newParticipants.sort(); // Maintain consistent ordering
+            final newChatId = newParticipants.join('_');
+
+            // Copy the chat document to new location
+            final newChatRef = FirebaseFirestore.instance
+                .collection('chats')
+                .doc(newChatId);
+            batch.set(newChatRef, data);
+
+            // Copy all messages to new chat
+            final messagesQuery =
+                await doc.reference.collection('messages').get();
+            for (final messageDoc in messagesQuery.docs) {
+              final messageData = messageDoc.data();
+              // Update sender/receiver IDs in the message data
+              if (messageData['senderId'] == oldUid) {
+                messageData['senderId'] = newUid;
+              }
+              if (messageData['receiverId'] == oldUid) {
+                messageData['receiverId'] = newUid;
+              }
+
+              final newMessageRef = newChatRef
+                  .collection('messages')
+                  .doc(messageDoc.id);
+              batch.set(newMessageRef, messageData);
+            }
+
+            // Delete old chat document (will be done after batch commit)
+            batch.delete(doc.reference);
+          }
+        }
+      }
+
+      await batch.commit();
+    } catch (_) {
+      // Log error but don't fail the entire process
+    }
+  }
+
+  /// Migrates user document from old UID to new UID
+  Future<void> _migrateUserDocument(
+    String oldUid,
+    String newUid,
+    Guest guestUser,
+  ) async {
+    try {
+      final batch = FirebaseFirestore.instance.batch();
+
+      // Create new user document
+      final newUserRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(newUid);
+      batch.set(newUserRef, guestUser.toJson());
+
+      // Delete old user document
+      final oldUserRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(oldUid);
+      batch.delete(oldUserRef);
+
+      await batch.commit();
+    } catch (e) {
+      // If migration fails, clean up and rethrow
+      await FirebaseFirestore.instance.collection('users').doc(newUid).delete();
+      rethrow;
+    }
+  }
+
+  Future<Guest?> _findExistingGuestByFCMToken(String fcmToken) async {
+    try {
+      final query =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .where('type', isEqualTo: 'guest')
+              .where('fcmToken', isEqualTo: fcmToken)
+              .limit(1)
+              .get();
+
+      if (query.docs.isNotEmpty) {
+        final doc = query.docs.first;
+        return Guest.fromJson(doc.id, doc.data());
+      }
+
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final auth = context.watch<AuthRepository>();
-    final db = context.watch<DatabaseRepository>();
     return Scaffold(
       backgroundColor: Palette.primalBlack,
       body: Padding(
@@ -714,30 +985,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ),
                               onPressed: () async {
-                                final userCredential =
-                                    await FirebaseAuth.instance
-                                        .signInAnonymously();
-                                final uid = userCredential.user?.uid;
-
-                                if (uid == null) {
-                                  throw Exception("failed to create guest key");
-                                }
-
-                                final guestUser = Guest(
-                                  id: uid,
-                                  avatarImageUrl:
-                                      'https://firebasestorage.googleapis.com/v0/b/gig-hub-8ac24.firebasestorage.app/o/default%2Fdefault_avatar.jpg?alt=media&token=9c48f377-736e-4a9a-bf31-6ffc3ed020f7',
-                                );
-
-                                await db.createGuest(guestUser);
-                                if (!context.mounted) return;
-                                Navigator.of(context).pushReplacement(
-                                  MaterialPageRoute(
-                                    builder:
-                                        (context) =>
-                                            MainScreen(initialUser: guestUser),
-                                  ),
-                                );
+                                await _continueAsGuest();
                               },
                               child: Text(
                                 AppLocale.continueAsGuest.getString(context),
