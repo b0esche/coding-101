@@ -436,6 +436,50 @@ class _PublicGroupChatScreenState extends State<PublicGroupChatScreen> {
                                     ),
                                   ),
                                 ],
+                                if (message.senderType == 'DJ') ...[
+                                  const SizedBox(width: 4),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: Palette.forgedGold,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(2.0),
+                                        child: Text(
+                                          'DJ',
+                                          style: TextStyle(
+                                            color: Palette.primalBlack,
+                                            fontSize: 8,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                                if (message.senderType == 'Booker') ...[
+                                  const SizedBox(width: 4),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: Palette.primalBlack,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(2.0),
+                                        child: Text(
+                                          'B',
+                                          style: TextStyle(
+                                            color: Palette.glazedWhite,
+                                            fontSize: 8,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                                 const SizedBox(width: 8),
                                 Text(
                                   '${message.timestamp.hour.toString().padLeft(2, '0')}:${message.timestamp.minute.toString().padLeft(2, '0')}',
