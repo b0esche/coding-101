@@ -127,7 +127,7 @@ class _PublicGroupChatScreenState extends State<PublicGroupChatScreen> {
                 dj: user,
                 currentUser: _currentUser,
                 showChatButton: true,
-                showEditButton: false,
+                showEditButton: true,
                 showFavoriteIcon: true,
               ),
         ),
@@ -140,7 +140,7 @@ class _PublicGroupChatScreenState extends State<PublicGroupChatScreen> {
               (context) => ProfileScreenBooker(
                 booker: user,
                 db: db,
-                showEditButton: false,
+                showEditButton: true,
               ),
         ),
       );
