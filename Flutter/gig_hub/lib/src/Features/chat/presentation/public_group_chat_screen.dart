@@ -154,7 +154,7 @@ class _PublicGroupChatScreenState extends State<PublicGroupChatScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Center(child: Text('Failed to send message: $e')),
+            content: Center(child: Text('failed to send message: $e')),
             backgroundColor: Palette.alarmRed,
           ),
         );

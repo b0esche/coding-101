@@ -252,7 +252,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             backgroundColor: Palette.forgedGold,
             content: Center(
               child: Text(
-                AppLocale.changeEmailMsg.getString(context),
+                'verification email sent. please check your inbox.',
                 style: const TextStyle(fontSize: 16),
               ),
             ),
@@ -284,7 +284,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           SnackBar(
             backgroundColor: Palette.forgedGold,
             content: Center(
-              child: Text(AppLocale.changePwMsg.getString(context)),
+              child: Text(
+                'password reset email sent. please check your inbox.',
+              ),
             ),
           ),
         );

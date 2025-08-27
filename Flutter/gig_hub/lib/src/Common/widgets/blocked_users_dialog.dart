@@ -47,7 +47,7 @@ class _BlockedUsersDialogState extends State<BlockedUsersDialog> {
             backgroundColor: Palette.forgedGold,
             content: Center(
               child: Text(
-                AppLocale.unblockedSuccess.getString(context),
+                'user unblocked successfully.',
                 style: TextStyle(color: Palette.glazedWhite, fontSize: 16),
               ),
             ),
@@ -61,7 +61,7 @@ class _BlockedUsersDialogState extends State<BlockedUsersDialog> {
             backgroundColor: Palette.alarmRed,
             content: Center(
               child: Text(
-                AppLocale.unblockedFail.getString(context),
+                'failed to unblock user. please try again.',
                 style: TextStyle(color: Palette.glazedWhite, fontSize: 16),
               ),
             ),

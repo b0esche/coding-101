@@ -70,7 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
           backgroundColor: Palette.forgedGold,
           content: Center(
             child: Text(
-              AppLocale.invalidCred.getString(context),
+              'invalid credentials. please try again.',
               style: TextStyle(fontSize: 16),
             ),
           ),
@@ -233,7 +233,7 @@ class _LoginScreenState extends State<LoginScreen> {
           backgroundColor: Palette.alarmRed,
           content: Center(
             child: Text(
-              'Failed to continue as guest: ${e.toString()}',
+              'failed to continue as guest: ${e.toString()}',
               style: TextStyle(fontSize: 16),
             ),
           ),
@@ -925,9 +925,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           backgroundColor: Palette.forgedGold,
                                           content: Center(
                                             child: Text(
-                                              AppLocale.accessFailed.getString(
-                                                context,
-                                              ),
+                                              'access failed. please try again.',
                                               style: TextStyle(fontSize: 16),
                                             ),
                                           ),

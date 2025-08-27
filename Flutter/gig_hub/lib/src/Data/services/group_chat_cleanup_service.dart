@@ -48,6 +48,7 @@ class GroupChatCleanupService {
   Future<void> _performCleanup() async {
     try {
       await _db.deleteExpiredGroupChats();
+      await _db.deleteExpiredPublicGroupChats();
     } catch (_) {}
   }
 
