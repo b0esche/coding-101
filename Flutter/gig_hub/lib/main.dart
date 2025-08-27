@@ -68,7 +68,6 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-  GroupChatCleanupService().startCleanupService();
 
   await FlutterLocalization.instance.ensureInitialized();
 
@@ -77,6 +76,8 @@ Future<void> main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await FirebaseMessaging.instance.requestPermission();
   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+  GroupChatCleanupService().startCleanupService();
 
   runApp(
     MultiProvider(

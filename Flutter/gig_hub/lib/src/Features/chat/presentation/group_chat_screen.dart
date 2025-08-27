@@ -24,9 +24,6 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
   AppUser? _currentUser;
   String? _currentGroupImageUrl; // Track current group image URL
 
-  // Cache for user data to avoid repeated database calls
-  final Map<String, AppUser> _userCache = {};
-
   // Encryption variables
   late encrypt.Encrypter _encrypter;
   late encrypt.Key _aesKey;
@@ -73,21 +70,6 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
     } catch (_) {}
   }
 
-  /// Get user data with caching to avoid repeated database calls
-  Future<AppUser?> _getCachedUser(String userId) async {
-    if (_userCache.containsKey(userId)) {
-      return _userCache[userId];
-    }
-
-    try {
-      final user = await context.read<DatabaseRepository>().getUserById(userId);
-      _userCache[userId] = user;
-      return user;
-    } catch (e) {
-      return null;
-    }
-  }
-
   /// Navigate to the profile screen based on user type
   void _navigateToProfile(AppUser user) {
     final db = context.read<DatabaseRepository>();
@@ -119,7 +101,6 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
         ),
       );
     }
-    // Guests don't have profile screens, so no navigation for them
   }
 
   String _decryptMessage(String text) {
