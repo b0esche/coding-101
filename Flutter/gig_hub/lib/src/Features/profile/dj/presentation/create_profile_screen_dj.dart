@@ -842,6 +842,37 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                 );
                                 return;
                               }
+                              // Check if SoundCloud is connected
+                              if (!isSoundcloudConnected) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    backgroundColor: Palette.alarmRed,
+                                    content: Center(
+                                      child: Text(
+                                        'please connect your SoundCloud account first.',
+                                        style: TextStyle(fontSize: 16),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                                return;
+                              }
+                              // Check if both tracks are selected
+                              if (selectedTrackOne == null ||
+                                  selectedTrackTwo == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    backgroundColor: Palette.alarmRed,
+                                    content: Center(
+                                      child: Text(
+                                        'please select 2 tracks from your SoundCloud.',
+                                        style: TextStyle(fontSize: 16),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                                return;
+                              }
                               setState(() {
                                 isLoading = true;
                               });
