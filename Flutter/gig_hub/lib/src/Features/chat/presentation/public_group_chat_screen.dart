@@ -91,6 +91,63 @@ class _PublicGroupChatScreenState extends State<PublicGroupChatScreen> {
     }
   }
 
+  /// Load member information for the group info dialog
+  Future<List<AppUser>> _loadMemberInformation() async {
+    if (_currentChat?.memberIds == null || _currentChat!.memberIds.isEmpty) {
+      return [];
+    }
+
+    final List<AppUser> members = [];
+
+    for (final memberId in _currentChat!.memberIds) {
+      try {
+        final user = await _getCachedUser(memberId);
+        if (user != null) {
+          members.add(user);
+        }
+      } catch (e) {
+        // Skip users that can't be loaded
+        continue;
+      }
+    }
+
+    return members;
+  }
+
+  /// Navigate to the profile screen based on user type
+  void _navigateToProfile(AppUser user) {
+    final db = context.read<DatabaseRepository>();
+
+    if (user is DJ) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder:
+              (context) => ProfileScreenDJ(
+                dj: user,
+                currentUser: _currentUser,
+                showChatButton: true,
+                showEditButton: false,
+                showFavoriteIcon: true,
+              ),
+        ),
+      );
+    } else if (user is Booker) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder:
+              (context) => ProfileScreenBooker(
+                booker: user,
+                db: db,
+                showEditButton: false,
+              ),
+        ),
+      );
+    }
+    // Guests don't have profile screens, so no navigation for them
+  }
+
   Future<void> _sendMessage() async {
     final messageText = _messageController.text.trim();
     if (messageText.isEmpty) return;
@@ -713,96 +770,269 @@ class _PublicGroupChatScreenState extends State<PublicGroupChatScreen> {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Group Icon Section
-                Center(
-                  child: Stack(
-                    children: [
-                      CircleAvatar(
-                        radius: 50,
-                        backgroundColor: Palette.forgedGold.o(0.2),
-                        backgroundImage:
-                            _currentChat?.imageUrl != null
-                                ? NetworkImage(_currentChat!.imageUrl!)
-                                : null,
-                        child:
-                            _currentChat?.imageUrl == null
-                                ? Icon(
-                                  Icons.public,
-                                  color: Palette.forgedGold,
-                                  size: 40,
-                                )
-                                : null,
-                      ),
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: GestureDetector(
-                          onTap: _uploadGroupImage,
-                          child: Container(
-                            width: 32,
-                            height: 32,
-                            decoration: BoxDecoration(
-                              color: Palette.forgedGold,
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: Palette.glazedWhite,
-                                width: 2,
+            content: SizedBox(
+              width: double.maxFinite,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Group Icon Section
+                  Center(
+                    child: Stack(
+                      children: [
+                        CircleAvatar(
+                          radius: 50,
+                          backgroundColor: Palette.forgedGold.o(0.2),
+                          backgroundImage:
+                              _currentChat?.imageUrl != null
+                                  ? NetworkImage(_currentChat!.imageUrl!)
+                                  : null,
+                          child:
+                              _currentChat?.imageUrl == null
+                                  ? Icon(
+                                    Icons.public,
+                                    color: Palette.forgedGold,
+                                    size: 40,
+                                  )
+                                  : null,
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: GestureDetector(
+                            onTap: _uploadGroupImage,
+                            child: Container(
+                              width: 32,
+                              height: 32,
+                              decoration: BoxDecoration(
+                                color: Palette.forgedGold,
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Palette.glazedWhite,
+                                  width: 2,
+                                ),
                               ),
-                            ),
-                            child:
-                                _isUploadingImage
-                                    ? Padding(
-                                      padding: EdgeInsets.all(6.0),
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                              Palette.glazedWhite,
-                                            ),
+                              child:
+                                  _isUploadingImage
+                                      ? Padding(
+                                        padding: EdgeInsets.all(6.0),
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                Palette.glazedWhite,
+                                              ),
+                                        ),
+                                      )
+                                      : Icon(
+                                        Icons.camera_alt,
+                                        color: Palette.glazedWhite,
+                                        size: 16,
                                       ),
-                                    )
-                                    : Icon(
-                                      Icons.camera_alt,
-                                      color: Palette.glazedWhite,
-                                      size: 16,
-                                    ),
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'members (${_currentChat?.memberCount ?? 0}):',
-                  style: TextStyle(
-                    color: Palette.primalBlack,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  'loading member information...',
-                  style: TextStyle(
-                    color: Palette.primalBlack.o(0.7),
-                    fontSize: 14,
-                  ),
-                ),
-                if (_currentChat?.autoDeleteAt != null) ...[
-                  const SizedBox(height: 16),
-                  Text(
-                    'auto-delete: ${_currentChat!.autoDeleteAt!.day.toString().padLeft(2, '0')}.${_currentChat!.autoDeleteAt!.month.toString().padLeft(2, '0')}.${_currentChat!.autoDeleteAt!.year}',
-                    style: TextStyle(
-                      color: Palette.primalBlack.o(0.7),
-                      fontSize: 12,
+                      ],
                     ),
                   ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'members (${_currentChat?.memberCount ?? 0}):',
+                    style: TextStyle(
+                      color: Palette.primalBlack,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  // Member list
+                  Container(
+                    height: 200,
+                    child: FutureBuilder<List<AppUser>>(
+                      future: _loadMemberInformation(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(
+                            child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Palette.forgedGold,
+                              ),
+                            ),
+                          );
+                        }
+
+                        if (snapshot.hasError) {
+                          return Center(
+                            child: Text(
+                              'error loading members',
+                              style: TextStyle(
+                                color: Palette.alarmRed,
+                                fontSize: 14,
+                              ),
+                            ),
+                          );
+                        }
+
+                        final members = snapshot.data ?? [];
+
+                        if (members.isEmpty) {
+                          return Center(
+                            child: Text(
+                              'no members found',
+                              style: TextStyle(
+                                color: Palette.primalBlack.o(0.7),
+                                fontSize: 14,
+                              ),
+                            ),
+                          );
+                        }
+
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: members.length,
+                          itemBuilder: (context, index) {
+                            final member = members[index];
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 4),
+                              child: Row(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      // Only allow navigation for DJs and Bookers
+                                      if (member is DJ || member is Booker) {
+                                        Navigator.of(
+                                          context,
+                                        ).pop(); // Close the dialog first
+                                        _navigateToProfile(member);
+                                      }
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border:
+                                            (member is DJ || member is Booker)
+                                                ? Border.all(
+                                                  color: Palette.forgedGold.o(
+                                                    0.6,
+                                                  ),
+                                                  width: 2,
+                                                )
+                                                : null,
+                                      ),
+                                      child: CircleAvatar(
+                                        radius: 16,
+                                        backgroundColor: Palette.forgedGold.o(
+                                          0.3,
+                                        ),
+                                        backgroundImage:
+                                            member.avatarUrl.isNotEmpty
+                                                ? NetworkImage(member.avatarUrl)
+                                                : null,
+                                        child:
+                                            member.avatarUrl.isEmpty
+                                                ? Icon(
+                                                  Icons.person,
+                                                  color: Palette.primalBlack,
+                                                  size: 16,
+                                                )
+                                                : null,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      member.displayName,
+                                      style: TextStyle(
+                                        color: Palette.primalBlack,
+                                        fontSize: 14,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  // Show user type badge
+                                  if (member is DJ) ...[
+                                    Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 6,
+                                        vertical: 2,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Palette.forgedGold,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Text(
+                                        'DJ',
+                                        style: TextStyle(
+                                          color: Palette.primalBlack,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ] else if (member is Booker) ...[
+                                    Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 6,
+                                        vertical: 2,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Palette.primalBlack,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Text(
+                                        'B',
+                                        style: TextStyle(
+                                          color: Palette.glazedWhite,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ] else if (member is Guest) ...[
+                                    if (member.isFlinta) ...[
+                                      Container(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 6,
+                                          vertical: 2,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.deepPurple,
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          'FL*',
+                                          style: TextStyle(
+                                            color: Palette.glazedWhite,
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ],
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                  if (_currentChat?.autoDeleteAt != null) ...[
+                    const SizedBox(height: 16),
+                    Text(
+                      'auto-delete: ${_currentChat!.autoDeleteAt!.day.toString().padLeft(2, '0')}.${_currentChat!.autoDeleteAt!.month.toString().padLeft(2, '0')}.${_currentChat!.autoDeleteAt!.year}',
+                      style: TextStyle(
+                        color: Palette.primalBlack.o(0.7),
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
             actions: [
               if (widget.currentUser is Guest) ...[

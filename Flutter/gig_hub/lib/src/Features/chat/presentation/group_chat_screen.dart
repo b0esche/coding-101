@@ -1,4 +1,3 @@
-
 import '../../../Data/app_imports.dart';
 import '../../auth/presentation/guest_username_dialog.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
@@ -24,6 +23,9 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
   final FirestoreDatabaseRepository _db = FirestoreDatabaseRepository();
   AppUser? _currentUser;
   String? _currentGroupImageUrl; // Track current group image URL
+
+  // Cache for user data to avoid repeated database calls
+  final Map<String, AppUser> _userCache = {};
 
   // Encryption variables
   late encrypt.Encrypter _encrypter;
@@ -69,6 +71,55 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
         });
       }
     } catch (_) {}
+  }
+
+  /// Get user data with caching to avoid repeated database calls
+  Future<AppUser?> _getCachedUser(String userId) async {
+    if (_userCache.containsKey(userId)) {
+      return _userCache[userId];
+    }
+
+    try {
+      final user = await context.read<DatabaseRepository>().getUserById(userId);
+      _userCache[userId] = user;
+      return user;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Navigate to the profile screen based on user type
+  void _navigateToProfile(AppUser user) {
+    final db = context.read<DatabaseRepository>();
+
+    if (user is DJ) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder:
+              (context) => ProfileScreenDJ(
+                dj: user,
+                currentUser: _currentUser!,
+                showChatButton: true,
+                showEditButton: true,
+                showFavoriteIcon: true,
+              ),
+        ),
+      );
+    } else if (user is Booker) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder:
+              (context) => ProfileScreenBooker(
+                booker: user,
+                db: db,
+                showEditButton: true,
+              ),
+        ),
+      );
+    }
+    // Guests don't have profile screens, so no navigation for them
   }
 
   String _decryptMessage(String text) {
@@ -732,26 +783,49 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                         padding: const EdgeInsets.only(bottom: 8),
                         child: Row(
                           children: [
-                            CircleAvatar(
-                              radius: 16,
-                              backgroundImage:
-                                  user.avatarUrl.isNotEmpty
-                                      ? NetworkImage(user.avatarUrl)
-                                      : null,
-                              backgroundColor: Palette.forgedGold.o(0.2),
-                              child:
-                                  user.avatarUrl.isEmpty
-                                      ? Text(
-                                        user.displayName
-                                            .substring(0, 1)
-                                            .toUpperCase(),
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Palette.forgedGold,
-                                          fontSize: 12,
-                                        ),
-                                      )
-                                      : null,
+                            GestureDetector(
+                              onTap: () {
+                                // Only allow navigation for DJs and Bookers
+                                if (user is DJ || user is Booker) {
+                                  Navigator.of(
+                                    context,
+                                  ).pop(); // Close the dialog first
+                                  _navigateToProfile(user);
+                                }
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border:
+                                      (user is DJ || user is Booker)
+                                          ? Border.all(
+                                            color: Palette.forgedGold.o(0.6),
+                                            width: 2,
+                                          )
+                                          : null,
+                                ),
+                                child: CircleAvatar(
+                                  radius: 16,
+                                  backgroundImage:
+                                      user.avatarUrl.isNotEmpty
+                                          ? NetworkImage(user.avatarUrl)
+                                          : null,
+                                  backgroundColor: Palette.forgedGold.o(0.2),
+                                  child:
+                                      user.avatarUrl.isEmpty
+                                          ? Text(
+                                            user.displayName
+                                                .substring(0, 1)
+                                                .toUpperCase(),
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Palette.forgedGold,
+                                              fontSize: 12,
+                                            ),
+                                          )
+                                          : null,
+                                ),
+                              ),
                             ),
                             const SizedBox(width: 12),
                             Expanded(

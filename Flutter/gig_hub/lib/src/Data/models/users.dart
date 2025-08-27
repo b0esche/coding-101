@@ -28,8 +28,7 @@ class Guest extends AppUser {
   String avatarImageUrl;
   String name; // Username for group chats
   List<String> favoriteUIds;
-  bool
-  isFlinta; // FLINTA* (Frauen, Lesben, Inter, Non-binary, Trans, Agender) marking
+  bool isFlinta; // FLINTA* marking
 
   Guest({
     required super.id,
