@@ -1,4 +1,5 @@
 import '../../../Data/app_imports.dart';
+import 'package:gig_hub/src/Common/widgets/safe_pinch_zoom.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
 
 class ChatScreenArgs {
@@ -264,23 +265,26 @@ class ChatScreenState extends State<ChatScreen>
                                     ),
                                   ],
                                 ),
-                                child: CircleAvatar(
-                                  radius: 80,
-                                  backgroundColor: Palette.forgedGold.o(0.2),
-                                  backgroundImage:
-                                      widget.chatPartner.avatarUrl.isNotEmpty
-                                          ? NetworkImage(
-                                            widget.chatPartner.avatarUrl,
-                                          )
-                                          : null,
-                                  child:
-                                      widget.chatPartner.avatarUrl.isEmpty
-                                          ? Icon(
-                                            Icons.person,
-                                            color: Palette.forgedGold,
-                                            size: 80,
-                                          )
-                                          : null,
+                                child: SafePinchZoom(
+                                  maxScale: 3.0,
+                                  child: CircleAvatar(
+                                    radius: 80,
+                                    backgroundColor: Palette.forgedGold.o(0.2),
+                                    backgroundImage:
+                                        widget.chatPartner.avatarUrl.isNotEmpty
+                                            ? NetworkImage(
+                                              widget.chatPartner.avatarUrl,
+                                            )
+                                            : null,
+                                    child:
+                                        widget.chatPartner.avatarUrl.isEmpty
+                                            ? Icon(
+                                              Icons.person,
+                                              color: Palette.forgedGold,
+                                              size: 80,
+                                            )
+                                            : null,
+                                  ),
                                 ),
                               ),
                             ),

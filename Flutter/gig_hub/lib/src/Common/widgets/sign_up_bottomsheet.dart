@@ -90,9 +90,9 @@ class _SignUpSheetState extends State<SignUpSheet> {
                     borderRadius: Radius.circular(16),
                   ),
                   settings: LiquidGlassSettings(
-                    thickness: 16,
+                    thickness: 30,
                     refractiveIndex: 1.1,
-                    chromaticAberration: 0.2,
+                    chromaticAberration: 1.3,
                   ),
                   child: SegmentedButton<String>(
                     expandedInsets: EdgeInsets.all(2),

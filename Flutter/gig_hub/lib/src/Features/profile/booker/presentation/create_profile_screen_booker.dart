@@ -1,5 +1,6 @@
 import "../../../../Data/app_imports.dart";
 import "../../../../Data/app_imports.dart" as http;
+import 'package:gig_hub/src/Common/widgets/safe_pinch_zoom.dart';
 
 class CreateProfileScreenBooker extends StatefulWidget {
   final String email;
@@ -543,14 +544,7 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                               },
                               children:
                                   mediaUrl!.map((path) {
-                                    return PinchZoom(
-                                      onZoomEnd: () {
-                                        // Reset zoom state when zoom gesture ends
-                                        // This prevents the image from getting stuck in zoomed state
-                                        setState(() {
-                                          // Force a rebuild to reset any zoom transformation
-                                        });
-                                      },
+                                    return SafePinchZoom(
                                       zoomEnabled: true,
                                       maxScale: 2.5,
                                       child:

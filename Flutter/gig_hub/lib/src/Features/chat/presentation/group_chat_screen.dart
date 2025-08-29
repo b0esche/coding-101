@@ -1,5 +1,6 @@
 import '../../../Data/app_imports.dart';
 import '../../auth/presentation/guest_username_dialog.dart';
+import 'package:gig_hub/src/Common/widgets/safe_pinch_zoom.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:gig_hub/src/Data/services/image_compression_service.dart';
 
@@ -140,24 +141,27 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                 shape: BoxShape.circle,
                 border: Border.all(color: Palette.primalBlack, width: 1.5),
               ),
-              child: CircleAvatar(
-                backgroundColor:
-                    _currentGroupImageUrl != null
-                        ? Colors.transparent
-                        : Palette.forgedGold,
-                radius: 42,
-                backgroundImage:
-                    _currentGroupImageUrl != null
-                        ? NetworkImage(_currentGroupImageUrl!)
-                        : null,
-                child:
-                    _currentGroupImageUrl == null
-                        ? Icon(
-                          Icons.group,
-                          color: Palette.primalBlack,
-                          size: 32,
-                        )
-                        : null,
+              child: SafePinchZoom(
+                maxScale: 3.0,
+                child: CircleAvatar(
+                  backgroundColor:
+                      _currentGroupImageUrl != null
+                          ? Colors.transparent
+                          : Palette.forgedGold,
+                  radius: 42,
+                  backgroundImage:
+                      _currentGroupImageUrl != null
+                          ? NetworkImage(_currentGroupImageUrl!)
+                          : null,
+                  child:
+                      _currentGroupImageUrl == null
+                          ? Icon(
+                            Icons.group,
+                            color: Palette.primalBlack,
+                            size: 32,
+                          )
+                          : null,
+                ),
               ),
             ),
             const SizedBox(width: 16),
@@ -705,24 +709,27 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                     Center(
                       child: Stack(
                         children: [
-                          CircleAvatar(
-                            radius: 50,
-                            backgroundColor:
-                                _currentGroupImageUrl != null
-                                    ? Colors.transparent
-                                    : Palette.forgedGold.o(0.2),
-                            backgroundImage:
-                                _currentGroupImageUrl != null
-                                    ? NetworkImage(_currentGroupImageUrl!)
-                                    : null,
-                            child:
-                                _currentGroupImageUrl == null
-                                    ? Icon(
-                                      Icons.group,
-                                      color: Palette.forgedGold,
-                                      size: 40,
-                                    )
-                                    : null,
+                          SafePinchZoom(
+                            maxScale: 3.0,
+                            child: CircleAvatar(
+                              radius: 50,
+                              backgroundColor:
+                                  _currentGroupImageUrl != null
+                                      ? Colors.transparent
+                                      : Palette.forgedGold.o(0.2),
+                              backgroundImage:
+                                  _currentGroupImageUrl != null
+                                      ? NetworkImage(_currentGroupImageUrl!)
+                                      : null,
+                              child:
+                                  _currentGroupImageUrl == null
+                                      ? Icon(
+                                        Icons.group,
+                                        color: Palette.forgedGold,
+                                        size: 40,
+                                      )
+                                      : null,
+                            ),
                           ),
                           Positioned(
                             bottom: 0,

@@ -1,4 +1,5 @@
 import "../../../../Data/app_imports.dart";
+import 'package:gig_hub/src/Common/widgets/safe_pinch_zoom.dart';
 
 class CreateProfileScreenDJ extends StatefulWidget {
   final String email;
@@ -640,14 +641,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                               },
                               children:
                                   mediaUrl!.map((path) {
-                                    return PinchZoom(
-                                      onZoomEnd: () {
-                                        // Reset zoom state when zoom gesture ends
-                                        // This prevents the image from getting stuck in zoomed state
-                                        setState(() {
-                                          // Force a rebuild to reset any zoom transformation
-                                        });
-                                      },
+                                    return SafePinchZoom(
                                       zoomEnabled: true,
                                       maxScale: 2.5,
                                       child:

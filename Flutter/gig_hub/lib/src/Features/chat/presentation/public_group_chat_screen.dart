@@ -1,5 +1,6 @@
 import '../../../Data/app_imports.dart';
 import '../../auth/presentation/guest_username_dialog.dart';
+import 'package:gig_hub/src/Common/widgets/safe_pinch_zoom.dart';
 import 'package:gig_hub/src/Data/services/image_compression_service.dart';
 
 /// Screen for public group chat associated with a rave
@@ -1119,21 +1120,24 @@ class _PublicGroupChatScreenState extends State<PublicGroupChatScreen> {
                 shape: BoxShape.circle,
                 border: Border.all(color: Palette.primalBlack, width: 1.5),
               ),
-              child: CircleAvatar(
-                backgroundColor: Palette.forgedGold.o(0.2),
-                radius: 42,
-                backgroundImage:
-                    _currentChat?.imageUrl != null
-                        ? NetworkImage(_currentChat!.imageUrl!)
-                        : null,
-                child:
-                    _currentChat?.imageUrl == null
-                        ? Icon(
-                          Icons.public,
-                          color: Palette.forgedGold,
-                          size: 32,
-                        )
-                        : null,
+              child: SafePinchZoom(
+                maxScale: 3.0,
+                child: CircleAvatar(
+                  backgroundColor: Palette.forgedGold.o(0.2),
+                  radius: 42,
+                  backgroundImage:
+                      _currentChat?.imageUrl != null
+                          ? NetworkImage(_currentChat!.imageUrl!)
+                          : null,
+                  child:
+                      _currentChat?.imageUrl == null
+                          ? Icon(
+                            Icons.public,
+                            color: Palette.forgedGold,
+                            size: 32,
+                          )
+                          : null,
+                ),
               ),
             ),
             const SizedBox(width: 16),

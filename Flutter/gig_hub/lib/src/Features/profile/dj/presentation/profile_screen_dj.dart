@@ -6,6 +6,7 @@ import 'package:gig_hub/src/Features/profile/dj/presentation/widgets/info_box.da
 import 'package:gig_hub/src/Features/profile/dj/presentation/widgets/track_selection_dropdown.dart';
 import 'package:gig_hub/src/data/services/image_compression_service.dart';
 import 'package:gig_hub/src/Features/raves/presentation/widgets/rave_list.dart';
+import 'package:gig_hub/src/Common/widgets/safe_pinch_zoom.dart';
 import "../../../../Data/app_imports.dart";
 import "../../../../Data/app_imports.dart" as http;
 
@@ -51,7 +52,6 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
   bool editMode = false;
   Timer? _debounceTimer;
   StatusMessage? _currentStatusMessage;
-  int _pinchZoomResetCounter = 0; // Add counter to force PinchZoom recreation
 
   // Separate ValueNotifier for slideshow index to avoid full rebuilds
   late final ValueNotifier<int> _slideshowIndexNotifier = ValueNotifier(0);
@@ -1340,15 +1340,8 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
               index < widget.dj.mediaImageUrls.length;
               index++
             )
-              PinchZoom(
-                key: ValueKey('pinch_zoom_${index}_$_pinchZoomResetCounter'),
-                onZoomEnd: () {
-                  // TODO: if working - add to booker
-                  // Reset zoom state by forcing recreation of PinchZoom widgets
-                  setState(() {
-                    _pinchZoomResetCounter++;
-                  });
-                },
+              SafePinchZoom(
+                key: ValueKey('safe_pinch_zoom_${index}'),
                 zoomEnabled: true,
                 maxScale: 2.5,
                 child:

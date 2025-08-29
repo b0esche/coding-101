@@ -64,18 +64,20 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     } catch (e) {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          duration: Duration(milliseconds: 950),
-          backgroundColor: Palette.forgedGold,
-          content: Center(
-            child: Text(
-              'invalid credentials. please try again.',
-              style: TextStyle(fontSize: 16),
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            duration: Duration(milliseconds: 950),
+            backgroundColor: Palette.forgedGold,
+            content: Center(
+              child: Text(
+                'invalid credentials. please try again.',
+                style: TextStyle(fontSize: 16),
+              ),
             ),
           ),
-        ),
-      );
+        );
+      }
     }
   }
 
@@ -219,26 +221,28 @@ class _LoginScreenState extends State<LoginScreen> {
       await db.createGuest(guestUser);
 
       if (!context.mounted) return;
-
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => MainScreen(initialUser: guestUser),
-        ),
-      );
+      if (mounted) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => MainScreen(initialUser: guestUser),
+          ),
+        );
+      }
     } catch (e) {
       if (!context.mounted) return;
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: Palette.alarmRed,
-          content: Center(
-            child: Text(
-              'failed to continue as guest: ${e.toString()}',
-              style: TextStyle(fontSize: 16),
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Palette.alarmRed,
+            content: Center(
+              child: Text(
+                'failed to continue as guest: ${e.toString()}',
+                style: TextStyle(fontSize: 16),
+              ),
             ),
           ),
-        ),
-      );
+        );
+      }
     }
   }
 
