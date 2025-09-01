@@ -846,7 +846,7 @@ class _PublicGroupChatScreenState extends State<PublicGroupChatScreen> {
                   ),
                   const SizedBox(height: 12),
                   // Member list
-                  Container(
+                  SizedBox(
                     height: 200,
                     child: FutureBuilder<List<AppUser>>(
                       future: _loadMemberInformation(),

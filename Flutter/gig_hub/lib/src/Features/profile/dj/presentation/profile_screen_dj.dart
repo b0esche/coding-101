@@ -1341,7 +1341,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
               index++
             )
               SafePinchZoom(
-                key: ValueKey('safe_pinch_zoom_${index}'),
+                key: ValueKey('safe_pinch_zoom_$index'),
                 zoomEnabled: true,
                 maxScale: 2.5,
                 child:
