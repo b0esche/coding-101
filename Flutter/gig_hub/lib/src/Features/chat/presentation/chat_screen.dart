@@ -57,7 +57,7 @@ class ChatScreenState extends State<ChatScreen>
   final db = CachedFirestoreRepository();
 
   String getPartnerAvatarUrl() => widget.chatPartner.avatarUrl;
-  
+
   late encrypt.Encrypter _encrypter;
   late encrypt.Key _aesKey;
 

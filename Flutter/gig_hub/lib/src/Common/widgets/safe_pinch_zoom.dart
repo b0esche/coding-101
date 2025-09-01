@@ -24,7 +24,8 @@ class SafePinchZoom extends StatefulWidget {
   State<SafePinchZoom> createState() => _SafePinchZoomState();
 }
 
-class _SafePinchZoomState extends State<SafePinchZoom> with WidgetsBindingObserver {
+class _SafePinchZoomState extends State<SafePinchZoom>
+    with WidgetsBindingObserver {
   Timer? _cleanupTimer;
   bool _isZooming = false;
   Key _pinchZoomKey = UniqueKey();
@@ -47,7 +48,7 @@ class _SafePinchZoomState extends State<SafePinchZoom> with WidgetsBindingObserv
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     // Force cleanup when app goes to background or becomes inactive
-    if (state == AppLifecycleState.paused || 
+    if (state == AppLifecycleState.paused ||
         state == AppLifecycleState.inactive) {
       _forceCleanup();
     }
@@ -60,7 +61,7 @@ class _SafePinchZoomState extends State<SafePinchZoom> with WidgetsBindingObserv
         _pinchZoomKey = UniqueKey();
         _isZooming = false;
       });
-      
+
       // Additional overlay cleanup - remove any potential stuck overlays
       _scheduleOverlayCleanup();
     }
@@ -87,7 +88,7 @@ class _SafePinchZoomState extends State<SafePinchZoom> with WidgetsBindingObserv
   void _handleZoomStart() {
     _isZooming = true;
     widget.onZoomStart?.call();
-    
+
     // Set a maximum zoom duration as a safety net
     _cleanupTimer?.cancel();
     _cleanupTimer = Timer(const Duration(seconds: 10), () {
@@ -101,7 +102,7 @@ class _SafePinchZoomState extends State<SafePinchZoom> with WidgetsBindingObserv
     _isZooming = false;
     _cleanupTimer?.cancel();
     widget.onZoomEnd?.call();
-    
+
     // Schedule a delayed check to ensure cleanup happened
     Timer(const Duration(milliseconds: 100), () {
       if (mounted && !_isZooming) {
