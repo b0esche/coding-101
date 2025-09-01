@@ -40,7 +40,8 @@ class _SafePinchZoomState extends State<SafePinchZoom>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _cleanupTimer?.cancel();
-    _forceCleanup();
+    // Don't call setState in dispose - just clean up resources
+    _isZooming = false;
     super.dispose();
   }
 
@@ -48,44 +49,29 @@ class _SafePinchZoomState extends State<SafePinchZoom>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     // Force cleanup when app goes to background or becomes inactive
-    if (state == AppLifecycleState.paused ||
-        state == AppLifecycleState.inactive) {
-      _forceCleanup();
+    if ((state == AppLifecycleState.paused ||
+            state == AppLifecycleState.inactive) &&
+        mounted) {
+      _safeForceCleanup();
     }
   }
 
-  /// Force cleanup by recreating the PinchZoom widget and clearing any stuck overlays
-  void _forceCleanup() {
-    if (mounted) {
-      setState(() {
-        _pinchZoomKey = UniqueKey();
-        _isZooming = false;
-      });
+  /// Safely force cleanup - only if widget is still mounted
+  void _safeForceCleanup() {
+    if (!mounted) return;
 
-      // Additional overlay cleanup - remove any potential stuck overlays
-      _scheduleOverlayCleanup();
-    }
-  }
-
-  /// Schedule a delayed overlay cleanup as a safety net
-  void _scheduleOverlayCleanup() {
+    _isZooming = false;
     _cleanupTimer?.cancel();
-    _cleanupTimer = Timer(const Duration(milliseconds: 200), () {
-      if (mounted) {
-        // This is a safety net - try to rebuild the overlay stack
-        // by triggering a frame update
-        if (WidgetsBinding.instance.hasScheduledFrame == false) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (mounted) {
-              setState(() {});
-            }
-          });
-        }
-      }
+
+    // Recreate the PinchZoom widget to ensure clean state
+    setState(() {
+      _pinchZoomKey = UniqueKey();
     });
   }
 
   void _handleZoomStart() {
+    if (!mounted) return;
+
     _isZooming = true;
     widget.onZoomStart?.call();
 
@@ -93,12 +79,14 @@ class _SafePinchZoomState extends State<SafePinchZoom>
     _cleanupTimer?.cancel();
     _cleanupTimer = Timer(const Duration(seconds: 10), () {
       if (_isZooming && mounted) {
-        _forceCleanup();
+        _safeForceCleanup();
       }
     });
   }
 
   void _handleZoomEnd() {
+    if (!mounted) return;
+
     _isZooming = false;
     _cleanupTimer?.cancel();
     widget.onZoomEnd?.call();
@@ -119,13 +107,15 @@ class _SafePinchZoomState extends State<SafePinchZoom>
     return GestureDetector(
       // Add tap detection to help with cleanup
       onTap: () {
-        if (_isZooming) {
-          _forceCleanup();
+        if (_isZooming && mounted) {
+          _safeForceCleanup();
         }
       },
       // Double tap to force cleanup as emergency exit
       onDoubleTap: () {
-        _forceCleanup();
+        if (mounted) {
+          _safeForceCleanup();
+        }
       },
       child: PinchZoom(
         key: _pinchZoomKey,
