@@ -56,7 +56,13 @@ class Guest extends AppUser {
 }
 
 class DJ extends AppUser {
-  String name, city, about, info, headImageUrl, avatarImageUrl;
+  String name,
+      city,
+      about,
+      info,
+      headImageUrl,
+      avatarImageUrl,
+      headImageBlurHash;
 
   final double avgRating;
 
@@ -67,7 +73,8 @@ class DJ extends AppUser {
       genres,
       streamingUrls,
       trackTitles,
-      trackUrls;
+      trackUrls,
+      mediaImageBlurHashes;
 
   List<int> bpm;
 
@@ -84,9 +91,11 @@ class DJ extends AppUser {
     required this.streamingUrls,
     required this.trackTitles,
     required this.trackUrls,
+    this.headImageBlurHash = '',
     this.avgRating = 0.0,
     this.ratingCount = 0,
     this.mediaImageUrls = const [],
+    this.mediaImageBlurHashes = const [],
     this.favoriteUIds = const [],
   }) : super(type: UserType.dj);
 
@@ -94,6 +103,7 @@ class DJ extends AppUser {
     'type': type.name,
     'avatarImageUrl': avatarImageUrl,
     'headImageUrl': headImageUrl,
+    'headImageBlurHash': headImageBlurHash,
     'name': name,
     'city': city,
     'about': about,
@@ -106,6 +116,7 @@ class DJ extends AppUser {
     'avgRating': avgRating,
     'ratingCount': ratingCount,
     'mediaImageUrls': mediaImageUrls,
+    'mediaImageBlurHashes': mediaImageBlurHashes,
     'favoriteUIds': favoriteUIds,
   };
 
@@ -113,6 +124,7 @@ class DJ extends AppUser {
     id: id,
     avatarImageUrl: json['avatarImageUrl'] as String,
     headImageUrl: json['headImageUrl'] as String,
+    headImageBlurHash: json['headImageBlurHash'] as String? ?? '',
     name: json['name'] as String,
     city: json['city'] as String,
     about: json['about'] as String,
@@ -125,18 +137,26 @@ class DJ extends AppUser {
     avgRating: (json['avgRating'] ?? 0.0).toDouble() as double,
     ratingCount: (json['ratingCount'] ?? 0) as int,
     mediaImageUrls: List<String>.from(json['mediaImageUrls'] ?? []),
+    mediaImageBlurHashes: List<String>.from(json['mediaImageBlurHashes'] ?? []),
     favoriteUIds: List<String>.from(json['favoriteUIds'] ?? []),
   );
 }
 
 class Booker extends AppUser {
-  String name, city, about, info, category, headImageUrl, avatarImageUrl;
+  String name,
+      city,
+      about,
+      info,
+      category,
+      headImageUrl,
+      avatarImageUrl,
+      headImageBlurHash;
 
   final double avgRating;
 
   final int ratingCount;
 
-  List<String> mediaImageUrls, favoriteUIds;
+  List<String> mediaImageUrls, favoriteUIds, mediaImageBlurHashes;
 
   Booker({
     required super.id,
@@ -147,9 +167,11 @@ class Booker extends AppUser {
     required this.about,
     required this.info,
     required this.category,
+    this.headImageBlurHash = '',
     this.avgRating = 0.0,
     this.ratingCount = 0,
     this.mediaImageUrls = const [],
+    this.mediaImageBlurHashes = const [],
     this.favoriteUIds = const [],
   }) : super(type: UserType.booker);
 
@@ -157,6 +179,7 @@ class Booker extends AppUser {
     'type': type.name,
     'avatarImageUrl': avatarImageUrl,
     'headImageUrl': headImageUrl,
+    'headImageBlurHash': headImageBlurHash,
     'name': name,
     'city': city,
     'about': about,
@@ -165,6 +188,7 @@ class Booker extends AppUser {
     'avgRating': avgRating,
     'ratingCount': ratingCount,
     'mediaImageUrls': mediaImageUrls,
+    'mediaImageBlurHashes': mediaImageBlurHashes,
     'favoriteUIds': favoriteUIds,
   };
 
@@ -172,6 +196,7 @@ class Booker extends AppUser {
     id: id,
     avatarImageUrl: json['avatarImageUrl'] as String,
     headImageUrl: json['headImageUrl'] as String,
+    headImageBlurHash: json['headImageBlurHash'] as String? ?? '',
     name: json['name'] as String,
     city: json['city'] as String,
     about: json['about'] as String,
@@ -180,6 +205,7 @@ class Booker extends AppUser {
     avgRating: (json['avgRating'] ?? 0.0).toDouble() as double,
     ratingCount: (json['ratingCount'] ?? 0) as int,
     mediaImageUrls: List<String>.from(json['mediaImageUrls'] ?? []),
+    mediaImageBlurHashes: List<String>.from(json['mediaImageBlurHashes'] ?? []),
     favoriteUIds: List<String>.from(json['favoriteUIds'] ?? []),
   );
 }

@@ -765,8 +765,18 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                                     throw Exception("user creation failed");
                                   }
                                   String uploadedHeadImageUrl = headUrl!;
+                                  String headImageBlurHash =
+                                      BlurHashService.defaultBlurHash;
+
                                   if (!headUrl!.startsWith('http')) {
                                     final headFile = File(headUrl!);
+
+                                    // Generate BlurHash for head image
+                                    headImageBlurHash =
+                                        await BlurHashService.generateBlurHash(
+                                          headFile,
+                                        );
+
                                     final headStorageRef = FirebaseStorage
                                         .instance
                                         .ref()
@@ -779,14 +789,27 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                                   }
 
                                   List<String> uploadedMediaUrls = [];
+                                  List<String> mediaImageBlurHashes = [];
+
                                   if (mediaUrl != null &&
                                       mediaUrl!.isNotEmpty) {
                                     for (int i = 0; i < mediaUrl!.length; i++) {
                                       final mediaPath = mediaUrl![i];
                                       if (mediaPath.startsWith('http')) {
                                         uploadedMediaUrls.add(mediaPath);
+                                        mediaImageBlurHashes.add(
+                                          BlurHashService.defaultBlurHash,
+                                        );
                                       } else {
                                         final mediaFile = File(mediaPath);
+
+                                        // Generate BlurHash for media image
+                                        final blurHash =
+                                            await BlurHashService.generateBlurHash(
+                                              mediaFile,
+                                            );
+                                        mediaImageBlurHashes.add(blurHash);
+
                                         final mediaStorageRef = FirebaseStorage
                                             .instance
                                             .ref()
@@ -809,12 +832,14 @@ class _CreateProfileScreenBookerState extends State<CreateProfileScreenBooker> {
                                     avatarImageUrl:
                                         'https://firebasestorage.googleapis.com/v0/b/gig-hub-8ac24.firebasestorage.app/o/default%2Fdefault_avatar.jpg?alt=media&token=9c48f377-736e-4a9a-bf31-6ffc3ed020f7',
                                     headImageUrl: uploadedHeadImageUrl,
+                                    headImageBlurHash: headImageBlurHash,
                                     name: _nameController.text,
                                     city: _locationController.text,
                                     about: _aboutController.text,
                                     info: _infoController.text,
                                     category: _selectedCategory,
                                     mediaImageUrls: uploadedMediaUrls,
+                                    mediaImageBlurHashes: mediaImageBlurHashes,
                                     avgRating: 0.0,
                                     ratingCount: 0,
                                   );

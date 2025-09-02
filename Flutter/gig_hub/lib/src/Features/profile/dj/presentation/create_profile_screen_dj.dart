@@ -644,16 +644,10 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                     return SafePinchZoom(
                                       zoomEnabled: true,
                                       maxScale: 2.5,
-                                      child:
-                                          path.startsWith('http')
-                                              ? Image.network(
-                                                path,
-                                                fit: BoxFit.cover,
-                                              )
-                                              : Image.file(
-                                                File(path),
-                                                fit: BoxFit.cover,
-                                              ),
+                                      child: Image.network(
+                                        path,
+                                        fit: BoxFit.cover,
+                                      ),
                                     );
                                   }).toList(),
                             ),
@@ -905,8 +899,18 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                   }
 
                                   String uploadedHeadImageUrl = headUrl!;
+                                  String headImageBlurHash =
+                                      BlurHashService.defaultBlurHash;
+
                                   if (!headUrl!.startsWith('http')) {
                                     final headFile = File(headUrl!);
+
+                                    // Generate BlurHash for head image
+                                    headImageBlurHash =
+                                        await BlurHashService.generateBlurHash(
+                                          headFile,
+                                        );
+
                                     final headStorageRef = FirebaseStorage
                                         .instance
                                         .ref()
@@ -919,14 +923,27 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                   }
 
                                   List<String> uploadedMediaUrls = [];
+                                  List<String> mediaImageBlurHashes = [];
+
                                   if (mediaUrl != null &&
                                       mediaUrl!.isNotEmpty) {
                                     for (int i = 0; i < mediaUrl!.length; i++) {
                                       final mediaPath = mediaUrl![i];
                                       if (mediaPath.startsWith('http')) {
                                         uploadedMediaUrls.add(mediaPath);
+                                        mediaImageBlurHashes.add(
+                                          BlurHashService.defaultBlurHash,
+                                        );
                                       } else {
                                         final mediaFile = File(mediaPath);
+
+                                        // Generate BlurHash for media image
+                                        final blurHash =
+                                            await BlurHashService.generateBlurHash(
+                                              mediaFile,
+                                            );
+                                        mediaImageBlurHashes.add(blurHash);
+
                                         final mediaStorageRef = FirebaseStorage
                                             .instance
                                             .ref()
@@ -947,6 +964,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                     id: firebaseUser.uid,
                                     genres: genres!,
                                     headImageUrl: uploadedHeadImageUrl,
+                                    headImageBlurHash: headImageBlurHash,
                                     avatarImageUrl:
                                         'https://firebasestorage.googleapis.com/v0/b/gig-hub-8ac24.firebasestorage.app/o/default%2Fdefault_avatar.jpg?alt=media&token=9c48f377-736e-4a9a-bf31-6ffc3ed020f7',
                                     bpm: [
@@ -969,6 +987,7 @@ class _CreateProfileScreenDJState extends State<CreateProfileScreenDJ> {
                                       selectedTrackTwo!.permalinkUrl,
                                     ],
                                     mediaImageUrls: uploadedMediaUrls,
+                                    mediaImageBlurHashes: mediaImageBlurHashes,
                                     info: _infoController.text,
                                     name: _nameController.text,
                                     avgRating: 0,

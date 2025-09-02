@@ -416,22 +416,24 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                   SizedBox(
                     width: double.infinity,
                     height: 256,
-                    child:
-                        !widget.dj.headImageUrl.startsWith('http')
-                            ? Image.file(
-                              File(widget.dj.headImageUrl),
-                              fit: BoxFit.cover,
-                              colorBlendMode:
-                                  editMode ? BlendMode.difference : null,
-                              color: editMode ? Palette.primalBlack : null,
-                            )
-                            : Image.network(
-                              widget.dj.headImageUrl,
-                              fit: BoxFit.cover,
-                              colorBlendMode:
-                                  editMode ? BlendMode.difference : null,
-                              color: editMode ? Palette.primalBlack : null,
-                            ),
+                    child: BlurHash(
+                      hash:
+                          widget.dj.headImageBlurHash.isNotEmpty
+                              ? widget.dj.headImageBlurHash
+                              : BlurHashService.defaultBlurHash,
+                      image: widget.dj.headImageUrl,
+                      imageFit: BoxFit.cover,
+                      optimizationMode: BlurHashOptimizationMode.approximation,
+                      color: Palette.primalBlack,
+                    ),
+
+                    //  Image.network(
+                    //       widget.dj.headImageUrl,
+                    //       fit: BoxFit.cover,
+                    //       colorBlendMode:
+                    //           editMode ? BlendMode.difference : null,
+                    //       color: editMode ? Palette.primalBlack : null,
+                    //     ),
                   ),
 
                   if (editMode)
@@ -1164,6 +1166,7 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                           content: Center(
                             child: Text(
                               'select 2 soundcloud tracks to save your profile!',
+                              style: TextStyle(fontSize: 16),
                             ),
                           ),
                         ),
@@ -1216,6 +1219,12 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
 
                       if (!widget.dj.headImageUrl.startsWith('http')) {
                         final headFile = File(widget.dj.headImageUrl);
+
+                        // Generate BlurHash for head image
+                        final headBlurHash =
+                            await BlurHashService.generateBlurHash(headFile);
+                        widget.dj.headImageBlurHash = headBlurHash;
+
                         final headStorageRef = FirebaseStorage.instance
                             .ref()
                             .child('head_images/${widget.dj.id}.jpg');
@@ -1228,6 +1237,8 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                         (path) => !path.startsWith('http'),
                       )) {
                         List<String> newUrls = [];
+                        List<String> newBlurHashes = [];
+
                         for (
                           int i = 0;
                           i < widget.dj.mediaImageUrls.length;
@@ -1236,8 +1247,24 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                           final path = widget.dj.mediaImageUrls[i];
                           if (path.startsWith('http')) {
                             newUrls.add(path);
+                            // Keep existing BlurHash if available
+                            if (i < widget.dj.mediaImageBlurHashes.length) {
+                              newBlurHashes.add(
+                                widget.dj.mediaImageBlurHashes[i],
+                              );
+                            } else {
+                              newBlurHashes.add(
+                                BlurHashService.defaultBlurHash,
+                              );
+                            }
                           } else {
                             final file = File(path);
+
+                            // Generate BlurHash for media image
+                            final blurHash =
+                                await BlurHashService.generateBlurHash(file);
+                            newBlurHashes.add(blurHash);
+
                             final ref = FirebaseStorage.instance.ref().child(
                               'media_images/${widget.dj.id}_$i.jpg',
                             );
@@ -1247,8 +1274,8 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                           }
                         }
                         widget.dj.mediaImageUrls = newUrls;
+                        widget.dj.mediaImageBlurHashes = newBlurHashes;
                       }
-
                       setState(() {
                         isUploading = !isUploading;
                         editMode = !editMode;
@@ -1344,16 +1371,20 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                 key: ValueKey('safe_pinch_zoom_$index'),
                 zoomEnabled: true,
                 maxScale: 2.5,
-                child:
-                    widget.dj.mediaImageUrls[index].startsWith('http')
-                        ? Image.network(
-                          widget.dj.mediaImageUrls[index],
-                          fit: BoxFit.cover,
-                        )
-                        : Image.file(
-                          File(widget.dj.mediaImageUrls[index]),
-                          fit: BoxFit.cover,
-                        ),
+                child: BlurHash(
+                  hash:
+                      index < widget.dj.mediaImageBlurHashes.length
+                          ? widget.dj.mediaImageBlurHashes[index]
+                          : BlurHashService.defaultBlurHash,
+                  image: widget.dj.mediaImageUrls[index],
+                  imageFit: BoxFit.cover,
+                  optimizationMode: BlurHashOptimizationMode.approximation,
+                ),
+
+                // Image.network(
+                //   widget.dj.mediaImageUrls[index],
+                //   fit: BoxFit.cover,
+                // ),
               ),
         ],
       ),

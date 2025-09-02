@@ -321,22 +321,24 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                 SizedBox(
                   width: double.infinity,
                   height: 256,
-                  child:
-                      !widget.booker.headImageUrl.startsWith('http')
-                          ? Image.file(
-                            File(widget.booker.headImageUrl),
-                            fit: BoxFit.cover,
-                            colorBlendMode:
-                                editMode ? BlendMode.difference : null,
-                            color: editMode ? Palette.primalBlack : null,
-                          )
-                          : Image.network(
-                            widget.booker.headImageUrl,
-                            fit: BoxFit.cover,
-                            colorBlendMode:
-                                editMode ? BlendMode.difference : null,
-                            color: editMode ? Palette.primalBlack : null,
-                          ),
+                  child: BlurHash(
+                    hash:
+                        widget.booker.headImageBlurHash.isNotEmpty
+                            ? widget.booker.headImageBlurHash
+                            : BlurHashService.defaultBlurHash,
+                    image: widget.booker.headImageUrl,
+                    imageFit: BoxFit.cover,
+                    optimizationMode: BlurHashOptimizationMode.approximation,
+                    color: Palette.primalBlack,
+                  ),
+
+                  //  Image.network(
+                  //       widget.booker.headImageUrl,
+                  //       fit: BoxFit.cover,
+                  //       colorBlendMode:
+                  //           editMode ? BlendMode.difference : null,
+                  //       color: editMode ? Palette.primalBlack : null,
+                  //     ),
                 ),
 
                 if (editMode)
@@ -903,10 +905,33 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                                           SafePinchZoom(
                                             zoomEnabled: true,
                                             maxScale: 2.5,
-                                            child: Image.network(
-                                              path,
-                                              fit: BoxFit.cover,
+                                            child: BlurHash(
+                                              hash:
+                                                  widget.booker.mediaImageUrls
+                                                              .indexOf(path) <
+                                                          widget
+                                                              .booker
+                                                              .mediaImageBlurHashes
+                                                              .length
+                                                      ? widget
+                                                          .booker
+                                                          .mediaImageBlurHashes[widget
+                                                          .booker
+                                                          .mediaImageUrls
+                                                          .indexOf(path)]
+                                                      : BlurHashService
+                                                          .defaultBlurHash,
+                                              image: path,
+                                              imageFit: BoxFit.cover,
+                                              optimizationMode:
+                                                  BlurHashOptimizationMode
+                                                      .approximation,
                                             ),
+
+                                            //  Image.network(
+                                            //   path,
+                                            //   fit: BoxFit.cover,
+                                            // ),
                                           ),
                                     ],
                                   ),
@@ -1084,6 +1109,15 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                                           final headFile = File(
                                             widget.booker.headImageUrl,
                                           );
+
+                                          // Generate BlurHash for head image
+                                          final headBlurHash =
+                                              await BlurHashService.generateBlurHash(
+                                                headFile,
+                                              );
+                                          widget.booker.headImageBlurHash =
+                                              headBlurHash;
+
                                           final headStorageRef = FirebaseStorage
                                               .instance
                                               .ref()
@@ -1102,6 +1136,8 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                                           (path) => !path.startsWith('http'),
                                         )) {
                                           List<String> newUrls = [];
+                                          List<String> newBlurHashes = [];
+
                                           for (
                                             int i = 0;
                                             i <
@@ -1115,8 +1151,33 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                                                 widget.booker.mediaImageUrls[i];
                                             if (path.startsWith('http')) {
                                               newUrls.add(path);
+                                              // Keep existing BlurHash if available
+                                              if (i <
+                                                  widget
+                                                      .booker
+                                                      .mediaImageBlurHashes
+                                                      .length) {
+                                                newBlurHashes.add(
+                                                  widget
+                                                      .booker
+                                                      .mediaImageBlurHashes[i],
+                                                );
+                                              } else {
+                                                newBlurHashes.add(
+                                                  BlurHashService
+                                                      .defaultBlurHash,
+                                                );
+                                              }
                                             } else {
                                               final file = File(path);
+
+                                              // Generate BlurHash for media image
+                                              final blurHash =
+                                                  await BlurHashService.generateBlurHash(
+                                                    file,
+                                                  );
+                                              newBlurHashes.add(blurHash);
+
                                               final ref = FirebaseStorage
                                                   .instance
                                                   .ref()
@@ -1131,6 +1192,8 @@ class _ProfileScreenBookerState extends State<ProfileScreenBooker> {
                                           }
                                           widget.booker.mediaImageUrls =
                                               newUrls;
+                                          widget.booker.mediaImageBlurHashes =
+                                              newBlurHashes;
                                         }
 
                                         try {

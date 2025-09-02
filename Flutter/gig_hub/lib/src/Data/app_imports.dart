@@ -81,3 +81,5 @@ export 'package:gig_hub/src/Features/search/presentation/widgets/genre_selection
 export "package:flutter_image_compress/flutter_image_compress.dart";
 export "package:path_provider/path_provider.dart";
 export "package:uuid/uuid.dart";
+export "package:flutter_blurhash/flutter_blurhash.dart";
+export 'package:gig_hub/src/data/services/blurhash_service.dart';
