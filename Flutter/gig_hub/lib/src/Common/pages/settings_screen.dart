@@ -669,27 +669,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                           ),
                                         ),
                                         onPressed: () async {
-                                          // Store navigator and messenger references before async operation
+                                          // Store navigator reference before async operation
                                           final navigator = Navigator.of(
                                             context,
-                                          );
-                                          final scaffoldMessenger =
-                                              ScaffoldMessenger.of(context);
-
-                                          // Show loading state
-                                          scaffoldMessenger.showSnackBar(
-                                            SnackBar(
-                                              backgroundColor: Palette.alarmRed,
-                                              content: Center(
-                                                child: Text(
-                                                  'Deleting account...',
-                                                  style: TextStyle(
-                                                    color: Palette.glazedWhite,
-                                                  ),
-                                                ),
-                                              ),
-                                              duration: Duration(seconds: 2),
-                                            ),
                                           );
 
                                           await auth.deleteUser();
@@ -750,21 +732,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       onPressed: () async {
                         // Store navigator reference before async operation
                         final navigator = Navigator.of(context);
-                        final scaffoldMessenger = ScaffoldMessenger.of(context);
-
-                        // Show loading state
-                        scaffoldMessenger.showSnackBar(
-                          SnackBar(
-                            backgroundColor: Palette.forgedGold,
-                            content: Center(
-                              child: Text(
-                                'Signing out...',
-                                style: TextStyle(color: Palette.primalBlack),
-                              ),
-                            ),
-                            duration: Duration(seconds: 1),
-                          ),
-                        );
 
                         // Sign out
                         await auth.signOut();
