@@ -668,20 +668,41 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                             ),
                                           ),
                                         ),
-                                        onPressed: () {
-                                          auth.deleteUser();
-                                          if (!context.mounted) return;
-                                          if (mounted) {
-                                            Navigator.of(context).pop();
-                                            Navigator.of(
-                                              context,
-                                            ).pushReplacement(
-                                              MaterialPageRoute(
-                                                builder:
-                                                    (context) => LoginScreen(),
+                                        onPressed: () async {
+                                          // Store navigator and messenger references before async operation
+                                          final navigator = Navigator.of(
+                                            context,
+                                          );
+                                          final scaffoldMessenger =
+                                              ScaffoldMessenger.of(context);
+
+                                          // Show loading state
+                                          scaffoldMessenger.showSnackBar(
+                                            SnackBar(
+                                              backgroundColor: Palette.alarmRed,
+                                              content: Center(
+                                                child: Text(
+                                                  'Deleting account...',
+                                                  style: TextStyle(
+                                                    color: Palette.glazedWhite,
+                                                  ),
+                                                ),
                                               ),
-                                            );
-                                          }
+                                              duration: Duration(seconds: 2),
+                                            ),
+                                          );
+
+                                          await auth.deleteUser();
+
+                                          if (!mounted) return;
+
+                                          // Close the dialog first
+                                          navigator.pop();
+
+                                          // Navigate back to root and let auth state handle the rest
+                                          navigator.popUntil(
+                                            (route) => route.isFirst,
+                                          );
                                         },
                                         child: Text(
                                           AppLocale.deleteAcc.getString(
@@ -727,11 +748,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                       ),
                       onPressed: () async {
+                        // Store navigator reference before async operation
+                        final navigator = Navigator.of(context);
+                        final scaffoldMessenger = ScaffoldMessenger.of(context);
+
+                        // Show loading state
+                        scaffoldMessenger.showSnackBar(
+                          SnackBar(
+                            backgroundColor: Palette.forgedGold,
+                            content: Center(
+                              child: Text(
+                                'Signing out...',
+                                style: TextStyle(color: Palette.primalBlack),
+                              ),
+                            ),
+                            duration: Duration(seconds: 1),
+                          ),
+                        );
+
+                        // Sign out
                         await auth.signOut();
-                        if (!context.mounted) {
-                          return;
-                        }
-                        Navigator.of(context).pop();
+
+                        // Ensure we're not mounted after async operation
+                        if (!mounted) return;
+
+                        // Navigate back to root and let auth state handle the rest
+                        navigator.popUntil((route) => route.isFirst);
                       },
                       child: Text(
                         AppLocale.logOut.getString(context),
