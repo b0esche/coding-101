@@ -180,16 +180,35 @@ class AudioPlayerWidgetState extends State<AudioPlayerWidget>
         }
       });
 
-      // Don't load audio source here - wait for user to press play
+      // Show simple waveform initially
+      _showSimpleWaveform();
+
+      // Load waveform data in the background for better UX
+      _loadWaveformInBackground();
+
       if (!mounted) return;
       setState(() => _isLoading = false);
-
-      // Show simple waveform while waiting
-      _showSimpleWaveform();
     } catch (e) {
       if (mounted) {
         setState(() => _isLoading = false);
       }
+    }
+  }
+
+  Future<void> _loadWaveformInBackground() async {
+    try {
+      // Get the streaming URL for waveform extraction
+      final urlToStream = widget.audioUrl;
+      final publicUrl = await SoundcloudService().getPublicStreamUrl(
+        urlToStream,
+      );
+
+      if (publicUrl.isNotEmpty) {
+        _downloadAndExtractWaveformInBackground(publicUrl);
+      }
+    } catch (e) {
+      // Silent error handling for waveform loading
+      print('Error loading waveform in background: $e');
     }
   }
 
@@ -441,13 +460,173 @@ class AudioPlayerWidgetState extends State<AudioPlayerWidget>
                                     _duration!.inMilliseconds
                                 : 0.0,
                         onSeek: (progress) async {
-                          if (_audioPlayer != null && _duration != null) {
-                            final position = Duration(
-                              milliseconds:
-                                  (_duration!.inMilliseconds * progress)
-                                      .round(),
+                          print('Waveform tapped! Progress: $progress');
+                          try {
+                            final backgroundService =
+                                BackgroundAudioService.instance;
+
+                            print(
+                              'Current session active: ${backgroundService.isSessionActive(widget.sessionId)}',
                             );
-                            await _audioPlayer!.seek(position);
+
+                            // Ensure this session is active before seeking
+                            if (!backgroundService.isSessionActive(
+                              widget.sessionId,
+                            )) {
+                              print('Loading audio source for seeking...');
+                              // Load the audio source first
+                              final urlToStream = widget.audioUrl;
+                              final publicUrl = await SoundcloudService()
+                                  .getPublicStreamUrl(urlToStream);
+
+                              if (publicUrl.isNotEmpty) {
+                                print('Got public URL for seeking: $publicUrl');
+                                try {
+                                  await backgroundService.switchToNewAudio(
+                                    sessionId: widget.sessionId,
+                                    audioUrl: publicUrl,
+                                    trackTitle: widget.trackTitle,
+                                    artistName: widget.artistName,
+                                    artworkUrl: widget.artworkUrl,
+                                  );
+                                  print('Audio source loaded successfully');
+                                } catch (e) {
+                                  print(
+                                    'Streaming failed, trying download: $e',
+                                  );
+                                  // If streaming fails, try downloading
+                                  try {
+                                    final dir = await getTemporaryDirectory();
+                                    final filePath =
+                                        '${dir.path}/${publicUrl.hashCode}.mp3';
+                                    final savedFilePath = await compute(
+                                      AudioPlayerWidget.downloadAndSaveAudio,
+                                      {
+                                        'publicUrl': publicUrl,
+                                        'filePath': filePath,
+                                      },
+                                    );
+                                    await backgroundService
+                                        .switchToNewAudioFromFile(
+                                          sessionId: widget.sessionId,
+                                          filePath: savedFilePath,
+                                          trackTitle: widget.trackTitle,
+                                          artistName: widget.artistName,
+                                          artworkUrl: widget.artworkUrl,
+                                        );
+                                    print(
+                                      'Audio downloaded and loaded successfully',
+                                    );
+                                  } catch (downloadError) {
+                                    print(
+                                      'Error loading audio for seeking: $downloadError',
+                                    );
+                                    return;
+                                  }
+                                }
+                              }
+
+                              // Wait for duration to be available after loading audio source
+                              if (_audioPlayer != null) {
+                                Duration? audioDuration =
+                                    _audioPlayer!.duration;
+                                print('Current duration: $audioDuration');
+
+                                // If duration is not immediately available, wait for it
+                                if (audioDuration == null) {
+                                  print('Waiting for duration...');
+                                  audioDuration =
+                                      await _audioPlayer!.durationStream.first;
+                                  print(
+                                    'Got duration from stream: $audioDuration',
+                                  );
+                                }
+
+                                if (audioDuration != null) {
+                                  final position = Duration(
+                                    milliseconds:
+                                        (audioDuration.inMilliseconds *
+                                                progress)
+                                            .round(),
+                                  );
+                                  print('Seeking to position: $position');
+                                  await _audioPlayer!.seek(position);
+                                  print('Seek completed');
+
+                                  // Update local position immediately after seeking
+                                  if (mounted) {
+                                    setState(() {
+                                      _position = position;
+                                      _duration = audioDuration;
+                                    });
+                                  }
+                                } else {
+                                  print('Could not get audio duration');
+                                }
+                              }
+                            } else {
+                              print('Session already active, seeking directly');
+                              // Session is already active, seek directly
+                              if (_audioPlayer != null) {
+                                // Use the player's current duration if widget duration is null
+                                Duration? seekDuration =
+                                    _duration ?? _audioPlayer!.duration;
+
+                                if (seekDuration != null) {
+                                  final position = Duration(
+                                    milliseconds:
+                                        (seekDuration.inMilliseconds * progress)
+                                            .round(),
+                                  );
+                                  print(
+                                    'Seeking to position: $position (duration: $seekDuration)',
+                                  );
+                                  await _audioPlayer!.seek(position);
+                                  print('Direct seek completed');
+
+                                  // Update local position immediately after seeking
+                                  if (mounted) {
+                                    setState(() {
+                                      _position = position;
+                                      if (_duration == null)
+                                        _duration = seekDuration;
+                                    });
+                                  }
+                                } else {
+                                  print('Waiting for duration from player...');
+                                  // Wait for duration to become available
+                                  final playerDuration =
+                                      await _audioPlayer!.durationStream.first;
+                                  if (playerDuration != null) {
+                                    final position = Duration(
+                                      milliseconds:
+                                          (playerDuration.inMilliseconds *
+                                                  progress)
+                                              .round(),
+                                    );
+                                    print(
+                                      'Seeking to position: $position (duration: $playerDuration)',
+                                    );
+                                    await _audioPlayer!.seek(position);
+                                    print('Delayed seek completed');
+
+                                    // Update local position immediately after seeking
+                                    if (mounted) {
+                                      setState(() {
+                                        _position = position;
+                                        _duration = playerDuration;
+                                      });
+                                    }
+                                  } else {
+                                    print('Could not get duration from player');
+                                  }
+                                }
+                              } else {
+                                print('Cannot seek - audioPlayer is null');
+                              }
+                            }
+                          } catch (e) {
+                            print('Error seeking: $e');
                           }
                         },
                       ),
@@ -475,8 +654,10 @@ class CustomWaveformWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTapDown: (details) {
+        print('Waveform gesture detected at: ${details.localPosition}');
         final RenderBox box = context.findRenderObject() as RenderBox;
         final progress = details.localPosition.dx / box.size.width;
+        print('Calculated progress: $progress');
         onSeek(progress.clamp(0.0, 1.0));
       },
       child: CustomPaint(
