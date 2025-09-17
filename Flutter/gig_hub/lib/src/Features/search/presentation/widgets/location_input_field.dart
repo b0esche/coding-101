@@ -17,9 +17,11 @@ class LocationAutocompleteField extends StatefulWidget {
 
 class _LocationAutocompleteFieldState extends State<LocationAutocompleteField> {
   late TextEditingController _internalController;
+  // ignore: unused_field
   String? _validationMessage;
   String? _suggestedCity;
   Timer? _debounceTimer;
+  // ignore: unused_field
   bool _isValidating = false;
 
   @override

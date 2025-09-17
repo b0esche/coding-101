@@ -1,7 +1,6 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:flutter_test/flutter_test.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'dart:io';
 
 import 'package:gig_hub/src/Data/services/audio_service.dart';
 
