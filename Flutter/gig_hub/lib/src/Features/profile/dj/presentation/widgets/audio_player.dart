@@ -5,7 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_waveform/just_waveform.dart';
-import 'package:gig_hub/src/data/services/soundcloud_service.dart';
+import 'package:gig_hub/src/Data/services/soundcloud_service.dart';
+import 'package:gig_hub/src/Data/services/background_audio_service.dart';
 import 'package:gig_hub/src/Theme/palette.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
@@ -22,6 +23,8 @@ class AudioPlayerCoordinator {
   void requestPlayback(AudioPlayerWidgetState player) {
     if (_currentlyPlaying != null && _currentlyPlaying != player) {
       _currentlyPlaying!._stopFromCoordinator();
+      // Clear the current player immediately to avoid state conflicts
+      _currentlyPlaying = null;
     }
     _currentlyPlaying = player;
   }
@@ -31,12 +34,26 @@ class AudioPlayerCoordinator {
       _currentlyPlaying = null;
     }
   }
+
+  // Get the currently playing session ID for background service coordination
+  String? get currentlyPlayingSessionId => _currentlyPlaying?.widget.sessionId;
 }
 
 class AudioPlayerWidget extends StatefulWidget {
   final String audioUrl;
+  final String trackTitle;
+  final String artistName;
+  final String? artworkUrl;
+  final String sessionId; // Unique identifier for this player instance
 
-  const AudioPlayerWidget({super.key, required this.audioUrl});
+  const AudioPlayerWidget({
+    super.key,
+    required this.audioUrl,
+    required this.trackTitle,
+    required this.artistName,
+    required this.sessionId,
+    this.artworkUrl,
+  });
 
   @override
   State<AudioPlayerWidget> createState() => AudioPlayerWidgetState();
@@ -110,61 +127,67 @@ class AudioPlayerWidgetState extends State<AudioPlayerWidget>
 
   Future<void> _init() async {
     try {
-      _audioPlayer = AudioPlayer();
+      // Use the shared background player
+      final backgroundService = BackgroundAudioService.instance;
+      _audioPlayer = backgroundService.getSharedPlayer();
 
       _playerStateSubscription = _audioPlayer!.playerStateStream.listen((
         state,
       ) {
         if (mounted) {
+          // Only update state if this session is active
+          final isThisSessionActive = backgroundService.isSessionActive(
+            widget.sessionId,
+          );
           setState(() {
-            _isPlaying = state.playing;
-            _hasFinished = state.processingState == ProcessingState.completed;
+            _isPlaying = isThisSessionActive && state.playing;
+            _hasFinished =
+                isThisSessionActive &&
+                state.processingState == ProcessingState.completed;
           });
 
-          if (state.playing) {
+          if (isThisSessionActive && state.playing) {
             _controller.forward();
             AudioPlayerCoordinator.instance.requestPlayback(this);
           } else {
             _controller.reverse();
-            AudioPlayerCoordinator.instance.playerStopped(this);
+            if (isThisSessionActive) {
+              AudioPlayerCoordinator.instance.playerStopped(this);
+            }
           }
         }
       });
 
       _positionSubscription = _audioPlayer!.positionStream.listen((position) {
         if (mounted) {
-          setState(() => _position = position);
+          // Only update position if this session is active
+          final isThisSessionActive = BackgroundAudioService.instance
+              .isSessionActive(widget.sessionId);
+          if (isThisSessionActive) {
+            setState(() => _position = position);
+          }
         }
       });
 
       _durationSubscription = _audioPlayer!.durationStream.listen((duration) {
         if (mounted) {
-          setState(() => _duration = duration);
+          // Only update duration if this session is active
+          final isThisSessionActive = BackgroundAudioService.instance
+              .isSessionActive(widget.sessionId);
+          if (isThisSessionActive) {
+            setState(() => _duration = duration);
+          }
         }
       });
 
-      final urlToStream = widget.audioUrl;
-      final publicUrl = await SoundcloudService().getPublicStreamUrl(
-        urlToStream,
-      );
+      // Don't load audio source here - wait for user to press play
+      if (!mounted) return;
+      setState(() => _isLoading = false);
 
-      if (publicUrl.isEmpty) {
-        throw Exception('invalid audio file from server');
-      }
-
-      try {
-        final audioSource = AudioSource.uri(Uri.parse(publicUrl));
-        await _audioPlayer!.setAudioSource(audioSource);
-
-        if (!mounted) return;
-        setState(() => _isLoading = false);
-
-        _showSimpleWaveform();
-        _downloadAndExtractWaveformInBackground(publicUrl);
-      } catch (e) {
-        await _downloadAndSetupPlayer(publicUrl);
-      }
+      // Show simple waveform while waiting
+      _showSimpleWaveform();
     } catch (e) {
+      print('Error in _init(): $e');
       if (mounted) {
         setState(() => _isLoading = false);
       }
@@ -181,21 +204,38 @@ class AudioPlayerWidgetState extends State<AudioPlayerWidget>
   }
 
   Future<void> _downloadAndSetupPlayer(String publicUrl) async {
-    final dir = await getTemporaryDirectory();
-    final filePath = '${dir.path}/${publicUrl.hashCode}.mp3';
+    try {
+      print('Downloading audio file for session: ${widget.sessionId}');
+      final dir = await getTemporaryDirectory();
+      final filePath = '${dir.path}/${publicUrl.hashCode}.mp3';
 
-    final savedFilePath = await compute(
-      AudioPlayerWidget.downloadAndSaveAudio,
-      {'publicUrl': publicUrl, 'filePath': filePath},
-    );
+      final savedFilePath = await compute(
+        AudioPlayerWidget.downloadAndSaveAudio,
+        {'publicUrl': publicUrl, 'filePath': filePath},
+      );
 
-    final audioSource = AudioSource.uri(Uri.file(savedFilePath));
-    await _audioPlayer!.setAudioSource(audioSource);
+      print('Downloaded audio to: $savedFilePath');
 
-    if (!mounted) return;
-    setState(() => _isLoading = false);
+      // Switch the shared player to this audio source from file with background metadata
+      final backgroundService = BackgroundAudioService.instance;
+      await backgroundService.switchToNewAudioFromFile(
+        sessionId: widget.sessionId,
+        filePath: savedFilePath,
+        trackTitle: widget.trackTitle,
+        artistName: widget.artistName,
+        artworkUrl: widget.artworkUrl,
+      );
 
-    _extractWaveform(savedFilePath);
+      if (!mounted) return;
+      setState(() => _isLoading = false);
+
+      _extractWaveform(savedFilePath);
+    } catch (e) {
+      print('Error in _downloadAndSetupPlayer: $e');
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
   }
 
   Future<void> _downloadAndExtractWaveformInBackground(String publicUrl) async {
@@ -272,6 +312,14 @@ class AudioPlayerWidgetState extends State<AudioPlayerWidget>
     if (_audioPlayer != null && _isPlaying) {
       _audioPlayer!.pause();
     }
+    // Update UI state immediately when stopped by coordinator
+    if (mounted) {
+      setState(() {
+        _isPlaying = false;
+        _hasFinished = false;
+      });
+      _controller.reverse();
+    }
   }
 
   @override
@@ -280,7 +328,7 @@ class AudioPlayerWidgetState extends State<AudioPlayerWidget>
     _playerStateSubscription?.cancel();
     _positionSubscription?.cancel();
     _durationSubscription?.cancel();
-    _audioPlayer?.dispose();
+    // Don't dispose the shared player here - it's managed by the service
     _controller.dispose();
     super.dispose();
   }
@@ -288,14 +336,63 @@ class AudioPlayerWidgetState extends State<AudioPlayerWidget>
   Future<void> _togglePlayPause() async {
     if (_audioPlayer == null) return;
 
-    if (_isPlaying) {
-      await _audioPlayer!.pause();
-    } else {
-      if (_hasFinished) {
-        await _audioPlayer!.seek(Duration.zero);
-        _hasFinished = false;
+    try {
+      if (_isPlaying) {
+        await _audioPlayer!.pause();
+      } else {
+        // Request playback coordination first to stop other players
+        AudioPlayerCoordinator.instance.requestPlayback(this);
+
+        // Always switch to this audio source before playing to ensure the correct track is loaded
+        final backgroundService = BackgroundAudioService.instance;
+
+        if (!backgroundService.isSessionActive(widget.sessionId)) {
+          // This session is not active, switch to our audio source
+          print('Loading audio for session: ${widget.sessionId}');
+
+          final urlToStream = widget.audioUrl;
+          final publicUrl = await SoundcloudService().getPublicStreamUrl(
+            urlToStream,
+          );
+
+          if (publicUrl.isNotEmpty) {
+            print('Public URL: $publicUrl');
+
+            try {
+              // Try streaming first
+              await backgroundService.switchToNewAudio(
+                sessionId: widget.sessionId,
+                audioUrl: publicUrl,
+                trackTitle: widget.trackTitle,
+                artistName: widget.artistName,
+                artworkUrl: widget.artworkUrl,
+              );
+
+              // Start background waveform extraction
+              _downloadAndExtractWaveformInBackground(publicUrl);
+            } catch (e) {
+              print(
+                'Error setting up streaming audio, attempting download: $e',
+              );
+              // If streaming fails, download and try from file
+              await _downloadAndSetupPlayer(publicUrl);
+            }
+          } else {
+            throw Exception('Could not get audio URL');
+          }
+        }
+
+        // Reset position if finished
+        if (_hasFinished) {
+          await _audioPlayer!.seek(Duration.zero);
+          setState(() => _hasFinished = false);
+        }
+
+        // Start playback
+        await _audioPlayer!.play();
       }
-      await _audioPlayer!.play();
+    } catch (e) {
+      print('Error toggling play/pause: $e');
     }
   }
 

@@ -899,6 +899,13 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                     RepaintBoundary(
                                       child: AudioPlayerWidget(
                                         audioUrl: widget.dj.streamingUrls.first,
+                                        trackTitle:
+                                            widget.dj.trackTitles.isNotEmpty
+                                                ? widget.dj.trackTitles.first
+                                                : 'Track 1',
+                                        artistName: widget.dj.name,
+                                        sessionId: '${widget.dj.id}_track_1',
+                                        artworkUrl: widget.dj.headImageUrl,
                                       ),
                                     ),
                                     IconButton(
@@ -952,6 +959,13 @@ class _ProfileScreenDJState extends State<ProfileScreenDJ> {
                                   RepaintBoundary(
                                     child: AudioPlayerWidget(
                                       audioUrl: widget.dj.streamingUrls.last,
+                                      trackTitle:
+                                          widget.dj.trackTitles.length > 1
+                                              ? widget.dj.trackTitles.last
+                                              : 'Track 2',
+                                      artistName: widget.dj.name,
+                                      sessionId: '${widget.dj.id}_track_2',
+                                      artworkUrl: widget.dj.headImageUrl,
                                     ),
                                   ),
                                   IconButton(

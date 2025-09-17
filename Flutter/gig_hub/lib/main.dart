@@ -3,6 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:gig_hub/src/Data/services/notification_service.dart';
 import 'package:gig_hub/src/Data/services/group_chat_cleanup_service.dart';
+import 'package:gig_hub/src/Data/services/background_audio_service.dart';
 
 /// Main entry point for the GigHub application
 ///
@@ -76,6 +77,9 @@ Future<void> main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await FirebaseMessaging.instance.requestPermission();
   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+  // Initialize background audio service for DJ track playback
+  await BackgroundAudioService.initialize();
 
   GroupChatCleanupService().startCleanupService();
 

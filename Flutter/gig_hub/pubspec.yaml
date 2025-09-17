@@ -28,6 +28,7 @@ dependencies:
   image_picker: ^1.1.2
   flutter_image_compress: ^2.4.0
   just_audio: ^0.10.4
+  just_audio_background: ^0.0.1-beta.8
   just_waveform: ^0.0.7
   image: ^4.5.4
   cached_network_image: ^3.4.1
