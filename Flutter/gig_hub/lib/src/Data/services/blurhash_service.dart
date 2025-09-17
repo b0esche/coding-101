@@ -33,7 +33,6 @@ class BlurHashService {
 
       return blurHash.hash;
     } catch (e) {
-      debugPrint('Error generating BlurHash: $e');
       // Return a default BlurHash for a gray color if generation fails
       return defaultBlurHash;
     }
@@ -64,7 +63,6 @@ class BlurHashService {
 
       return blurHash.hash;
     } catch (e) {
-      debugPrint('Error generating BlurHash from bytes: $e');
       // Return a default BlurHash for a gray color if generation fails
       return defaultBlurHash;
     }

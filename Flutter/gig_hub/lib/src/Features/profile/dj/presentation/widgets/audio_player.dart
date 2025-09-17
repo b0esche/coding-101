@@ -187,7 +187,6 @@ class AudioPlayerWidgetState extends State<AudioPlayerWidget>
       // Show simple waveform while waiting
       _showSimpleWaveform();
     } catch (e) {
-      print('Error in _init(): $e');
       if (mounted) {
         setState(() => _isLoading = false);
       }
@@ -205,7 +204,6 @@ class AudioPlayerWidgetState extends State<AudioPlayerWidget>
 
   Future<void> _downloadAndSetupPlayer(String publicUrl) async {
     try {
-      print('Downloading audio file for session: ${widget.sessionId}');
       final dir = await getTemporaryDirectory();
       final filePath = '${dir.path}/${publicUrl.hashCode}.mp3';
 
@@ -213,8 +211,6 @@ class AudioPlayerWidgetState extends State<AudioPlayerWidget>
         AudioPlayerWidget.downloadAndSaveAudio,
         {'publicUrl': publicUrl, 'filePath': filePath},
       );
-
-      print('Downloaded audio to: $savedFilePath');
 
       // Switch the shared player to this audio source from file with background metadata
       final backgroundService = BackgroundAudioService.instance;
@@ -231,7 +227,6 @@ class AudioPlayerWidgetState extends State<AudioPlayerWidget>
 
       _extractWaveform(savedFilePath);
     } catch (e) {
-      print('Error in _downloadAndSetupPlayer: $e');
       if (mounted) {
         setState(() => _isLoading = false);
       }
@@ -348,7 +343,6 @@ class AudioPlayerWidgetState extends State<AudioPlayerWidget>
 
         if (!backgroundService.isSessionActive(widget.sessionId)) {
           // This session is not active, switch to our audio source
-          print('Loading audio for session: ${widget.sessionId}');
 
           final urlToStream = widget.audioUrl;
           final publicUrl = await SoundcloudService().getPublicStreamUrl(
@@ -356,8 +350,6 @@ class AudioPlayerWidgetState extends State<AudioPlayerWidget>
           );
 
           if (publicUrl.isNotEmpty) {
-            print('Public URL: $publicUrl');
-
             try {
               // Try streaming first
               await backgroundService.switchToNewAudio(
@@ -371,9 +363,6 @@ class AudioPlayerWidgetState extends State<AudioPlayerWidget>
               // Start background waveform extraction
               _downloadAndExtractWaveformInBackground(publicUrl);
             } catch (e) {
-              print(
-                'Error setting up streaming audio, attempting download: $e',
-              );
               // If streaming fails, download and try from file
               await _downloadAndSetupPlayer(publicUrl);
             }
@@ -391,9 +380,7 @@ class AudioPlayerWidgetState extends State<AudioPlayerWidget>
         // Start playback
         await _audioPlayer!.play();
       }
-    } catch (e) {
-      print('Error toggling play/pause: $e');
-    }
+    } catch (_) {}
   }
 
   @override
