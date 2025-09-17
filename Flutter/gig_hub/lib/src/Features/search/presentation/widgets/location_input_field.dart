@@ -1,7 +1,5 @@
 import 'package:gig_hub/src/Data/app_imports.dart';
 
-import 'package:http/http.dart' as http;
-
 class LocationAutocompleteField extends StatefulWidget {
   final void Function(String) onCitySelected;
   final TextEditingController? controller;
@@ -19,8 +17,10 @@ class LocationAutocompleteField extends StatefulWidget {
 
 class _LocationAutocompleteFieldState extends State<LocationAutocompleteField> {
   late TextEditingController _internalController;
-  String? _bestSuggestion;
+  String? _validationMessage;
+  String? _suggestedCity;
   Timer? _debounceTimer;
+  bool _isValidating = false;
 
   @override
   void initState() {
@@ -40,96 +40,80 @@ class _LocationAutocompleteFieldState extends State<LocationAutocompleteField> {
   }
 
   void _onControllerTextChanged() {
-    final input = _internalController.text;
+    final input = _internalController.text.trim();
 
     if (input.isEmpty) {
       setState(() {
-        _bestSuggestion = null;
+        _validationMessage = null;
+        _isValidating = false;
       });
       widget.onCitySelected('');
       return;
     }
 
+    // Call the callback immediately with the input
+    widget.onCitySelected(input);
+
+    // Cancel previous validation timer
     _debounceTimer?.cancel();
-    _debounceTimer = Timer(const Duration(milliseconds: 350), () {
-      if (input != _bestSuggestion) {
-        _fetchBestSuggestion(input);
-      }
+
+    // Set validating state
+    setState(() {
+      _isValidating = true;
+      _validationMessage = null;
     });
 
-    widget.onCitySelected(input);
+    // Start new validation timer
+    _debounceTimer = Timer(const Duration(milliseconds: 800), () {
+      _validateCity(input);
+    });
   }
 
-  Future<void> _fetchBestSuggestion(String input) async {
-    final apiKey = dotenv.env['GOOGLE_API_KEY'];
-    if (apiKey == null || apiKey.isEmpty || input.isEmpty) {
+  Future<void> _validateCity(String input) async {
+    if (input.isEmpty) {
       setState(() {
-        _bestSuggestion = null;
+        _validationMessage = null;
+        _suggestedCity = null;
+        _isValidating = false;
       });
       return;
     }
 
     try {
-      final url = Uri.parse(
-        'https://maps.googleapis.com/maps/api/place/autocomplete/json'
-        '?input=$input'
-        '&types=(cities)'
-        '&language=en'
-        '&key=$apiKey',
+      final result = await PlacesValidationService.validateCityWithSuggestion(
+        input,
       );
 
-      final response = await http.get(url);
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-
-        if (data['status'] == 'OK') {
-          final predictions = data['predictions'] as List;
-
-          if (predictions.isNotEmpty) {
-            setState(() {
-              _bestSuggestion = predictions.first['description'];
-            });
-          } else {
-            setState(() {
-              _bestSuggestion = null;
-            });
-          }
-        } else {
-          setState(() {
-            _bestSuggestion = null;
-          });
-        }
-      } else {
+      if (mounted) {
         setState(() {
-          _bestSuggestion = null;
+          _isValidating = false;
+          if (result.isValid) {
+            _validationMessage = "✓ City found";
+            _suggestedCity = result.suggestedName;
+          } else {
+            _validationMessage = "City not found";
+            _suggestedCity = null;
+          }
         });
       }
     } catch (e) {
-      setState(() {
-        _bestSuggestion = null;
-      });
+      if (mounted) {
+        setState(() {
+          _isValidating = false;
+          _validationMessage = "Unable to validate city";
+          _suggestedCity = null;
+        });
+      }
     }
   }
 
   void _applySuggestion() {
-    if (_bestSuggestion != null &&
-        _bestSuggestion != _internalController.text) {
-      final cityOnly = _bestSuggestion!.split(',')[0].trim();
-
-      _internalController.text = cityOnly;
-      _internalController.selection = TextSelection.fromPosition(
-        TextPosition(offset: _internalController.text.length),
-      );
-      widget.onCitySelected(cityOnly);
+    if (_suggestedCity != null) {
+      _internalController.text = _suggestedCity!;
+      widget.onCitySelected(_suggestedCity!);
       setState(() {
-        _bestSuggestion = null;
-      });
-    } else if (_bestSuggestion != null) {
-      final cityOnly = _internalController.text.split(',')[0].trim();
-      widget.onCitySelected(cityOnly);
-      setState(() {
-        _bestSuggestion = null;
+        _suggestedCity = null;
+        _validationMessage = "✓ City selected";
       });
     }
   }
@@ -146,14 +130,14 @@ class _LocationAutocompleteFieldState extends State<LocationAutocompleteField> {
           onPressed: null,
           onChanged: (value) {},
           suffixIcon:
-              _bestSuggestion != null &&
-                      _bestSuggestion != _internalController.text
+              _suggestedCity != null &&
+                      _suggestedCity != _internalController.text
                   ? GestureDetector(
                     onTap: _applySuggestion,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: Text(
-                        _bestSuggestion!,
+                        _suggestedCity!,
                         style: TextStyle(
                           color: Palette.forgedGold,
                           fontSize: 14,

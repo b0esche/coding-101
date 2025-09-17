@@ -35,13 +35,11 @@ class BackgroundAudioService {
 
   // Get the shared audio player with background support
   AudioPlayer getSharedPlayer() {
-    if (_sharedPlayer == null) {
-      _sharedPlayer = AudioPlayer(
-        audioPipeline: AudioPipeline(
-          androidAudioEffects: [AndroidLoudnessEnhancer()],
-        ),
-      );
-    }
+    _sharedPlayer ??= AudioPlayer(
+      audioPipeline: AudioPipeline(
+        androidAudioEffects: [AndroidLoudnessEnhancer()],
+      ),
+    );
     return _sharedPlayer!;
   }
 

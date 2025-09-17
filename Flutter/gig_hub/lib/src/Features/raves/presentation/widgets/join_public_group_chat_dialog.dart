@@ -171,10 +171,7 @@ class _JoinPublicGroupChatDialogState extends State<JoinPublicGroupChatDialog> {
             decoration: BoxDecoration(
               color: Palette.forgedGold.o(0.1),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: Palette.forgedGold.o(0.3),
-                width: 1,
-              ),
+              border: Border.all(color: Palette.forgedGold.o(0.3), width: 1),
             ),
             child: Row(
               children: [

@@ -514,10 +514,8 @@ class AudioPlayerWidgetState extends State<AudioPlayerWidget>
                                     _audioPlayer!.duration;
 
                                 // If duration is not immediately available, wait for it
-                                if (audioDuration == null) {
-                                  audioDuration =
-                                      await _audioPlayer!.durationStream.first;
-                                }
+                                audioDuration ??=
+                                    await _audioPlayer!.durationStream.first;
 
                                 if (audioDuration != null) {
                                   final position = Duration(
@@ -557,8 +555,7 @@ class AudioPlayerWidgetState extends State<AudioPlayerWidget>
                                   if (mounted) {
                                     setState(() {
                                       _position = position;
-                                      if (_duration == null)
-                                        _duration = seekDuration;
+                                      _duration ??= seekDuration;
                                     });
                                   }
                                 } else {

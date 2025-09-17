@@ -112,10 +112,7 @@ class _GuestUsernameDialogState extends State<GuestUsernameDialog> {
             widget.guestUser.name.isEmpty
                 ? 'To join group chats, please choose a username that other users will see.'
                 : 'Enter a new username for group chats.',
-            style: TextStyle(
-              color: Palette.glazedWhite.o(0.8),
-              fontSize: 14,
-            ),
+            style: TextStyle(color: Palette.glazedWhite.o(0.8), fontSize: 14),
           ),
           const SizedBox(height: 16),
           TextField(
@@ -126,9 +123,7 @@ class _GuestUsernameDialogState extends State<GuestUsernameDialog> {
               hintStyle: TextStyle(color: Palette.glazedWhite.o(0.5)),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(
-                  color: Palette.forgedGold.o(0.5),
-                ),
+                borderSide: BorderSide(color: Palette.forgedGold.o(0.5)),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),

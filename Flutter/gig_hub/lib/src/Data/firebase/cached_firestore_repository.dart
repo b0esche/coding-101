@@ -1,6 +1,5 @@
 import 'package:gig_hub/src/Data/app_imports.dart';
 
-
 /// Enhanced Firestore repository with intelligent caching to reduce Firebase costs
 ///
 /// Key Features:
@@ -717,13 +716,4 @@ class CachedFirestoreRepository extends FirestoreDatabaseRepository {
   // =============================================================================
   // PUBLIC GROUP CHAT METHODS (delegate to base repository)
   // =============================================================================
-
-
-
-
-
-
-
-
-
 }

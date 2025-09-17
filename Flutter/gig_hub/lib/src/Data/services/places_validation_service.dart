@@ -3,8 +3,22 @@ import 'dart:io';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
+class CityValidationResult {
+  final bool isValid;
+  final String? suggestedName;
+
+  CityValidationResult({required this.isValid, this.suggestedName});
+}
+
 class PlacesValidationService {
   static Future<bool> validateCity(String value) async {
+    final result = await validateCityWithSuggestion(value);
+    return result.isValid;
+  }
+
+  static Future<CityValidationResult> validateCityWithSuggestion(
+    String value,
+  ) async {
     // Get platform-specific API key
     String? apiKey;
     if (Platform.isIOS) {
@@ -19,7 +33,7 @@ class PlacesValidationService {
     final trimmedValue = value.trim();
 
     if (trimmedValue.isEmpty || apiKey == null) {
-      return false;
+      return CityValidationResult(isValid: false);
     }
 
     final query = Uri.encodeComponent(trimmedValue);
@@ -71,7 +85,10 @@ class PlacesValidationService {
                       trimmedValue.toLowerCase().contains(
                         longName.toLowerCase(),
                       )) {
-                    return true;
+                    return CityValidationResult(
+                      isValid: true,
+                      suggestedName: longName,
+                    );
                   }
                 }
               }
@@ -79,9 +96,9 @@ class PlacesValidationService {
           }
         }
       }
-      return false;
+      return CityValidationResult(isValid: false);
     } catch (e) {
-      return false;
+      return CityValidationResult(isValid: false);
     }
   }
 }
