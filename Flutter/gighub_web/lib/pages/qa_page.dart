@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../theme/palette.dart';
+import '../widgets/contact_support_dialog.dart';
 
 class QAPage extends StatefulWidget {
   const QAPage({super.key});
@@ -34,7 +35,7 @@ class _QAPageState extends State<QAPage> {
     FAQ(
       question: 'Can I use GigHub on web?',
       answer:
-          'Currently, GigHub is primarily a mobile app for Android and iOS. However, we\'re working on expanding to web platforms.',
+          'GigHub is primarily a mobile app for Android and iOS with full features. This website serves as an information hub and showcase for the mobile app.',
     ),
     FAQ(
       question: 'How do I find gigs?',
@@ -50,6 +51,16 @@ class _QAPageState extends State<QAPage> {
       question: 'How do I report inappropriate content?',
       answer:
           'You can report inappropriate content or users through the app\'s reporting system. We take all reports seriously and review them promptly.',
+    ),
+    FAQ(
+      question: 'What languages does GigHub support?',
+      answer:
+          'GigHub supports 12+ languages including German, English, Spanish, French, Italian, Japanese, Korean, Chinese, Arabic, Turkish, Polish, and Ukrainian.',
+    ),
+    FAQ(
+      question: 'Can I create events in GigHub?',
+      answer:
+          'Yes! Bookers can create events (called "Raves") with detailed information, location data, and group chats for collaboration. You can create single-day or multi-day events.',
     ),
   ];
 
@@ -158,7 +169,12 @@ class _QAPageState extends State<QAPage> {
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => const ContactSupportDialog(),
+                    );
+                  },
                   icon: const Icon(Icons.email_rounded),
                   label: Text(
                     'Contact Support',

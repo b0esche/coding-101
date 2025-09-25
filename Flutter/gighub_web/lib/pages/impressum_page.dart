@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
 import '../theme/palette.dart';
 
 class ImpressumPage extends StatelessWidget {
@@ -148,7 +149,10 @@ class ImpressumPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: () {
+                    // Navigate to privacy policy page
+                    context.go('/privacy');
+                  },
                   icon: const Icon(Icons.privacy_tip_rounded),
                   label: Text(
                     'View Privacy Policy',

@@ -111,12 +111,57 @@ class PortfolioPage extends StatelessWidget {
           const SizedBox(height: 16),
 
           _buildProjectCard(
-            'Event Management Platform',
-            'Comprehensive gig publishing and management system',
-            ['Location Integration', 'Event Group Chats', 'Notifications'],
+            'Event Management Platform (Raves)',
+            'Comprehensive event creation, discovery and management system with real-time collaboration',
+            [
+              'Location Validation',
+              'Multi-day Events',
+              'Group Chats',
+              'Real-time Updates',
+            ],
             Icons.event_rounded,
-            'Coming Soon',
-            false,
+            'Integrated in App',
+            true,
+          ),
+
+          const SizedBox(height: 16),
+
+          _buildProjectCard(
+            'Multi-Language Localization',
+            'Complete localization system supporting 12+ languages',
+            [
+              'German',
+              'English',
+              'Spanish',
+              'French',
+              'Italian',
+              'Japanese',
+              'Korean',
+              'Chinese',
+              'Arabic',
+              'Turkish',
+              'Polish',
+              'Ukrainian',
+            ],
+            Icons.language_rounded,
+            'Integrated in App',
+            true,
+          ),
+
+          const SizedBox(height: 16),
+
+          _buildProjectCard(
+            'Advanced Audio System',
+            'Professional audio playback with waveform visualization and background streaming',
+            [
+              'Just Audio',
+              'Waveform Rendering',
+              'Background Playback',
+              'Audio Caching',
+            ],
+            Icons.audiotrack_rounded,
+            'Integrated in App',
+            true,
           ),
 
           const SizedBox(height: 32),
@@ -178,9 +223,9 @@ class PortfolioPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     _buildMetricItem('99.9%', 'Uptime'),
-                    _buildMetricItem('< 100ms', 'Response Time'),
-                    _buildMetricItem('2+', 'Active Users'),
-                    _buildMetricItem('1+', 'Countries'),
+                    _buildMetricItem('< 200ms', 'Response Time'),
+                    _buildMetricItem('10+', 'Active Users'),
+                    _buildMetricItem('5+', 'Countries'),
                   ],
                 ),
               ],

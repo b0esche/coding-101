@@ -7,6 +7,7 @@ import 'pages/contribute_page.dart';
 import 'pages/qa_page.dart';
 import 'pages/portfolio_page.dart';
 import 'pages/impressum_page.dart';
+import 'pages/privacy_policy_page.dart';
 import 'widgets/custom_navigation_bar.dart';
 
 void main() {
@@ -63,6 +64,11 @@ final _router = GoRouter(
           name: 'impressum',
           builder: (context, state) => const ImpressumPage(),
         ),
+        GoRoute(
+          path: '/privacy',
+          name: 'privacy',
+          builder: (context, state) => const PrivacyPolicyPage(),
+        ),
       ],
     ),
   ],
@@ -95,6 +101,8 @@ class MainScaffold extends StatelessWidget {
         return 'Portfolio';
       case '/impressum':
         return 'Impressum';
+      case '/privacy':
+        return 'Privacy Policy';
       default:
         return 'GigHub';
     }

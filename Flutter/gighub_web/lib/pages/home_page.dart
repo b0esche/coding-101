@@ -75,7 +75,9 @@ class HomePage extends StatelessWidget {
           GridView.count(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            crossAxisCount: MediaQuery.of(context).size.width > 800 ? 3 : 1,
+            crossAxisCount: MediaQuery.of(context).size.width > 1200
+                ? 3
+                : (MediaQuery.of(context).size.width > 800 ? 2 : 1),
             crossAxisSpacing: 16,
             mainAxisSpacing: 16,
             childAspectRatio: 1.2,
@@ -87,13 +89,28 @@ class HomePage extends StatelessWidget {
               ),
               _buildFeatureCard(
                 'Real-time Chat',
-                'Connect with other artists and bookers instantly',
+                'Connect with other artists and bookers instantly with AES-256 encryption',
                 Icons.chat_rounded,
               ),
               _buildFeatureCard(
-                'Event Management',
-                'Organize and discover amazing gigs',
+                'Event Management (Raves)',
+                'Create, discover and manage events with group collaboration',
                 Icons.event_rounded,
+              ),
+              _buildFeatureCard(
+                'Multi-Language Support',
+                'Available in 12+ languages worldwide',
+                Icons.language_rounded,
+              ),
+              _buildFeatureCard(
+                'Professional Audio',
+                'High-quality audio playback with waveform visualization',
+                Icons.audiotrack_rounded,
+              ),
+              _buildFeatureCard(
+                'Cross-Platform',
+                'Native apps for Android and iOS with Firebase backend',
+                Icons.devices_rounded,
               ),
             ],
           ),
@@ -123,9 +140,9 @@ class HomePage extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _buildStatItem('0+', 'DJs'),
-                    _buildStatItem('0+', 'Bookers'),
-                    _buildStatItem('0+', 'Gigs'),
+                    _buildStatItem('10+', 'DJs'),
+                    _buildStatItem('5+', 'Bookers'),
+                    _buildStatItem('15+', 'Events'),
                   ],
                 ),
               ],
