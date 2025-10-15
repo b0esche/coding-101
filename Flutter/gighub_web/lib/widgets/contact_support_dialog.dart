@@ -18,7 +18,7 @@ class _ContactSupportDialogState extends State<ContactSupportDialog> {
   final _emailController = TextEditingController();
   final _messageController = TextEditingController();
 
-  List<PlatformFile> _selectedFiles = [];
+  final List<PlatformFile> _selectedFiles = [];
   bool _isLoading = false;
 
   final int _maxMessageLength = 500;
@@ -455,7 +455,7 @@ class _ContactSupportDialogState extends State<ContactSupportDialog> {
 
                 // Info Text
                 Text(
-                  'Your message will be sent directly to our support team at b0eschex@gmail.com.',
+                  'Your message will be sent directly to our support team.',
                   style: GoogleFonts.sometypeMono(
                     fontSize: 12,
                     color: Palette.concreteGrey,
