@@ -41,14 +41,47 @@
       function initEmailJS() {
         if (typeof emailjs !== 'undefined') {
           try {
+            // Try the simple initialization first
             emailjs.init("hSu3Ct4QWW8iGNm7J");
             window.emailjs = emailjs;
+
+              console.log('🧪 Running EmailJS connection test...');
+
+              // Try to send a minimal test (this will likely fail but give us better error info)
+              emailjs.send('service_q635zng', 'template_4bvvpvt', {
+                from_name: 'Test User',
+                from_email: 'test@example.com',
+                message: 'Connection test'
+              }).then(
+                function (response) {
+                  console.log('✅ EmailJS test successful:', response);
+                },
+                function (error) {
+                  console.log('❌ EmailJS test failed - Error details:', error);
+                  console.log('❌ Error status:', error.status);
+                  console.log('❌ Error text:', error.text);
+
+                  // More detailed debugging
+                  if (error.status === 404) {
+                    console.log('🔍 404 Error Analysis:');
+                    console.log('   - This usually means account not found or service inactive');
+                    console.log('   - Check if your EmailJS account is verified and active');
+                    console.log('   - Verify service ID: service_q635zng');
+                    console.log('   - Verify template ID: template_4bvvpvt');
+                    console.log('   - Check if your account has exceeded quota limits');
+                  }
+                }
+              );
+            };
+
+            console.log('� You can run window.testEmailJS() in console for detailed testing');
             return true;
           } catch (error) {
-            console.error('EmailJS initialization failed:', error);
+            console.error('❌ EmailJS initialization failed:', error);
             return false;
           }
         } else {
+          console.error('❌ EmailJS library not loaded');
           return false;
         }
       }
