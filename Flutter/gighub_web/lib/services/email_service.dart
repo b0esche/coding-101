@@ -52,8 +52,8 @@ class EmailService {
       'user_name': name,
       'user_email': email, // This is the key for n8n to know who to reply to
       'contact_email': email, // Backup field for user email
-      // Email content
-      'subject': 'New GigHub Support Request from $name',
+      // Email content - Include user email in subject for n8n extraction
+      'subject': 'GigHub Support from $name - REPLY_TO:$email',
       'message':
           '🎧 Support Request from: $name ($email)\n\n$message\n\n${attachmentNames?.isNotEmpty == true ? 'Attachments: ${attachmentNames!.join(', ')}\n\n' : ''}📧 Reply to this email to respond directly to the user.\n⏰ Submitted: $timeString',
 
