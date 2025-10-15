@@ -1,6 +1,5 @@
 import 'dart:js' as js;
-import 'dart:js_util' as js_util;
-import 'dart:html' as html;
+import 'dart:async';
 
 class EmailService {
   static Future<bool> sendSupportEmail({
@@ -9,118 +8,76 @@ class EmailService {
     required String message,
     List<String>? attachmentNames,
   }) async {
-    try {
-      // Try EmailJS first to send actual email to your Gmail
-      final emailJSResult = await _tryEmailJS(
-        name,
-        email,
-        message,
-        attachmentNames,
-      );
-      if (emailJSResult) {
-        print('Email sent successfully to b0eschex@gmail.com via EmailJS');
-        return true;
-      }
-
-      // Fallback to mailto link if EmailJS fails
-      print('EmailJS failed, using mailto fallback');
-      return _useMailtoFallback(name, email, message, attachmentNames);
-    } catch (e) {
-      print('Error in sendSupportEmail: $e');
-      // Still try mailto as last resort
-      return _useMailtoFallback(name, email, message, attachmentNames);
-    }
+    // Only try EmailJS - no fallback to mailto
+    return await _sendViaEmailJS(name, email, message, attachmentNames);
   }
 
-  static Future<bool> _tryEmailJS(
+  static Future<bool> _sendViaEmailJS(
     String name,
     String email,
     String message,
     List<String>? attachmentNames,
   ) async {
+    final Completer<bool> completer = Completer<bool>();
+
     try {
-      // Check if EmailJS is available
+      // Check if EmailJS is loaded
       if (js.context['emailjs'] == null) {
-        print('EmailJS is not available');
-        return false;
+        throw Exception('EmailJS is not loaded');
       }
 
-      // Prepare template parameters that match your EmailJS template
-      // Template expects: {{name}}, {{message}}, {{time}}
+      // Format timestamp
       final now = DateTime.now();
       final timeString =
           '${now.day}/${now.month}/${now.year} at ${now.hour}:${now.minute.toString().padLeft(2, '0')}';
 
-      final Map<String, dynamic> emailParams = {
+      // Prepare template parameters
+      final templateParams = {
         'name': name,
         'message':
-            '''$message
-
-${attachmentNames?.isNotEmpty == true ? '\nAttachments: ${attachmentNames!.join(', ')}' : ''}
-
-Contact Email: $email''',
+            '$message\n\n${attachmentNames?.isNotEmpty == true ? 'Attachments: ${attachmentNames!.join(', ')}\n\n' : ''}Contact Email: $email',
         'time': timeString,
       };
 
-      print('Sending support email to b0eschex@gmail.com via EmailJS');
-      print('Email params: $emailParams');
+      // Convert to JS object
+      final jsTemplateParams = js.JsObject.jsify(templateParams);
 
-      // Call EmailJS directly - this sends a direct email through your Gmail service
+      // Get EmailJS object
       final emailjs = js.context['emailjs'];
-      final jsParams = js.JsObject.jsify(emailParams);
 
-      // Send via EmailJS - this will send a plain email to your Gmail
-      // EmailJS will use your Gmail service to forward the email to b0eschex@gmail.com
+      // Create success and error callbacks
+      final onSuccess = js.allowInterop((dynamic response) {
+        if (!completer.isCompleted) {
+          completer.complete(true);
+        }
+      });
+
+      final onError = js.allowInterop((dynamic error) {
+        if (!completer.isCompleted) {
+          completer.completeError('EmailJS error: $error');
+        }
+      });
+
+      // Send email using EmailJS
       final jsPromise = emailjs.callMethod('send', [
-        'service_q635zng', // Your Gmail service ID from EmailJS
-        'contact_form', // Use a basic template or create a minimal one
-        jsParams,
-        'fDOYvXjaxKpBcGKWd', // Your public key
+        'service_q635zng',
+        'template_4bvvpvt',
+        jsTemplateParams,
       ]);
 
-      // Convert JavaScript Promise to Dart Future
-      await js_util.promiseToFuture(jsPromise);
+      // Handle the promise
+      jsPromise.callMethod('then', [onSuccess, onError]);
 
-      print('Email successfully sent to b0eschex@gmail.com');
-      return true;
+      // Wait for completion with timeout
+      return await completer.future.timeout(
+        const Duration(seconds: 15),
+        onTimeout: () => throw TimeoutException('Email sending timed out'),
+      );
     } catch (e) {
-      print('EmailJS error: $e');
-      return false;
-    }
-  }
-
-  static bool _useMailtoFallback(
-    String name,
-    String email,
-    String message,
-    List<String>? attachmentNames,
-  ) {
-    try {
-      // Create mailto URL
-      final subject = Uri.encodeComponent('GigHub Support Request from $name');
-      final body = Uri.encodeComponent('''
-From: $name ($email)
-
-Message: 
-$message
-
-${attachmentNames?.isNotEmpty == true ? '\nAttachments mentioned: ${attachmentNames!.join(', ')}' : ''}
-
----
-This email was sent via GigHub Contact Support.
-Please reply to: $email
-''');
-
-      final mailtoUrl = 'mailto:b0eschex@gmail.com?subject=$subject&body=$body';
-
-      // Open mailto link
-      html.window.open(mailtoUrl, '_blank');
-
-      print('Opened mailto link');
-      return true;
-    } catch (e) {
-      print('Mailto fallback error: $e');
-      return false;
+      if (!completer.isCompleted) {
+        completer.completeError(e);
+      }
+      throw Exception('Failed to send email: $e');
     }
   }
 }

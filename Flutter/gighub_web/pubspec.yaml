@@ -16,7 +16,6 @@ dependencies:
   file_picker: ^8.0.0+1
   http: ^1.2.1
   js: ^0.6.7
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
