@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import '../theme/palette.dart';
 
 class ContributePage extends StatelessWidget {
@@ -155,7 +156,9 @@ class ContributePage extends StatelessWidget {
                 Row(
                   children: [
                     ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: () {
+                        launchUrlString('https://github.com/b0esche/gig_hub');
+                      },
                       icon: const Icon(Icons.code_rounded),
                       label: Text(
                         'View on GitHub',
@@ -167,7 +170,9 @@ class ContributePage extends StatelessWidget {
                     ),
                     const SizedBox(width: 16),
                     OutlinedButton.icon(
-                      onPressed: () {},
+                      onPressed: () {
+                        launchUrlString('https://discord.gg/DM2DykT3');
+                      },
                       icon: Icon(Icons.chat_rounded, color: Palette.forgedGold),
                       label: Text(
                         'Join Discord',
